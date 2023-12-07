@@ -57,6 +57,7 @@ internal fun AddPropertyLayout.bind(property: Property) {
     timeout_ed.setText("${property.timeout ?: 3000}")
     group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
     gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
+    usnat_transition_switch.isChecked = property.ccpa2usnat
 }
 
 internal fun AddPropertyLayout.toProperty(): Property {
@@ -122,6 +123,7 @@ internal fun AddPropertyLayout.toProperty(): Property {
         campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
         gdprGroupPmId = if (gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
         useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked,
+        ccpa2usnat = usnat_transition_switch.isChecked,
         propertyId = prop_id_ed.text.toString().toInt(),
         messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() }
             ?: MessageType.MOBILE,

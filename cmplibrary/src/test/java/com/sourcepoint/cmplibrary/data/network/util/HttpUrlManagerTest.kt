@@ -8,6 +8,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -16,6 +17,8 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
@@ -344,8 +347,17 @@ class HttpUrlManagerTest {
             authId = "user_auth_id",
             localState = null
         )
-        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%2C%20%22webConsentPayload%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&authId=user_auth_id&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("accountId").assertEquals("22")
+            queryParameter("authId").assertEquals("user_auth_id")
+            queryParameter("withSiteActions").assertEquals("false")
+            queryParameter("hasCsp").assertEquals("true")
+            queryParameter("propertyId").assertEquals("17801")
+            queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
+            queryParameter("includeData").assertEquals(JsonConverter.converter.encodeToString(IncludeData()))
+        }
     }
 
     @Test
@@ -378,8 +390,16 @@ class HttpUrlManagerTest {
             authId = null,
             localState = null
         )
-        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=prod&accountId=22&propertyId=17801&hasCsp=true&withSiteActions=false&includeData=%7B%22TCData%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%2C%20%22webConsentPayload%22%3A%20%7B%22type%22%3A%20%22RecordString%22%7D%7D&metadata={%22ccpa%22:{%22applies%22:true},%22gdpr%22:{%22applies%22:true,%22uuid%22:%22e47e539d-41dd-442b-bb08-5cf52b1e33d4%22,%22hasLocalData%22:false}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
+        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
+        sut.run {
+            toString().contains("cdn.privacy-mgmt.com").assertTrue()
+            queryParameter("accountId").assertEquals("22")
+            queryParameter("withSiteActions").assertEquals("false")
+            queryParameter("hasCsp").assertEquals("true")
+            queryParameter("propertyId").assertEquals("17801")
+            queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
+            queryParameter("includeData").assertEquals(JsonConverter.converter.encodeToString(IncludeData()))
+        }
     }
 
     @Test

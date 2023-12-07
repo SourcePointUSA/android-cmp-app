@@ -1,5 +1,6 @@
 package com.sourcepointmeta.metaapp.data.localdatasource
 
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -181,7 +182,8 @@ private class LocalDataSourceImpl(
                     use_gdpr_groupid_if_available = if (property.useGdprGroupPmIfAvailable) 1 else 0,
                     property_id = property.propertyId.toString(),
                     preloading = 0,
-                    usnat_pm_id = property.usnatPmId
+                    usnat_pm_id = property.usnatPmId,
+                    ccpa_to_usnat = if (property.ccpa2usnat) 1 else 0,
                 )
                 deleteTargetingParameterByPropName(property.propertyName)
                 property.targetingParameters.forEach {
@@ -280,10 +282,15 @@ private class LocalDataSourceImpl(
                         buildSPCampaign(CampaignType.CCPA, p.statusCampaignSet, p.targetingParameters)
                             ?.let { spc -> addCampaign(CampaignType.CCPA, spc, p.ccpaGroupPmId) }
                         buildSPCampaign(CampaignType.USNAT, p.statusCampaignSet, p.targetingParameters)
-                            ?.let { spc -> addCampaign(CampaignType.USNAT, spc, p.usnatGroupPmId) }
+                            ?.let { spc -> addCampaign(CampaignType.USNAT, spc, p.usnatGroupPmId, p.usnatConfigParams()) }
                     }
                 }
                 ?: throw RuntimeException("Inconsistent state! LocalDataSource.getSPConfig cannot have a SpConfig null!!!")
         }
+    }
+
+    private fun Property.usnatConfigParams() = when (ccpa2usnat) {
+        true -> setOf(ConfigOption.TRANSITION_CCPA_AUTH)
+        false -> emptySet()
     }
 }

@@ -41,6 +41,7 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
+  - [Migrating Existing CCPA Consent to Multi-State Privacy (MSPS) Consent](#migrating-ccpa-consent-to-msps-in-sdk)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
@@ -932,54 +933,47 @@ Google additional consent is supported in our mobile SDKs and is stored in the `
 
 ## Global Privacy Platform Multi-State Privacy (MSPS) Support for OTT
 
-Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+Starting with version 7.6.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. 
 
-- MspaCoveredTransaction: `NO`
-- MspaOptOutOptionMode: `NOT_APPLICABLE`
-- MspaServiceProviderMode: `NOT_APPLICABLE`
+## Migrating Existing CCPA Consent to Multi-State Privacy (MSPS) Consent
 
-Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](<https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)>) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+For projects that need to transition from CCPA to MSPS (USNAT) campaigns, especially those using AuthId, there are specific configurations to consider in the Sourcepoint SDK setup for Kotlin and Java.
 
-Kotlin
+if you are using the AuthId parameter, you need to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration.
 
 ```kotlin
-class MainActivityKotlin : AppCompatActivity() {
-
-    private val sourcePointGppConfig = SpGppConfig(
-        coveredTransaction = SpGppOptionBinary.NO, // optional
-        optOutOptionMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
-        serviceProviderMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
-    )
-
-    private val spConsentLib by spConsentLibLazy {
-        // ...
-        config {
-            // ...
-            spGppConfig = sourcePointGppConfig
-            // ...
-        }
+private val spConsentLib by spConsentLibLazy {
+    activity = this@YourActivity
+    spClient = YourLocalClient()
+    config {
+        accountId = 22
+        propertyId = 39049
+        propertyName = "automation-mobile-usnat"
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
+        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
     }
 }
 ```
 
-Java
-
 ```java
-public class MainActivityJava extends AppCompatActivity {
-
-    private SpGppConfig sourcePointGppConfig = new SpGppConfig(
-            SpGppOptionBinary.NO,
-            SpGppOptionTernary.NOT_APPLICABLE,
-            SpGppOptionTernary.NOT_APPLICABLE
-    );
-
-    private final SpConfig spConfig = new SpConfigDataBuilder()
-            // ...
-            .addGppConfig(sourcePointGppConfig)
-            // ...
-            .build();
-}
+private final SpConfig spConfig = new SpConfigDataBuilder()
+        .addAccountId(22)
+        .addPropertyName("automation-mobile-usnat")
+        .addPropertyId(34049)
+        .addMessageLanguage(MessageLanguage.ENGLISH)
+        .addMessageTimeout(5000)
+        .addCampaignsEnv(CampaignsEnv.PUBLIC)
+        .addCampaign(new SpCampaign(CampaignType.USNAT, Collections.emptyList(), Set.of(ConfigOption.TRANSITION_CCPA_AUTH)))
+        .addCampaign(CampaignType.GDPR)
+        .build();
 ```
+
+The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId.
+If you are not using AuthId but have an MSPS (USNAT) campaign in your Sourcepoint configuration and an in-memory CCPA consent object, the migration to MSPS consent happens automatically.
+
+This transition helps ensure compliance with the evolving privacy regulations and consent requirements. 
+It's important to update the SDK configuration accordingly to reflect these changes.
 
 ## Delete user data
 

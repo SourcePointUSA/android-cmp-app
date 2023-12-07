@@ -10,11 +10,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 
+@Serializable
 internal data class MetaDataParamReq(
-    val env: Env,
-    val propertyId: Long,
-    val accountId: Long,
-    val metadata: String
+    @SerialName("env") val env: Env,
+    @SerialName("propertyId") val propertyId: Long,
+    @SerialName("accountId") val accountId: Long,
+    @SerialName("metadata") val metadata: String
 )
 
 @Serializable
@@ -96,6 +97,9 @@ data class MetaDataArg(
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
         @SerialName("uuid") val uuid: String? = null,
+        @SerialName("dateCreated") val dateCreated: String? = null,
+        @SerialName("transitionCCPAAuth") val transitionCCPAAuth: Boolean? = null,
+        @SerialName("optedOut") val optedOut: Boolean? = null,
     )
 }
 

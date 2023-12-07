@@ -23,6 +23,7 @@ data class Property(
     val timestamp: Long = Date().time,
     val gdprGroupPmId: String? = null,
     val useGdprGroupPmIfAvailable: Boolean = false,
+    val ccpa2usnat: Boolean = false,
     val ccpaGroupPmId: String? = null,
     val usnatGroupPmId: String? = null,
     val propertyId: Int,
@@ -94,7 +95,8 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     useGdprGroupPmIfAvailable = use_gdpr_groupid_if_available != 0L,
     propertyId = property_id.toString().toInt(),
     messageType = MessageType.values().find { it.name == message_type } ?: MessageType.MOBILE,
-    ccpaPmId = ccpa_pm_id
+    ccpaPmId = ccpa_pm_id,
+    ccpa2usnat = ccpa_to_usnat != 0L,
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =

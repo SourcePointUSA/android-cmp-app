@@ -24,6 +24,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.cmplibrary.util.extensions.hasTransitionCCPAAuth
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.updateCcpaUspString
 import kotlinx.serialization.decodeFromString
@@ -69,7 +70,7 @@ internal interface CampaignManager {
 
     // Optimized
     val shouldCallMessages: Boolean
-    val shouldCallConsentStatus: Boolean
+    fun shouldCallConsentStatus(authId: String?): Boolean
     var gdprMessageMetaData: MessageMetaData?
     var ccpaMessageMetaData: MessageMetaData?
 
@@ -113,6 +114,7 @@ internal interface CampaignManager {
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
     fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
     fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean
+    fun consentStatusLog(authId: String?)
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -140,7 +142,7 @@ private class CampaignManagerImpl(
 
     private val mapTemplate = mutableMapOf<String, CampaignTemplate>()
     val logger: Logger? = spConfig.logger
-    var shouldUpdateUsnat: Boolean = false
+    var usnatApplicableSectionChanged: Boolean = false
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
@@ -470,10 +472,9 @@ private class CampaignManagerImpl(
     val isNewUser: Boolean
         get() {
             val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
-            return messagesOptimizedLocalState == null || localStateSize == 0 || (
-                gdprUuid == null &&
-                    (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true)
-                )
+            return messagesOptimizedLocalState == null ||
+                localStateSize == 0 ||
+                (gdprUuid == null && usNatConsentData?.uuid == null && (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true))
         }
 
     override val shouldCallMessages: Boolean
@@ -511,36 +512,83 @@ private class CampaignManagerImpl(
             return res
         }
 
-    override val shouldCallConsentStatus: Boolean
-        get() {
-            val isGdprPresent = dataStorage.gdprConsentUuid != null
-            val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-            val isUsNatUuidPresent = usNatConsentData?.uuid != null
-            val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
-            val isV6LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-            val isV6LocalStatePresent2 = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
-            val hasNonEligibleLocalDataVersion =
-                dataStorage.localDataVersion != DataStorage.LOCAL_DATA_VERSION_HARDCODED_VALUE
-
-            val shouldCallConsentStatus =
-                ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
-                    isV6LocalStatePresent ||
-                    isV6LocalStatePresent2 ||
-                    hasNonEligibleLocalDataVersion ||
-                    shouldUpdateUsnat
-
-            logger?.computation(
-                tag = "shouldCallConsentStatus",
-                msg = """
-                is Gdpr||Ccpa||Usnat Present[${isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent}] - isLocalStateEmpty[$isLocalStateEmpty]
-                isV6LocalStatePresent[$isV6LocalStatePresent] - isV6LocalStatePresent2[$isV6LocalStatePresent2]
-                hasDataVersion[$hasNonEligibleLocalDataVersion] - shouldUpdateUsnat[$shouldUpdateUsnat]
-                shouldCallConsentStatus[$shouldCallConsentStatus]
-                """.trimIndent()
+    override fun shouldCallConsentStatus(authId: String?): Boolean {
+        val isGdprPresent = dataStorage.gdprConsentUuid != null
+        val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
+        val isUsNatUuidPresent = usNatConsentData?.uuid != null
+        val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
+        val isV630LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
+        val isV690LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+        val ccpa2usnat = (
+            ccpaConsentStatus != null &&
+                usNatConsentData == null &&
+                spConfig.hasTransitionCCPAAuth() &&
+                spConfig.isIncluded(USNAT)
             )
 
-            return shouldCallConsentStatus
-        }
+        val storedCcpaWithoutGPP: Boolean = ccpaConsentStatus
+            ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
+
+        return ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
+            isV630LocalStatePresent ||
+            isV690LocalStatePresent ||
+            storedCcpaWithoutGPP ||
+            usnatApplicableSectionChanged ||
+            ccpa2usnat ||
+            authId != null
+    }
+
+    override fun consentStatusLog(authId: String?) {
+        if (logger == null) return
+        val isGdprPresent = dataStorage.gdprConsentUuid != null
+        val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
+        val isUsNatUuidPresent = usNatConsentData?.uuid != null
+        val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
+        val isV630LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
+        val isV690LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
+        val ccpa2usnat = (
+            ccpaConsentStatus != null &&
+                usNatConsentData == null &&
+                spConfig.hasTransitionCCPAAuth() &&
+                spConfig.isIncluded(USNAT)
+            )
+        val storedCcpaWithoutGPP: Boolean = ccpaConsentStatus
+            ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
+
+        val shouldCallConsentStatus =
+            ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
+                isV630LocalStatePresent ||
+                isV690LocalStatePresent ||
+                usnatApplicableSectionChanged ||
+                ccpa2usnat ||
+                authId != null ||
+                storedCcpaWithoutGPP
+
+        logger.computation(
+            tag = "shouldCallConsentStatus",
+            msg = """ shouldCallConsentStatus[$shouldCallConsentStatus]
+            """.trimIndent(),
+            json = JSONObject().apply {
+                put(
+                    "consentsStoredDetails",
+                    JSONObject().also {
+                        it.put("(GdprUuid ", isGdprPresent)
+                        it.put("OR  CcpaUuid", isCcpaUuidPresent)
+                        it.put("OR  UsnatUuid)", isUsNatUuidPresent)
+                        it.put("AND isLocalStateEmpty", isLocalStateEmpty)
+                    }
+                )
+                put(" consentsStored", ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty))
+                put(" OR isV630LocalStatePresent", isV630LocalStatePresent)
+                put(" OR isV690LocalStatePresent", isV690LocalStatePresent)
+                put(" OR usnatApplicableSectionChanged", usnatApplicableSectionChanged)
+                put(" OR storedCcpaWithoutGPP", storedCcpaWithoutGPP)
+                put(" OR transitionCcpa2Usnat", ccpa2usnat)
+                put(" OR authId", authId != null)
+                put("return shouldCallConsentStatus", shouldCallConsentStatus)
+            }
+        )
+    }
 
     override var gdprMessageMetaData: MessageMetaData?
         get() {
@@ -691,7 +739,7 @@ private class CampaignManagerImpl(
             dataStorage.deleteUsNatConsent()
         }
 
-        shouldUpdateUsnat = hasUsnatApplicableSectionsChanged(response)
+        usnatApplicableSectionChanged = hasUsnatApplicableSectionsChanged(response)
 
         // update meta data response in the data storage
         metaDataResp = response
@@ -737,7 +785,7 @@ private class CampaignManagerImpl(
     }
 
     override fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean {
-        if (!spConfig.isIncluded(USNAT) || metaDataResp == null || response == null) {
+        if (!spConfig.isIncluded(USNAT) || metaDataResp?.usNat == null || response == null) {
             return false
         }
         return metaDataResp?.usNat?.applicableSections != response.usNat?.applicableSections

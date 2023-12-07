@@ -28,7 +28,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa, DataStorageUS
 
     override val preference: SharedPreferences
 
-    var localDataVersion: Int
     var savedConsent: Boolean
     var messagesOptimized: String?
     var consentStatus: String?
@@ -48,7 +47,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa, DataStorageUS
 
     fun saveLocalState(value: String)
     fun getLocalState(): String?
-    fun updateLocalDataVersion()
 
     fun clearAll()
 }

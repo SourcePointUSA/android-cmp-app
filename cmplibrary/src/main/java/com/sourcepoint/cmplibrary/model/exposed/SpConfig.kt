@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -20,7 +21,8 @@ data class SpConfig(
 data class SpCampaign(
     @JvmField val campaignType: CampaignType,
     @JvmField internal var targetingParams: List<TargetingParam> = emptyList(),
-    @JvmField var groupPmId: String? = null
+    @JvmField var groupPmId: String? = null,
+    @JvmField var configParams: Set<ConfigOption> = emptySet(),
 ) {
     constructor(
         campaignType: CampaignType,
@@ -29,8 +31,20 @@ data class SpCampaign(
 
     constructor(
         campaignType: CampaignType,
+        targetingParams: List<TargetingParam>,
+        configParams: Set<ConfigOption>,
+    ) : this(campaignType, targetingParams, null, configParams)
+
+    constructor(
+        campaignType: CampaignType,
         groupPmId: String
     ) : this(campaignType, emptyList(), groupPmId)
+
+    constructor(
+        campaignType: CampaignType,
+        groupPmId: String,
+        configParams: Set<ConfigOption>,
+    ) : this(campaignType, emptyList(), groupPmId, configParams)
 }
 
 data class TargetingParam(val key: String, val value: String)

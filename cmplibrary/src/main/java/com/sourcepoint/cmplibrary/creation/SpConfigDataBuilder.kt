@@ -36,6 +36,12 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(this.first, this.second.map { it.toTParam() }))
     }
 
+    operator fun Map<CampaignType, Set<ConfigOption>>.unaryPlus() {
+        this.entries.firstOrNull()?.let {
+            campaigns.add(SpCampaign(it.key, configParams = it.value))
+        }
+    }
+
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
         this.accountId = accountId
     }
@@ -94,6 +100,15 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(campaignType, params, groupPmId))
     }
 
+    fun addCampaign(
+        campaignType: CampaignType,
+        params: List<TargetingParam>,
+        groupPmId: String?,
+        configParams: Set<ConfigOption> = emptySet(),
+    ): SpConfigDataBuilder = apply {
+        campaigns.add(SpCampaign(campaignType, params, groupPmId, configParams))
+    }
+
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
         campaigns.add(campaign)
     }
@@ -114,4 +129,11 @@ class SpConfigDataBuilder {
 
 fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
     return SpConfigDataBuilder().apply(dsl).build()
+}
+enum class ConfigOption(option: String) {
+    TRANSITION_CCPA_AUTH("transitionCCPAAuth")
+}
+
+infix fun CampaignType.to(config: Set<ConfigOption>): Map<CampaignType, Set<ConfigOption>> {
+    return mapOf(Pair(this, config))
 }

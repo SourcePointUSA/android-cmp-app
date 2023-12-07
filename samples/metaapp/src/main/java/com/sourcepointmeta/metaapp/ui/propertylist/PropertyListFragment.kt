@@ -2,6 +2,7 @@ package com.sourcepointmeta.metaapp.ui.propertylist
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -112,8 +113,7 @@ class PropertyListFragment : Fragment() {
         tool_bar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_clear_sp -> {
-                    context?.let { clearAllData(it) }
-                    sp.edit().remove(OLD_V6_CONSENT).apply()
+                    context?.let { PreferenceManager.getDefaultSharedPreferences(it).edit().clear().apply() }
                 }
                 R.id.action_add_prop -> {
                     viewModel.addDefaultProperties()
@@ -121,59 +121,96 @@ class PropertyListFragment : Fragment() {
                 R.id.action_show_pref -> {
                     startActivity(Intent(requireActivity(), PreferencesActivity::class.java))
                 }
+                R.id.action_clear_all_sp_data -> {
+                    context?.let { clearAllData(it) }
+                }
                 R.id.action_save_old_v6_consent -> {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
                     val v6LocalState = JSONObject(oldV6Consent690)
-                    v6LocalState.keys().forEach {
-                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
+                    editor.storeJson(v6LocalState)
                     editor.apply()
                 }
                 R.id.action_save_old_v6_consent630 -> {
                     val editor = sp.edit()
                     editor.putBoolean(OLD_V6_CONSENT, true)
                     val v6LocalState = JSONObject(oldV6Consent630)
-                    v6LocalState.keys().forEach {
-                        check { v6LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v6LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v6LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
+                    editor.storeJson(v6LocalState)
                     editor.apply()
                 }
                 R.id.action_save_cons_726 -> {
                     val editor = sp.edit()
                     val v7LocalState = JSONObject(v7Consent726)
                     editor.putBoolean(V7_CONSENT, true)
-                    v7LocalState.keys().forEach {
-                        check { v7LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v7LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v7LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
+                    editor.storeJson(v7LocalState)
                     editor.apply()
                 }
                 R.id.action_save_cons_711 -> {
                     val editor = sp.edit()
                     val v7LocalState = JSONObject(v7Consent711)
                     editor.putBoolean(V7_CONSENT, true)
-                    v7LocalState.keys().forEach {
-                        check { v7LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v7LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v7LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
+                    editor.storeJson(v7LocalState)
                     editor.apply()
                 }
                 R.id.action_save_cons_742 -> {
                     val editor = sp.edit()
                     val v7LocalState = JSONObject(v7Consent742)
                     editor.putBoolean(V7_CONSENT, true)
-                    v7LocalState.keys().forEach {
-                        check { v7LocalState.getString(it) }?.let { v -> editor.putString(it, v) }
-                        check { v7LocalState.getBoolean(it) }?.let { v -> editor.putBoolean(it, v) }
-                        check { v7LocalState.getInt(it) }?.let { v -> editor.putInt(it, v) }
-                    }
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_ccpa_752_AcceptAll -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(ccpaConsentedAll752)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_ccpa_752_rejectAll -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(ccpaRejectedAll752)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_ccpa_752_rejectSome -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(ccpaRejectedSome752)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_ccpa_752_AcceptAll_auth -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(ccpaAcceptAllAuthId752)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_ccpa_752_NO_GPP -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(ccpaNoGPP752)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_usnat_752 -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(usnatAcceptedAll)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_usnat_appl_sec_changed_752 -> {
+                    val editor = sp.edit()
+                    val v7LocalState = JSONObject(usnatApplicableSectionChanged)
+                    editor.putBoolean(V7_CONSENT, true)
+                    editor.storeJson(v7LocalState)
+                    editor.apply()
+                }
+                R.id.action_save_keep_data -> {
+                    val editor = sp.edit()
+                    editor.putBoolean(V7_CONSENT, true)
                     editor.apply()
                 }
                 R.id.action_expire_gdpr -> {
@@ -291,6 +328,15 @@ class PropertyListFragment : Fragment() {
         return when (exists()) {
             true -> this.delete()
             else -> false
+        }
+    }
+
+    private fun SharedPreferences.Editor.storeJson(json: JSONObject) {
+        this.putBoolean(V7_CONSENT, true)
+        json.keys().forEach {
+            check { json.getString(it) }?.let { v -> this.putString(it, v) }
+            check { json.getBoolean(it) }?.let { v -> this.putBoolean(it, v) }
+            check { json.getInt(it) }?.let { v -> this.putInt(it, v) }
         }
     }
 }

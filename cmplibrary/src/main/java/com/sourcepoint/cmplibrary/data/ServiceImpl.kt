@@ -156,7 +156,8 @@ private class ServiceImpl(
                     return@executeOnWorkerThread
                 }
 
-            if (messageReq.authId != null || campaignManager.shouldCallConsentStatus) {
+            campaignManager.consentStatusLog(messageReq.authId)
+            if (campaignManager.shouldCallConsentStatus(messageReq.authId)) {
                 triggerConsentStatus(
                     messageReq = messageReq,
                     gdprApplies = metadataResponse.getOrNull()?.gdpr?.applies,
@@ -248,7 +249,7 @@ private class ServiceImpl(
                             }
 
                             campaignManager.run {
-                                if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus).not()) {
+                                if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus(messageReq.authId)).not()) {
                                     if (spConfig.isIncluded(GDPR)) {
                                         this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
                                     }
@@ -610,16 +611,10 @@ private class ServiceImpl(
         ccpaApplies: Boolean?,
         usNatApplies: Boolean?,
     ): Either<ConsentStatusResp> {
-        val csParams = messageReq.toConsentStatusParamReq(
-            gdprUuid = campaignManager.gdprUuid,
-            ccpaUuid = campaignManager.ccpaUuid,
-            usNatUuid = campaignManager.usNatConsentData?.uuid,
-            localState = campaignManager.messagesOptimizedLocalState,
-        )
+        val csParams = messageReq.toConsentStatusParamReq(campaignManager)
 
         return getConsentStatus(csParams)
             .executeOnRight {
-                dataStorage.updateLocalDataVersion()
                 campaignManager.apply {
                     campaignManager.handleOldLocalData()
                     messagesOptimizedLocalState = it.localState
