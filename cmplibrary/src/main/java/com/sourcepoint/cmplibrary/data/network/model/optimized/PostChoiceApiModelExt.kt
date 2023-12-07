@@ -63,6 +63,9 @@ internal fun postChoiceCcpaBody(
         put("uuid", uuid)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         putJsonObject("includeData") {
+            put("GPPData", true)
+            put("translateMessage", true)
+            put("categories", true)
             putJsonObject("localState") {
                 put("type", "RecordString")
             }
@@ -94,6 +97,9 @@ internal fun postChoiceUsNatBody(
     uuid?.let { put("uuid", it) }
     put("vendorListId", vendorListId)
     putJsonObject("includeData") {
+        put("GPPData", true)
+        put("translateMessage", true)
+        put("categories", true)
         putJsonObject("TCData") {
             put("type", "RecordString")
         }

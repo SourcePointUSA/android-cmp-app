@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.* //ktlint-disable
@@ -27,7 +26,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
-import com.sourcepoint.cmplibrary.util.extensions.getGppDataOrNull
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import kotlinx.serialization.decodeFromString
@@ -195,7 +193,6 @@ private class ServiceImpl(
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
                     campaignEnv = campaignManager.spConfig.campaignsEnv,
-                    includeDataGppParam = spConfig.getGppDataOrNull(),
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -408,16 +405,7 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(
-                    ccpa = null,
-                    usNat = null,
-                ),
-                includeData = IncludeData.generateIncludeDataForGetChoice(
-                    gppData = spConfig.getGppDataOrNull(),
-                ),
-                hasCsp = true,
-                includeCustomVendorsRes = false,
-                withSiteActions = false,
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null, usNat = null,)
             )
 
             getResp = networkClient.getChoice(getChoiceParamReq)
@@ -501,16 +489,7 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(
-                    gdpr = null,
-                    usNat = null,
-                ),
-                includeData = IncludeData.generateIncludeDataForGetChoice(
-                    gppData = spConfig.getGppDataOrNull(),
-                ),
-                hasCsp = true,
-                includeCustomVendorsRes = false,
-                withSiteActions = false,
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null,)
             )
 
             networkClient.getChoice(getChoiceParamReq)
