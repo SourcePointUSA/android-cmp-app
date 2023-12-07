@@ -2,10 +2,7 @@ package com.sourcepointmeta.metaapp.util
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionBinary.NO
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppOptionTernary.NOT_APPLICABLE
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
-import com.sourcepointmeta.metaapp.data.localdatasource.GPP
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 
@@ -13,7 +10,6 @@ val defaultProperty = Property(
     propertyName = "ott.test.suite",
     accountId = 22,
     gdprPmId = 579231L,
-    ccpaPmId = 1L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -28,13 +24,13 @@ val defaultProperty = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 22231,
     messageType = MessageType.LEGACY_OTT,
+    ccpaPmId = 1L,
 )
 
 val defaultProperty1 = Property(
     propertyName = "mobile.multicampaign.demo",
     accountId = 22,
     gdprPmId = 488393L,
-    ccpaPmId = 509688L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -49,13 +45,13 @@ val defaultProperty1 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 16893,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 509688L,
 )
 
 val defaultProperty2 = Property(
     propertyName = "mobile.multicampaign.native.demo",
     accountId = 22,
     gdprPmId = 545258L,
-    ccpaPmId = 547869L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -70,13 +66,13 @@ val defaultProperty2 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 18958,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 547869L,
 )
 
 val defaultProperty3 = Property(
     propertyName = "mobile.multicampaign.native.demo2",
     accountId = 22,
     gdprPmId = 548285L,
-    ccpaPmId = 548276L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -91,13 +87,13 @@ val defaultProperty3 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 19210,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 548276L,
 )
 
 val defaultProperty4 = Property(
     propertyName = "mobile.multicampaign.fully.native",
     accountId = 22,
     gdprPmId = 594218L,
-    ccpaPmId = 594219L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -112,13 +108,13 @@ val defaultProperty4 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 22758,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 594219L,
 )
 
 val defaultProperty5 = Property(
     propertyName = "mobile.multicampaign.fully.native2",
     accountId = 22,
     gdprPmId = 598486L,
-    ccpaPmId = 598492L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -133,13 +129,13 @@ val defaultProperty5 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 22932,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 598492L,
 )
 
 val defaultProperty6 = Property(
     propertyName = "sca-ott-newwebpm",
     accountId = 22,
     gdprPmId = 704111L,
-    ccpaPmId = 704111L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -154,13 +150,13 @@ val defaultProperty6 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 27927,
     messageType = MessageType.OTT,
+    ccpaPmId = 704111L,
 )
 
 val defaultProperty7 = Property(
     propertyName = "tests.unified-script.com",
     accountId = 22,
     gdprPmId = 521350L,
-    ccpaPmId = 521354L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -174,13 +170,13 @@ val defaultProperty7 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 17801,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 521354L,
 )
 
 val defaultProperty9 = Property(
     propertyName = "ott-ccpa-22",
     accountId = 22,
     gdprPmId = 11111L,
-    ccpaPmId = 756686L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -195,13 +191,13 @@ val defaultProperty9 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 29498,
     messageType = MessageType.LEGACY_OTT,
+    ccpaPmId = 756686L,
 )
 
 val defaultProperty10 = Property(
     propertyName = "OikotieAndroid2022",
     accountId = 1047,
     gdprPmId = 662122L,
-    ccpaPmId = 0L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -216,13 +212,13 @@ val defaultProperty10 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 26891,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 0L,
 )
 
 val defaultProperty11 = Property(
     propertyName = "sdk.reconsent.test",
     accountId = 22,
     gdprPmId = 662122L,
-    ccpaPmId = 0L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -237,13 +233,13 @@ val defaultProperty11 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 31320,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 0L,
 )
 
 val defaultProperty12 = Property(
     propertyName = "demo.sp-demo.com",
     accountId = 22,
     gdprPmId = 11L,
-    ccpaPmId = 884193L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -258,13 +254,13 @@ val defaultProperty12 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 146,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 884193L,
 )
 
 val defaultProperty13 = Property(
     propertyName = "automation-test-mobile-newott",
     accountId = 22,
     gdprPmId = 899812L,
-    ccpaPmId = 899813L,
     usnatPmId = 11111L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -279,13 +275,13 @@ val defaultProperty13 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 33914,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 899813L,
 )
 
 val defaultProperty14 = Property(
     propertyName = "staging.mobile.demo",
     accountId = 22,
     gdprPmId = 11111L,
-    ccpaPmId = 1111L,
     usnatPmId = 25950L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -301,13 +297,13 @@ val defaultProperty14 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 8292,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 1111L,
 )
 
 val defaultProperty15 = Property(
     propertyName = "stage.android.test",
     accountId = 22,
     gdprPmId = 11111L,
-    ccpaPmId = 1111L,
     usnatPmId = 26126L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -323,13 +319,13 @@ val defaultProperty15 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 8325,
     messageType = MessageType.MOBILE,
+    ccpaPmId = 1111L,
 )
 
 val defaultProperty16 = Property(
     propertyName = "automation-mobile-usnat",
     accountId = 22,
     gdprPmId = 930471L,
-    ccpaPmId = 930569L,
     usnatPmId = 930374L,
     is_staging = false,
     targetingParameters = emptyList(),
@@ -345,12 +341,7 @@ val defaultProperty16 = Property(
     campaignsEnv = CampaignsEnv.PUBLIC,
     propertyId = 34049,
     messageType = MessageType.MOBILE,
-    gpp = GPP(
-        propertyName = "automation-mobile-usnat",
-        coveredTransaction = NO,
-        serviceProviderMode = NOT_APPLICABLE,
-        optOutOptionMode = NOT_APPLICABLE
-    )
+    ccpaPmId = 930569L
 )
 
 val propList = listOf(
