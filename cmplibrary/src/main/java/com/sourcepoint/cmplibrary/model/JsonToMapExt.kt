@@ -34,7 +34,7 @@ internal fun Map<String, Any?>.toJSONObj(): JSONObject {
     return JSONObject(this)
 }
 
-internal fun Map<String, Any?>.toTcfJSONObj(): JSONObject {
+internal fun Map<String, Any?>.toConsentJSONObj(): JSONObject {
     val newMap: Map<String, Any?> = this
         .toList()
         .associate { el ->

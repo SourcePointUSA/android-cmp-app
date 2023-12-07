@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -19,7 +18,6 @@ internal fun getMessageBody(
     usNatConsentStatus: USNatConsentStatus?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
-    includeDataGppParam: IncludeDataGppParam?,
     os: OperatingSystemInfoParam = OperatingSystemInfoParam()
 ): JsonObject {
     return buildJsonObject {
@@ -35,7 +33,9 @@ internal fun getMessageBody(
             putJsonObject("webConsentPayload") {
                 put("type", "RecordString")
             }
-            includeDataGppParam?.let { gpp -> put("GPPData", JsonConverter.converter.encodeToJsonElement(gpp)) }
+            put("GPPData", true)
+            put("translateMessage", true)
+            put("categories", true)
         }
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
