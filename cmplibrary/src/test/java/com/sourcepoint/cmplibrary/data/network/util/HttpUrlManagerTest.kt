@@ -396,14 +396,20 @@ class HttpUrlManagerTest {
         val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
         val fakeNonKeyedLocalState = buildJsonObject {
-            put("ccpa", buildJsonObject {
-                put("_sp_v1_data", JsonPrimitive(585620))
-                put("_sp_v1_p", JsonPrimitive(993))
-            })
-            put("gdpr", buildJsonObject {
-                put("_sp_v1_data", JsonPrimitive(700316))
-                put("_sp_v1_p", JsonPrimitive(937))
-            })
+            put(
+                "ccpa",
+                buildJsonObject {
+                    put("_sp_v1_data", JsonPrimitive(585620))
+                    put("_sp_v1_p", JsonPrimitive(993))
+                }
+            )
+            put(
+                "gdpr",
+                buildJsonObject {
+                    put("_sp_v1_data", JsonPrimitive(700316))
+                    put("_sp_v1_p", JsonPrimitive(937))
+                }
+            )
         }
 
         val list = listOf(
