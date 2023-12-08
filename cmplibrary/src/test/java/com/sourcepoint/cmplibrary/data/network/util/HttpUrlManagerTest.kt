@@ -446,7 +446,7 @@ class HttpUrlManagerTest {
         sut.run {
             toString().contains("cdn.privacy-mgmt.com").assertTrue()
             queryParameter("env").assertEquals("prod")
-            queryParameter("nonKeyedLocalState").assertEquals("""{"ccpa":{"_sp_v1_data":"585620","_sp_v1_p":"993"},"gdpr":{"_sp_v1_data":"700316","_sp_v1_p":"937"}}""")
+            queryParameter("nonKeyedLocalState").assertEquals("""{"ccpa":{"_sp_v1_data":585620,"_sp_v1_p":993},"gdpr":{"_sp_v1_data":700316,"_sp_v1_p":937}}""")
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
