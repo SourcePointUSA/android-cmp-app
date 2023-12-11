@@ -17,6 +17,8 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
 import org.junit.Test
 
@@ -420,16 +422,19 @@ class HttpUrlManagerTest {
             authId = null,
             accountId = 1212,
             propertyId = 12,
+            nonKeyedLocalState = JsonObject(mapOf("_sp_v1_data" to JsonPrimitive(585620))),
+            localState = JsonObject(mapOf("_sp_v1_p" to JsonPrimitive(993))),
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param)
         sut.run {
             toString().contains("cdn.privacy-mgmt.com").assertTrue()
             queryParameter("env").assertEquals("prod")
-            queryParameter("nonKeyedLocalState").assertEquals("{}")
+            queryParameter("nonKeyedLocalState").assertEquals("""{"_sp_v1_data":585620}""")
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
+            queryParameter("localState").assertEquals("""{"_sp_v1_p":993}""")
             queryParameter("scriptType").assertEquals("android")
             queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":{}},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
         }
