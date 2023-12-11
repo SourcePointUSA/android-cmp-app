@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import org.json.JSONObject
@@ -395,23 +396,6 @@ class HttpUrlManagerTest {
         val json = "v7/message_body_cs.json".file2String()
         val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
 
-        val fakeNonKeyedLocalState = buildJsonObject {
-            put(
-                "ccpa",
-                buildJsonObject {
-                    put("_sp_v1_data", JsonPrimitive(585620))
-                    put("_sp_v1_p", JsonPrimitive(993))
-                }
-            )
-            put(
-                "gdpr",
-                buildJsonObject {
-                    put("_sp_v1_data", JsonPrimitive(700316))
-                    put("_sp_v1_p", JsonPrimitive(937))
-                }
-            )
-        }
-
         val list = listOf(
             CampaignReqImpl(
                 targetingParams = emptyList(),
@@ -439,18 +423,19 @@ class HttpUrlManagerTest {
             authId = null,
             accountId = 1212,
             propertyId = 12,
-            nonKeyedLocalState = fakeNonKeyedLocalState,
+            nonKeyedLocalState = JsonObject(mapOf("_sp_v1_data" to JsonPrimitive(585620))),
+            localState = JsonObject(mapOf("_sp_v1_p" to JsonPrimitive(993))),
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param)
         sut.run {
             toString().contains("cdn.privacy-mgmt.com").assertTrue()
             queryParameter("env").assertEquals("prod")
-            queryParameter("nonKeyedLocalState").assertEquals("""{"ccpa":{"_sp_v1_data":585620,"_sp_v1_p":993},"gdpr":{"_sp_v1_data":700316,"_sp_v1_p":937}}""")
+            queryParameter("nonKeyedLocalState").assertEquals("""{"_sp_v1_data":585620}""")
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
-            queryParameter("localState").assertEquals("{}")
+            queryParameter("localState").assertEquals("""{"_sp_v1_p":993}""")
             queryParameter("scriptType").assertEquals("android")
             queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":{}},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
         }
