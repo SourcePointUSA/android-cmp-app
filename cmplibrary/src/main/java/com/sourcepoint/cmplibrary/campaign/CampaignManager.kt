@@ -480,21 +480,13 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
 
-            val gdprToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == GDPR }
-                ?.let {
-                    dataStorage.gdprApplies && (gdprConsentStatus?.consentStatus?.consentedAll != true)
-                }
-                ?: false
+            val gdprToBeCompleted: Boolean = spConfig.isIncluded(GDPR) &&
+                dataStorage.gdprApplies &&
+                (gdprConsentStatus?.consentStatus?.consentedAll != true)
 
-            val ccpaToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CCPA }
-                ?.let { true }
-                ?: false
+            val ccpaToBeCompleted: Boolean = spConfig.isIncluded(CCPA)
 
-            val usNatToBeCompleted: Boolean = spConfig.campaigns.find { it.campaignType == CampaignType.USNAT }
-                ?.let {
-                    dataStorage.usNatApplies && (usNatConsentData?.consentStatus?.consentedToAll != true)
-                }
-                ?: false
+            val usNatToBeCompleted: Boolean = spConfig.isIncluded(USNAT)
 
             val res = (isNewUser || ccpaToBeCompleted || gdprToBeCompleted || usNatToBeCompleted)
 
