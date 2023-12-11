@@ -18,7 +18,6 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
