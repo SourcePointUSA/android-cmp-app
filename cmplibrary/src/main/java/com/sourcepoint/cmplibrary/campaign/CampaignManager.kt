@@ -480,9 +480,7 @@ private class CampaignManagerImpl(
     override val shouldCallMessages: Boolean
         get() {
 
-            val gdprToBeCompleted: Boolean = spConfig.isIncluded(GDPR) &&
-                dataStorage.gdprApplies &&
-                (gdprConsentStatus?.consentStatus?.consentedAll != true)
+            val gdprToBeCompleted: Boolean = spConfig.isIncluded(GDPR) && (gdprConsentStatus?.consentStatus?.consentedAll != true)
 
             val ccpaToBeCompleted: Boolean = spConfig.isIncluded(CCPA)
 
@@ -505,7 +503,7 @@ private class CampaignManagerImpl(
         }
 
     override fun shouldCallConsentStatus(authId: String?): Boolean {
-        val isGdprPresent = dataStorage.gdprConsentUuid != null
+        val isGdprUuidPresent = dataStorage.gdprConsentUuid != null
         val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
         val isUsNatUuidPresent = usNatConsentData?.uuid != null
         val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
@@ -521,7 +519,7 @@ private class CampaignManagerImpl(
         val storedCcpaWithoutGPP: Boolean = ccpaConsentStatus
             ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
 
-        return ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
+        return ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
             isV630LocalStatePresent ||
             isV690LocalStatePresent ||
             storedCcpaWithoutGPP ||
@@ -532,7 +530,7 @@ private class CampaignManagerImpl(
 
     override fun consentStatusLog(authId: String?) {
         if (logger == null) return
-        val isGdprPresent = dataStorage.gdprConsentUuid != null
+        val isGdprUuidPresent = dataStorage.gdprConsentUuid != null
         val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
         val isUsNatUuidPresent = usNatConsentData?.uuid != null
         val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
@@ -548,7 +546,7 @@ private class CampaignManagerImpl(
             ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
 
         val shouldCallConsentStatus =
-            ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
+            ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
                 isV630LocalStatePresent ||
                 isV690LocalStatePresent ||
                 usnatApplicableSectionChanged ||
@@ -564,13 +562,13 @@ private class CampaignManagerImpl(
                 put(
                     "consentsStoredDetails",
                     JSONObject().also {
-                        it.put("(GdprUuid ", isGdprPresent)
+                        it.put("(GdprUuid ", isGdprUuidPresent)
                         it.put("OR  CcpaUuid", isCcpaUuidPresent)
                         it.put("OR  UsnatUuid)", isUsNatUuidPresent)
                         it.put("AND isLocalStateEmpty", isLocalStateEmpty)
                     }
                 )
-                put(" consentsStored", ((isGdprPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty))
+                put(" consentsStored", ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty))
                 put(" OR isV630LocalStatePresent", isV630LocalStatePresent)
                 put(" OR isV690LocalStatePresent", isV690LocalStatePresent)
                 put(" OR usnatApplicableSectionChanged", usnatApplicableSectionChanged)

@@ -41,7 +41,7 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
-  - [Migrating Existing CCPA Consent to Multi-State Privacy (MSPS) Consent](#migrating-ccpa-consent-to-msps-in-sdk)
+  - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
@@ -935,11 +935,13 @@ Google additional consent is supported in our mobile SDKs and is stored in the `
 
 Starting with version 7.6.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. 
 
-## Migrating Existing CCPA Consent to Multi-State Privacy (MSPS) Consent
+## Transfer opt-in/opt out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy
 
-For projects that need to transition from CCPA to MSPS (USNAT) campaigns, especially those using AuthId, there are specific configurations to consider in the Sourcepoint SDK setup for Kotlin and Java.
+When migrating a property from the U.S. Privacy (Legacy) campaign to U.S. Multi-State Privacy campaign, the SDK will automatically detect previously set end-user opt-in/opt-out preferences for U.S. Privacy (Legacy) and have that transferred over to U.S. Multi-State Privacy.
 
-if you are using the AuthId parameter, you need to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration.
+> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the *Sharing of Personal Information Targeted Advertisting* and *Sale of Personal Information* privacy choices or the *Sale or Share of Personal Information/Targeted Advertising* privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
+
+If you ever used authenticated consent for CCPA, you'll have to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration to transfer an end-user's opt-in/opt-out preferences. The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId. This way, the SDK will look for authenticated consent within CCPA profiles and carry that over to USNat, even if the user current doesn't have CCPA local data (on a fresh install, for example).
 
 ```kotlin
 private val spConsentLib by spConsentLibLazy {
@@ -968,12 +970,6 @@ private final SpConfig spConfig = new SpConfigDataBuilder()
         .addCampaign(CampaignType.GDPR)
         .build();
 ```
-
-The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId.
-If you are not using AuthId but have an MSPS (USNAT) campaign in your Sourcepoint configuration and an in-memory CCPA consent object, the migration to MSPS consent happens automatically.
-
-This transition helps ensure compliance with the evolving privacy regulations and consent requirements. 
-It's important to update the SDK configuration accordingly to reflect these changes.
 
 ## Delete user data
 

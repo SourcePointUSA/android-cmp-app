@@ -12,21 +12,21 @@ import com.sourcepoint.cmplibrary.util.extensions.hasTransitionCCPAAuth
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import kotlinx.serialization.encodeToString
 
-internal fun UsNatArg.createMetadataArg(cm: CampaignManager): UsNatArg {
+internal fun UsNatArg.createMetadataArg(campaignManager: CampaignManager): UsNatArg {
 
     var transitionCCPAAuth = this.transitionCCPAAuth
     var optedOut = this.optedOut
     var dateCreated = this.dateCreated
-    var usnatUuid = cm.usNatConsentData?.uuid
-    val ccpaCS = cm.ccpaConsentStatus
+    var usnatUuid = campaignManager.usNatConsentData?.uuid
+    val ccpaCS = campaignManager.ccpaConsentStatus
 
-    if (cm.spConfig.isIncluded(CampaignType.USNAT)) {
-        if (cm.authId != null &&
-            cm.spConfig.hasTransitionCCPAAuth()
+    if (campaignManager.spConfig.isIncluded(CampaignType.USNAT)) {
+        if (campaignManager.authId != null &&
+            campaignManager.spConfig.hasTransitionCCPAAuth()
         ) {
             transitionCCPAAuth = true
         } else if (ccpaCS != null &&
-            cm.usNatConsentData == null &&
+            campaignManager.usNatConsentData == null &&
             (ccpaCS.status == rejectedSome || ccpaCS.status == rejectedAll)
         ) {
             optedOut = true
