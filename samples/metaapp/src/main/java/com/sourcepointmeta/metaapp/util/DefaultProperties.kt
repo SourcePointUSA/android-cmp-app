@@ -344,6 +344,28 @@ val defaultProperty16 = Property(
     ccpaPmId = 930569L
 )
 
+val defaultProperty17 = Property(
+    propertyName = "automation-mobile-usnat2",
+    accountId = 22,
+    propertyId = 34336,
+    gdprPmId = 111L,
+    usnatPmId = 961819L,
+    ccpaPmId = 961815L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("automation-mobile-usnat2", CampaignType.GDPR, false),
+        StatusCampaign("automation-mobile-usnat2", CampaignType.CCPA, false),
+        StatusCampaign("automation-mobile-usnat2", CampaignType.USNAT, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    messageType = MessageType.MOBILE,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -360,6 +382,7 @@ val propList = listOf(
     defaultProperty14,
     defaultProperty15,
     defaultProperty16,
+    defaultProperty17,
 )
 val tvPropList = listOf(
     defaultProperty,
