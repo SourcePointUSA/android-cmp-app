@@ -62,7 +62,6 @@ internal class SpConsentLibImpl(
     companion object {
         fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaignList
-            if (campaignList.isEmpty()) return emptyList()
 
             val partition: Pair<List<CampaignMessage>, List<CampaignMessage>> = campaignList
                 .partition { it.message != null && it.url != null && it.messageMetaData?.subCategoryId != null }
@@ -71,6 +70,7 @@ internal class SpConsentLibImpl(
                 tag = "toCampaignModelList",
                 msg = "parsed campaigns${NL.t}${partition.second.size} Null messages${NL.t}${partition.first.size} Not Null message"
             )
+            if (campaignList.isEmpty()) return emptyList()
 
             return partition.first.map {
 

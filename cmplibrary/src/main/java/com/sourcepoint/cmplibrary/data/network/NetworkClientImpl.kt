@@ -101,7 +101,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getMetaData",
             url = url.toString(),
-            body = "",
+            body = param.stringify(),
             type = "GET"
         )
 

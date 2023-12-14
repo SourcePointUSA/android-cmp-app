@@ -233,7 +233,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -265,7 +266,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0,
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -307,7 +309,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0,
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,

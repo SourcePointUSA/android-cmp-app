@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
@@ -125,16 +126,17 @@ internal fun MessagesParamReq.toMetaDataParamReq(campaigns: List<CampaignReq>): 
 }
 
 internal fun MessagesParamReq.toConsentStatusParamReq(
-    gdprUuid: String?,
-    ccpaUuid: String?,
-    usNatUuid: String?,
-    localState: JsonElement?
+    campaignManager: CampaignManager
 ): ConsentStatusParamReq {
+
+    val gdprUuid = campaignManager.gdprUuid
+    val ccpaUuid = campaignManager.ccpaUuid ?: campaignManager.ccpaConsentStatus?.uuid
+    val localState = campaignManager.messagesOptimizedLocalState
 
     val mdArg = metadataArg?.copy(
         gdpr = metadataArg.gdpr?.copy(uuid = gdprUuid),
         ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid),
-        usNat = metadataArg.usNat?.copy(uuid = usNatUuid),
+        usNat = metadataArg.usNat?.createMetadataArg(campaignManager),
     )
 
     return ConsentStatusParamReq(

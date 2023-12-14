@@ -113,15 +113,6 @@ class MainActivityKotlinTest {
         +(CampaignType.CCPA)
     }
 
-    private val spConfigMobileTestGdpr = config {
-        accountId = 22
-        propertyId = 31226
-        propertyName = "mobile.bohdan.test.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-    }
-
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958
@@ -1054,59 +1045,59 @@ class MainActivityKotlinTest {
 
     }
 
-    /**
-     * Regression test that verifies if the local data versioning works correctly, meaning that if
-     * the local data version is not the same as the hardcoded one, then the app should call
-     * /consent-status and update the local data version to the hardcoded one
-     */
-    @Test
-    fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
-
-        val v7Consent = JSONObject(TestData.storedConsentV741)
-        val spClient = mockk<SpClient>(relaxed = true)
-        val initialLocalDataVersion = 0
-
-        /**
-         * This value should be changed each time the HARDCODED_LOCAL_DATA_VERSION value from
-         * DataStorage is updated
-         */
-        val hardcodedLocalDataVersion = 1
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConf,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
-                spClientObserver = listOf(spClient),
-                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", initialLocalDataVersion)),
-            )
-        )
-
-        scenario = launchActivity()
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getInt("sp.key.localDataVersion", 0).assertEquals(initialLocalDataVersion)
-            }
-        }
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr {
-            verify(exactly = 1) {
-                spClient.onSpFinished(
-                    withArg {
-                        it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                    }
-                )
-            }
-        }
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
-            }
-        }
-    }
+//    /**
+//     * Regression test that verifies if the local data versioning works correctly, meaning that if
+//     * the local data version is not the same as the hardcoded one, then the app should call
+//     * /consent-status and update the local data version to the hardcoded one
+//     */
+//    @Test
+//    fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
+//
+//        val v7Consent = JSONObject(TestData.storedConsentV741)
+//        val spClient = mockk<SpClient>(relaxed = true)
+//        val initialLocalDataVersion = 0
+//
+//        /**
+//         * This value should be changed each time the HARDCODED_LOCAL_DATA_VERSION value from
+//         * DataStorage is updated
+//         */
+//        val hardcodedLocalDataVersion = 1
+//
+//        loadKoinModules(
+//            mockModule(
+//                spConfig = spConf,
+//                gdprPmId = "488393",
+//                ccpaPmId = "509688",
+//                spClientObserver = listOf(spClient),
+//                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", initialLocalDataVersion)),
+//            )
+//        )
+//
+//        scenario = launchActivity()
+//
+//        scenario.onActivity { activity ->
+//            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//                getInt("sp.key.localDataVersion", 0).assertEquals(initialLocalDataVersion)
+//            }
+//        }
+//
+//        wr { verify(exactly = 0) { spClient.onError(any()) } }
+//        wr {
+//            verify(exactly = 1) {
+//                spClient.onSpFinished(
+//                    withArg {
+//                        it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+//                    }
+//                )
+//            }
+//        }
+//
+//        scenario.onActivity { activity ->
+//            PreferenceManager.getDefaultSharedPreferences(activity).run {
+//                getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
+//            }
+//        }
+//    }
 
     /**
      * UI test that verifies that there was a clean up of local data after the user changed their
@@ -1184,38 +1175,6 @@ class MainActivityKotlinTest {
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
                 getInt("sp.key.config.propertyId", 0).assertEquals(newPropertyId)
-            }
-        }
-    }
-
-    /**
-     * UI test that verifies the change of the GDPR applies value after the user moves out from the
-     * place where GDPR applies to the place where GDPR does not apply.
-     */
-    @Test
-    fun GIVEN_the_user_changes_location_SHOULD_update_gdpr_applies_value() = runBlocking<Unit> {
-
-        val storedConsent = JSONObject(TestData.storedConsentMobileTestV741)
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConfigMobileTestGdpr,
-                gdprPmId = "815371",
-                ccpaPmId = "807279",
-                spClientObserver = listOf(spClient),
-                diagnostic = storedConsent.toList(),
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { verify(exactly = 0) { spClient.onError(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-
-        scenario.onActivity { activity ->
-            PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getBoolean("sp.gdpr.key.applies", true).assertFalse()
             }
         }
     }

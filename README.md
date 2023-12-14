@@ -41,6 +41,7 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
+  - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
@@ -946,53 +947,42 @@ Google additional consent is supported in our mobile SDKs and is stored in the `
 
 ## Global Privacy Platform Multi-State Privacy (MSPS) Support for OTT
 
-Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+Starting with version 7.6.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. 
 
-- MspaCoveredTransaction: `NO`
-- MspaOptOutOptionMode: `NOT_APPLICABLE`
-- MspaServiceProviderMode: `NOT_APPLICABLE`
+## Transfer opt-in/opt out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy
 
-Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](<https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)>) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+When migrating a property from the U.S. Privacy (Legacy) campaign to U.S. Multi-State Privacy campaign, the SDK will automatically detect previously set end-user opt-in/opt-out preferences for U.S. Privacy (Legacy) and have that transferred over to U.S. Multi-State Privacy.
 
-Kotlin
+> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the *Sharing of Personal Information Targeted Advertisting* and *Sale of Personal Information* privacy choices or the *Sale or Share of Personal Information/Targeted Advertising* privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
+
+If you ever used authenticated consent for CCPA, you'll have to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration to transfer an end-user's opt-in/opt-out preferences. The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId. This way, the SDK will look for authenticated consent within CCPA profiles and carry that over to USNat, even if the user current doesn't have CCPA local data (on a fresh install, for example).
 
 ```kotlin
-class MainActivityKotlin : AppCompatActivity() {
-
-    private val sourcePointGppConfig = SpGppConfig(
-        coveredTransaction = SpGppOptionBinary.NO, // optional
-        optOutOptionMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
-        serviceProviderMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
-    )
-
-    private val spConsentLib by spConsentLibLazy {
-        // ...
-        config {
-            // ...
-            spGppConfig = sourcePointGppConfig
-            // ...
-        }
+private val spConsentLib by spConsentLibLazy {
+    activity = this@YourActivity
+    spClient = YourLocalClient()
+    config {
+        accountId = 22
+        propertyId = 39049
+        propertyName = "automation-mobile-usnat"
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
+        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
     }
 }
 ```
 
-Java
-
 ```java
-public class MainActivityJava extends AppCompatActivity {
-
-    private SpGppConfig sourcePointGppConfig = new SpGppConfig(
-            SpGppOptionBinary.NO,
-            SpGppOptionTernary.NOT_APPLICABLE,
-            SpGppOptionTernary.NOT_APPLICABLE
-    );
-
-    private final SpConfig spConfig = new SpConfigDataBuilder()
-            // ...
-            .addGppConfig(sourcePointGppConfig)
-            // ...
-            .build();
-}
+private final SpConfig spConfig = new SpConfigDataBuilder()
+        .addAccountId(22)
+        .addPropertyName("automation-mobile-usnat")
+        .addPropertyId(34049)
+        .addMessageLanguage(MessageLanguage.ENGLISH)
+        .addMessageTimeout(5000)
+        .addCampaignsEnv(CampaignsEnv.PUBLIC)
+        .addCampaign(new SpCampaign(CampaignType.USNAT, Collections.emptyList(), Set.of(ConfigOption.TRANSITION_CCPA_AUTH)))
+        .addCampaign(CampaignType.GDPR)
+        .build();
 ```
 
 ## Delete user data
