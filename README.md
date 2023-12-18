@@ -204,7 +204,7 @@ Meaning of the callbacks :
 - `onUIFinished`: the consent view should be removed;
 - `onNativeMessageReady`: the native message should be created;
 - `onConsentReady`: the client receives the saved consent;
-- `onError`: the client has access to the error details;
+- `onError`: the client has access to the error details. [See `onError` codes](#onerror-codes)
 - `onUIReady`: the consent view should be inflated;
 - `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields;
 - `onSpFinished`: there is nothing to process, all the work is done.
@@ -218,6 +218,20 @@ Some of the above callbacks work on the main thread while others are work on a w
 | `onConsentReady`       |                |
 | `onNativeMessageReady` |                |
 | `onUIFinished`         |                |
+
+### onError codes
+
+The `onError` callback can return the following responses:
+
+| **`onError` response**               | **Description**                             |
+| ------------------------------------ | ------------------------------------------- |
+| `InvalidArgumentException`           | Invalid config parameter used               |
+| `MissingPropertyException`           | The configuration is missing `propertyName` |
+| `InvalidConsentResponse`             | The stored consent record is not valid      |
+| `NoInternetConnectionException`      | Internet connection not detected            |
+| `ExecutionInTheWrongThreadException` | Method is being attempted in a wrong thread |
+| `RequestFailedException`             | Request failed due to a 4XX or 5XX error    |
+| `InvalidRequestException`            | Request is invalid                          |
 
 ## Loading the First Layer Message
 
@@ -262,8 +276,8 @@ Call `spConsentLib.loadPrivacyManager` to surface the Privacy Manager. There are
 - OTT: it presents a new layout and operates on TV devices,
 - LEGACY_OTT: it presents the legacy layout and operates on TV devices.
 
-As a default behavior, the type is determined based on the nature of the device on which your application is executed. 
-For example, if your application is running on a television, the selected type will be 'OTT,' whereas the 'MOBILE' 
+As a default behavior, the type is determined based on the nature of the device on which your application is executed.
+For example, if your application is running on a television, the selected type will be 'OTT,' whereas the 'MOBILE'
 type will be assigned in all other cases.
 
 Kotlin
@@ -925,11 +939,12 @@ Google additional consent is supported in our mobile SDKs and is stored in the `
 ## Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support
 
 Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+
 - MspaCoveredTransaction: `NO`
 - MspaOptOutOptionMode: `NOT_APPLICABLE`
 - MspaServiceProviderMode: `NOT_APPLICABLE`
 
-Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](<https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)>) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
 
 Kotlin
 
@@ -957,7 +972,7 @@ Java
 
 ```java
 public class MainActivityJava extends AppCompatActivity {
-    
+
     private SpGppConfig sourcePointGppConfig = new SpGppConfig(
             SpGppOptionBinary.NO,
             SpGppOptionTernary.NOT_APPLICABLE,
