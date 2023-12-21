@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.* //ktlint-disable
@@ -141,7 +142,6 @@ private class ServiceImpl(
                 return@executeOnWorkerThread
             }
 
-            // check whether the authId or propertyId changed, and handle the flow accordingly
             campaignManager.handleAuthIdOrPropertyIdChange(
                 newAuthId = messageReq.authId,
                 newPropertyId = spConfig.propertyId,
@@ -194,6 +194,7 @@ private class ServiceImpl(
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
                     campaignEnv = campaignManager.spConfig.campaignsEnv,
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -406,7 +407,8 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null, usNat = null,)
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null, usNat = null,),
+                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
             )
 
             getResp = networkClient.getChoice(getChoiceParamReq)
@@ -443,6 +445,7 @@ private class ServiceImpl(
             uuid = campaignManager.gdprConsentStatus?.uuid,
             sendPvData = dataStorage.gdprSamplingResult,
             pubData = consentAction.pubData.toJsonObject(),
+            includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
         )
 
         val postConsentParams = PostChoiceParamReq(
@@ -493,7 +496,8 @@ private class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null,)
+                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null,),
+                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
             )
 
             networkClient.getChoice(getChoiceParamReq)
@@ -524,6 +528,7 @@ private class ServiceImpl(
             uuid = campaignManager.ccpaConsentStatus?.uuid,
             sendPvData = dataStorage.ccpaSamplingResult,
             pubData = consentAction.pubData.toJsonObject(),
+            includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
         )
 
         val postConsentParams = PostChoiceParamReq(
@@ -581,6 +586,7 @@ private class ServiceImpl(
             sampleRate = dataStorage.usNatSamplingValue,
             uuid = campaignManager.usNatConsentData?.uuid,
             vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
+            includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.stringifyGppCustomOption())
         )
 
         val usNatPostChoiceParam = PostChoiceParamReq(

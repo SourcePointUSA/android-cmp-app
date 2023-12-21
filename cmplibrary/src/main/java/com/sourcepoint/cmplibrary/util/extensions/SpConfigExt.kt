@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.util.extensions
 
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.encodeToString
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
@@ -24,3 +25,7 @@ internal fun SpGppConfig?.toIncludeDataGppParam(): IncludeDataGppParam = Include
     optOutOptionMode = this?.optOutOptionMode?.type,
     serviceProviderMode = this?.serviceProviderMode?.type,
 )
+
+internal fun SpConfig.stringifyGppCustomOption() = spGppConfig
+    .toIncludeDataGppParam()
+    .encodeToString()

@@ -10,7 +10,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionBinary
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary
-import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary.*
+import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary.* // ktlint-disable
 import com.sourcepointmeta.metaapp.core.UIErrorCode
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.GPP
@@ -19,7 +19,7 @@ import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.util.check
-import kotlinx.android.synthetic.main.add_property_fragment.view.*
+import kotlinx.android.synthetic.main.add_property_fragment.view.* // ktlint-disable
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_ccpa
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_gdpr
 import kotlinx.android.synthetic.main.add_property_fragment.view.chip_usnat

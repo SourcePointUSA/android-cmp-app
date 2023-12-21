@@ -25,7 +25,7 @@ class IncludeDataKtTest {
 
     @Test
     fun `GIVEN an include object VERIFY that GPPData contains an object`() {
-        val param = IncludeDataGppParam("yes", "yes", "yes").buildGppParam()
+        val param = IncludeDataGppParam("yes", "yes", "yes").encodeToString()
         buildIncludeData(gppDataValue = param)["GPPData"].assertEquals(JsonPrimitive(param))
     }
 }

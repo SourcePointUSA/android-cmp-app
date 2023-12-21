@@ -19,7 +19,7 @@ internal data class IncludeDataGppParam(
     val serviceProviderMode: String? = null,
 )
 
-internal fun IncludeDataGppParam.buildGppParam() = JsonConverter.converter.encodeToString(this)
+internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)
 
 internal fun buildIncludeData(gppDataValue: String? = null) = buildJsonObject {
     putJsonObject("TCData") {

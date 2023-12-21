@@ -132,6 +132,18 @@ class AddUpdatePropertyFragment : Fragment() {
             viewModel.createOrUpdateProperty(add_property_layout.toProperty())
         }
 
+        gpp_switch.setOnCheckedChangeListener { _, isChecked ->
+            opt_out_option_radio_group.isEnabled = isChecked
+            service_provider_mode_radio_group.isEnabled = isChecked
+            opt_out_option_radio_na.isEnabled = isChecked
+            opt_out_option_radio_no.isEnabled = isChecked
+            opt_out_option_radio_yes.isEnabled = isChecked
+            service_provider_radio_na.isEnabled = isChecked
+            service_provider_radio_no.isEnabled = isChecked
+            service_provider_radio_yes.isEnabled = isChecked
+            gpp_field_coveredTransaction.isEnabled = isChecked
+        }
+
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StatePropertySaved -> propertySavedState()
