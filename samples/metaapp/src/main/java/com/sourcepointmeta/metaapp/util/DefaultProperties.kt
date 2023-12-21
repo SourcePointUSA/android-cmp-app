@@ -366,6 +366,28 @@ val defaultProperty17 = Property(
     messageType = MessageType.MOBILE,
 )
 
+val defaultProperty18 = Property(
+    propertyName = "usnat-vendoradditions",
+    accountId = 22,
+    propertyId = 34445,
+    gdprPmId = 111L,
+    usnatPmId = 969155L,
+    ccpaPmId = null,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("test-geo1", CampaignType.GDPR, false),
+        StatusCampaign("test-geo1", CampaignType.CCPA, false),
+        StatusCampaign("test-geo1", CampaignType.USNAT, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    messageType = MessageType.MOBILE,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -383,6 +405,7 @@ val propList = listOf(
     defaultProperty15,
     defaultProperty16,
     defaultProperty17,
+    defaultProperty18,
 )
 val tvPropList = listOf(
     defaultProperty,

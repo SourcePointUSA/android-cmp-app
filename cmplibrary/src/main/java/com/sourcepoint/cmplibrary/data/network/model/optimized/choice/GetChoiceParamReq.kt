@@ -1,9 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.choice
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataArg
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 internal data class GetChoiceParamReq(
@@ -12,7 +13,7 @@ internal data class GetChoiceParamReq(
     val metadataArg: MetaDataArg?,
     val propertyId: Long,
     val accountId: Long,
-    val includeData: IncludeData = IncludeData(),
+    val includeData: JsonObject = buildIncludeData(),
     val hasCsp: Boolean = true,
     val includeCustomVendorsRes: Boolean = false,
     val withSiteActions: Boolean = false,

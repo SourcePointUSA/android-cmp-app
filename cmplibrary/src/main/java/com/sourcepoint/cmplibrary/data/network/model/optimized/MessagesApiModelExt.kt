@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -19,25 +20,13 @@ internal fun getMessageBody(
     usNatConsentStatus: USNatConsentStatus?,
     consentLanguage: String?,
     campaignEnv: CampaignsEnv?,
-    os: OperatingSystemInfoParam = OperatingSystemInfoParam()
+    os: OperatingSystemInfoParam = OperatingSystemInfoParam(),
+    includeData: JsonObject = buildIncludeData(),
 ): JsonObject {
     return buildJsonObject {
         put("accountId", accountId)
         campaignEnv?.env?.let { put("campaignEnv", it) }
-        putJsonObject("includeData") {
-            putJsonObject("TCData") {
-                put("type", "RecordString")
-            }
-            putJsonObject("campaigns") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-            put("GPPData", true)
-            put("translateMessage", true)
-            put("categories", true)
-        }
+        put("includeData", includeData)
         put("propertyHref", "https://$propertyHref")
         put("hasCSP", true)
         put("campaigns", campaigns.toMetadataBody(gdprConsentStatus, ccpaConsentStatus, usNatConsentStatus))
