@@ -343,7 +343,8 @@ class HttpUrlManagerTest {
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
             authId = "user_auth_id",
-            localState = null
+            localState = null,
+            includeData = buildIncludeData(),
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
         sut.run {
@@ -386,7 +387,8 @@ class HttpUrlManagerTest {
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
             authId = null,
-            localState = null
+            localState = null,
+            includeData = buildIncludeData(),
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
         sut.run {
@@ -429,7 +431,8 @@ class HttpUrlManagerTest {
             ccpaConsentStatus = null,
             consentLanguage = "ES",
             campaignEnv = CampaignsEnv.STAGE,
-            usNatConsentStatus = null
+            usNatConsentStatus = null,
+            includeData = buildIncludeData(),
         )
 
         val param = MessagesParamReq(

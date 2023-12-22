@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 data class SpGppConfig(
-    val coveredTransaction: SpGppOptionBinary? = null,
-    val optOutOptionMode: SpGppOptionTernary? = null,
-    val serviceProviderMode: SpGppOptionTernary? = null,
+    val coveredTransaction: SpGppOptionBinary?,
+    val optOutOptionMode: SpGppOptionTernary?,
+    val serviceProviderMode: SpGppOptionTernary?,
 )
 
 enum class SpGppOptionBinary(

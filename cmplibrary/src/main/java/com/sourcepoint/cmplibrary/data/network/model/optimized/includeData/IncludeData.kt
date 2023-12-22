@@ -5,9 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonObject
+import kotlinx.serialization.json.* //ktlint-disable
 
 @Serializable
 internal data class IncludeDataGppParam(
@@ -21,7 +19,7 @@ internal data class IncludeDataGppParam(
 
 internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)
 
-internal fun buildIncludeData(gppDataValue: String? = null) = buildJsonObject {
+internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObject {
     putJsonObject("TCData") {
         put("type", "RecordString")
     }
@@ -31,7 +29,7 @@ internal fun buildIncludeData(gppDataValue: String? = null) = buildJsonObject {
     putJsonObject("webConsentPayload") {
         put("type", "RecordString")
     }
-    put("GPPData", gppDataValue ?: true.toString())
+    put("GPPData", gppDataValue ?: JsonPrimitive(true))
     put("translateMessage", true)
     put("categories", true)
 }
