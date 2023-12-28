@@ -507,11 +507,28 @@ internal class SpConsentLibImpl(
 
     private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
 
-    override fun verifyHome(ottDelegate: OttDelegate) {
-        if (viewManager.isViewInLayout.not())
-            ottDelegate.onHomePage()
-        else
-            viewManager.onBackPressed()
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using functional interface.
+     *
+     * Applicable for Java and Kotlin implementations.
+     *
+     * @param ottDelegate - functional interface that provides the mechanism to override onBackPress
+     */
+    override fun verifyHome(ottDelegate: SpBackPressOttDelegate) = verifyHome {
+        ottDelegate.onHomePage()
+    }
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using lambda.
+     *
+     * Applicable for Kotlin implementation.
+     *
+     * @param onHomePage - lambda that provides the mechanism to override onBackPress
+     */
+    override fun verifyHome(onHomePage: () -> Unit) {
+        if (viewManager.isViewInLayout) viewManager.onBackPressed() else onHomePage()
     }
 
     /** Start Receiver methods */
