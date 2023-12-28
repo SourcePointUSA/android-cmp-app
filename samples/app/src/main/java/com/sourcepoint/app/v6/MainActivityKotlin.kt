@@ -127,6 +127,10 @@ class MainActivityKotlin : AppCompatActivity() {
         Log.i(TAG, "onDestroy: disposed")
     }
 
+    override fun onBackPressed() {
+        spConsentLib.verifyHome { super.onBackPressed() }
+    }
+
     internal inner class LocalClient : SpClient {
 
         override fun onNativeMessageReady(

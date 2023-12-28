@@ -1,4 +1,5 @@
 package com.sourcepoint.cmplibrary.util
-interface OttDelegate {
+
+interface SpBackPressOttDelegate {
     fun onHomePage()
 }

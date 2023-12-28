@@ -105,11 +105,16 @@ private class ViewsManagerImpl(
                 }
             }
         }
+        webview = null
         idsSet.clear()
     }
 
     override fun removeAllViewsExcept(pView: View) {
         val idsList = idsSet.toMutableList()
+        if (webview != null && webview is ConsentWebView && pView != webview) {
+            this.removeView(webview as ConsentWebView)
+            webview = null
+        }
         idsList.forEach { id ->
             mainView?.findViewById<View>(id)?.let { view ->
                 if (pView != view) {

@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.util.OttDelegate
+import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import org.json.JSONObject
 
 interface SpConsentLib {
@@ -81,5 +81,23 @@ interface SpConsentLib {
 
     fun dispose()
 
-    fun verifyHome(ottDelegate: OttDelegate)
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using functional interface.
+     *
+     * Applicable for Java and Kotlin implementations.
+     *
+     * @param ottDelegate functional interface that provides the mechanism to override onBackPress
+     */
+    fun verifyHome(ottDelegate: SpBackPressOttDelegate)
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using lambda.
+     *
+     * Applicable for Kotlin implementation.
+     *
+     * @param onHomePage lambda that provides the mechanism to override onBackPress
+     */
+    fun verifyHome(onHomePage: () -> Unit)
 }

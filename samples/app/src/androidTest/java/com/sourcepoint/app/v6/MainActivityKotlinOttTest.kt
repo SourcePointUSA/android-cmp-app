@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -19,6 +20,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -42,6 +44,14 @@ class MainActivityKotlinOttTest {
         propertyName = "ott.test.suite"
         propertyId = 22231
         campaignsEnv = CampaignsEnv.PUBLIC
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
+    }
+
+    private val spNewWebPmConfig = config {
+        accountId = 22
+        propertyId = 27927
+        propertyName = "sca-ott-newwebpm"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
     }
@@ -144,4 +154,47 @@ class MainActivityKotlinOttTest {
 
     }
 
+    @Test
+    fun GIVEN_user_clicks_back_button_in_message_SHOULD_return_to_the_previous_screen_and_not_close_the_activity() = runBlocking {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spNewWebPmConfig,
+                gdprPmId = "898241",
+                messageType = MessageType.OTT,
+                spClientObserver = listOf(spClient),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            // verify that proper FLM appears
+            checkWebViewHasText("Privacy")
+            checkWebViewHasText("Manage Preferences")
+
+            // click manage preferences and verify if it opens up
+            performClickOnLabelWebViewByContent("Manage Preferences")
+            checkWebViewHasText("Manage Preferences")
+            checkWebViewHasText("Home")
+
+            // press system's back button
+            device.pressBack()
+
+            // verify that the web view returned to the home page
+            checkWebViewHasText("Privacy")
+            checkWebViewHasText("Manage Preferences")
+
+            // press system's back button again on home page
+            device.pressBack()
+
+            // assert that web view is still present and activity was not destroyed
+            checkWebViewHasText("Privacy")
+            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
+        }
+
+        // TODO not sure about this implementation...
+    }
 }
