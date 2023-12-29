@@ -172,26 +172,26 @@ class MainActivityKotlinOttTest {
 
         wr {
             // verify that proper FLM appears
-            checkWebViewHasText("Privacy")
-            checkWebViewHasText("Manage Preferences")
+            checkWebViewContains("Privacy")
+            checkWebViewContains("Manage Preferences")
 
             // click manage preferences and verify if it opens up
             performClickOnLabelWebViewByContent("Manage Preferences")
-            checkWebViewHasText("Manage Preferences")
-            checkWebViewHasText("Home")
+            checkWebViewContains("Manage Preferences")
+            checkWebViewContains("Home")
 
             // press system's back button
             device.pressBack()
 
             // verify that the web view returned to the home page
-            checkWebViewHasText("Privacy")
-            checkWebViewHasText("Manage Preferences")
+            checkWebViewContains("Privacy")
+            checkWebViewContains("Manage Preferences")
 
             // press system's back button again on home page
             device.pressBack()
 
             // assert that web view is still present and activity was not destroyed
-            checkWebViewHasText("Privacy")
+            checkWebViewContains("Privacy")
             scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
         }
 

@@ -211,6 +211,17 @@ fun checkWebViewHasText(text: String) {
 }
 
 @Throws(Throwable::class)
+fun checkWebViewContains(text: String) {
+    onWebView()
+        .check(
+            webMatches(
+                getText(),
+                containsString(text)
+            )
+        )
+}
+
+@Throws(Throwable::class)
 fun checkElementWithText(id: String, expected: String) {
     onWebView()
             .withElement(findElement(Locator.ID, id))
