@@ -113,7 +113,6 @@ interface UsNatConsent {
     val dateCreated: String?
     val uuid: String?
     val webConsentPayload: JsonObject?
-    val url: String?
 }
 
 internal data class UsNatConsentInternal(
@@ -124,7 +123,7 @@ internal data class UsNatConsentInternal(
     override val dateCreated: String? = null,
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
-    override val url: String? = null,
+    val url: String? = null,
 ) : UsNatConsent
 
 internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
@@ -219,7 +218,6 @@ internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
         put("consentStrings", consentStrings?.toJsonObjectList())
         put("dateCreated", dateCreated)
         put("uuid", uuid)
-        put("url", url)
     }
 }
 
