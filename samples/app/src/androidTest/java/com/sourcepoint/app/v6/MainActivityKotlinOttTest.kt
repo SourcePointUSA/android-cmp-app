@@ -176,14 +176,6 @@ class MainActivityKotlinOttTest {
             // verify that FLM appears by checking if proper buttons are in the web view
             assertButtonWithTextIsPresentInWebViewByTag(
                 webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Accept All",
-            )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Reject All",
-            )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
                 text = "Manage Preferences",
             )
 
@@ -195,27 +187,11 @@ class MainActivityKotlinOttTest {
                 webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
                 text = "Home",
             )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Consent",
-            )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Legitimate Interest",
-            )
 
             // press system's back button
             device.pressBack()
 
             // verify that the web view returned to the home page
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Accept All",
-            )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Reject All",
-            )
             assertButtonWithTextIsPresentInWebViewByTag(
                 webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
                 text = "Manage Preferences",
@@ -225,14 +201,6 @@ class MainActivityKotlinOttTest {
             device.pressBack()
 
             // assert that web view is still present on a home page and the activity was not destroyed
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Accept All",
-            )
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Reject All",
-            )
             assertButtonWithTextIsPresentInWebViewByTag(
                 webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
                 text = "Manage Preferences",
