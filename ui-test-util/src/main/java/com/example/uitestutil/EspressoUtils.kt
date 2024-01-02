@@ -253,7 +253,7 @@ fun assertButtonWithTextIsPresentInWebViewByTag(
 ) {
     onWebView(withTagValue(CoreMatchers.equalTo(webViewTag)))
         .withElement(findElement(Locator.CSS_SELECTOR, "button"))
-        .check(webMatches(getAttribute("innerText"), containsString(text)))
+        .check(webMatches(getText(), containsString(text)))
 }
 
 @Throws(Throwable::class)
