@@ -4,9 +4,6 @@ import android.preference.PreferenceManager
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
-import androidx.test.espresso.web.assertion.WebViewAssertions
-import androidx.test.espresso.web.sugar.Web
-import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -23,9 +20,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.core.StringContains
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +28,8 @@ import org.koin.core.context.loadKoinModules
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOttTest {
+
+    private val CONSENT_WEB_VIEW_TAG_NAME = "consent-web-view"
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
@@ -176,30 +173,71 @@ class MainActivityKotlinOttTest {
 
         wr {
 
-            clickOnButtonByTextOnWebViewByTag(tag = "TESTTAG", "Manage Preferences")
+            // verify that FLM appears by checking if proper buttons are in the web view
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Accept All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Reject All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Manage Preferences",
+            )
 
-//            // verify that proper FLM appears
-//            checkWebViewContains("Privacy")
-//            checkWebViewContains("Manage Preferences")
-//
-//            // click manage preferences and verify if it opens up
-//            performClickOnLabelWebViewByContent("Manage Preferences")
-//            checkWebViewContains("Manage Preferences")
-//            checkWebViewContains("Home")
-//
-//            // press system's back button
-//            device.pressBack()
-//
-//            // verify that the web view returned to the home page
-//            checkWebViewContains("Privacy")
-//            checkWebViewContains("Manage Preferences")
-//
-//            // press system's back button again on home page
-//            device.pressBack()
-//
-//            // assert that web view is still present and activity was not destroyed
-//            checkWebViewContains("Privacy")
-//            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
+            // click manage preferences and verify if it opens up
+            performClickOnLabelWebViewByContent(
+                text = "Manage Preferences",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Home",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Consent",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Legitimate Interest",
+            )
+
+            // press system's back button
+            device.pressBack()
+
+            // verify that the web view returned to the home page
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Accept All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Reject All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Manage Preferences",
+            )
+
+            // press system's back button again on home page
+            device.pressBack()
+
+            // assert that web view is still present on a home page and the activity was not destroyed
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Accept All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Reject All",
+            )
+            assertButtonWithTextIsPresentInWebViewByTag(
+                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
+                text = "Manage Preferences",
+            )
+            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
         }
 
         // TODO not sure about this implementation...
