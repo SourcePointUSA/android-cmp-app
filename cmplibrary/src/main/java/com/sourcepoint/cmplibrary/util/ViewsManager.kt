@@ -147,7 +147,6 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
-                newWebView.tag = "TESTTAG"
                 this.webview = newWebView
                 newWebView
             }
@@ -174,7 +173,6 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
-                newWebView.tag = "TESTTAG"
                 this.webview = newWebView
                 newWebView
             }
