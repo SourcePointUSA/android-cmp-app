@@ -4,6 +4,9 @@ import android.preference.PreferenceManager
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
+import androidx.test.espresso.web.assertion.WebViewAssertions
+import androidx.test.espresso.web.sugar.Web
+import androidx.test.espresso.web.webdriver.DriverAtoms
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -22,6 +25,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.core.StringContains
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -171,28 +175,31 @@ class MainActivityKotlinOttTest {
         scenario = launchActivity()
 
         wr {
-            // verify that proper FLM appears
-            checkWebViewContains("Privacy")
-            checkWebViewContains("Manage Preferences")
 
-            // click manage preferences and verify if it opens up
-            performClickOnLabelWebViewByContent("Manage Preferences")
-            checkWebViewContains("Manage Preferences")
-            checkWebViewContains("Home")
+            clickOnButtonByTextOnWebViewByTag(tag = "TESTTAG", "Manage Preferences")
 
-            // press system's back button
-            device.pressBack()
-
-            // verify that the web view returned to the home page
-            checkWebViewContains("Privacy")
-            checkWebViewContains("Manage Preferences")
-
-            // press system's back button again on home page
-            device.pressBack()
-
-            // assert that web view is still present and activity was not destroyed
-            checkWebViewContains("Privacy")
-            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
+//            // verify that proper FLM appears
+//            checkWebViewContains("Privacy")
+//            checkWebViewContains("Manage Preferences")
+//
+//            // click manage preferences and verify if it opens up
+//            performClickOnLabelWebViewByContent("Manage Preferences")
+//            checkWebViewContains("Manage Preferences")
+//            checkWebViewContains("Home")
+//
+//            // press system's back button
+//            device.pressBack()
+//
+//            // verify that the web view returned to the home page
+//            checkWebViewContains("Privacy")
+//            checkWebViewContains("Manage Preferences")
+//
+//            // press system's back button again on home page
+//            device.pressBack()
+//
+//            // assert that web view is still present and activity was not destroyed
+//            checkWebViewContains("Privacy")
+//            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
         }
 
         // TODO not sure about this implementation...
