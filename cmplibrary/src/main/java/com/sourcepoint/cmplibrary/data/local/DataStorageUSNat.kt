@@ -88,12 +88,17 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
         }
 
     override fun deleteUsNatConsent() {
+
+        val gppKeysList = preference.all
+            .filter { entry -> entry.key.startsWith(DataStorageCcpa.KEY_IABGPP_PREFIX) }.keys
+
         preference.edit()
             .apply {
                 remove(USNAT_CONSENT_STATUS)
                 remove(KEY_USNAT_CHILD_PM_ID)
                 remove(USNAT_SAMPLING_RESULT)
                 remove(USNAT_SAMPLING_VALUE)
+                gppKeysList.forEach { gppKey -> remove(gppKey) }
             }
             .apply()
     }
