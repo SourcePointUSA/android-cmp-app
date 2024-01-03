@@ -57,6 +57,7 @@ android {
             buildConfigField("String", "SDK_ENV", "\"PROD\"")
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
+            consumerProguardFiles("cmp-consumer-proguard-rules.pro")
         }
     }
 
