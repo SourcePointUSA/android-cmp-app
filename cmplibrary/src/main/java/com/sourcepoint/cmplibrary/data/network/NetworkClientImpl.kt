@@ -162,7 +162,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(
-            tag = "savePvData - ${param.campaignType.name}",
+            tag = "PvDataRequest - ${param.campaignType.name}",
             url = url.toString(),
             body = jsonBody,
             type = "POST"
