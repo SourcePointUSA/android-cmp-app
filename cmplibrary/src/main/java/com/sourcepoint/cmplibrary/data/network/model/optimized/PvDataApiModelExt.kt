@@ -36,6 +36,7 @@ internal fun toPvDataBody(
                     put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
                     put("prtnUUID", gdprMessageMetaData?.prtnUUID)
                     put("sampleRate", metaDataResp?.gdpr?.sampleRate ?: DEFAULT_SAMPLE_RATE)
+                    put("pubData", pubData)
                 }
             )
         }
