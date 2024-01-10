@@ -24,9 +24,10 @@ internal fun SpGppConfig?.toIncludeDataGppParam(): IncludeDataGppParam = Include
     serviceProviderMode = this?.serviceProviderMode?.type,
 )
 
-internal fun SpConfig.getGppCustomOption(): JsonElement? = when(isIncluded(CCPA)){
+internal fun SpConfig.getGppCustomOption(): JsonElement? = when (isIncluded(CCPA)) {
     false -> null
-    true -> spGppConfig
-        ?.toIncludeDataGppParam()
-        ?.let { Json.encodeToJsonElement(it) }
+    true ->
+        spGppConfig
+            ?.toIncludeDataGppParam()
+            ?.let { Json.encodeToJsonElement(it) }
 }
