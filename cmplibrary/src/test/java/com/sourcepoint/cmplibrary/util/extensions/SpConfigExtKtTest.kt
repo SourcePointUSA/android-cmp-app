@@ -11,15 +11,25 @@ import org.junit.Test
 
 class SpConfigExtKtTest {
 
-    private val ccpaCamapign = SpCampaign(
+    private val ccpaCampaign = SpCampaign(
         CampaignType.CCPA,
+        listOf(TargetingParam("location", "EU"))
+    )
+
+    private val gdprCampaign = SpCampaign(
+        CampaignType.GDPR,
+        listOf(TargetingParam("location", "EU"))
+    )
+
+    private val usnatCampaign = SpCampaign(
+        CampaignType.GDPR,
         listOf(TargetingParam("location", "EU"))
     )
 
     private val spConfig = SpConfig(
         22,
         "carm.uw.con",
-        listOf(ccpaCamapign),
+        listOf(ccpaCampaign),
         MessageLanguage.ENGLISH,
         propertyId = 1234,
         messageTimeout = 3000,
@@ -33,5 +43,19 @@ class SpConfigExtKtTest {
     @Test
     fun `GIVEN a spConfig without GPP custom config CHECK that getGppCustomOption return null`() {
         spConfig.getGppCustomOption().assertNull()
+    }
+
+    @Test
+    fun `GIVEN a gdpr spConfig without CCPA CHECK that getGppCustomOption return null`() {
+        spConfig
+            .copy(campaigns = listOf(gdprCampaign), spGppConfig = SpGppConfig(NO, YES, YES))
+            .getGppCustomOption().assertNull()
+    }
+
+    @Test
+    fun `GIVEN a usnat spConfig CHECK that getGppCustomOption return null`() {
+        spConfig
+            .copy(campaigns = listOf(usnatCampaign), spGppConfig = SpGppConfig(NO, YES, YES))
+            .getGppCustomOption().assertNull()
     }
 }
