@@ -3,9 +3,9 @@ package com.sourcepoint.app.v6
 object TestData {
 
     val CONSENT_LIST_2 = listOf(
-        "Store and/or access information on a device cookies",
-        "Use limited data to select advertising cookies",
-        "Create profiles for personalised advertising cookies",
+        "Store and/or access information on a device",
+        "Use limited data to select advertising",
+        "Create profiles for personalised advertising",
 //        "Select personalised ads",
 //        "Measure ad performance",
 //        "Measure content performance",
@@ -15,9 +15,9 @@ object TestData {
     )
 
     val GDPR_CONSENT_LIST_2 = listOf(
-        "Store and/or access information on a device cookies",
-        "Use limited data to select advertising cookies",
-        "Create profiles for personalised advertising cookies",
+        "Store and/or access information on a device",
+        "Use limited data to select advertising",
+        "Create profiles for personalised advertising",
 //        "Select personalised ads",
 //        "Measure ad performance",
 //        "Measure content performance",
@@ -27,11 +27,11 @@ object TestData {
     )
 
     val PM_CONSENT_LIST = listOf(
-        "Store and/or access information on a device cookies",
-        "Use limited data to select advertising cookies",
-        "Create profiles for personalised advertising cookies",
-        "Understand audiences through statistics or combinations of data from different sources cookies",
-        "Our Custom Purpose cookies",
+        "Store and/or access information on a device",
+        "Use limited data to select advertising",
+        "Create profiles for personalised advertising",
+        "Understand audiences through statistics or combinations of data from different sources",
+        "Our Custom Purpose",
     )
 
     val VENDORS_LIST = listOf(
