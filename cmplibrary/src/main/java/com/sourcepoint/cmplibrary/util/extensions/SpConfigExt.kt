@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.util.extensions
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
 import kotlinx.serialization.json.Json
@@ -23,6 +24,9 @@ internal fun SpGppConfig?.toIncludeDataGppParam(): IncludeDataGppParam = Include
     serviceProviderMode = this?.serviceProviderMode?.type,
 )
 
-internal fun SpConfig.getGppCustomOption(): JsonElement? = spGppConfig
-    ?.toIncludeDataGppParam()
-    ?.let { Json.encodeToJsonElement(it) }
+internal fun SpConfig.getGppCustomOption(): JsonElement? = when(isIncluded(CCPA)){
+    false -> null
+    true -> spGppConfig
+        ?.toIncludeDataGppParam()
+        ?.let { Json.encodeToJsonElement(it) }
+}
