@@ -226,9 +226,7 @@ private class ServiceImpl(
                                         url = usNat.url,
                                         type = usNat.type
                                     )
-                                } ?: kotlin.run {
-                                campaignManager.usNatConsentData = usNat
-                            }
+                                } ?: kotlin.run { campaignManager.usNatConsentData = usNat }
                         }
                         campaignManager.also { _ ->
                             messagesOptimizedLocalState = it.localState
