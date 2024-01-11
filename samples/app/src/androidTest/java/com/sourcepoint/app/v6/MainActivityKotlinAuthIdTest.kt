@@ -83,6 +83,15 @@ class MainActivityKotlinAuthIdTest {
         +(CampaignType.CCPA)
     }
 
+    private val spConfUSNAT = config {
+        accountId = 22
+        propertyId = 16893
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.USNAT)
+    }
+
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958

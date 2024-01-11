@@ -15,7 +15,8 @@ internal fun postChoiceGdprBody(
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
-    uuid: String? = null
+    uuid: String? = null,
+    includeData: JsonObject,
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", it) }
@@ -29,17 +30,7 @@ internal fun postChoiceGdprBody(
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
         put("vendorListId", vendorListId)
-        putJsonObject("includeData") {
-            putJsonObject("TCData") {
-                put("type", "RecordString")
-            }
-            putJsonObject("localState") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
+        put("includeData", includeData)
     }
 }
 
@@ -51,7 +42,8 @@ internal fun postChoiceCcpaBody(
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
-    uuid: String? = null
+    uuid: String? = null,
+    includeData: JsonObject,
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", pubData) }
@@ -62,17 +54,7 @@ internal fun postChoiceCcpaBody(
         put("authId", authid)
         put("uuid", uuid)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
-        putJsonObject("includeData") {
-            put("GPPData", true)
-            put("translateMessage", true)
-            put("categories", true)
-            putJsonObject("localState") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
+        put("includeData", includeData)
     }
 }
 
@@ -86,6 +68,8 @@ internal fun postChoiceUsNatBody(
     sampleRate: Double,
     uuid: String? = null,
     vendorListId: String?,
+    includeData: JsonObject,
+    authId: String? = null,
 ): JsonObject = buildJsonObject {
     put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
     messageId?.let { put("messageId", it) }
@@ -96,18 +80,6 @@ internal fun postChoiceUsNatBody(
     put("sampleRate", sampleRate)
     uuid?.let { put("uuid", it) }
     put("vendorListId", vendorListId)
-    putJsonObject("includeData") {
-        put("GPPData", true)
-        put("translateMessage", true)
-        put("categories", true)
-        putJsonObject("TCData") {
-            put("type", "RecordString")
-        }
-        putJsonObject("localState") {
-            put("type", "RecordString")
-        }
-        putJsonObject("webConsentPayload") {
-            put("type", "RecordString")
-        }
-    }
+    put("includeData", includeData)
+    put("authId", authId)
 }

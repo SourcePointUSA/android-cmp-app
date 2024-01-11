@@ -85,6 +85,14 @@ class MainActivityKotlinTest {
         +(CampaignType.GDPR)
     }
 
+    private val spConfUsnat = config {
+        accountId = 22
+        propertyId = 16893
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.USNAT)
+    }
+
     private val spConfGdprNoMessage = config {
         accountId = 22
         propertyId = 29498

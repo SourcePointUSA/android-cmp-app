@@ -195,7 +195,6 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             return if (result.isEmpty()) null else result
         }
         set(value) {
-            clearGppData()
             val editor = preference.edit()
             value?.forEach { entry ->
                 val primitive = entry.value as? JsonPrimitive

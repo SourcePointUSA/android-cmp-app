@@ -26,7 +26,7 @@ internal fun toPvDataBody(
                 "gdpr",
                 buildJsonObject {
                     put("uuid", cs.uuid)
-                    put("euconsent", cs.uuid)
+                    put("euconsent", cs.euconsent)
                     put("accountId", accountId)
                     put("applies", metaDataResp?.gdpr?.applies)
                     put("siteId", propertyId)
@@ -36,6 +36,7 @@ internal fun toPvDataBody(
                     put("subCategoryId", gdprMessageMetaData?.subCategoryId?.code)
                     put("prtnUUID", gdprMessageMetaData?.prtnUUID)
                     put("sampleRate", metaDataResp?.gdpr?.sampleRate ?: DEFAULT_SAMPLE_RATE)
+                    put("pubData", pubData)
                 }
             )
         }
@@ -64,7 +65,7 @@ internal fun toPvDataBody(
                     put("applies", metaDataResp?.usNat?.applies)
                     put("siteId", propertyId)
                     cs.consentStatus?.let { put("consentStatus", JsonConverter.converter.encodeToJsonElement(it)) }
-                    put("messageId", usNatCS?.messageMetaData?.messageId)
+                    put("messageId", usNatCS.messageMetaData?.messageId)
                     put("uuid", cs.uuid)
                     put("sampleRate", metaDataResp?.usNat?.sampleRate ?: DEFAULT_SAMPLE_RATE)
                     put("pubData", pubData)

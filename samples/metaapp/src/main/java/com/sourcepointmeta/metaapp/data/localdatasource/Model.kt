@@ -4,6 +4,8 @@ import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionBinary
+import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary
 import comsourcepointmetametaappdb.* // ktlint-disable
 import java.util.* // ktlint-disable
 
@@ -30,6 +32,7 @@ data class Property(
     val useCcpaGroupPmIfAvailable: Boolean = false,
     val messageType: MessageType = MessageType.MOBILE,
     val ccpaPmId: Long? = null,
+    val gpp: GPP? = null,
 )
 
 data class MetaTargetingParam(
@@ -37,6 +40,13 @@ data class MetaTargetingParam(
     val campaign: CampaignType,
     val key: String,
     val value: String
+)
+
+data class GPP(
+    val propertyName: String,
+    val serviceProviderMode: SpGppOptionTernary?,
+    val coveredTransaction: SpGppOptionBinary?,
+    val optOutOptionMode: SpGppOptionTernary?,
 )
 
 data class StatusCampaign(
@@ -77,7 +87,7 @@ fun Targeting_param.toTargetingParam() = MetaTargetingParam(
     campaign = CampaignType.values().find { it.name == campaign } ?: CampaignType.GDPR
 )
 
-fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>) = Property(
+fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<StatusCampaign>, gpp: GPP?) = Property(
     propertyName = property_name,
     accountId = account_id,
     gdprPmId = gdpr_pm_id,
@@ -97,6 +107,7 @@ fun Property_.toProperty(tp: List<MetaTargetingParam>, statusCampaign: Set<Statu
     messageType = MessageType.values().find { it.name == message_type } ?: MessageType.MOBILE,
     ccpaPmId = ccpa_pm_id,
     ccpa2usnat = ccpa_to_usnat != 0L,
+    gpp = gpp,
 )
 
 fun CampaignQueries.getTargetingParams(propName: String) =
@@ -106,6 +117,13 @@ fun Status_campaign.toStatusCampaign() = StatusCampaign(
     propertyName = property_name,
     campaignType = CampaignType.valueOf(campaign_type),
     enabled = enabled != 0L
+)
+
+fun Gpp.toGpp() = GPP(
+    propertyName = property_name,
+    serviceProviderMode = SpGppOptionTernary.values().find { it.type == service_provider_mode },
+    coveredTransaction = SpGppOptionBinary.values().find { it.type == covered_transaction },
+    optOutOptionMode = SpGppOptionTernary.values().find { it.type == opt_out_option_mode },
 )
 
 fun Boolean.toValueDB() = when (this) {

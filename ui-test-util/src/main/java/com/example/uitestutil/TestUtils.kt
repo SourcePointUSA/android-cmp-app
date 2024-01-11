@@ -88,7 +88,7 @@ sealed class TestRes {
 }
 
 fun Boolean.assertTrue() = Assert.assertTrue(this)
-fun Boolean.assertFalse() = Assert.assertFalse(false)
+fun Boolean.assertFalse() = Assert.assertFalse(this)
 fun <T : Any?> T.assertNull() = Assert.assertNull(this)
 infix fun <T> T.assertEquals(t: T) = apply { Assert.assertEquals(t, this) }
 infix fun <T> T.assertNotEquals(t: T) = apply { Assert.assertNotEquals(t, this) }

@@ -366,6 +366,50 @@ val defaultProperty17 = Property(
     messageType = MessageType.MOBILE,
 )
 
+val defaultProperty18 = Property(
+    propertyName = "usnat-vendoradditions",
+    accountId = 22,
+    propertyId = 34445,
+    gdprPmId = 111L,
+    usnatPmId = 969155L,
+    ccpaPmId = null,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("usnat-vendoradditions", CampaignType.GDPR, false),
+        StatusCampaign("usnat-vendoradditions", CampaignType.CCPA, false),
+        StatusCampaign("usnat-vendoradditions", CampaignType.USNAT, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    messageType = MessageType.MOBILE,
+)
+
+val defaultProperty19 = Property(
+    propertyName = "android.test",
+    accountId = 22,
+    propertyId = 34597,
+    gdprPmId = 990447L,
+    usnatPmId = 984467L,
+    ccpaPmId = 984469L,
+    is_staging = false,
+    targetingParameters = emptyList(),
+    timeout = 3000,
+    authId = null,
+    messageLanguage = "ENGLISH",
+    pmTab = "DEFAULT",
+    statusCampaignSet = setOf(
+        StatusCampaign("android.test", CampaignType.GDPR, false),
+        StatusCampaign("android.test", CampaignType.CCPA, true),
+        StatusCampaign("android.test", CampaignType.USNAT, true),
+    ),
+    campaignsEnv = CampaignsEnv.PUBLIC,
+    messageType = MessageType.MOBILE,
+)
+
 val propList = listOf(
     defaultProperty1,
     defaultProperty2,
@@ -383,6 +427,8 @@ val propList = listOf(
     defaultProperty15,
     defaultProperty16,
     defaultProperty17,
+    defaultProperty18,
+    defaultProperty19,
 )
 val tvPropList = listOf(
     defaultProperty,

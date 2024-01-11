@@ -4,7 +4,6 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -24,7 +23,7 @@ internal data class ConsentStatusParamReq(
     @SerialName("accountId") val accountId: Long,
     @SerialName("authId") val authId: String?,
     @SerialName("localState") val localState: JsonElement?,
-    @SerialName("includeData") val includeData: IncludeData = IncludeData(),
+    @SerialName("includeData") val includeData: JsonObject,
 )
 
 enum class GranularState {

@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusPara
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.encodeToString
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
@@ -213,7 +212,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeData", param.includeData.encodeToString())
+            .addQueryParameter("includeData", param.includeData.toString())
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .addQueryParameter("scriptType", scriptType)

@@ -5,34 +5,31 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.* //ktlint-disable
 
 @Serializable
-internal data class IncludeData(
-    @SerialName("localState")
-    val localState: IncludeDataParam? = null,
-    @SerialName("TCData")
-    val tcData: IncludeDataParam = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
-    @SerialName("campaigns")
-    val campaigns: IncludeDataParam? = null,
-    @SerialName("customVendorsResponse")
-    val customVendorsResponse: IncludeDataParam? = null,
-    @SerialName("messageMetaData")
-    val messageMetaData: IncludeDataParam? = null,
-    @SerialName("webConsentPayload")
-    val webConsentPayload: IncludeDataParam = IncludeDataParam(IncludeDataParamType.RECORD_STRING.type),
-    @SerialName("GPPData")
-    val gppData: Boolean = true,
-    @SerialName("translateMessage")
-    val translateMessage: Boolean = true,
-    @SerialName("categories")
-    val categories: Boolean = true,
+internal data class IncludeDataGppParam(
+    @SerialName("MspaCoveredTransaction")
+    val coveredTransaction: String? = null,
+    @SerialName("MspaOptOutOptionMode")
+    val optOutOptionMode: String? = null,
+    @SerialName("MspaServiceProviderMode")
+    val serviceProviderMode: String? = null,
 )
 
-internal fun IncludeData.encodeToString() = JsonConverter.converter.encodeToString(this)
+internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)
 
-enum class IncludeDataParamType(
-    val type: String,
-) {
-    STRING("string"),
-    RECORD_STRING("RecordString"),
+internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObject {
+    putJsonObject("TCData") {
+        put("type", "RecordString")
+    }
+    putJsonObject("campaigns") {
+        put("type", "RecordString")
+    }
+    putJsonObject("webConsentPayload") {
+        put("type", "RecordString")
+    }
+    put("GPPData", gppDataValue ?: JsonPrimitive(true))
+    put("translateMessage", true)
+    put("categories", true)
 }

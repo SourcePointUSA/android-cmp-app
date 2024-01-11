@@ -947,7 +947,54 @@ Google additional consent is supported in our mobile SDKs and is stored in the `
 
 ## Global Privacy Platform Multi-State Privacy (MSPS) Support for OTT
 
-Starting with version 7.6.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. 
+Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
+
+- MspaCoveredTransaction: `NO`
+- MspaOptOutOptionMode: `NOT_APPLICABLE`
+- MspaServiceProviderMode: `NOT_APPLICABLE`
+
+Optionally, your organization can customize support for the MSPS by configuring the above attributes as part of the GPP config. [Click here](<https://github.com/SourcePointUSA/android-cmp-app/wiki/Global-Privacy-Platform-(GPP)-Multi%E2%80%90State-Privacy-(MSPS)>) for more information on each attribute, possible values, and examples for signatories and non-signatories of the MSPA.
+
+Kotlin
+
+```kotlin
+class MainActivityKotlin : AppCompatActivity() {
+
+    private val sourcePointGppConfig = SpGppConfig(
+        coveredTransaction = SpGppOptionBinary.NO, // optional
+        optOutOptionMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
+        serviceProviderMode = SpGppOptionTernary.NOT_APPLICABLE, // optional
+    )
+
+    private val spConsentLib by spConsentLibLazy {
+        // ...
+        config {
+            // ...
+            spGppConfig = sourcePointGppConfig
+            // ...
+        }
+    }
+}
+```
+
+Java
+
+```java
+public class MainActivityJava extends AppCompatActivity {
+
+    private SpGppConfig sourcePointGppConfig = new SpGppConfig(
+            SpGppOptionBinary.NO,
+            SpGppOptionTernary.NOT_APPLICABLE,
+            SpGppOptionTernary.NOT_APPLICABLE
+    );
+
+    private final SpConfig spConfig = new SpConfigDataBuilder()
+            // ...
+            .addGppConfig(sourcePointGppConfig)
+            // ...
+            .build();
+}
+```
 
 ## Transfer opt-in/opt out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy
 

@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
 import com.sourcepoint.cmplibrary.model.PMTab
@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
@@ -344,7 +343,8 @@ class HttpUrlManagerTest {
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
             authId = "user_auth_id",
-            localState = null
+            localState = null,
+            includeData = buildIncludeData(),
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
         sut.run {
@@ -355,7 +355,7 @@ class HttpUrlManagerTest {
             queryParameter("hasCsp").assertEquals("true")
             queryParameter("propertyId").assertEquals("17801")
             queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
-            queryParameter("includeData").assertEquals(JsonConverter.converter.encodeToString(IncludeData()))
+            queryParameter("includeData").assertEquals(buildIncludeData().toString())
         }
     }
 
@@ -387,7 +387,8 @@ class HttpUrlManagerTest {
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
             propertyId = 17801,
             authId = null,
-            localState = null
+            localState = null,
+            includeData = buildIncludeData(),
         )
         val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
         sut.run {
@@ -397,7 +398,7 @@ class HttpUrlManagerTest {
             queryParameter("hasCsp").assertEquals("true")
             queryParameter("propertyId").assertEquals("17801")
             queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
-            queryParameter("includeData").assertEquals(JsonConverter.converter.encodeToString(IncludeData()))
+            queryParameter("includeData").assertEquals(buildIncludeData().toString())
         }
     }
 
@@ -430,7 +431,8 @@ class HttpUrlManagerTest {
             ccpaConsentStatus = null,
             consentLanguage = "ES",
             campaignEnv = CampaignsEnv.STAGE,
-            usNatConsentStatus = null
+            usNatConsentStatus = null,
+            includeData = buildIncludeData(),
         )
 
         val param = MessagesParamReq(
@@ -454,7 +456,7 @@ class HttpUrlManagerTest {
             queryParameter("pubData").assertNull()
             queryParameter("localState").assertEquals("""{"_sp_v1_p":993}""")
             queryParameter("scriptType").assertEquals("android")
-            queryParameter("body").assertEquals("""{"accountId":22,"campaignEnv":"stage","includeData":{"TCData":{"type":"RecordString"},"campaigns":{"type":"RecordString"},"webConsentPayload":{"type":"RecordString"},"GPPData":true,"translateMessage":true,"categories":true},"propertyHref":"https://tests.unified-script.com","hasCSP":true,"campaigns":{"gdpr":{"consentStatus":{"consentedAll":true,"consentedToAny":false,"granularStatus":{"defaultConsent":false,"previousOptInAll":false,"purposeConsent":"ALL","purposeLegInt":"ALL","vendorConsent":"ALL","vendorLegInt":"ALL"},"hasConsentData":false,"rejectedAny":false,"rejectedLI":false},"hasLocalData":true,"targetingParams":{}}},"consentLanguage":"ES","os":{"name":"android","version":"0"}}""")
+            queryParameter("body").assertEquals(body.toString())
         }
     }
 }
