@@ -180,10 +180,7 @@ class MainActivityKotlinOttTest {
             )
 
             // click manage preferences and verify if it opens up
-            clickOnButtonByTextOnWebViewByTag(
-                tag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Manage Preferences",
-            )
+            performClickOnWebViewByContent("Manage Preferences")
             assertButtonWithTextIsPresentInWebViewByTag(
                 webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
                 text = "Home",
