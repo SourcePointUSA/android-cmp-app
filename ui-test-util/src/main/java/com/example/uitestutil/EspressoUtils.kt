@@ -236,17 +236,6 @@ fun performClickOnWebViewByContent(text: String) {
 }
 
 @Throws(Throwable::class)
-fun clickOnButtonByTextOnWebViewByTag(
-    tag: String,
-    text: String,
-) {
-    onWebView(withTagValue(CoreMatchers.equalTo(tag)))
-        .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
-}
-
-@Throws(Throwable::class)
 fun assertButtonWithTextIsPresentInWebViewByTag(
     webViewTag: String,
     text: String,
