@@ -29,8 +29,6 @@ import org.koin.core.context.loadKoinModules
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinOttTest {
 
-    private val CONSENT_WEB_VIEW_TAG_NAME = "consent-web-view"
-
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
@@ -172,40 +170,25 @@ class MainActivityKotlinOttTest {
         scenario = launchActivity()
 
         wr {
-
             // verify that FLM appears by checking if proper buttons are in the web view
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Manage Preferences",
-            )
+            assertButtonWithTextOnWebView(text = "Manage Preferences")
 
             // click manage preferences and verify if it opens up
             performClickOnWebViewByContent("Manage Preferences")
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Home",
-            )
+            assertButtonWithTextOnWebView(text = "Home")
 
             // press system's back button
             device.pressBack()
 
             // verify that the web view returned to the home page
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Manage Preferences",
-            )
+            assertButtonWithTextOnWebView(text = "Manage Preferences")
 
             // press system's back button again on home page
             device.pressBack()
 
             // assert that web view is still present on a home page and the activity was not destroyed
-            assertButtonWithTextIsPresentInWebViewByTag(
-                webViewTag = CONSENT_WEB_VIEW_TAG_NAME,
-                text = "Manage Preferences",
-            )
+            assertButtonWithTextOnWebView(text = "Manage Preferences")
             scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
         }
-
-        // TODO not sure about this implementation...
     }
 }

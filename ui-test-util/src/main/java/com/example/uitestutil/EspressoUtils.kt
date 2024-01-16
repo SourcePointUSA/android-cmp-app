@@ -210,17 +210,6 @@ fun checkWebViewHasText(text: String) {
 }
 
 @Throws(Throwable::class)
-fun checkWebViewContains(text: String) {
-    onWebView()
-        .check(
-            webMatches(
-                getText(),
-                containsString(text)
-            )
-        )
-}
-
-@Throws(Throwable::class)
 fun checkElementWithText(id: String, expected: String) {
     onWebView()
             .withElement(findElement(Locator.ID, id))
@@ -236,11 +225,10 @@ fun performClickOnWebViewByContent(text: String) {
 }
 
 @Throws(Throwable::class)
-fun assertButtonWithTextIsPresentInWebViewByTag(
-    webViewTag: String,
+fun assertButtonWithTextOnWebView(
     text: String,
 ) {
-    onWebView(withTagValue(CoreMatchers.equalTo(webViewTag)))
+    onWebView()
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
         .check(webMatches(getText(), containsString(text)))
 }
