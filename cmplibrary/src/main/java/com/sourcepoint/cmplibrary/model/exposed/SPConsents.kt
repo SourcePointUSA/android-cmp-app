@@ -1,8 +1,10 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
+import com.sourcepoint.cmplibrary.model.toConsentJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
-import com.sourcepoint.cmplibrary.model.toTcfJSONObj
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -14,7 +16,8 @@ import org.json.JSONObject
 
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
-    val ccpa: SPCCPAConsent? = null
+    val ccpa: SPCCPAConsent? = null,
+    val usNat: SpUsNatConsent? = null,
 )
 
 data class SPCustomConsents(
@@ -27,6 +30,10 @@ data class SPGDPRConsent(
 
 data class SPCCPAConsent(
     val consent: CCPAConsent
+)
+
+data class SpUsNatConsent(
+    val consent: UsNatConsent,
 )
 
 @Serializable
@@ -64,6 +71,7 @@ interface CCPAConsent {
         const val DEFAULT_USPSTRING = "1YNN"
     }
     val uuid: String?
+    var gppData: Map<String, Any?>
     val rejectedCategories: List<String>
     val rejectedVendors: List<String>
     val status: CcpaStatus?
@@ -76,6 +84,7 @@ interface CCPAConsent {
 
 internal data class CCPAConsentInternal(
     override val uuid: String? = null,
+    override var gppData: Map<String, Any?> = emptyMap(),
     override val rejectedCategories: List<String> = listOf(),
     override val rejectedVendors: List<String> = listOf(),
     override val status: CcpaStatus? = null,
@@ -96,6 +105,27 @@ enum class CcpaStatus {
     unknown
 }
 
+interface UsNatConsent {
+    var gppData: Map<String, Any?>
+    val applies: Boolean
+    val consentStatus: USNatConsentStatus?
+    val consentStrings: List<USNatConsentData.ConsentString>?
+    val dateCreated: String?
+    val uuid: String?
+    val webConsentPayload: JsonObject?
+}
+
+internal data class UsNatConsentInternal(
+    override var gppData: Map<String, Any?> = emptyMap(),
+    override val applies: Boolean = false,
+    override val consentStatus: USNatConsentStatus? = null,
+    override val consentStrings: List<USNatConsentData.ConsentString>? = null,
+    override val dateCreated: String? = null,
+    override val uuid: String? = null,
+    override val webConsentPayload: JsonObject? = null,
+    val url: String? = null,
+) : UsNatConsent
+
 internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
         if (ccpaConsent.isWebConsentEligible()) {
@@ -113,6 +143,14 @@ internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObj
             }
         }
     }
+    usNat?.consent?.let { usNatConsent ->
+        if (usNatConsent.isWebConsentEligible()) {
+            putJsonObject("usnat") {
+                put("uuid", JsonPrimitive(usNatConsent.uuid))
+                put("webConsentPayload", JsonPrimitive(usNatConsent.webConsentPayload.toString()))
+            }
+        }
+    }
 }
 
 internal fun GDPRConsent.isWebConsentEligible(): Boolean =
@@ -121,10 +159,13 @@ internal fun GDPRConsent.isWebConsentEligible(): Boolean =
 internal fun CCPAConsent.isWebConsentEligible(): Boolean =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
 
+internal fun UsNatConsent.isWebConsentEligible(): Boolean =
+    uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
+
 internal fun GDPRConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
-        put("tcData", tcData.toTcfJSONObj())
+        put("tcData", tcData.toConsentJSONObj())
         put("grants", grants.toJSONObjGrant())
         put("euconsent", euconsent)
         put("apply", applies)
@@ -160,6 +201,7 @@ internal fun ConsentStatus.GranularStatus.toJSONObj(): Any {
 internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("uuid", uuid)
+        put("gppData", gppData.toConsentJSONObj())
         put("status", status)
         put("uspstring", uspstring)
         put("rejectedCategories", JSONArray(rejectedCategories))
@@ -168,9 +210,53 @@ internal fun CCPAConsentInternal.toJsonObject(): JSONObject {
     }
 }
 
+internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("applies", applies)
+        put("gppData", gppData.toConsentJSONObj())
+        put("consentStatus", consentStatus?.toJsonObject())
+        put("consentStrings", consentStrings?.toJsonObjectList())
+        put("dateCreated", dateCreated)
+        put("uuid", uuid)
+    }
+}
+
 internal fun SPConsents.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("gdpr", (gdpr?.consent as? GDPRConsentInternal)?.toJsonObject())
         put("ccpa", (ccpa?.consent as? CCPAConsentInternal)?.toJsonObject())
+        put("usnat", (usNat?.consent as? UsNatConsentInternal)?.toJsonObject())
+    }
+}
+
+internal fun USNatConsentStatus.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("rejectedAny", rejectedAny)
+        put("consentedToAll", consentedToAll)
+        put("consentedToAny", consentedToAny)
+        put("granularStatus", granularStatus?.toJsonObject())
+        put("hasConsentData", hasConsentData)
+    }
+}
+
+internal fun List<USNatConsentData.ConsentString>.toJsonObjectList(): List<JSONObject> {
+    return this.map { consentString ->
+        JSONObject().apply {
+            put("sectionId", consentString.sectionId)
+            put("sectionName", consentString.sectionName)
+            put("consentString", consentString.consentString)
+        }
+    }
+}
+
+internal fun USNatConsentStatus.USNatGranularStatus.toJsonObject(): JSONObject {
+    return JSONObject().apply {
+        put("sellStatus", sellStatus)
+        put("shareStatus", shareStatus)
+        put("sensitiveDataStatus", sensitiveDataStatus)
+        put("gpcStatus", gpcStatus)
+        put("defaultConsent", defaultConsent)
+        put("previousOptInAll", previousOptInAll)
+        put("purposeConsent", purposeConsent)
     }
 }

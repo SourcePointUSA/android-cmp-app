@@ -19,7 +19,8 @@ internal interface ErrorMessageManager {
  */
 enum class CampaignType {
     GDPR,
-    CCPA
+    CCPA,
+    USNAT,
 }
 
 /**

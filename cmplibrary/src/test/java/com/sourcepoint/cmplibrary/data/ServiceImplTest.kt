@@ -243,7 +243,7 @@ class ServiceImplTest {
         val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
-        every { cm.shouldCallConsentStatus }.returns(true)
+        every { cm.shouldCallConsentStatus(any()) }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
@@ -269,7 +269,7 @@ class ServiceImplTest {
 
         every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
         every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
-        every { cm.shouldCallConsentStatus }.returns(true)
+        every { cm.shouldCallConsentStatus(any()) }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
@@ -317,6 +317,7 @@ class ServiceImplTest {
         )
 
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
+        every { cm.shouldCallConsentStatus(any()) } returns true
         every { ncMock.getMetaData(any()) }.returns(Right(mockMetaDataResp))
         every { ncMock.getConsentStatus(any()) }.returns(Left(RuntimeException()))
 
@@ -391,7 +392,7 @@ class ServiceImplTest {
 
         // WHEN
         every { cm.shouldCallMessages } returns true
-        every { cm.shouldCallConsentStatus } returns true
+        every { cm.shouldCallConsentStatus(any()) } returns true
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
@@ -436,7 +437,7 @@ class ServiceImplTest {
 
         // WHEN
         every { cm.shouldCallMessages } returns true
-        every { cm.shouldCallConsentStatus } returns true
+        every { cm.shouldCallConsentStatus(any()) } returns true
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())

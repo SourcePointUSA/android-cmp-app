@@ -22,6 +22,7 @@ import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
 import com.sourcepoint.app.v6.TestData.SETTINGS_DE
+import com.sourcepoint.app.v6.TestData.SETTINGS_OTT_EN
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.TITLE_GDPR
 import com.sourcepoint.app.v6.TestData.VENDORS_LIST
@@ -324,6 +325,10 @@ class TestUseCase {
 
         fun tapSettingsOnWebViewDE() {
             performClickOnWebViewByContent(SETTINGS_DE)
+        }
+
+        fun tapSettingsOnWebView() {
+            performClickOnWebViewByContent(SETTINGS_OTT_EN)
         }
 
         fun tapAcceptCcpaOnWebView() {

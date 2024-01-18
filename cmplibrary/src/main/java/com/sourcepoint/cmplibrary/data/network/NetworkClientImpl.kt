@@ -101,7 +101,7 @@ private class NetworkClientImpl(
         logger.req(
             tag = "getMetaData",
             url = url.toString(),
-            body = "",
+            body = param.stringify(),
             type = "GET"
         )
 
@@ -162,7 +162,7 @@ private class NetworkClientImpl(
         val body: RequestBody = RequestBody.create(mediaType, jsonBody)
 
         logger.req(
-            tag = "savePvData - ${param.campaignType.name}",
+            tag = "PvDataRequest - ${param.campaignType.name}",
             url = url.toString(),
             body = jsonBody,
             type = "POST"
@@ -242,5 +242,31 @@ private class NetworkClientImpl(
         val response = httpClient.newCall(request).execute()
 
         responseManager.parsePostCcpaChoiceResp(response)
+    }
+
+    override fun storeUsNatChoice(
+        param: PostChoiceParamReq,
+    ): Either<USNatConsentData> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
+
+        val url = urlManager.postUsNatChoiceUrl(param)
+        val mediaType = "application/json".toMediaType()
+        val jsonBody = param.body.toString()
+        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
+
+        logger.req(
+            tag = "storeUsNatChoice",
+            url = url.toString(),
+            body = jsonBody,
+            type = "POST"
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
+        val response = httpClient.newCall(request).execute()
+
+        responseManager.parsePostUsNatChoiceResp(response)
     }
 }

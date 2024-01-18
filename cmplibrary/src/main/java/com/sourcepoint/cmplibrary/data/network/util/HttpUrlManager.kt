@@ -36,6 +36,7 @@ internal interface HttpUrlManager {
     fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
+    fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
@@ -64,6 +65,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
+            CampaignType.USNAT -> urlPmUsNat(pmConfig, env, messageType)
         }
     }
 
@@ -144,6 +146,30 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
+    private fun urlPmUsNat(pmConf: PmUrlConfig, env: Env, messageType: MessageType): HttpUrl {
+
+        val pathSegment = when (messageType) {
+            LEGACY_OTT -> "ccpa_ott/index.html"
+            OTT -> "native-ott/index.html"
+            MOBILE -> "us_pm/index.html"
+        }
+
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host(env.pmHostUSNat)
+            .addPathSegments(pathSegment)
+            .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", true.toString())
+            .apply {
+                pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
+                pmConf.uuid?.let { addQueryParameter("uuid", it) }
+                pmConf.messageId?.let { addQueryParameter("message_id", it) }
+            }
+            .addQueryParameter("scriptType", scriptType)
+            .addQueryParameter("scriptVersion", scriptVersion)
+            .build()
+    }
+
     override fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/meta-data?env=localProd&accountId=22&propertyId=17801&metadata={"gdpr": {}, "ccpa": {}}
 
@@ -186,7 +212,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("propertyId", param.propertyId.toString())
             .addQueryParameter("hasCsp", true.toString())
             .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeData", """{"TCData": {"type": "RecordString"}, "webConsentPayload": {"type": "RecordString"}}""")
+            .addQueryParameter("includeData", param.includeData.toString())
             .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
             .addEncodedQueryParameter("metadata", param.metadata)
             .addQueryParameter("scriptType", scriptType)
@@ -251,6 +277,16 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
+    override fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl = HttpUrl.Builder()
+        .scheme("https")
+        .host(param.env.host)
+        .addPathSegments("wrapper/v2/choice/usnat/${param.actionType.code}")
+        .addQueryParameter("env", param.env.queryParam)
+        .addQueryParameter("hasCsp", true.toString())
+        .addQueryParameter("scriptType", scriptType)
+        .addQueryParameter("scriptVersion", scriptVersion)
+        .build()
+
     override fun getPvDataUrl(env: Env): HttpUrl {
         // http://localhost:3000/wrapper/v2/pv-data?env=localProd
         return HttpUrl.Builder()
@@ -280,7 +316,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
             .addQueryParameter("localState", param.localState.toString())
-            .addQueryParameter("pubData", param.pubData.toString())
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
             .addQueryParameter("scriptType", scriptType)
@@ -293,15 +328,18 @@ enum class Env(
     val host: String,
     val pmHostGdpr: String,
     val pmHostCcpa: String,
-    val queryParam: String
+    val pmHostUSNat: String,
+    val queryParam: String,
 ) {
     STAGE(
         "cdn.sp-stage.net",
         "notice.sp-stage.net",
         "ccpa-notice.sp-stage.net",
-        BuildConfig.ENV_QUERY_PARAM
+        "ccpa-notice.sp-stage.net",
+        "stage"
     ),
     PRE_PROD(
+        "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
         "preprod-cdn.privacy-mgmt.com",
@@ -311,9 +349,11 @@ enum class Env(
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
+        "cdn.privacy-mgmt.com",
         "localProd"
     ),
     PROD(
+        "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",
         "cdn.privacy-mgmt.com",

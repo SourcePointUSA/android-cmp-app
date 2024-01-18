@@ -35,6 +35,14 @@ android {
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
         }
+        create("stage") {
+            initWith(getByName("debug"))
+            isMinifyEnabled = false
+            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
+            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
+            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
+            buildConfigField("String", "ENV_QUERY_PARAM", "\"stage\"")
+        }
         create("preprod") {
             initWith(getByName("debug"))
             isMinifyEnabled = false

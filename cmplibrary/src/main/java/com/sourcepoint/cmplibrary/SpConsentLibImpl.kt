@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.stringify
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -61,7 +62,6 @@ internal class SpConsentLibImpl(
     companion object {
         fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaignList
-            if (campaignList.isEmpty()) return emptyList()
 
             val partition: Pair<List<CampaignMessage>, List<CampaignMessage>> = campaignList
                 .partition { it.message != null && it.url != null && it.messageMetaData?.subCategoryId != null }
@@ -70,6 +70,7 @@ internal class SpConsentLibImpl(
                 tag = "toCampaignModelList",
                 msg = "parsed campaigns${NL.t}${partition.second.size} Null messages${NL.t}${partition.first.size} Not Null message"
             )
+            if (campaignList.isEmpty()) return emptyList()
 
             return partition.first.map {
 
@@ -449,6 +450,7 @@ internal class SpConsentLibImpl(
                 val storedConsent = when (campaignType) {
                     CampaignType.GDPR -> dataStorage.gdprConsentStatus
                     CampaignType.CCPA -> dataStorage.ccpaConsentStatus
+                    CampaignType.USNAT -> campaignManager.usNatConsentData?.stringify()
                 }
 
                 webView?.loadConsentUIFromUrlPreloadingOption(
@@ -687,7 +689,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
-            CampaignType.CCPA -> {
+            CampaignType.CCPA, CampaignType.USNAT -> {
                 viewManager.removeView(view)
                 campaignManager.getPmConfig(campaignType = l, pmId = actionImpl.privacyManagerId, pmTab = null)
                     .map { pmUrlConfig ->

@@ -15,7 +15,8 @@ internal fun postChoiceGdprBody(
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
-    uuid: String? = null
+    uuid: String? = null,
+    includeData: JsonObject,
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", it) }
@@ -29,17 +30,7 @@ internal fun postChoiceGdprBody(
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
         put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
         put("vendorListId", vendorListId)
-        putJsonObject("includeData") {
-            putJsonObject("TCData") {
-                put("type", "RecordString")
-            }
-            putJsonObject("localState") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
+        put("includeData", includeData)
     }
 }
 
@@ -51,7 +42,8 @@ internal fun postChoiceCcpaBody(
     pubData: JsonObject? = null,
     saveAndExitVariables: JsonObject? = null,
     authid: String? = null,
-    uuid: String? = null
+    uuid: String? = null,
+    includeData: JsonObject,
 ): JsonObject {
     return buildJsonObject {
         pubData?.let { put("pubData", pubData) }
@@ -62,13 +54,32 @@ internal fun postChoiceCcpaBody(
         put("authId", authid)
         put("uuid", uuid)
         saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
-        putJsonObject("includeData") {
-            putJsonObject("localState") {
-                put("type", "RecordString")
-            }
-            putJsonObject("webConsentPayload") {
-                put("type", "RecordString")
-            }
-        }
+        put("includeData", includeData)
     }
+}
+
+internal fun postChoiceUsNatBody(
+    granularStatus: USNatConsentStatus.USNatGranularStatus?,
+    messageId: Long? = null,
+    saveAndExitVariables: JsonObject? = null,
+    propertyId: Long,
+    pubData: JsonObject? = null,
+    sendPvData: Boolean?,
+    sampleRate: Double,
+    uuid: String? = null,
+    vendorListId: String?,
+    includeData: JsonObject,
+    authId: String? = null,
+): JsonObject = buildJsonObject {
+    put("granularStatus", granularStatus?.let { JsonConverter.converter.encodeToJsonElement(it) } ?: JsonNull)
+    messageId?.let { put("messageId", it) }
+    saveAndExitVariables?.let { put("pmSaveAndExitVariables", it) }
+    put("propertyId", propertyId)
+    put("pubData", pubData ?: JsonObject(mapOf()))
+    put("sendPVData", sendPvData)
+    put("sampleRate", sampleRate)
+    uuid?.let { put("uuid", it) }
+    put("vendorListId", vendorListId)
+    put("includeData", includeData)
+    put("authId", authId)
 }

@@ -6,14 +6,12 @@ import com.example.uitestutil.* //ktlint-disable
 import com.sourcepoint.cmplibrary.Utils.Companion.spEntries
 import com.sourcepoint.cmplibrary.Utils.Companion.storeTestDataObj
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
-import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
-import com.sourcepoint.cmplibrary.data.local.create
+import com.sourcepoint.cmplibrary.data.local.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
@@ -49,7 +47,8 @@ class CampaignManagerImplTest {
     private val ds by lazy {
         val gdprDs = DataStorageGdpr.create(appContext)
         val ccpaDs = DataStorageCcpa.create(appContext)
-        DataStorage.create(appContext, gdprDs, ccpaDs)
+        val usNatDs = DataStorageUSNat.create(appContext)
+        DataStorage.create(appContext, gdprDs, ccpaDs, usNatDs)
     }
 
     private val gdprCampaign = SpCampaign(
@@ -78,6 +77,23 @@ class CampaignManagerImplTest {
 
     private val cm by lazy {
         CampaignManager.create(ds, spConfig)
+    }
+
+    private val usnatMock by lazy {
+        USNatConsentData(
+            uuid = null,
+            consentStatus = null,
+            type = CampaignType.USNAT,
+            url = null,
+            messageMetaData = null,
+            message = null,
+            applies = null,
+            expirationDate = null,
+            dateCreated = null,
+            consentStrings = null,
+            gppData = null,
+            webConsentPayload = null
+        )
     }
 
     @Before
@@ -169,8 +185,8 @@ class CampaignManagerImplTest {
 
         cm.metaDataResp?.run {
             gdpr?.also {
-                it.applies!!.assertFalse()
-                it.id!!.assertEquals("5fa9a8fda228635eaf24ceb5")
+                it.applies!!.assertTrue()
+                it.vendorListId!!.assertEquals("5fa9a8fda228635eaf24ceb5")
             }
             ccpa?.also {
                 it.applies!!.assertTrue()
@@ -196,5 +212,155 @@ class CampaignManagerImplTest {
         appContext.storeTestDataObj(json.toList())
         ds.deleteCcpaConsent()
         appContext.spEntries().toList().find { it.first.contains("CCPA") }.assertNull()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_GDPR_isGdprExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2022-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertTrue()
+        cm.isCcpaExpired.assertFalse()
+        cm.isUsnatExpired.assertFalse()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_CCPA_isCcpaExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2022-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertFalse()
+        cm.isCcpaExpired.assertTrue()
+        cm.isUsnatExpired.assertFalse()
+    }
+
+    @Test
+    fun `GIVEN_an_expired_USNAT_isUsnatExpired_RETURN_true`() {
+
+        ds.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
+        ds.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
+        cm.usNatConsentData = usnatMock.copy(expirationDate = "2022-10-27T17:15:57.006Z")
+
+        cm.isGdprExpired.assertFalse()
+        cm.isCcpaExpired.assertFalse()
+        cm.isUsnatExpired.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_null_to_something_THEN_should_return_false() {
+        // GIVEN
+        val gdprVendorListId = "new_gdpr_vendor_list_id"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_did_not_change_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = "5fa9a8fda228635eaf24ceb5"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_something_to_something_else_THEN_should_return_true() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = "6cb1e2bcb337524aed35abc4"
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_gdpr_vendor_list_id_changed_from_something_to_null_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val gdprVendorListId = null
+
+        // WHEN
+        val actual = cm.hasGdprVendorListIdChanged(gdprVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_null_to_something_THEN_should_return_false() {
+        // GIVEN
+        val usNatVendorListId = "new_usnat_vendor_list_id"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usNatVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_did_not_change_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usNatVendorListId = "64e6268d5ee47ddf019bfa22"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usNatVendorListId)
+
+        // THEN
+        actual.assertFalse()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_something_to_something_else_THEN_should_return_true() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usnatVendorListId = "6cb1e2bcb337524aed35abc4"
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usnatVendorListId)
+
+        // THEN
+        actual.assertTrue()
+    }
+
+    @Test
+    fun GIVEN_usnat_vendor_list_id_changed_from_something_to_null_THEN_should_return_false() {
+        // GIVEN
+        val metaDataJson = "v7/meta_data.json".file2String()
+        val storedMetaData = JsonConverter.converter.decodeFromString<MetaDataResp>(metaDataJson)
+        cm.metaDataResp = storedMetaData
+        val usnatVendorListId = null
+
+        // WHEN
+        val actual = cm.hasUsNatVendorListIdChanged(usnatVendorListId)
+
+        // THEN
+        actual.assertFalse()
     }
 }

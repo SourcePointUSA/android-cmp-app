@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.SharedPreferences
 
-internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
+internal interface DataStorage : DataStorageGdpr, DataStorageCcpa, DataStorageUSNat {
     companion object {
         const val LOCAL_DATA_VERSION_KEY = "sp.key.localDataVersion"
         const val LOCAL_DATA_VERSION_HARDCODED_VALUE = 1
@@ -28,7 +28,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     override val preference: SharedPreferences
 
-    var localDataVersion: Int
     var savedConsent: Boolean
     var messagesOptimized: String?
     var consentStatus: String?
@@ -40,6 +39,7 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
     var gdprConsentStatus: String?
     val gdprApplies: Boolean
     val ccpaApplies: Boolean
+    val usNatApplies: Boolean
     var ccpaConsentStatus: String?
     var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: String?
@@ -47,7 +47,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa {
 
     fun saveLocalState(value: String)
     fun getLocalState(): String?
-    fun updateLocalDataVersion()
 
     fun clearAll()
 }

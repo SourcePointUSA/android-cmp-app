@@ -3,10 +3,10 @@ package com.sourcepoint.cmplibrary.creation
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.exposed.gpp.SpGppConfig
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.model.exposed.toTParam
 import com.sourcepoint.cmplibrary.model.toTreeMap
@@ -36,6 +36,12 @@ class SpConfigDataBuilder {
 
     operator fun Pair<CampaignType, List<Pair<String, String>>>.unaryPlus() {
         campaigns.add(SpCampaign(this.first, this.second.map { it.toTParam() }))
+    }
+
+    operator fun Map<CampaignType, Set<ConfigOption>>.unaryPlus() {
+        this.entries.firstOrNull()?.let {
+            campaigns.add(SpCampaign(it.key, configParams = it.value))
+        }
     }
 
     fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
@@ -100,6 +106,15 @@ class SpConfigDataBuilder {
         campaigns.add(SpCampaign(campaignType, params, groupPmId))
     }
 
+    fun addCampaign(
+        campaignType: CampaignType,
+        params: List<TargetingParam>,
+        groupPmId: String?,
+        configParams: Set<ConfigOption> = emptySet(),
+    ): SpConfigDataBuilder = apply {
+        campaigns.add(SpCampaign(campaignType, params, groupPmId, configParams))
+    }
+
     fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
         campaigns.add(campaign)
     }
@@ -121,4 +136,11 @@ class SpConfigDataBuilder {
 
 fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
     return SpConfigDataBuilder().apply(dsl).build()
+}
+enum class ConfigOption(option: String) {
+    TRANSITION_CCPA_AUTH("transitionCCPAAuth")
+}
+
+infix fun CampaignType.to(config: Set<ConfigOption>): Map<CampaignType, Set<ConfigOption>> {
+    return mapOf(Pair(this, config))
 }

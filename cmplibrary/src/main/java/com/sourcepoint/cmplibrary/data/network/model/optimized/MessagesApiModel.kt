@@ -42,6 +42,7 @@ data class MessagesResp(
             val list = mutableListOf<CampaignMessage>().apply {
                 campaigns?.gdpr?.let { add(it) }
                 campaigns?.ccpa?.let { add(it) }
+                campaigns?.usNat?.let { add(it) }
             }.associateBy { it.type.toCategoryId() }
             return priority.mapNotNull { list[it] }.toSet().toList()
         }
@@ -63,6 +64,7 @@ interface CampaignMessage {
 internal fun CampaignType.toCategoryId() = when (this) {
     CampaignType.GDPR -> 1
     CampaignType.CCPA -> 2
+    CampaignType.USNAT -> 6
 }
 
 @Serializable
@@ -82,7 +84,8 @@ data class MessageMetaData(
 @Serializable
 data class Campaigns(
     @SerialName("CCPA") val ccpa: CCPA?,
-    @SerialName("GDPR") val gdpr: GDPR?
+    @SerialName("GDPR") val gdpr: GDPR?,
+    @SerialName("usnat") val usNat: USNatConsentData?,
 )
 
 @Serializable
@@ -143,5 +146,26 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
+    )
+}
+
+@Serializable
+data class USNatConsentStatus(
+    @SerialName("rejectedAny") val rejectedAny: Boolean?,
+    @SerialName("consentedToAll") var consentedToAll: Boolean?,
+    @SerialName("consentedToAny") val consentedToAny: Boolean?,
+    @SerialName("granularStatus") val granularStatus: USNatGranularStatus?,
+    @SerialName("hasConsentData") val hasConsentData: Boolean?,
+    @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null,
+) {
+    @Serializable
+    data class USNatGranularStatus(
+        @SerialName("sellStatus") val sellStatus: Boolean?,
+        @SerialName("shareStatus") val shareStatus: Boolean?,
+        @SerialName("sensitiveDataStatus") val sensitiveDataStatus: Boolean?,
+        @SerialName("gpcStatus") val gpcStatus: Boolean?,
+        @SerialName("defaultConsent") val defaultConsent: Boolean?,
+        @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
+        @SerialName("purposeConsent") var purposeConsent: String?,
     )
 }

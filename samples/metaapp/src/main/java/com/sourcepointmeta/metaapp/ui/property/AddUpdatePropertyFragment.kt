@@ -24,6 +24,7 @@ import com.sourcepointmeta.metaapp.ui.component.toProperty
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.add_property_fragment.*
 import kotlinx.android.synthetic.main.add_property_fragment.tool_bar
+import kotlinx.android.synthetic.main.add_property_fragment.view.*
 import kotlinx.android.synthetic.main.add_targeting_parameter.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -112,8 +113,35 @@ class AddUpdatePropertyFragment : Fragment() {
                 .show()
         }
 
+        btn_targeting_params_usnat.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Add new targeting parameter")
+                .setView(R.layout.add_targeting_parameter)
+                .setPositiveButton("Create") { dialog, _ ->
+                    (dialog as? AlertDialog)?.let { d ->
+                        val key = d.tp_key_ed.text
+                        val value = d.tp_value_et.text
+                        usnat_chip_group.addChip("$key:$value")
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
         save_btn.setOnClickListener {
             viewModel.createOrUpdateProperty(add_property_layout.toProperty())
+        }
+
+        gpp_switch.setOnCheckedChangeListener { _, isChecked ->
+            opt_out_option_radio_group.isEnabled = isChecked
+            service_provider_mode_radio_group.isEnabled = isChecked
+            opt_out_option_radio_na.isEnabled = isChecked
+            opt_out_option_radio_no.isEnabled = isChecked
+            opt_out_option_radio_yes.isEnabled = isChecked
+            service_provider_radio_na.isEnabled = isChecked
+            service_provider_radio_no.isEnabled = isChecked
+            service_provider_radio_yes.isEnabled = isChecked
+            gpp_field_coveredTransaction.isEnabled = isChecked
         }
 
         viewModel.liveData.observe(viewLifecycleOwner) {

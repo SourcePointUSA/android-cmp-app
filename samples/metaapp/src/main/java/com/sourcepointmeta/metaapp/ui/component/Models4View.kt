@@ -16,6 +16,7 @@ data class PropertyDTO(
     val messageLanguage: MessageLanguage,
     val gdprEnabled: Boolean,
     val ccpaEnabled: Boolean,
+    val usnatEnabled: Boolean,
     val property: Property,
     val timeout: Long?,
     var saving: Boolean = false
@@ -30,6 +31,8 @@ fun Property.toPropertyDTO(): PropertyDTO {
         ccpaEnabled = statusCampaignSet.find { s -> s.campaignType == CampaignType.CCPA }?.enabled
             ?: false,
         gdprEnabled = statusCampaignSet.find { s -> s.campaignType == CampaignType.GDPR }?.enabled
+            ?: false,
+        usnatEnabled = statusCampaignSet.find { s -> s.campaignType == CampaignType.USNAT }?.enabled
             ?: false,
         property = this,
         ccpaPmId = ccpaPmId?.toString() ?: "",

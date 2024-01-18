@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
@@ -21,7 +22,8 @@ internal data class ConsentStatusParamReq(
     @SerialName("propertyId") val propertyId: Long,
     @SerialName("accountId") val accountId: Long,
     @SerialName("authId") val authId: String?,
-    @SerialName("localState") val localState: JsonElement?
+    @SerialName("localState") val localState: JsonElement?,
+    @SerialName("includeData") val includeData: JsonObject,
 )
 
 enum class GranularState {
@@ -38,7 +40,8 @@ data class ConsentStatusResp(
     @Serializable
     data class ConsentStatusData(
         @SerialName("ccpa") val ccpa: CcpaCS?,
-        @SerialName("gdpr") val gdpr: GdprCS?
+        @SerialName("gdpr") val gdpr: GdprCS?,
+        @SerialName("usnat") val usnat: USNatConsentData?,
     )
 
     override fun toString(): String {
@@ -65,6 +68,29 @@ data class CcpaCS(
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String?,
 )
+
+@Serializable
+data class USNatConsentData(
+    val applies: Boolean?,
+    @SerialName("consentStatus") val consentStatus: USNatConsentStatus?,
+    @SerialName("consentStrings") val consentStrings: List<ConsentString>?,
+    @SerialName("dateCreated") override var dateCreated: String?,
+    @SerialName("uuid") var uuid: String?,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+    @SerialName("message") override val message: JsonElement?,
+    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>?,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
+    @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
+    @SerialName("url") override val url: String?,
+    @SerialName("expirationDate") override val expirationDate: String?
+) : CampaignMessage {
+    @Serializable
+    data class ConsentString(
+        @SerialName("sectionId") val sectionId: Int?,
+        @SerialName("sectionName") val sectionName: String?,
+        @SerialName("consentString") val consentString: String?
+    )
+}
 
 @Serializable
 data class GdprCS(

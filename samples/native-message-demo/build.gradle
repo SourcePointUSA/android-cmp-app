@@ -36,6 +36,9 @@ android {
         localProd{
             initWith debug
         }
+        stage{
+            initWith debug
+        }
         preprod{
             initWith debug
         }

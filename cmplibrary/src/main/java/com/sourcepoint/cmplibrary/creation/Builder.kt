@@ -19,6 +19,7 @@ import com.sourcepoint.cmplibrary.data.create
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
+import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
@@ -73,7 +74,8 @@ class Builder {
         val client = createClientInfo()
         val dataStorageGdpr = DataStorageGdpr.create(appCtx)
         val dataStorageCcpa = DataStorageCcpa.create(appCtx)
-        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa)
+        val dataStorageUSNat = DataStorageUSNat.create(appCtx)
+        val dataStorage = DataStorage.create(appCtx, dataStorageGdpr, dataStorageCcpa, dataStorageUSNat)
         val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spc)
         val errorManager = errorMessageManager(campaignManager, client)
         val logger = spc.logger ?: createLogger(errorManager)

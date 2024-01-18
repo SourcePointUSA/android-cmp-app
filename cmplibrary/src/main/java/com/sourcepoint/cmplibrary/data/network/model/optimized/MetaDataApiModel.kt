@@ -10,17 +10,19 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 
+@Serializable
 internal data class MetaDataParamReq(
-    val env: Env,
-    val propertyId: Long,
-    val accountId: Long,
-    val metadata: String
+    @SerialName("env") val env: Env,
+    @SerialName("propertyId") val propertyId: Long,
+    @SerialName("accountId") val accountId: Long,
+    @SerialName("metadata") val metadata: String
 )
 
 @Serializable
 data class MetaDataResp(
     @SerialName("ccpa") val ccpa: Ccpa?,
-    @SerialName("gdpr") val gdpr: Gdpr?
+    @SerialName("gdpr") val gdpr: Gdpr?,
+    @SerialName("usnat") val usNat: USNat?,
 ) {
     @Serializable
     data class Ccpa(
@@ -33,11 +35,20 @@ data class MetaDataResp(
         @SerialName("additionsChangeDate") val additionsChangeDate: String?,
         @SerialName("applies") val applies: Boolean?,
         @SerialName("getMessageAlways") val getMessageAlways: Boolean?,
-        @SerialName("_id") val id: String?,
+        @SerialName("_id") val vendorListId: String?,
         @SerialName("legalBasisChangeDate") val legalBasisChangeDate: String?,
         @SerialName("version") val version: Int?,
         @SerialName("sampleRate") val sampleRate: Double?,
         @SerialName("childPmId") val childPmId: String?,
+    )
+
+    @Serializable
+    data class USNat(
+        @SerialName("_id") val vendorListId: String?,
+        @SerialName("additionsChangeDate") val additionsChangeDate: String?,
+        @SerialName("applies") val applies: Boolean?,
+        @SerialName("sampleRate") val sampleRate: Double?,
+        @SerialName("applicableSections") val applicableSections: JsonElement?,
     )
 
     override fun toString(): String {
@@ -46,7 +57,11 @@ data class MetaDataResp(
     }
 }
 @Serializable
-data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaDataCampaign?) {
+data class MetaDataMetaDataParam(
+    val gdpr: MetaDataCampaign?,
+    val ccpa: MetaDataCampaign?,
+    val usnat: MetaDataCampaign?,
+) {
     @Serializable
     data class MetaDataCampaign(val groupPmId: String?)
 }
@@ -54,7 +69,8 @@ data class MetaDataMetaDataParam(val gdpr: MetaDataCampaign?, val ccpa: MetaData
 @Serializable
 data class MetaDataArg(
     @SerialName("ccpa") val ccpa: CcpaArg?,
-    @SerialName("gdpr") val gdpr: GdprArg?
+    @SerialName("gdpr") val gdpr: GdprArg?,
+    @SerialName("usnat") val usNat: UsNatArg?,
 ) {
     @Serializable
     data class CcpaArg(
@@ -62,7 +78,7 @@ data class MetaDataArg(
         @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
+        @SerialName("uuid") val uuid: String? = null,
     )
 
     @Serializable
@@ -71,11 +87,24 @@ data class MetaDataArg(
         @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
         @SerialName("groupPmId") val groupPmId: String? = null,
         @SerialName("targetingParams") val targetingParams: JsonElement? = null,
-        @SerialName("uuid") val uuid: String? = null
+        @SerialName("uuid") val uuid: String? = null,
+    )
+
+    @Serializable
+    data class UsNatArg(
+        @SerialName("applies") val applies: Boolean?,
+        @SerialName("hasLocalData") val hasLocalData: Boolean? = null,
+        @SerialName("groupPmId") val groupPmId: String? = null,
+        @SerialName("targetingParams") val targetingParams: JsonElement? = null,
+        @SerialName("uuid") val uuid: String? = null,
+        @SerialName("dateCreated") val dateCreated: String? = null,
+        @SerialName("transitionCCPAAuth") val transitionCCPAAuth: Boolean? = null,
+        @SerialName("optedOut") val optedOut: Boolean? = null,
     )
 }
 
 internal fun MetaDataResp.toMetaDataArg() = MetaDataArg(
     ccpa = MetaDataArg.CcpaArg(applies = ccpa?.applies),
     gdpr = MetaDataArg.GdprArg(applies = gdpr?.applies),
+    usNat = MetaDataArg.UsNatArg(applies = usNat?.applies),
 )

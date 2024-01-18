@@ -126,6 +126,7 @@
     <string name="source_point_logo">LOGO</string>
     <string name="authid_activity">AuthId activity</string>
     <string name="review_consents_ccpa">Review Consents CCPA</string>
+    <string name="review_consents_usnat">Review Consents USNat</string>
     <string name="clear_all_data">Clear all data</string>
     <string name="custom_consent">Custom consent</string>
     <string name="pm_tab">Privacy Manager Tab</string>
@@ -142,6 +143,6 @@
     <string name="clear_log">Clear Log</string>
     <string name="clear_sp">Delete SP</string>
     <string name="add_properties">Add properties</string>
-    <string name="save_old_v6_consent">Save old v6.7 consent</string>
+    <string name="save_old_v6_consent">Save old v6.9 consent</string>
     <string name="show_preferences">Show preferences</string>
 </resources>

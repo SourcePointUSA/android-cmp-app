@@ -83,6 +83,15 @@ class MainActivityKotlinAuthIdTest {
         +(CampaignType.CCPA)
     }
 
+    private val spConfUSNAT = config {
+        accountId = 22
+        propertyId = 16893
+        propertyName = "mobile.multicampaign.demo"
+        messLanguage = MessageLanguage.ENGLISH
+        messageTimeout = 5000
+        +(CampaignType.USNAT)
+    }
+
     private val spConfNative = config {
         accountId = 22
         propertyId = 18958
@@ -121,6 +130,33 @@ class MainActivityKotlinAuthIdTest {
 
     private fun ActivityScenario<MainActivityKotlin>.onResumeOrThrow(){
         if(this.state != Lifecycle.State.RESUMED) throw RuntimeException()
+    }
+
+    @Test
+    fun GIVEN_a_usnat_authId_VERIFY_onError_is_NOT_called() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfUSNAT,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                pAuthId = "ee7ea3b8-USNAT"
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { scenario.onResumeOrThrow() }
+        wr { clickOnRefreshBtnActivity() }
+        wr { clickOnRefreshBtnActivity() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 3) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 3) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
     }
 
 }

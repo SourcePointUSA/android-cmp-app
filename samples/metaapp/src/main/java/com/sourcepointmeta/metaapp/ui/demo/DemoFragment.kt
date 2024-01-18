@@ -10,8 +10,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
-import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.CCPA_PM
-import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.GDPR_PM
+import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.* // ktlint-disable
 import kotlinx.android.synthetic.main.demo_fragment_layout.* // ktlint-disable
 import org.koin.android.ext.android.inject
 
@@ -28,6 +27,7 @@ class DemoFragment : Fragment() {
     enum class DemoAction {
         GDPR_PM,
         CCPA_PM,
+        USNAT_PM,
         LOG
     }
 
@@ -54,14 +54,16 @@ class DemoFragment : Fragment() {
         campaign_name_fr.text = propertyName
         review_consents_ccpa_fr.setOnClickListener { _v: View? -> demoListener?.invoke(CCPA_PM) }
         review_consents_gdpr_fr.setOnClickListener { _v: View? -> demoListener?.invoke(GDPR_PM) }
-        config.campaigns.find { it.campaignType == CampaignType.CCPA }
-            ?.let { review_consents_ccpa_fr.isEnabled = true } ?: kotlin.run {
-            review_consents_ccpa_fr.isEnabled = false
-        }
+        review_consents_usnat_fr.setOnClickListener { _v: View? -> demoListener?.invoke(USNAT_PM) }
 
         config.campaigns.find { it.campaignType == CampaignType.GDPR }
-            ?.let { review_consents_gdpr_fr.isEnabled = true } ?: kotlin.run {
-            review_consents_gdpr_fr.isEnabled = false
-        }
+            ?.let { review_consents_gdpr_fr.isEnabled = true }
+            ?: run { review_consents_gdpr_fr.isEnabled = false }
+        config.campaigns.find { it.campaignType == CampaignType.CCPA }
+            ?.let { review_consents_ccpa_fr.isEnabled = true }
+            ?: run { review_consents_ccpa_fr.isEnabled = false }
+        config.campaigns.find { it.campaignType == CampaignType.USNAT }
+            ?.let { review_consents_usnat_fr.isEnabled = true }
+            ?: run { review_consents_usnat_fr.isEnabled = false }
     }
 }

@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
@@ -169,6 +170,30 @@ private class ResponseManagerImpl(
         }
     }
 
+    override fun parsePostUsNatChoiceResp(r: Response): USNatConsentData {
+        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
+        val status = r.code
+        val mess = r.message
+        logger.res(
+            tag = "PostUsNatChoiceResp",
+            msg = mess,
+            body = body,
+            status = status.toString()
+        )
+        return if (r.isSuccessful) {
+            when (val either: Either<USNatConsentData> = jsonConverter.toUsNatPostChoiceResp(body)) {
+                is Either.Right -> either.r
+                is Either.Left -> throw either.t
+            }
+        } else {
+            throw RequestFailedException(
+                description = body,
+                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_USNAT.apiPostfix,
+                httpStatusCode = "_$status",
+            )
+        }
+    }
+
     override fun parsePvDataResp(r: Response): PvDataResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
@@ -176,7 +201,11 @@ private class ResponseManagerImpl(
         return if (r.isSuccessful) {
             when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
                 is Either.Right -> {
-                    val campaign = either.r.gdpr?.let { "GDPR" } ?: ("" + either.r.ccpa?.let { "CCPA" })
+                    val campaign = either.getOrNull()?.let {
+                        it.gdpr?.let { "GDPR" }
+                            ?: it.ccpa?.let { "CCPA" }
+                            ?: it.usnat?.let { "USNAT" }
+                    }
                     logger.res(
                         tag = "PvDataResp - $campaign",
                         msg = mess,
