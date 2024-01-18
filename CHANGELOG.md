@@ -1,3 +1,6 @@
+## 7.6.0 (January, 18, 2024)
+* [DIA-2031](https://sourcepoint.atlassian.net/browse/DIA-2031) Support to USNat (#736)
+
 ## 7.5.2 (December, 01, 2023)
 * [DIA-3183](https://sourcepoint.atlassian.net/browse/DIA-3183) Re-add localstate as query param in the messages url (#758)
 
