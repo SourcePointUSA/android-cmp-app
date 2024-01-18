@@ -22,6 +22,18 @@
             app:showAsAction="never"/>
 
     <item
+            android:id="@+id/action_drop_db"
+            android:icon="@drawable/ic_baseline_cancel_24"
+            android:title="Drop DB"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_clear_all_sp_data"
+            android:icon="@drawable/ic_baseline_cancel_24"
+            android:title="Clear All SpData"
+            app:showAsAction="never"/>
+
+    <item
             android:id="@+id/action_save_old_v6_consent630"
             android:icon="@drawable/ic_baseline_old_6_24"
             android:title="Save old v6.3 consent"
@@ -31,12 +43,6 @@
             android:id="@+id/action_save_old_v6_consent"
             android:icon="@drawable/ic_baseline_old_6_24"
             android:title="@string/save_old_v6_consent"
-            app:showAsAction="never"/>
-
-    <item
-            android:id="@+id/action_save_old_v6_finnish_690"
-            android:icon="@drawable/ic_baseline_old_6_24"
-            android:title="Save old v6.9 consent FINNISH"
             app:showAsAction="never"/>
 
     <item
@@ -70,9 +76,51 @@
             app:showAsAction="never"/>
 
     <item
-            android:id="@+id/action_drop_db"
-            android:icon="@drawable/ic_baseline_cancel_24"
-            android:title="Drop DB"
+            android:id="@+id/action_save_ccpa_752_rejectAll"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="CCPA RejectAll 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_ccpa_752_rejectSome"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="CCPA RejectSome 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_ccpa_752_AcceptAll"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="CCPA AcceptAll 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_ccpa_752_AcceptAll_auth"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="CCPA AcceptAll AuthId 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_ccpa_752_NO_GPP"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="CCPA 752 NO GPP"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_usnat_752"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="USNAT 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_usnat_appl_sec_changed_752"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="USNAT ApplSect Changed 752"
+            app:showAsAction="never"/>
+
+    <item
+            android:id="@+id/action_save_keep_data"
+            android:icon="@drawable/ic_baseline_old_6_24"
+            android:title="Keep the data"
             app:showAsAction="never"/>
 
 </menu>

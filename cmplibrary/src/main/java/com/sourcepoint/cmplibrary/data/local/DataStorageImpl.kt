@@ -11,7 +11,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CONSENT_STATU
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.DATA_RECORDED_CONSENT
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.KEY_PROPERTY_ID
-import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_DATA_VERSION_HARDCODED_VALUE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_DATA_VERSION_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.LOCAL_STATE_OLD
@@ -35,28 +34,23 @@ import kotlinx.serialization.decodeFromString
 internal fun DataStorage.Companion.create(
     context: Context,
     dsGdpr: DataStorageGdpr,
-    dsCcpa: DataStorageCcpa
-): DataStorage = DataStorageImpl(context, dsGdpr, dsCcpa)
+    dsCcpa: DataStorageCcpa,
+    dsUsNat: DataStorageUSNat,
+): DataStorage = DataStorageImpl(context, dsGdpr, dsCcpa, dsUsNat)
 
 private class DataStorageImpl(
     context: Context,
     val dsGdpr: DataStorageGdpr,
-    val dsCcpa: DataStorageCcpa
+    val dsCcpa: DataStorageCcpa,
+    val dsUsNat: DataStorageUSNat,
 ) : DataStorage,
     DataStorageGdpr by dsGdpr,
+    DataStorageUSNat by dsUsNat,
     DataStorageCcpa by dsCcpa {
 
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
-
-    override var localDataVersion: Int
-        get() = preference
-            .getInt(LOCAL_DATA_VERSION_KEY, 0)
-        set(value) = preference
-            .edit()
-            .putInt(LOCAL_DATA_VERSION_KEY, value)
-            .apply()
 
     override var savedConsent: Boolean
         get() = preference.getBoolean(SAVED_CONSENT, false)
@@ -102,6 +96,13 @@ private class DataStorageImpl(
     override val ccpaApplies: Boolean
         get() = metaDataResp?.let { metaData ->
             check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).ccpa }
+                .getOrNull()
+                ?.applies ?: false
+        } ?: false
+
+    override val usNatApplies: Boolean
+        get() = metaDataResp?.let { metaData ->
+            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).usNat }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false
@@ -193,13 +194,10 @@ private class DataStorageImpl(
         return preference.getString(LOCAL_STATE, null)
     }
 
-    override fun updateLocalDataVersion() {
-        localDataVersion = LOCAL_DATA_VERSION_HARDCODED_VALUE
-    }
-
     override fun clearAll() {
         dsCcpa.deleteCcpaConsent()
         dsGdpr.deleteGdprConsent()
+        dsUsNat.deleteUsNatConsent()
         preference
             .edit()
             .remove(LOCAL_STATE)

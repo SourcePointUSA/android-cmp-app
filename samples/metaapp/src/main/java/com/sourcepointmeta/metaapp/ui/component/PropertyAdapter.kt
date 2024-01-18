@@ -54,6 +54,14 @@ internal class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
                 play_demo_group.saving = true
                 propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
             }
+            chip_usnat.setOnCheckedChangeListener { _, isChecked ->
+                val editedSet = mutableSetOf<StatusCampaign>().apply {
+                    add(StatusCampaign(p.propertyName, CampaignType.USNAT, isChecked))
+                    addAll(p.statusCampaignSet)
+                }
+                play_demo_group.saving = true
+                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+            }
             play_demo_btn.setOnClickListener {
                 demoProperty?.invoke(p)
             }

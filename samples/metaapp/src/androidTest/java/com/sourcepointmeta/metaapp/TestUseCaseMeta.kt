@@ -221,6 +221,7 @@ class TestUseCaseMeta {
                 account_id = 22,
                 gdpr_pm_id = 488393L,
                 ccpa_pm_id = 509688L,
+                usnat_pm_id = 509688L,
                 campaign_env = "prod",
                 timeout = 3000L,
                 timestamp = Date().time,
@@ -232,7 +233,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.demo",
@@ -252,6 +254,7 @@ class TestUseCaseMeta {
                 account_id = 22,
                 gdpr_pm_id = 594218L,
                 ccpa_pm_id = 594219L,
+                usnat_pm_id = 594219L,
                 campaign_env = "prod",
                 timeout = 3000L,
                 timestamp = Date().time,
@@ -263,7 +266,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0,
             )
             campaignQueries.insertStatusCampaign(
                 property_name = "mobile.multicampaign.fully.native",
@@ -293,6 +297,7 @@ class TestUseCaseMeta {
                 account_id = 22,
                 gdpr_pm_id = gdprPmId,
                 ccpa_pm_id = ccpaPmId,
+                usnat_pm_id = ccpaPmId,
                 campaign_env = campEnv.name,
                 timeout = 3000L,
                 timestamp = Date().time,
@@ -304,7 +309,8 @@ class TestUseCaseMeta {
                 group_pm_id = null,
                 use_gdpr_groupid_if_available = null,
                 property_id = null,
-                preloading = null
+                preloading = null,
+                ccpa_to_usnat = 0,
             )
             campaignQueries.insertStatusCampaign(
                 property_name = propertyName,

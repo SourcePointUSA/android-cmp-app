@@ -64,7 +64,8 @@ internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient b
                 ccpa = MetaDataResp.Ccpa(
                     sampleRate = 1.0,
                     applies = applies
-                )
+                ),
+                usNat = null
             )
         )
     }

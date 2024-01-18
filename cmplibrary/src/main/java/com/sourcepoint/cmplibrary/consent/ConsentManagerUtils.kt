@@ -4,9 +4,9 @@ import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
+import com.sourcepoint.cmplibrary.data.network.model.optimized.toUsNatConsentInternal
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
@@ -22,6 +22,7 @@ internal interface ConsentManagerUtils {
 
     val gdprConsentOptimized: Either<GDPRConsentInternal>
     val ccpaConsentOptimized: Either<CCPAConsentInternal>
+    val usNatConsent: Either<UsNatConsentInternal>
 
     fun updateGdprConsent(
         dataRecordedConsent: String,
@@ -32,7 +33,7 @@ internal interface ConsentManagerUtils {
 
     val shouldTriggerByGdprSample: Boolean
     val shouldTriggerByCcpaSample: Boolean
-    var messagesResp: MessagesResp?
+    val shouldTriggerByUsNatSample: Boolean
 
     companion object {
         const val DEFAULT_SAMPLE_RATE: Double = 1.0
@@ -60,7 +61,7 @@ private class ConsentManagerUtilsImpl(
         legalBasisChangeDate: String
     ): ConsentStatus {
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val formatter = SimpleDateFormat(CampaignManager.SIMPLE_DATE_FORMAT_PATTERN, Locale.getDefault())
 
         val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
         val additionsChangeDateDate = formatter.parse(additionsChangeDate)
@@ -117,6 +118,13 @@ private class ConsentManagerUtilsImpl(
                 "The CCPA consent is null!!!"
             )
         }
+    override val usNatConsent: Either<UsNatConsentInternal>
+        get() = check {
+            cm.usNatConsentData?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
+                cause = null,
+                "The UsNat consent is null!!!"
+            )
+        }
 
     override fun hasGdprConsent(): Boolean = ds.getGdprConsentResp() != null
 
@@ -168,9 +176,26 @@ private class ConsentManagerUtilsImpl(
             }
         }
 
-    override var messagesResp: MessagesResp?
-        get() = TODO("Not yet implemented")
-        set(value) {
-            ds
+    override val shouldTriggerByUsNatSample: Boolean
+        get() {
+            return ds.usNatSamplingResult ?: kotlin.run {
+                val sampling = (ds.usNatSamplingValue * 100).toInt()
+                when {
+                    sampling <= 0 -> {
+                        ds.usNatSamplingResult = false
+                        false
+                    }
+                    sampling >= 100 -> {
+                        ds.usNatSamplingResult = true
+                        true
+                    }
+                    else -> {
+                        val num = (1 until 100).random()
+                        val res = num in (1..sampling)
+                        ds.usNatSamplingResult = res
+                        res
+                    }
+                }
+            }
         }
 }

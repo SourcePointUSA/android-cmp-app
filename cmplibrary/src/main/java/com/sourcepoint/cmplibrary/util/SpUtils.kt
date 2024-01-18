@@ -8,19 +8,16 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr
+import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
-import com.sourcepoint.cmplibrary.model.exposed.SPCCPAConsent
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.SPGDPRConsent
+import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import kotlinx.serialization.decodeFromString
 
 private const val DEFAULT_CCPA_USP_STRING = "1---"
@@ -66,28 +63,33 @@ internal fun updateCcpaUspString(
 fun userConsents(context: Context): SPConsents {
     val dataStorageGdpr = fetchOrStore(DataStorageGdpr::class.java) { DataStorageGdpr.create(context) }
     val dataStorageCcpa = fetchOrStore(DataStorageCcpa::class.java) { DataStorageCcpa.create(context) }
-    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa) }
+    val dataStorageUSNat = fetchOrStore(DataStorageUSNat::class.java) { DataStorageUSNat.create(context) }
+    val dataStorage = fetchOrStore(DataStorage::class.java) { DataStorage.create(context, dataStorageGdpr, dataStorageCcpa, dataStorageUSNat) }
     return userConsents(dataStorage)
 }
 
 fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
     val dataStorageGdpr = DataStorageGdpr.create(context)
     val dataStorageCcpa = DataStorageCcpa.create(context)
+    val dataStorageUSNat = DataStorageUSNat.create(context)
     val dataStorage = DataStorage.create(
         context = context,
         dsGdpr = dataStorageGdpr,
         dsCcpa = dataStorageCcpa,
+        dsUsNat = dataStorageUSNat,
     )
     return when (campaign) {
         CampaignType.GDPR -> dataStorage.gdprApplies
         CampaignType.CCPA -> dataStorage.ccpaApplies
+        CampaignType.USNAT -> dataStorage.usNatApplies
     }
 }
 
 fun clearAllData(context: Context) {
     val dataStorageGdpr = DataStorageGdpr.create(context)
     val dataStorageCcpa = DataStorageCcpa.create(context)
-    DataStorage.create(context, dataStorageGdpr, dataStorageCcpa).clearAll()
+    val dataStorageUSNat = DataStorageUSNat.create(context)
+    DataStorage.create(context, dataStorageGdpr, dataStorageCcpa, dataStorageUSNat).clearAll()
 }
 
 internal fun userConsents(
@@ -112,6 +114,15 @@ internal fun userConsents(
                 SPGDPRConsent(
                     consent = it
                 )
-            }
+            },
+        usNat = dataStorage.usNatConsentData
+            ?.let { check { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }.getOrNull() }
+            ?.copy(applies = dataStorage.usNatApplies)
+            ?.toUsNatConsentInternal()
+            ?.let {
+                SpUsNatConsent(
+                    consent = it
+                )
+            },
     )
 }

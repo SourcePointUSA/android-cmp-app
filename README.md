@@ -41,7 +41,8 @@
   - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
-  - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support](#global-privacy-platform-gpp-multi-state-privacy-msps-support)
+  - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
+  - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
 - [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
@@ -74,8 +75,8 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 15000 // Optional, default 10000ms
-                  +CampaignType.CCPA
-                  +CampaignType.GDPR
+                  +CampaignType.CCPA // See campaign table
+                  +CampaignType.GDPR // See campaign table
                 }
 ```
 
@@ -92,11 +93,19 @@ Java
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
             .addMessageTimeout(4000) // Optional, default 3000ms
-            .addCampaign(CampaignType.GDPR)
-            .addCampaign(CampaignType.CCPA)
+            .addCampaign(CampaignType.GDPR) //see campaign table
+            .addCampaign(CampaignType.CCPA) //see campaign table
             .build();
 
 ```
+
+Refer to the table below regarding the different campaigns that can be implemented via the SDK:
+
+| Campaign | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GDPR`   | Used if your property runs a GDPR TCF or GDPR Standard campaign                                                                                                                                                                                                                                                                                                                                                                                 |
+| `CCPA`   | Used if your property runs a U.S. Privacy (Legacy) campaign                                                                                                                                                                                                                                                                                                                                                                                     |
+| `USNAT`  | Used if your property runs a U.S. Multi-State Privacy campaign. Please do not attempt to utilize both `CCPA` and `USNAT` simultaneously as this poses a compliance risk for your organization. <br><br>This campaign type should only be implemented via the config object on mobile devices. [Click here](#global-privacy-platform-multi-state-privacy-msps-support-for-ott) to learn more about implementing U.S. Multi-State Privacy on OTT. |
 
 ## Create an instance of the CMP library
 
@@ -936,7 +945,7 @@ Google additional consent is a concept created by Google and the IAB Framework t
 
 Google additional consent is supported in our mobile SDKs and is stored in the `IABTCF_AddtlConsent` key in the user's local storage. Look for the key in the user's local storage and pass the value to Google's SDKs.
 
-## Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support
+## Global Privacy Platform Multi-State Privacy (MSPS) Support for OTT
 
 Starting with version 7.3.0, if your configuration contains a ccpa campaign, it will automatically set GPP data. Unless configured otherwise, the following MSPA attributes will default to:
 
@@ -985,6 +994,42 @@ public class MainActivityJava extends AppCompatActivity {
             // ...
             .build();
 }
+```
+
+## Transfer opt-in/opt out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy
+
+When migrating a property from the U.S. Privacy (Legacy) campaign to U.S. Multi-State Privacy campaign, the SDK will automatically detect previously set end-user opt-in/opt-out preferences for U.S. Privacy (Legacy) and have that transferred over to U.S. Multi-State Privacy.
+
+> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the *Sharing of Personal Information Targeted Advertisting* and *Sale of Personal Information* privacy choices or the *Sale or Share of Personal Information/Targeted Advertising* privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
+
+If you ever used authenticated consent for CCPA, you'll have to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration to transfer an end-user's opt-in/opt-out preferences. The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId. This way, the SDK will look for authenticated consent within CCPA profiles and carry that over to USNat, even if the user current doesn't have CCPA local data (on a fresh install, for example).
+
+```kotlin
+private val spConsentLib by spConsentLibLazy {
+    activity = this@YourActivity
+    spClient = YourLocalClient()
+    config {
+        accountId = 22
+        propertyId = 39049
+        propertyName = "automation-mobile-usnat"
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
+        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
+    }
+}
+```
+
+```java
+private final SpConfig spConfig = new SpConfigDataBuilder()
+        .addAccountId(22)
+        .addPropertyName("automation-mobile-usnat")
+        .addPropertyId(34049)
+        .addMessageLanguage(MessageLanguage.ENGLISH)
+        .addMessageTimeout(5000)
+        .addCampaignsEnv(CampaignsEnv.PUBLIC)
+        .addCampaign(new SpCampaign(CampaignType.USNAT, Collections.emptyList(), Set.of(ConfigOption.TRANSITION_CCPA_AUTH)))
+        .addCampaign(CampaignType.GDPR)
+        .build();
 ```
 
 ## Delete user data

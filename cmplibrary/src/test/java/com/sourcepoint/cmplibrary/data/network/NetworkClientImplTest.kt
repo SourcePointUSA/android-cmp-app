@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.assertEquals
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -185,7 +186,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,
@@ -204,7 +205,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(RuntimeException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,
@@ -223,7 +224,7 @@ class NetworkClientImplTest {
         val mockCall = mockk<Call>()
         every { okHttp.newCall(any()) }.returns(mockCall)
         every { mockCall.execute() }.throws(InterruptedIOException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null))
+        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
 
         val param = MetaDataParamReq(
             accountId = 22,
@@ -248,7 +249,8 @@ class NetworkClientImplTest {
             metadata = JSONObject().toString(),
             env = Env.LOCAL_PROD,
             authId = null,
-            localState = null
+            localState = null,
+            includeData = buildIncludeData(),
         )
 
         val res = sut.getConsentStatus(param) as? Either.Left

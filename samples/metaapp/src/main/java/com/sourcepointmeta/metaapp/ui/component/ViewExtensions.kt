@@ -14,12 +14,14 @@ fun PropertyItemView.bind(
 
     chip_gdpr.setOnCheckedChangeListener(null)
     chip_ccpa.setOnCheckedChangeListener(null)
+    chip_usnat.setOnCheckedChangeListener(null)
 
     campaign_env.text = item.campaignEnv
     property_name.text = item.propertyName
     account_id.text = "${item.accountId}"
     chip_gdpr.isChecked = item.gdprEnabled
     chip_ccpa.isChecked = item.ccpaEnabled
+    chip_usnat.isChecked = item.usnatEnabled
     play_demo_group.saving = item.saving
 }
 

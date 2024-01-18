@@ -36,5 +36,6 @@ enum class MessageSubCategory(val code: Int) {
 @Serializable
 enum class MessageCategory(val code: Int) {
     GDPR(1),
-    CCPA(2)
+    CCPA(2),
+    USNAT(6),
 }

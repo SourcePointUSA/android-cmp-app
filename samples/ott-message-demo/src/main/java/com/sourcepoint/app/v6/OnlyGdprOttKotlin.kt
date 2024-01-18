@@ -42,7 +42,7 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
 
         review_consents_gdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
-                "488393",
+                "579231",
                 PMTab.PURPOSES,
                 CampaignType.GDPR,
                 MessageType.LEGACY_OTT

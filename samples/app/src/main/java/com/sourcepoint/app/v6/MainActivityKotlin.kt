@@ -106,7 +106,6 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         refresh_btn.setOnClickListener { executeCmpLib() }
         add_old_consent.setOnClickListener { addOldV6Consent() }
-        transfer_consent_to_web_view.setOnClickListener { openTransferConsentActivity() }
     }
 
     private fun openTransferConsentActivity() {
@@ -229,6 +228,7 @@ class MainActivityKotlin : AppCompatActivity() {
                     when (message.campaignType) {
                         CampaignType.GDPR -> dataProvider.gdprPmId
                         CampaignType.CCPA -> dataProvider.ccpaPmId
+                        CampaignType.USNAT -> throw RuntimeException()
                     }.let { pmId ->
                         messageController.showOptionNativeMessage(message.campaignType, pmId.toString())
                     }
