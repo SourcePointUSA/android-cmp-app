@@ -1,3 +1,1 @@
-* [DIA-3183](https://sourcepoint.atlassian.net/browse/DIA-3183) Re-add localstate as query param in the messages url (#758)
-
-
+* [DIA-2031](https://sourcepoint.atlassian.net/browse/DIA-2031) Support to USNat (#736)
