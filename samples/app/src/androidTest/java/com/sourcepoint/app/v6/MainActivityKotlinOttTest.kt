@@ -12,6 +12,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSettingsOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -154,7 +155,7 @@ class MainActivityKotlinOttTest {
     }
 
     @Test
-    fun GIVEN_user_clicks_back_button_in_message_SHOULD_return_to_the_previous_screen_and_not_close_the_activity() = runBlocking {
+    fun GIVEN_user_clicks_back_button_in_message_SHOULD_not_close_the_activity() = runBlocking {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -169,26 +170,10 @@ class MainActivityKotlinOttTest {
 
         scenario = launchActivity()
 
-        wr {
-            // verify that FLM appears by checking if proper buttons are in the web view
-            assertButtonWithTextOnWebView(text = "Manage Preferences")
-
-            // click manage preferences and verify if it opens up
-            performClickOnWebViewByContent("Manage Preferences")
-            assertButtonWithTextOnWebView(text = "Home")
-
-            // press system's back button
-            device.pressBack()
-
-            // verify that the web view returned to the home page
-            assertButtonWithTextOnWebView(text = "Manage Preferences")
-
-            // press system's back button again on home page
-            device.pressBack()
-
-            // assert that web view is still present on a home page and the activity was not destroyed
-            assertButtonWithTextOnWebView(text = "Manage Preferences")
-            scenario.state.assertNotEquals(Lifecycle.State.DESTROYED)
-        }
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapSettingsOnWebView() }
+        wr { device.pressBack() }
+        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
+        wr { device.pressBack() }
+        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
     }
 }

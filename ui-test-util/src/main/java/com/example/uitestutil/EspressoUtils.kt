@@ -1,5 +1,6 @@
 package com.example.uitestutil
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -225,12 +226,14 @@ fun performClickOnWebViewByContent(text: String) {
 }
 
 @Throws(Throwable::class)
-fun assertButtonWithTextOnWebView(
+fun clickOnButtonByTextOnWebViewByTag(
+    tag: String,
     text: String,
 ) {
-    onWebView()
+    onWebView(withTagValue(CoreMatchers.equalTo(tag)))
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
-        .check(webMatches(getText(), containsString(text)))
+        .perform(webScrollIntoView())
+        .perform(webClick())
 }
 
 @Throws(Throwable::class)
