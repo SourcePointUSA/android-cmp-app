@@ -21,6 +21,7 @@
   - [Loading a Privacy Manager on demand](#loading-a-privacy-manager-on-demand)
   - [Loading the OTT First Layer Message](#loading-the-ott-first-layer-message)
   - [Loading an OTT privacy manager](#loading-an-ott-privacy-manager)
+  - [System navigation within the OTT message](#system-navigation-within-the-ott-message)
   - [Releasing resources](#releasing-resources)
   - [The _SpConsent_ object](#the-spconsent-object)
   - [Authenticated Consent](#authenticated-consent)
@@ -375,6 +376,27 @@ Java
 ```
 
 > In case a property was created from the web builder as OTT/CTV, the Privacy Manager is the first layer message itself, this means that as pmId you should use the message id of your first layer message.
+
+## System navigation within the OTT message
+
+When an OTT message is presented, the user should be able to navigate inside it using the system buttons (such as back button). Since each activity handles pressing the back button their own way, the users of our library should overwrite the `onBackPressed()` method, in order for the navigation inside the message to work properly.
+
+Kotlin
+
+```kotlin
+override fun onBackPressed() {
+    spConsentLib.verifyHome { super.onBackPressed() }
+}
+```
+
+Java
+
+```java
+@Override
+public void onBackPressed() {
+    spConsentLib.verifyHome(super::onBackPressed);
+}
+```
 
 ## Releasing resources
 
