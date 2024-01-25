@@ -24,6 +24,8 @@ internal interface ConsentManagerUtils {
     val ccpaConsentOptimized: Either<CCPAConsentInternal>
     val usNatConsent: Either<UsNatConsentInternal>
 
+    val spStoredConsent: Either<SPConsents>
+
     fun updateGdprConsent(
         dataRecordedConsent: String,
         gdprConsentStatus: ConsentStatus,
@@ -123,6 +125,18 @@ private class ConsentManagerUtilsImpl(
             cm.usNatConsentData?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
                 cause = null,
                 "The UsNat consent is null!!!"
+            )
+        }
+
+    override val spStoredConsent: Either<SPConsents>
+        get() = check {
+            val ccpaCached = ccpaConsentOptimized.getOrNull()
+            val usNatCached = usNatConsent.getOrNull()
+            val gdprCached = gdprConsentOptimized.getOrNull()
+            SPConsents(
+                gdpr = gdprCached?.let { gc -> SPGDPRConsent(consent = gc) },
+                ccpa = ccpaCached?.let { cc -> SPCCPAConsent(consent = cc) },
+                usNat = usNatCached?.let { usNatConsent -> SpUsNatConsent(consent = usNatConsent) },
             )
         }
 

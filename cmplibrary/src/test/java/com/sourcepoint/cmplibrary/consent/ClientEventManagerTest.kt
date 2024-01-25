@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.* //ktlint-disable
+import com.sourcepoint.cmplibrary.stub.MockConnectionManager
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -33,7 +34,8 @@ class ClientEventManagerTest {
             logger = logger,
             consentManagerUtils = consentManagerUtils,
             spClient = spClient,
-            executor = MockExecutorManager()
+            executor = MockExecutorManager(),
+            connectionManager = MockConnectionManager()
         )
 
         every { consentManagerUtils.gdprConsentOptimized }.returns(Either.Right(GDPRConsentInternal()))

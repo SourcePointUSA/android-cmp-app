@@ -27,6 +27,7 @@ internal interface ConsentManager {
     fun enqueueConsent(consentActionImpl: ConsentActionImpl)
     fun enqueueConsent(nativeConsentAction: NativeConsentAction)
     fun sendStoredConsentToClient()
+    fun resetConsentCounter()
     fun sendConsent(
         actionImpl: ConsentActionImpl
     )
@@ -116,6 +117,10 @@ private class ConsentManagerImpl(
 
     override fun enqueueConsent(nativeConsentAction: NativeConsentAction) {
         sendConsent(nativeConsentAction.toConsentAction())
+    }
+
+    override fun resetConsentCounter() {
+        clientEventManager.setCampaignsToProcess(0)
     }
 
     override fun sendStoredConsentToClient() {

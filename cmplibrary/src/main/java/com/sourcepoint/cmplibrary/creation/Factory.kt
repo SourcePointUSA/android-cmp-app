@@ -76,7 +76,13 @@ fun makeConsentLib(
         execManager,
         connManager,
     )
-    val clientEventManager: ClientEventManager = ClientEventManager.create(logger = logger, executor = execManager, spClient = spClient, consentManagerUtils = consentManagerUtils)
+    val clientEventManager: ClientEventManager = ClientEventManager.create(
+        logger = logger,
+        executor = execManager,
+        spClient = spClient,
+        consentManagerUtils = consentManagerUtils,
+        connectionManager = connManager
+    )
     val consentManager: ConsentManager =
         ConsentManager.create(service, consentManagerUtils, env, logger, dataStorage, execManager, clientEventManager)
 

@@ -4,6 +4,8 @@ import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkAllCcpaConsentsOn
 import com.sourcepoint.app.v6.TestUseCase.Companion.checkSomeConsentsOff
@@ -64,6 +66,9 @@ import java.util.UUID
 class MainActivityKotlinTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
+
+    private val device: UiDevice by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
+    private val appContext by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
 
     @After
     fun cleanup() {
@@ -1056,67 +1061,9 @@ class MainActivityKotlinTest {
 
     }
 
-//    /**
-//     * Regression test that verifies if the local data versioning works correctly, meaning that if
-//     * the local data version is not the same as the hardcoded one, then the app should call
-//     * /consent-status and update the local data version to the hardcoded one
-//     */
-//    @Test
-//    fun given_non_eligible_local_data_version_then_should_call_consent_status_and_update_local_data_version() = runBlocking<Unit> {
-//
-//        val v7Consent = JSONObject(TestData.storedConsentV741)
-//        val spClient = mockk<SpClient>(relaxed = true)
-//        val initialLocalDataVersion = 0
-//
-//        /**
-//         * This value should be changed each time the HARDCODED_LOCAL_DATA_VERSION value from
-//         * DataStorage is updated
-//         */
-//        val hardcodedLocalDataVersion = 1
-//
-//        loadKoinModules(
-//            mockModule(
-//                spConfig = spConf,
-//                gdprPmId = "488393",
-//                ccpaPmId = "509688",
-//                spClientObserver = listOf(spClient),
-//                diagnostic = v7Consent.toList() + listOf(Pair("sp.key.localDataVersion", initialLocalDataVersion)),
-//            )
-//        )
-//
-//        scenario = launchActivity()
-//
-//        scenario.onActivity { activity ->
-//            PreferenceManager.getDefaultSharedPreferences(activity).run {
-//                getInt("sp.key.localDataVersion", 0).assertEquals(initialLocalDataVersion)
-//            }
-//        }
-//
-//        wr { verify(exactly = 0) { spClient.onError(any()) } }
-//        wr {
-//            verify(exactly = 1) {
-//                spClient.onSpFinished(
-//                    withArg {
-//                        it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-//                    }
-//                )
-//            }
-//        }
-//
-//        scenario.onActivity { activity ->
-//            PreferenceManager.getDefaultSharedPreferences(activity).run {
-//                getInt("sp.key.localDataVersion", 0).assertEquals(hardcodedLocalDataVersion)
-//            }
-//        }
-//    }
 
-    /**
-     * UI test that verifies that there was a clean up of local data after the user changed their
-     * auth ID. Due to the fact that the clean up happens, the message flow appears again, the user
-     * make their choice and the consent UUIDs of both campaigns changes.
-     */
     @Test
-    fun given_the_user_has_consent_and_the_auth_id_changes_then_should_flush_data() = runBlocking<Unit> {
+    fun GIVEN_the_user_has_consent_and_the_auth_id_changes_THEN_should_flush_data() = runBlocking<Unit> {
 
         val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
@@ -1149,13 +1096,8 @@ class MainActivityKotlinTest {
         }
     }
 
-    /**
-     * UI test that verifies that there was a clean up of local data after the user changed their
-     * property ID. Due to the fact that the clean up happens, the message flow appears again, the user
-     * make their choice and the consent UUIDs of both campaigns changes.
-     */
     @Test
-    fun given_the_user_has_consent_and_the_property_id_changes_then_should_flush_data() = runBlocking<Unit> {
+    fun GIVEN_the_user_has_consent_and_the_property_id_changes_THEN_should_flush_data() = runBlocking<Unit> {
 
         val storedConsent = JSONObject(TestData.storedConsentWithAuthIdAndPropertyIdV741)
         val spClient = mockk<SpClient>(relaxed = true)
@@ -1190,11 +1132,148 @@ class MainActivityKotlinTest {
         }
     }
 
-    private fun <E> check(block: () -> E): E? {
-        return try {
-            block.invoke()
-        } catch (e: Exception) {
-            null
+    @Test
+    fun GIVEN_a_no_internet_ex_during_AcceptAll_VERIFY_that_onConsenReady_onSpFinished_are_called() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("gdpr_choice_exception" to true)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+
+        verify {
+            spClient.run {
+                onUIReady(any())
+                onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+                onUIFinished(any())
+                onAction(any(), any())
+                onConsentReady(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+                })
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+                })
+            }
+        }
+
+    }
+
+    @Test
+    fun GIVEN_a_no_internet_ex_during_RejectAll_VERIFY_that_onConsenReady_onSpFinished_are_called() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("gdpr_choice_exception" to true)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+
+        verify {
+            spClient.run {
+                onUIReady(any())
+                onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+                onUIFinished(any())
+                onAction(any(), any())
+                onConsentReady(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+                })
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+                })
+            }
+        }
+    }
+
+    @Test
+    fun GIVEN_a_no_internet_ex_during_AcceptAll_with_multicampaign_VERIFY_that_onConsenReady_onSpFinished_are_called() = runBlocking<Unit> {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spConf,
+                gdprPmId = "488393",
+                ccpaPmId = "509688",
+                spClientObserver = listOf(spClient),
+                diagnostic = listOf("gdpr_choice_exception" to true)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { checkWebViewDisplayedGDPRFirstLayerMessage() }
+        clickAirplaneMode(device, appContext)
+        wr { tapRejectOnWebView() }
+        clickAirplaneMode(device, appContext)
+
+        verify(exactly = 0) { spClient.onError(any()) }
+
+        verify {
+            spClient.run {
+                onUIReady(any())
+                onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+                onUIFinished(any())
+                onAction(any(), any())
+                onConsentReady(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedNone)
+                })
+                onSpFinished(withArg {
+                    it.gdpr!!.consent.applies.assertTrue()
+                    it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.consentStatus!!.consentedAll!!.assertFalse()
+                    it.gdpr!!.consent.consentStatus!!.hasConsentData!!.assertFalse()
+
+                    it.ccpa!!.consent.applies.assertTrue()
+                    it.ccpa!!.consent.uuid.assertNotNull()
+                    it.ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedNone)
+                })
+            }
         }
     }
 }

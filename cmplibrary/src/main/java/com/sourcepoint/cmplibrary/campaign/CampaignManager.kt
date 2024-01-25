@@ -85,6 +85,7 @@ internal interface CampaignManager {
     val isGdprExpired: Boolean
     val isCcpaExpired: Boolean
     val isUsnatExpired: Boolean
+    val storeChoiceResp: ChoiceResp
 
     // dateCreated
     var gdprDateCreated: String?
@@ -1005,6 +1006,13 @@ private class CampaignManagerImpl(
             val currentDate = Date()
             return currentDate.after(usnatExpirationDate)
         }
+
+    override val storeChoiceResp: ChoiceResp
+        get() = ChoiceResp(
+            ccpa = ccpaConsentStatus,
+            gdpr = gdprConsentStatus,
+            usNat = usNatConsentData
+        )
 
     override fun deleteExpiredConsents() {
         if (isUsnatExpired) dataStorage.deleteUsNatConsent()

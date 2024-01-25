@@ -578,7 +578,6 @@ internal class SpConsentLibImpl(
         override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
             /** spClient is called from [onActionFromWebViewClient] */
             (iConsentWebView as? View)?.let {
-                /** spClient is called from [onActionFromWebViewClient] */
                 pJsonConverter
                     .toConsentAction(actionData)
                     .map { ca ->
@@ -687,6 +686,15 @@ internal class SpConsentLibImpl(
     }
 
     private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {
+
+        if (!connectionManager.isConnected) {
+            consentManager.run {
+                resetConsentCounter()
+                sendStoredConsentToClient()
+            }
+            return
+        }
+
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         when (val l = actionImpl.campaignType) {
             CampaignType.GDPR -> {
