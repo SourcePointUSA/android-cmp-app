@@ -702,7 +702,7 @@ private class CampaignManagerImpl(
         newPropertyId: Int,
     ) {
         // flush local data if proper authId or propertyId change was detected
-        val isNewAuthId = newAuthId != null && newAuthId != authId
+        val isNewAuthId = newAuthId != null && newAuthId != authId && authId != null
         val isNewPropertyId = newPropertyId != propertyId
         val hasPreviousPropertyId = propertyId != 0
         if (isNewAuthId || isNewPropertyId && hasPreviousPropertyId) {
