@@ -1,1 +1,1 @@
-* [DIA-2031](https://sourcepoint.atlassian.net/browse/DIA-2031) Support to USNat (#736)
+* [DIA-3366](https://sourcepoint.atlassian.net/browse/DIA-3366) Fix AuthId behaviour (#775)
