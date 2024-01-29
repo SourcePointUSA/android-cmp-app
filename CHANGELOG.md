@@ -1,3 +1,6 @@
+## 7.6.1 (January, 29, 2024)
+* [DIA-3366](https://sourcepoint.atlassian.net/browse/DIA-3366) Fix AuthId behaviour (#775)
+
 ## 7.6.0 (January, 18, 2024)
 * [DIA-2031](https://sourcepoint.atlassian.net/browse/DIA-2031) Support to USNat (#736)
 * [DIA-3168](https://sourcepoint.atlassian.net/browse/DIA-3168) Refactoring of SPGDPRConsent.acceptedCategories (#736)

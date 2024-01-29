@@ -693,15 +693,10 @@ private class CampaignManagerImpl(
     override val usnatAdditionsChangeDate: String?
         get() = metaDataResp?.usNat?.additionsChangeDate
 
-    /**
-     * The method that checks if the authId or propertyId was changed, if so it will flush all the
-     * data. At the end, it will update the authId and propertyId with the corresponding values.
-     */
     override fun handleAuthIdOrPropertyIdChange(
         newAuthId: String?,
         newPropertyId: Int,
     ) {
-        // flush local data if proper authId or propertyId change was detected
         val isNewAuthId = newAuthId != null && newAuthId != authId && authId != null
         val isNewPropertyId = newPropertyId != propertyId
         val hasPreviousPropertyId = propertyId != 0
@@ -718,31 +713,26 @@ private class CampaignManagerImpl(
             """.trimIndent()
         )
 
-        // update stored values of authId and propertyId
         authId = newAuthId
         propertyId = newPropertyId
     }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
 
-        // delete GDPR consent if GDPR vendor list id changed
         if (hasGdprVendorListIdChanged(gdprVendorListId = response?.gdpr?.vendorListId)) {
             dataStorage.deleteGdprConsent()
         }
 
-        // delete USNAT consent if USNAT vendor list id changed
         if (hasUsNatVendorListIdChanged(usNatVendorListId = response?.usNat?.vendorListId)) {
             dataStorage.deleteUsNatConsent()
         }
 
         usnatApplicableSectionChanged = hasUsnatApplicableSectionsChanged(response)
 
-        // update meta data response in the data storage
         metaDataResp = response
 
         if (response == null) return
 
-        // handle ccpa
         response.ccpa?.apply {
             applies?.let { i ->
                 ccpaConsentStatus?.let { ccpaCS ->
@@ -761,7 +751,6 @@ private class CampaignManagerImpl(
             }
         }
 
-        // handle gdpr
         response.gdpr?.apply {
             applies?.let { gdprApplies ->
                 gdprConsentStatus?.let { gdprCS ->
@@ -787,24 +776,12 @@ private class CampaignManagerImpl(
         return metaDataResp?.usNat?.applicableSections != response.usNat?.applicableSections
     }
 
-    /**
-     * Method that verifies if vendorListId of GDPR changed qualitatively, basically a string value
-     * to a new string value
-     *
-     * @param gdprVendorListId - vendor list id of GDPR from a new /meta-data response
-     */
     override fun hasGdprVendorListIdChanged(gdprVendorListId: String?): Boolean {
         val storedGdprVendorListId = metaDataResp?.gdpr?.vendorListId
         return gdprVendorListId != null && storedGdprVendorListId != null &&
             storedGdprVendorListId != gdprVendorListId
     }
 
-    /**
-     * Method that verifies if vendorListId of USNAT changed qualitatively, basically a string value
-     * to a new string value
-     *
-     * @param usNatVendorListId - vendor list id of USNAT from a new /meta-data response
-     */
     override fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean {
         val storedUsNatVendorListId = metaDataResp?.usNat?.vendorListId
         return usNatVendorListId != null && storedUsNatVendorListId != null &&
