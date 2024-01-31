@@ -417,6 +417,50 @@ SpConsent
         |-- status: String?
         |-- uspstring: String
         |-- apply: Boolean
+    |-- usnat?
+        |-- applies: Boolean
+        |-- gppData: Object
+            |-- IABGPP_HDR_Version: String
+            |-- IABGPP_HDR_Sections: String
+            |-- IABGPP_HDR_GppString: String
+            |-- IABGPP_GppSID: String
+            |-- IABGPP_7_String: String
+            |-- IABGPP_USNAT_Version: String
+            |-- IABGPP_USNAT_SharingNotice: String
+            |-- IABGPP_SaleOptOutNotice: String
+            |-- IABGPP_USNAT_SharingOptOutNotice: String
+            |-- IABGPP_USNAT_TargetedAdvertisingOptOutNotice: String
+            |-- IABGPP_USNAT_SensitiveDataProcessingOptOutNotice: String
+            |-- IABGPP_USNAT_SensitiveDataLimitUseNotice: String
+            |-- IABGPP_USNAT_SaleOptOut: String
+            |-- IABGPP_USNAT_SharingOptOut: String
+            |-- IABGPP_USNAT_TargetedAdvertisingOptOut: String
+            |-- IABGPP_USNAT_SensitiveDataProcessing: String
+            |-- IABGPP_USNAT_KnownChildSensitiveDataConsents: String
+            |-- IABGPP_USNAT_PersonalDataConsents: String
+            |-- IABGPP_USNAT_MspaCoveredTransaction: String
+            |-- IABGPP_USNAT_MspaOptOutOptionMode: String
+            |-- IABGPP_USNAT_MspaServiceProviderMode: String
+            |-- IABGPP_USNAT_GpcSegmentType: String
+            |-- IABGPP_USNAT_Gpc: String
+        |-- consentStatus: Object
+            |-- rejectedAny: Boolean
+            |-- consentedToAll: Boolean
+            |-- consentedToAny: Boolean
+            |-- granularStatus: Object
+                |-- sellStatus: Boolean
+                |-- shareStatus: Boolean
+                |-- sensitiveDataStatus: Boolean
+                |-- gpcStatus: Boolean
+                |-- previousOptInAll: Boolean
+            |-- hasConsentData: Boolean
+        |-- consentStrings: Array
+            |-- Object
+                |-- sectionId: String
+                |-- sectionName: String
+                |-- consentString: String
+        |-- dateCreated: String
+        |-- uuid: String
 ```
 
 ### The grants parameter and the GDPRPurposeGrants object
