@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
@@ -112,12 +111,13 @@ internal fun DataStorageGdpr.Companion.create(
 private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
 
     companion object {
+        const val KEY_GDPR_STORAGE_NAME = "sp-cmp-gdpr-storage"
         const val KEY_GDPR = "sp.gdpr.key"
         const val KEY_GDPR_OLD = "sp.key.gdpr"
     }
 
     override val preference: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(context)
+        context.getSharedPreferences(KEY_GDPR_STORAGE_NAME, Context.MODE_PRIVATE)
     }
 
     override var gdprChildPmId: String?

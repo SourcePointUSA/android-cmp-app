@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
@@ -84,8 +83,12 @@ internal fun DataStorageCcpa.Companion.create(
 
 private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
 
+    companion object {
+        const val KEY_CCPA_STORAGE_NAME = "sp-cmp-ccpa-storage"
+    }
+
     override val preference: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(context)
+        context.getSharedPreferences(KEY_CCPA_STORAGE_NAME, Context.MODE_PRIVATE)
     }
 
     override fun saveCcpa(value: String) {

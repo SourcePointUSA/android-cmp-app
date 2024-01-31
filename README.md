@@ -44,6 +44,7 @@
   - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
+  - [Handling consumer migration to the DataStore](#handling-consumer-migration-to-the-datastore)
   - [Frequently Asked Questions](#frequently-asked-questions)
 - [React Native Integration](docs-reactnative/README-REACTNATIVE.md)
 
@@ -1051,6 +1052,16 @@ import com.sourcepoint.cmplibrary.util.SpUtils;
 
 SpUtils.clearAllData(context: Context)
 ```
+
+## Handling consumer migration to the DataStore
+
+If a consumer of the CMP library decides to migrate their application to use Jetpack DataStore, they have to keep in mind that they **should not migrate** shared preferences with the following names:
+- `sp-cmp-main-storage`
+- `sp-cmp-gdpr-storage`
+- `sp-cmp-ccpa-storage`
+- `sp-cmp-usnat-storage`
+
+If the shared preferences listed above were to be deleted, it will result in the SDK not working correctly, since the library depends on the data inside those shared preferences.
 
 ## Frequently Asked Questions
 

@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.KEY_USNAT_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_SAMPLING_RESULT
@@ -34,8 +33,12 @@ internal fun DataStorageUSNat.Companion.create(
 
 private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
 
+    companion object {
+        const val KEY_USNAT_STORAGE_NAME = "sp-cmp-usnat-storage"
+    }
+
     override val preference: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(context)
+        context.getSharedPreferences(KEY_USNAT_STORAGE_NAME, Context.MODE_PRIVATE)
     }
 
     override var usNatConsentData: String?

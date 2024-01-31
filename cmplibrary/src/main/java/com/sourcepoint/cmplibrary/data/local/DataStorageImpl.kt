@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CHOICE_RESP
@@ -48,8 +47,12 @@ private class DataStorageImpl(
     DataStorageUSNat by dsUsNat,
     DataStorageCcpa by dsCcpa {
 
+    companion object {
+        const val KEY_MAIN_STORAGE_NAME = "sp-cmp-main-storage"
+    }
+
     override val preference: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(context)
+        context.getSharedPreferences(KEY_MAIN_STORAGE_NAME, Context.MODE_PRIVATE)
     }
 
     override var savedConsent: Boolean
@@ -219,5 +222,4 @@ private class DataStorageImpl(
             .apply()
     }
 
-    companion object
 }
