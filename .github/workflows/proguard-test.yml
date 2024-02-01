@@ -2,7 +2,7 @@ name: SDK Release
 
 on:
   push:
-    branches:  [ your-current-branch ]
+    branches:  [ DIA-2024-ship-proguard-rules ]
 
 jobs:
   build:
