@@ -692,6 +692,15 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 -dontwarn kotlinx.serialization.internal.ClassValueWrapper
 -dontwarn kotlinx.serialization.internal.ParametrizedClassValueWrapper
 
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
 ```
 
 </details>
