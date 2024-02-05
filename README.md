@@ -644,7 +644,10 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 ## ProGuard
 
-Using ProGuard in your project you might need to add the following rules
+**From version 7.6.2 CMP library ships it's own Proguard rules with the AAR**, so the user of the library don't have to add anything manually. Make sure you are up-to-date with the latest releases of the CMP library.
+
+<details>
+<summary>If you are on version lower than 7.6.2 make sure to add the following rules.</summary>
 
 ```editorconfig
 # Sourcepoint (CMP)
@@ -689,7 +692,18 @@ Using ProGuard in your project you might need to add the following rules
 -dontwarn kotlinx.serialization.internal.ClassValueWrapper
 -dontwarn kotlinx.serialization.internal.ParametrizedClassValueWrapper
 
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
 ```
+
+</details>
 
 ## Sharing consent with a WebView
 
