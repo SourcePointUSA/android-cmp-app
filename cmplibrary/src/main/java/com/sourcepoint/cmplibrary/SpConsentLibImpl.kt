@@ -15,6 +15,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.stringify
@@ -35,6 +36,7 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.extensions.toMessageType
 import com.sourcepoint.cmplibrary.util.toConsentLibException
+import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -310,6 +312,31 @@ internal class SpConsentLibImpl(
                         event = "onError",
                         msg = "An error occurred during the custom consent request",
                         content = "An error occurred during the custom consent request"
+                    )
+                }
+            }
+        )
+    }
+
+    override fun deleteCustomConsentTo(
+        vendors: Array<String>,
+        categories: Array<String>,
+        legIntCategories: Array<String>,
+        successCallback: CustomConsentClient
+    ) {
+        deleteCustomConsentTo(
+            vendors = vendors.toList(),
+            categories = categories.toList(),
+            legIntCategories = legIntCategories.toList(),
+            success = {
+                it?.let {
+                    successCallback.transferCustomConsentToUnity(JsonConverter.converter.encodeToString(it))
+                } ?: run {
+                    spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "An error occurred during delete custom consent request",
+                        content = "An error occurred during delete custom consent request"
                     )
                 }
             }
