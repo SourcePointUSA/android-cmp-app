@@ -28,11 +28,7 @@ private class ConnectionManagerImpl(
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
                     ?: return false
 
-                return when {
-                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                    else -> false
-                }
+                return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             } else {
                 val activeNetworkInfo = connectivityManager.activeNetworkInfo
                 return activeNetworkInfo != null && activeNetworkInfo.isConnected
