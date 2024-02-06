@@ -1176,3 +1176,18 @@ override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
     return consentAction
 }
 ```
+
+### 4. What if I want to migrate my application from SharedPreferences to Jetpack DataStore?
+
+SourcePoint CMP library complies with IAB Transparency and Consent Framework, which states that all the consent data should be stored **only in default SharedPreferences** location/file. That delegates the responsibility of handling the locally stored consent on the user's of CMP library.
+
+Which means that if the user decides to migrate their application to the Jetpack DataStore, they will have to migrate specific custom keys with the exception of the keys that are specific to the CMP stored consent. This can be achieved by utilizing `keysToMigrate` parameter from `SharedPreferencesMigration` constructor:
+```kotlin
+<T : Any?> SharedPreferencesMigration(
+    ...
+    keysToMigrate: Set<String> = MIGRATE_ALL_KEYS, // here you should change MIGRATE_ALL_KEYS to the set of all the keys that should be migrated
+    ...
+)
+```
+
+Here is also a [full documentation](https://developer.android.com/reference/kotlin/androidx/datastore/migrations/SharedPreferencesMigration) of how to deal with `SharedPreferencesMigration`.
