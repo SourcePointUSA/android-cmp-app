@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
@@ -13,6 +14,58 @@ import org.junit.Test
 class JsonConverterImplTest {
 
     private val sut = JsonConverter.create()
+
+    @Test
+    fun `GIVEN a GCM obj with ACCEPT_ALL consent RETURN all GRANTED fields`() {
+        val json = "gcm/gcm_acceptAll.json".file2String()
+
+        val output = (sut.toChoiceResp(json) as Either.Right).r
+        output.gdpr!!.googleConsentMode.also {
+            it!!.adStorage.assertEquals(GCMStatus.GRANTED)
+            it.adPersonalization.assertEquals(GCMStatus.GRANTED)
+            it.adUserData.assertEquals(GCMStatus.GRANTED)
+            it.analyticsStorage.assertEquals(GCMStatus.GRANTED)
+        }
+    }
+
+    @Test
+    fun `GIVEN a GCM obj with REJECT_ALL consent RETURN all DENIED fields`() {
+        val json = "gcm/gcm_rejectAll.json".file2String()
+
+        val output = (sut.toChoiceResp(json) as Either.Right).r
+        output.gdpr!!.googleConsentMode.also {
+            it!!.adStorage.assertEquals(GCMStatus.DENIED)
+            it.adPersonalization.assertEquals(GCMStatus.DENIED)
+            it.adUserData.assertEquals(GCMStatus.DENIED)
+            it.analyticsStorage.assertEquals(GCMStatus.DENIED)
+        }
+    }
+
+    @Test
+    fun `GIVEN a GCM obj with SAVE_AND_EXIT consent RETURN all DENIED fields`() {
+        val json = "gcm/gcm_save_exit.json".file2String()
+
+        val output = (sut.toChoiceResp(json) as Either.Right).r
+        output.gdpr!!.googleConsentMode.also {
+            it!!.adStorage.assertEquals(GCMStatus.DENIED)
+            it.adPersonalization.assertEquals(GCMStatus.DENIED)
+            it.adUserData.assertEquals(GCMStatus.GRANTED)
+            it.analyticsStorage.assertEquals(GCMStatus.GRANTED)
+        }
+    }
+
+    @Test
+    fun `GIVEN a GCM obj with a missing adPersonalization field RETURN a null value for that property`() {
+        val json = "gcm/gcm_one_null_key.json".file2String()
+
+        val output = (sut.toChoiceResp(json) as Either.Right).r
+        output.gdpr!!.googleConsentMode.also {
+            it!!.adPersonalization.assertNull()
+            it.adStorage.assertEquals(GCMStatus.GRANTED)
+            it.adUserData.assertEquals(GCMStatus.GRANTED)
+            it.analyticsStorage.assertEquals(GCMStatus.GRANTED)
+        }
+    }
 
     @Test
     fun `GIVEN a ACCEPT_ALL consent body resp RETURN a right object`() {

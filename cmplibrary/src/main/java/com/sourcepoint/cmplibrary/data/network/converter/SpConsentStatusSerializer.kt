@@ -8,18 +8,17 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-object SpConsentStatusSerializer : KSerializer<GCMStatus> {
+object SpConsentStatusSerializer : KSerializer<GCMStatus?> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SpConsentStatus", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): GCMStatus {
+    override fun deserialize(decoder: Decoder): GCMStatus? {
         val code = decoder.decodeString()
         return GCMStatus.values()
             .find { m -> m.status == code }
-            ?: GCMStatus.DENIED
     }
 
-    override fun serialize(encoder: Encoder, value: GCMStatus) {
-        encoder.encodeString(value.status)
+    override fun serialize(encoder: Encoder, value: GCMStatus?) {
+        value?.let { encoder.encodeString(it.status) }
     }
 }

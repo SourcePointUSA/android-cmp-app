@@ -1,0 +1,358 @@
+{
+  "gdpr": {
+    "gcmStatus": {
+      "analytics_storage": "denied",
+      "ad_storage": "denied",
+      "ad_user_data": "denied",
+      "ad_personalization": "denied"
+    },
+    "gdprApplies": true,
+    "consentAllRef": "65c354f54a91736b4430af5c",
+    "addtlConsent": "1~899",
+    "categories": [
+      "65c238f4ec06fe03bb7b4753"
+    ],
+    "legIntCategories": [
+      "608bad95d08d3112188e0e2f"
+    ],
+    "vendors": [
+      "5f1b2fbeb8e05c306f2a1eb9",
+      "5ff4d000a228633ac048be41",
+      "5e7e1298b8e05c4854221be9",
+      "5e7ced57b8e05c485246cce0"
+    ],
+    "legIntVendors": [
+      "5f1b2fbeb8e05c306f2a1eb9"
+    ],
+    "specialFeatures": [
+      "5e37fc3e973acf1e955b8966",
+      "5e37fc3e973acf1e955b8967"
+    ],
+    "consentedToAll": true,
+    "rejectedAny": false,
+    "consentStatus": {
+      "rejectedAny": false,
+      "rejectedLI": false,
+      "consentedAll": true,
+      "granularStatus": {
+        "vendorConsent": "ALL",
+        "vendorLegInt": "ALL",
+        "purposeConsent": "ALL",
+        "purposeLegInt": "ALL",
+        "previousOptInAll": false,
+        "defaultConsent": false
+      },
+      "hasConsentData": true,
+      "consentedToAny": true
+    },
+    "customVendorsResponse": {
+      "consentedVendors": [
+        {
+          "_id": "5ff4d000a228633ac048be41",
+          "name": "Game Accounts",
+          "vendorType": "CUSTOM"
+        },
+        {
+          "_id": "5e7e1298b8e05c4854221be9",
+          "name": "Google Inc.",
+          "vendorType": "CUSTOM"
+        },
+        {
+          "_id": "5f1b2fbeb8e05c306f2a1eb9",
+          "name": "QuarticON",
+          "vendorType": "CUSTOM"
+        }
+      ],
+      "consentedPurposes": [
+        {
+          "_id": "608bad95d08d3112188e0e29",
+          "name": "Store and/or access information on a device"
+        },
+        {
+          "_id": "65c238f4ec06fe03bb7b4753",
+          "name": "GCM Ad Personalization"
+        }
+      ],
+      "legIntPurposes": [
+        {
+          "_id": "608bad95d08d3112188e0e2f",
+          "name": "Use limited data to select advertising"
+        }
+      ]
+    },
+    "dateCreated": "2024-02-07T15:14:02.046Z",
+    "expirationDate": "2025-02-06T15:14:02.046Z",
+    "euconsent": "CP5m9AAP5m9AAAGABCENAmEsAOCAAEAAAAYgASAAAAAAQAAACBAAIAJBAAEAEg4ACACQoABABIAA.YAAAAAAAAAAA",
+    "cookies": [],
+    "grants": {
+      "5f1b2fbeb8e05c306f2a1eb9": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "608bad95d08d3112188e0e29": true,
+          "608bad95d08d3112188e0e2f": true
+        }
+      },
+      "5e7ced57b8e05c485246cce0": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "608bad95d08d3112188e0e29": true,
+          "608bad95d08d3112188e0e36": true,
+          "608bad96d08d3112188e0e59": true,
+          "60b65857619abe242bed971e": true
+        }
+      },
+      "5ff4d000a228633ac048be41": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "608bad95d08d3112188e0e2f": true,
+          "608bad95d08d3112188e0e36": true
+        }
+      },
+      "5e7e1298b8e05c4854221be9": {
+        "vendorGrant": true,
+        "purposeGrants": {
+          "65c238f4ec06fe03bb7b4735": true,
+          "65c238f4ec06fe03bb7b473f": true,
+          "65c238f4ec06fe03bb7b4749": true,
+          "65c238f4ec06fe03bb7b4753": true
+        }
+      }
+    },
+    "actions": [
+      {
+        "_id": "65c272c52dd18703a152e433",
+        "type": "google_consent_mode",
+        "url": "",
+        "js": "",
+        "tagManager": {
+          "_id": "65c272c52dd18703a152e434",
+          "name": "consent",
+          "key": "analytics_storage",
+          "value": "granted"
+        }
+      },
+      {
+        "_id": "65c272c52dd18703a152e43c",
+        "type": "google_consent_mode",
+        "url": "",
+        "js": "",
+        "tagManager": {
+          "_id": "65c272c52dd18703a152e43d",
+          "name": "consent",
+          "key": "ad_storage",
+          "value": "granted"
+        }
+      },
+      {
+        "_id": "65c272c52dd18703a152e445",
+        "type": "google_consent_mode",
+        "url": "",
+        "js": "",
+        "tagManager": {
+          "_id": "65c272c52dd18703a152e446",
+          "name": "consent",
+          "key": "ad_user_data",
+          "value": "granted"
+        }
+      },
+      {
+        "_id": "65c272c52dd18703a152e44e",
+        "type": "google_consent_mode",
+        "url": "",
+        "js": "",
+        "tagManager": {
+          "_id": "65c272c52dd18703a152e44f",
+          "name": "consent",
+          "key": "ad_personalization",
+          "value": "granted"
+        }
+      }
+    ],
+    "googleConsentModeV2": true,
+    "vendorListId": "608badf1a22863112f750a18",
+    "applies": true,
+    "webConsentPayload": {
+      "actions": [
+        {
+          "_id": "65c272c52dd18703a152e433",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "65c272c52dd18703a152e434",
+            "name": "consent",
+            "key": "analytics_storage",
+            "value": "granted"
+          }
+        },
+        {
+          "_id": "65c272c52dd18703a152e43c",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "65c272c52dd18703a152e43d",
+            "name": "consent",
+            "key": "ad_storage",
+            "value": "granted"
+          }
+        },
+        {
+          "_id": "65c272c52dd18703a152e445",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "65c272c52dd18703a152e446",
+            "name": "consent",
+            "key": "ad_user_data",
+            "value": "granted"
+          }
+        },
+        {
+          "_id": "65c272c52dd18703a152e44e",
+          "type": "google_consent_mode",
+          "url": "",
+          "js": "",
+          "tagManager": {
+            "_id": "65c272c52dd18703a152e44f",
+            "name": "consent",
+            "key": "ad_personalization",
+            "value": "granted"
+          }
+        }
+      ],
+      "addtlConsent": "1~899",
+      "cookies": [],
+      "consentStatus": {
+        "rejectedAny": false,
+        "rejectedLI": false,
+        "consentedAll": true,
+        "granularStatus": {
+          "vendorConsent": "ALL",
+          "vendorLegInt": "ALL",
+          "purposeConsent": "ALL",
+          "purposeLegInt": "ALL",
+          "previousOptInAll": false,
+          "defaultConsent": false
+        },
+        "hasConsentData": true,
+        "consentedToAny": true
+      },
+      "customVendorsResponse": {
+        "consentedVendors": [
+          {
+            "_id": "5ff4d000a228633ac048be41",
+            "name": "Game Accounts",
+            "vendorType": "CUSTOM"
+          },
+          {
+            "_id": "5e7e1298b8e05c4854221be9",
+            "name": "Google Inc.",
+            "vendorType": "CUSTOM"
+          },
+          {
+            "_id": "5f1b2fbeb8e05c306f2a1eb9",
+            "name": "QuarticON",
+            "vendorType": "CUSTOM"
+          }
+        ],
+        "consentedPurposes": [
+          {
+            "_id": "608bad95d08d3112188e0e29",
+            "name": "Store and/or access information on a device"
+          },
+          {
+            "_id": "608bad95d08d3112188e0e2f",
+            "name": "Use limited data to select advertising"
+          },
+          {
+            "_id": "608bad95d08d3112188e0e36",
+            "name": "Create profiles for personalised advertising"
+          },
+          {
+            "_id": "608bad96d08d3112188e0e59",
+            "name": "Understand audiences through statistics or combinations of data from different sources"
+          },
+          {
+            "_id": "60b65857619abe242bed971e",
+            "name": "Our Custom Purpose"
+          },
+          {
+            "_id": "65c238f4ec06fe03bb7b4735",
+            "name": "GCM Analytics Storage"
+          },
+          {
+            "_id": "65c238f4ec06fe03bb7b473f",
+            "name": "GCM Ad Storage"
+          },
+          {
+            "_id": "65c238f4ec06fe03bb7b4749",
+            "name": "GCM Ad User Data"
+          },
+          {
+            "_id": "65c238f4ec06fe03bb7b4753",
+            "name": "GCM Ad Personalization"
+          }
+        ],
+        "legIntPurposes": [
+          {
+            "_id": "608bad95d08d3112188e0e2f",
+            "name": "Use limited data to select advertising"
+          }
+        ]
+      },
+      "dateCreated": "2024-02-07T15:14:02.046Z",
+      "expirationDate": "2025-02-06T15:14:02.046Z",
+      "euconsent": "CP5m9AAP5m9AAAGABCENAmEsAOCAAEAAAAYgASAAAAAAQAAACBAAIAJBAAEAEg4ACACQoABABIAA.YAAAAAAAAAAA",
+      "gdprApplies": true,
+      "grants": {
+        "5f1b2fbeb8e05c306f2a1eb9": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "608bad95d08d3112188e0e29": true,
+            "608bad95d08d3112188e0e2f": true
+          }
+        },
+        "5e7ced57b8e05c485246cce0": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "608bad95d08d3112188e0e29": true,
+            "608bad95d08d3112188e0e36": true,
+            "608bad96d08d3112188e0e59": true,
+            "60b65857619abe242bed971e": true
+          }
+        },
+        "5ff4d000a228633ac048be41": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "608bad95d08d3112188e0e2f": true,
+            "608bad95d08d3112188e0e36": true
+          }
+        },
+        "5e7e1298b8e05c4854221be9": {
+          "vendorGrant": true,
+          "purposeGrants": {
+            "65c238f4ec06fe03bb7b4735": true,
+            "65c238f4ec06fe03bb7b473f": true,
+            "65c238f4ec06fe03bb7b4749": true,
+            "65c238f4ec06fe03bb7b4753": true
+          }
+        }
+      },
+      "vendorListId": "608badf1a22863112f750a18"
+    },
+    "postPayload": {
+      "consentAllRef": "65c354f54a91736b4430af5c",
+      "granularStatus": {
+        "vendorConsent": "ALL",
+        "vendorLegInt": "ALL",
+        "purposeConsent": "ALL",
+        "purposeLegInt": "ALL",
+        "previousOptInAll": false,
+        "defaultConsent": false
+      },
+      "vendorListId": "608badf1a22863112f750a18"
+    }
+  }
+}

@@ -138,6 +138,7 @@ class MainActivityKotlinTest {
             "5ff4d000a228633ac048be41",
             "5f1b2fbeb8e05c306f2a1eb9",
             "5e7ced57b8e05c485246cce0",
+            "5e7e1298b8e05c4854221be9",
         ).sorted()
 
         loadKoinModules(
@@ -152,13 +153,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
-
-        wr {
-            scenario.onActivity { activity ->
-                // TODO
-//                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
 
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
