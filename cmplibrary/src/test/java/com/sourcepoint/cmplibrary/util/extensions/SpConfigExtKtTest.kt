@@ -2,11 +2,13 @@ package com.sourcepoint.cmplibrary.util.extensions
 
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.assertNull
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionBinary.NO
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary.YES
+import kotlinx.serialization.json.jsonObject
 import org.junit.Test
 
 class SpConfigExtKtTest {
@@ -22,8 +24,14 @@ class SpConfigExtKtTest {
     )
 
     private val usnatCampaign = SpCampaign(
-        CampaignType.GDPR,
+        CampaignType.USNAT,
         listOf(TargetingParam("location", "EU"))
+    )
+
+    private val usnatCampaignSupportLegacyUspstring = SpCampaign(
+        campaignType = CampaignType.USNAT,
+        targetingParams = emptyList(),
+        configParams = setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING)
     )
 
     private val spConfig = SpConfig(
@@ -57,5 +65,22 @@ class SpConfigExtKtTest {
         spConfig
             .copy(campaigns = listOf(usnatCampaign), spGppConfig = SpGppConfig(NO, YES, YES))
             .getGppCustomOption().assertNull()
+    }
+
+    @Test
+    fun `GIVEN a usnat with SUPPORT_LEGACY_USPSTRING CHECK that getGppCustomOption return the uspstring element`() {
+        spConfig
+            .copy(campaigns = listOf(usnatCampaignSupportLegacyUspstring))
+            .getGppCustomOption()!!
+            .jsonObject["uspString"]
+            .assertNotNull()
+    }
+
+    @Test
+    fun `GIVEN a usnat without SUPPORT_LEGACY_USPSTRING CHECK that getGppCustomOption DOES NOT RETURN the uspstring element`() {
+        spConfig
+            .copy(campaigns = listOf(usnatCampaign))
+            .getGppCustomOption()
+            .assertNull()
     }
 }

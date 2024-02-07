@@ -15,6 +15,8 @@ internal data class IncludeDataGppParam(
     val optOutOptionMode: String? = null,
     @SerialName("MspaServiceProviderMode")
     val serviceProviderMode: String? = null,
+    @SerialName("uspString")
+    val uspString: Boolean? = null,
 )
 
 internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)

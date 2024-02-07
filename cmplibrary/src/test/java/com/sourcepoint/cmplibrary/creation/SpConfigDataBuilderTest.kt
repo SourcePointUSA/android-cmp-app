@@ -1,17 +1,45 @@
 package com.sourcepoint.cmplibrary.creation
 
-import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertFalse
-import com.sourcepoint.cmplibrary.assertTrue
+import com.sourcepoint.cmplibrary.* //ktlint-disable
+import com.sourcepoint.cmplibrary.creation.ConfigOption.SUPPORT_LEGACY_USPSTRING
 import com.sourcepoint.cmplibrary.creation.ConfigOption.TRANSITION_CCPA_AUTH
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.toTParam
+import com.sourcepoint.cmplibrary.util.extensions.hasSupportForLegacyUSPString
 import com.sourcepoint.cmplibrary.util.extensions.hasTransitionCCPAAuth
 import org.junit.Test
 
 class SpConfigDataBuilderTest {
+
+    @Test
+    fun `GIVEN a USNAT config with support for legacy uspstring  VERIFY the spConfig object includes the SUPPORT_LEGACY_USPSTRING config`() {
+        val spConf = config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            messLanguage = MessageLanguage.ENGLISH
+            propertyId = 16893
+            +(CampaignType.GDPR)
+            +(CampaignType.USNAT to setOf(SUPPORT_LEGACY_USPSTRING))
+        }
+
+        spConf.hasSupportForLegacyUSPString()!!.assertNotNull()
+    }
+
+    @Test
+    fun `GIVEN a USNAT config without support for legacy uspstring VERIFY the spConfig object does not include the SUPPORT_LEGACY_USPSTRING config`() {
+        val spConf = config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            messLanguage = MessageLanguage.ENGLISH
+            propertyId = 16893
+            +(CampaignType.GDPR)
+            +(CampaignType.USNAT)
+        }
+
+        spConf.hasSupportForLegacyUSPString().assertNull()
+    }
 
     @Test
     fun `GIVEN a USNAT config with CCPA migration VERIFY the spConfig object has the TRANSITION_CCPA_AUTH config`() {
