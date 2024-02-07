@@ -63,7 +63,7 @@ internal data class GDPRConsentInternal(
     override val acceptedCategories: List<String>? = null,
     override val applies: Boolean = false,
     override val consentStatus: ConsentStatus? = null,
-    override var googleConsentMode: GoogleConsentMode?,
+    override var googleConsentMode: GoogleConsentMode? = null,
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
