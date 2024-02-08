@@ -304,16 +304,16 @@ internal class SpConsentLibImpl(
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
             success = {
-                it?.let { spc ->
-                    successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
-                } ?: run {
-                    spClient.onError(RuntimeException("An error occurred during the custom consent request"))
-                    pLogger.clientEvent(
-                        event = "onError",
-                        msg = "An error occurred during the custom consent request",
-                        content = "An error occurred during the custom consent request"
-                    )
-                }
+                check { JsonConverter.converter.encodeToString(it) }
+                        .executeOnRight { r -> successCallback.transferCustomConsentToUnity(r) }
+                        .executeOnLeft {
+                            spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
+                            pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "An error occurred during delete custom consent request",
+                                    content = "An error occurred during delete custom consent request"
+                            )
+                        }
             }
         )
     }
@@ -329,16 +329,16 @@ internal class SpConsentLibImpl(
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
             success = {
-                it?.let {
-                    successCallback.transferCustomConsentToUnity(JsonConverter.converter.encodeToString(it))
-                } ?: run {
-                    spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
-                    pLogger.clientEvent(
-                        event = "onError",
-                        msg = "An error occurred during delete custom consent request",
-                        content = "An error occurred during delete custom consent request"
-                    )
-                }
+                check { JsonConverter.converter.encodeToString(it) }
+                        .executeOnRight { r -> successCallback.transferCustomConsentToUnity(r) }
+                        .executeOnLeft {
+                            spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
+                            pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "An error occurred during delete custom consent request",
+                                    content = "An error occurred during delete custom consent request"
+                            )
+                        }
             }
         )
     }
