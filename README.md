@@ -27,6 +27,9 @@
   - [Setting a Targeting Param](#setting-a-targeting-param)
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
+  - [Google Consent Mode](#google-consent-mode)
+    - [Setting Google Consent](#setting-google-consent)
+    - [Initial Consent State](#initial-consent-state)
   - [ProGuard](#proguard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
@@ -641,6 +644,42 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 ```
 
 **Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
+
+## Google Consent Mode
+
+If your app uses Google Firebase products, you might be interested in supporting [Google Consent Mode](https://developers.google.com/tag-platform/security/concepts/consent-mode). Our SDK makes it convenient for you to set consent using `Firebase.Analytics`.
+
+### Setting Google Consent
+
+```kotlin
+        override fun onSpFinished(sPConsents: SPConsents) {
+            // Set consent types.
+            val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
+            val consentMap = mapOf(
+              ConsentType.ANALYTICS_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_USER_DATA to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_PERSONALIZATION to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
+            )
+            mFirebaseAnalytics.setConsent(consentMap)
+        }
+
+
+```
+
+### Initial Consent State
+
+Google requires you to define the initial consent state (`.granted` | `.denied`) of each purpose in your app's `AndroidManifest.xml`, adding the following key to it:
+
+```editorconfig
+  <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="true" />
+
+```
+
+For more information, please refer to [Manage consent settings (apps)](https://developers.google.com/tag-platform/security/guides/app-consent?platform=android)
 
 ## ProGuard
 
