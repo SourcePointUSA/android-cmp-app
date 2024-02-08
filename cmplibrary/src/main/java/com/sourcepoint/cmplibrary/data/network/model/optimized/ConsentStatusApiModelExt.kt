@@ -24,6 +24,7 @@ internal fun GdprCS.toGDPRUserConsent(): GDPRConsentInternal {
         childPmId = null,
         thisContent = JSONObject(),
         webConsentPayload = webConsentPayload,
+        googleConsentMode = googleConsentMode
     )
 }
 

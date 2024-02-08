@@ -44,6 +44,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -138,6 +139,7 @@ class MainActivityKotlinTest {
             "5ff4d000a228633ac048be41",
             "5f1b2fbeb8e05c306f2a1eb9",
             "5e7ced57b8e05c485246cce0",
+            "5e7e1298b8e05c4854221be9",
         ).sorted()
 
         loadKoinModules(
@@ -152,13 +154,6 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
-
-        wr {
-            scenario.onActivity { activity ->
-                // TODO
-//                PreferenceManager.getDefaultSharedPreferences(activity).contains("sp.gdpr.consentUUID").assertTrue()
-            }
-        }
 
         wr { clickOnGdprReviewConsent() }
         wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
@@ -181,6 +176,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.GRANTED)
                 })
             }
         }
@@ -368,6 +367,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                     it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.DENIED)
                 })
             }
         }
