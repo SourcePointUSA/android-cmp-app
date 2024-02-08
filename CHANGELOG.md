@@ -1,3 +1,8 @@
+## 7.7.0 (February, 08, 2024)
+* [DIA-3566](https://sourcepoint.atlassian.net/browse/DIA-3566) Support non-TCF GCM 2.0 (#783)
+* [DIA-3425](https://sourcepoint.atlassian.net/browse/DIA-3425) Add ethernet capability (#780)
+* [DIA-2024](https://sourcepoint.atlassian.net/browse/DIA-2024) Ship ProGuard rules with the release AAR (#771)
+
 ## 7.6.1 (January, 29, 2024)
 * [DIA-3366](https://sourcepoint.atlassian.net/browse/DIA-3366) Fix AuthId behaviour (#775)
 
