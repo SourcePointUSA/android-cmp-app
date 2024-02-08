@@ -27,6 +27,9 @@
   - [Setting a Targeting Param](#setting-a-targeting-param)
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
+  - [Google Consent Mode](#google-consent-mode)
+    - [Setting Google Consent](#setting-google-consent)
+    - [Initial Consent State](#initial-consent-state)
   - [ProGuard](#proguard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
@@ -417,6 +420,50 @@ SpConsent
         |-- status: String?
         |-- uspstring: String
         |-- apply: Boolean
+    |-- usnat?
+        |-- applies: Boolean
+        |-- gppData: Object
+            |-- IABGPP_HDR_Version: String
+            |-- IABGPP_HDR_Sections: String
+            |-- IABGPP_HDR_GppString: String
+            |-- IABGPP_GppSID: String
+            |-- IABGPP_7_String: String
+            |-- IABGPP_USNAT_Version: String
+            |-- IABGPP_USNAT_SharingNotice: String
+            |-- IABGPP_SaleOptOutNotice: String
+            |-- IABGPP_USNAT_SharingOptOutNotice: String
+            |-- IABGPP_USNAT_TargetedAdvertisingOptOutNotice: String
+            |-- IABGPP_USNAT_SensitiveDataProcessingOptOutNotice: String
+            |-- IABGPP_USNAT_SensitiveDataLimitUseNotice: String
+            |-- IABGPP_USNAT_SaleOptOut: String
+            |-- IABGPP_USNAT_SharingOptOut: String
+            |-- IABGPP_USNAT_TargetedAdvertisingOptOut: String
+            |-- IABGPP_USNAT_SensitiveDataProcessing: String
+            |-- IABGPP_USNAT_KnownChildSensitiveDataConsents: String
+            |-- IABGPP_USNAT_PersonalDataConsents: String
+            |-- IABGPP_USNAT_MspaCoveredTransaction: String
+            |-- IABGPP_USNAT_MspaOptOutOptionMode: String
+            |-- IABGPP_USNAT_MspaServiceProviderMode: String
+            |-- IABGPP_USNAT_GpcSegmentType: String
+            |-- IABGPP_USNAT_Gpc: String
+        |-- consentStatus: Object
+            |-- rejectedAny: Boolean
+            |-- consentedToAll: Boolean
+            |-- consentedToAny: Boolean
+            |-- granularStatus: Object
+                |-- sellStatus: Boolean
+                |-- shareStatus: Boolean
+                |-- sensitiveDataStatus: Boolean
+                |-- gpcStatus: Boolean
+                |-- previousOptInAll: Boolean
+            |-- hasConsentData: Boolean
+        |-- consentStrings: Array
+            |-- Object
+                |-- sectionId: String
+                |-- sectionName: String
+                |-- consentString: String
+        |-- dateCreated: String
+        |-- uuid: String
 ```
 
 ### The grants parameter and the GDPRPurposeGrants object
@@ -598,9 +645,48 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 **Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
 
+## Google Consent Mode
+
+If your app uses Google Firebase products, you might be interested in supporting [Google Consent Mode](https://developers.google.com/tag-platform/security/concepts/consent-mode). Our SDK makes it convenient for you to set consent using `Firebase.Analytics`.
+
+### Setting Google Consent
+
+```kotlin
+        override fun onSpFinished(sPConsents: SPConsents) {
+            // Set consent types.
+            val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
+            val consentMap = mapOf(
+              ConsentType.ANALYTICS_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_USER_DATA to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_PERSONALIZATION to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
+            )
+            mFirebaseAnalytics.setConsent(consentMap)
+        }
+
+
+```
+
+### Initial Consent State
+
+Google requires you to define the initial consent state (`.granted` | `.denied`) of each purpose in your app's `AndroidManifest.xml`, adding the following key to it:
+
+```editorconfig
+  <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="true" />
+
+```
+
+For more information, please refer to [Manage consent settings (apps)](https://developers.google.com/tag-platform/security/guides/app-consent?platform=android)
+
 ## ProGuard
 
-Using ProGuard in your project you might need to add the following rules
+**From version 7.7.0 CMP library ships it's own Proguard rules with the AAR**, so the user of the library don't have to add anything manually. Make sure you are up-to-date with the latest releases of the CMP library.
+
+<details>
+<summary>If you are on version lower than 7.7.0 make sure to add the following rules.</summary>
 
 ```editorconfig
 # Sourcepoint (CMP)
@@ -645,7 +731,18 @@ Using ProGuard in your project you might need to add the following rules
 -dontwarn kotlinx.serialization.internal.ClassValueWrapper
 -dontwarn kotlinx.serialization.internal.ParametrizedClassValueWrapper
 
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
 ```
+
+</details>
 
 ## Sharing consent with a WebView
 

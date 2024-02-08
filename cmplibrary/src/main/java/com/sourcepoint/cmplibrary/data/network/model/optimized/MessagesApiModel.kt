@@ -125,7 +125,16 @@ data class GDPR(
     @SerialName("url") override val url: String?,
     @SerialName("expirationDate") override val expirationDate: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
+    @SerialName("gcmStatus") var googleConsentMode: GoogleConsentMode?,
 ) : CampaignMessage
+
+@Serializable
+data class GoogleConsentMode(
+    @SerialName("ad_storage") @Serializable(with = SpConsentStatusSerializer::class) val adStorage: GCMStatus?,
+    @SerialName("analytics_storage") @Serializable(with = SpConsentStatusSerializer::class) val analyticsStorage: GCMStatus?,
+    @SerialName("ad_user_data") @Serializable(with = SpConsentStatusSerializer::class) val adUserData: GCMStatus?,
+    @SerialName("ad_personalization") @Serializable(with = SpConsentStatusSerializer::class) val adPersonalization: GCMStatus?,
+)
 
 @Serializable
 data class ConsentStatus(

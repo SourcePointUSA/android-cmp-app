@@ -181,5 +181,6 @@ internal fun GDPR.toGdprCS(applies: Boolean?) = GdprCS(
     uuid = null,
     vendorListId = null,
     webConsentPayload = webConsentPayload,
-    expirationDate = expirationDate
+    expirationDate = expirationDate,
+    googleConsentMode = googleConsentMode,
 )

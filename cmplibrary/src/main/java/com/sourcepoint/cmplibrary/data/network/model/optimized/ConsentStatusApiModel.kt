@@ -32,6 +32,11 @@ enum class GranularState {
     NONE
 }
 
+enum class GCMStatus(val status: String) {
+    GRANTED("granted"),
+    DENIED("denied"),
+}
+
 @Serializable
 data class ConsentStatusResp(
     @SerialName("consentStatusData") val consentStatusData: ConsentStatusData?,
@@ -117,6 +122,7 @@ data class GdprCS(
     @SerialName("vendorListId") val vendorListId: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String?,
+    @SerialName("gcmStatus") var googleConsentMode: GoogleConsentMode?,
 ) {
 
     @Serializable
