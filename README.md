@@ -1177,17 +1177,12 @@ override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
 }
 ```
 
-### 4. What if I want to migrate my application from SharedPreferences to Jetpack DataStore?
+### 4. What if I want to migrate my application to use the Jetpack DataStore instead of SharedPreferences?
 
-SourcePoint CMP library complies with IAB Transparency and Consent Framework, which states that all the consent data should be stored **only in default SharedPreferences** location/file. That delegates the responsibility of handling the locally stored consent on the user's of CMP library.
+The consumer of the SourcePoint CMP SDK **can migrate** their application to use the Jetpack DataStore, **but they have to keep in mind one thing**. The SDK is compliant with the IAB Transparency and Consent Framework, which [states](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#how-do-third-party-sdks-vendors-access-the-consent-information-) that all the consent data should be stored **only in default SharedPreferences** location/file.
 
-Which means that if the user decides to migrate their application to the Jetpack DataStore, they will have to migrate specific custom keys with the exception of the keys that are specific to the CMP stored consent. This can be achieved by utilizing `keysToMigrate` parameter from `SharedPreferencesMigration` constructor:
-```kotlin
-<T : Any?> SharedPreferencesMigration(
-    ...
-    keysToMigrate: Set<String> = MIGRATE_ALL_KEYS, // here you should change MIGRATE_ALL_KEYS to the set of all the keys that should be migrated
-    ...
-)
-```
+The consumer of the SDK is free to use any method of migration to the Jetpack DataStore, but in order to preserve consent data and prevent SDK failures, they have to make sure that the consent data is being left **as is** in the default SharedPreferences file.
 
-Here is also a [full documentation](https://developer.android.com/reference/kotlin/androidx/datastore/migrations/SharedPreferencesMigration) of how to deal with `SharedPreferencesMigration`.
+Keep in mind, that during such migrations, the default SharedPreferences file can be deleted. In such a case, the consumer has to figure out the way to recreate and repopulate default SharedPreferences file with the corresponding SourcePoint CMP data.
+
+**TLDR:** When consumer wants to migrate to Jetpack DataStore, they have to migrate **only** their locally stored data, and leave the SourcePoint CMP SDK data as is.
