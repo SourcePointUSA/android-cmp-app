@@ -44,6 +44,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -175,6 +176,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
+                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.GRANTED)
                 })
             }
         }
@@ -362,6 +367,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                     it.gdpr!!.consent.uuid.assertNotNull()
+                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.DENIED)
+                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.DENIED)
                 })
             }
         }
