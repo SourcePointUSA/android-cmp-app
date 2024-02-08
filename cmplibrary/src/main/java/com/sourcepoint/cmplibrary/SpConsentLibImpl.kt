@@ -15,7 +15,6 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.stringify
@@ -36,7 +35,6 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.extensions.toMessageType
 import com.sourcepoint.cmplibrary.util.toConsentLibException
-import kotlinx.serialization.encodeToString
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -304,16 +302,17 @@ internal class SpConsentLibImpl(
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
             success = {
-                check { JsonConverter.converter.encodeToString(it) }
-                    .executeOnRight { r -> successCallback.transferCustomConsentToUnity(r) }
-                    .executeOnLeft {
-                        spClient.onError(RuntimeException("An error occurred during the custom consent request"))
-                        pLogger.clientEvent(
-                            event = "onError",
-                            msg = "An error occurred during the custom consent request",
-                            content = "An error occurred during the custom consent request"
-                        )
-                    }
+                it?.let { spc ->
+                    check { spc.toJsonObject().toString() }
+                        .map { successCallback.transferCustomConsentToUnity(it) }
+                } ?: run {
+                    spClient.onError(RuntimeException("An error occurred during the custom consent request"))
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "An error occurred during the custom consent request",
+                        content = "An error occurred during the custom consent request"
+                    )
+                }
             }
         )
     }
@@ -329,16 +328,17 @@ internal class SpConsentLibImpl(
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
             success = {
-                check { JsonConverter.converter.encodeToString(it) }
-                    .executeOnRight { r -> successCallback.transferCustomConsentToUnity(r) }
-                    .executeOnLeft {
-                        spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
-                        pLogger.clientEvent(
-                            event = "onError",
-                            msg = "An error occurred during delete custom consent request",
-                            content = "An error occurred during delete custom consent request"
-                        )
-                    }
+                it?.let { spc ->
+                    check { spc.toJsonObject().toString() }
+                        .map { successCallback.transferCustomConsentToUnity(it) }
+                } ?: run {
+                    spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "An error occurred during delete custom consent request",
+                        content = "An error occurred during delete custom consent request"
+                    )
+                }
             }
         )
     }
