@@ -1176,3 +1176,19 @@ override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
     return consentAction
 }
 ```
+
+### 4. What if I want to migrate my application to use the Jetpack DataStore instead of SharedPreferences?
+
+The consumer of the SourcePoint CMP SDK **can migrate** their application to use the Jetpack DataStore, **but they have to keep in mind one thing**. The SDK is compliant with the IAB Transparency and Consent Framework, which [states](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#how-do-third-party-sdks-vendors-access-the-consent-information-) that all the consent data should be stored **only in default SharedPreferences** location/file.
+
+The consumer of the SDK is free to use any method of migration to the Jetpack DataStore, but in order to preserve consent data and prevent SDK failures, they have to make sure that the consent data is being left **as is** in the default SharedPreferences file.
+
+Keep in mind, that during such migrations, the default SharedPreferences file can be deleted. In such a case, the consumer has to figure out the way to recreate and repopulate default SharedPreferences file with the corresponding SourcePoint CMP data.
+
+**TLDR:** When consumer wants to migrate to Jetpack DataStore, they have to migrate **only** their locally stored data, and leave the SourcePoint CMP SDK data as is.
+
+Here are some references for a consumer of the SDK of what data is a consent data:
+- [USPrivacy](https://github.com/InteractiveAdvertisingBureau/USPrivacy/blob/master/CCPA/USP%20API.md#in-app-support)
+- [Global Privacy Platform](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/CMP%20API%20Specification.md#in-app-key-names)
+- [GDPR Transparency and Consent Framework](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#cmp-internal-structure-defined-api-)
+- etc.
