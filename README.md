@@ -657,9 +657,9 @@ If your app uses Google Firebase products, you might be interested in supporting
             val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
             val consentMap = mapOf(
               ConsentType.ANALYTICS_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_USER_DATA to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_PERSONALIZATION to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
+              ConsentType.AD_STORAGE to if(gcmData?.adStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_USER_DATA to if(gcmData?.adUserData == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_PERSONALIZATION to if(gcmData?.adPersonalization == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
             )
             mFirebaseAnalytics.setConsent(consentMap)
         }
