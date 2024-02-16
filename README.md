@@ -28,8 +28,8 @@
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
   - [Google Consent Mode](#google-consent-mode)
-    - [Setting Google Consent](#setting-google-consent)
-    - [Initial Consent State](#initial-consent-state)
+    - [Set default consent state for consent checks](#set-default-consent-state-for-consent-checks)
+    - [Update consent checks](#update-consent-checks)
   - [ProGuard](#proguard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
@@ -647,11 +647,31 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 ## Google Consent Mode
 
-If your app uses Google Firebase products, you might be interested in supporting [Google Consent Mode](https://developers.google.com/tag-platform/security/concepts/consent-mode). Our SDK makes it convenient for you to set consent using `Firebase.Analytics`.
+[Google Consent Mode 2.0](https://developers.google.com/tag-platform/security/concepts/consent-mode) ensures that Google vendors on your property comply with an end-user's consent choices for purposes (called consent checks) defined by Google. It is implemented via [Google Analytics for Firebase SDK](https://developers.google.com/tag-platform/security/guides/app-consent?consentmode=advanced&platform=ios).
 
-### Setting Google Consent
+### Set default consent state for consent checks
+
+Add the following keys to your app's `AndroidManifest.xml` to define the initial consent state (`.granted` | `.denied`) for each of Google's consent checks:
+
+```editorconfig
+  <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="true" />
+  <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="true" />
+
+```
+
+### Update consent checks
+
+Use Google's `setConsent` method to update the relevant consent checks when the appropriate purposes are consented to/rejected.
+
+> The consent checks updated via the `setConsent` method will vary and depends on how you are implementing Google Consent Mode 2.0 on your mobile property within the Sourcepoint portal. Review Sourcepoint's implementation documentation below for more information:
+>
+> - [Implement Google Consent Mode 2.0 on GDPR TCF (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26139951882643-Google-Consent-Mode-2-0-GDPR-TCF-mobile#h_01HPHHGSP42A36607MDC7NVBV9)
+> - [Implement Google Consent Mode 2.0 on GDPR Standard (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26159382698387-Google-Consent-Mode-2-0-GDPR-Standard-mobile#h_01HPJ2MT0F5B1G8ZZVD5PNXT9S)
 
 ```kotlin
+//Example only. Consent checks updated via setConsent will depend on implementation
         override fun onSpFinished(sPConsents: SPConsents) {
             // Set consent types.
             val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
@@ -666,20 +686,6 @@ If your app uses Google Firebase products, you might be interested in supporting
 
 
 ```
-
-### Initial Consent State
-
-Google requires you to define the initial consent state (`.granted` | `.denied`) of each purpose in your app's `AndroidManifest.xml`, adding the following key to it:
-
-```editorconfig
-  <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
-  <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="true" />
-  <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="true" />
-  <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="true" />
-
-```
-
-For more information, please refer to [Manage consent settings (apps)](https://developers.google.com/tag-platform/security/guides/app-consent?platform=android)
 
 ## ProGuard
 
