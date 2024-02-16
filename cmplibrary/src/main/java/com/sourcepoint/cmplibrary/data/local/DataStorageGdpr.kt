@@ -34,6 +34,7 @@ import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.intOrNull
 import org.json.JSONObject
 import java.util.TreeMap
@@ -157,6 +158,9 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 if (isThisAString) {
                     primitive?.content
                         ?.let { spEditor.putString(entry.key, it) }
+                } else if(primitive?.booleanOrNull != null){
+                    primitive.booleanOrNull
+                        ?.let { spEditor.putBoolean(entry.key, it) }
                 } else {
                     primitive?.intOrNull
                         ?.let { spEditor.putInt(entry.key, it) }
