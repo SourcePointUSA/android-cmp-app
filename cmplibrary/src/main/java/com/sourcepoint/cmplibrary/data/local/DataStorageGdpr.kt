@@ -158,7 +158,7 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 if (isThisAString) {
                     primitive?.content
                         ?.let { spEditor.putString(entry.key, it) }
-                } else if(primitive?.booleanOrNull != null){
+                } else if (primitive?.booleanOrNull != null) {
                     primitive.booleanOrNull
                         ?.let { spEditor.putBoolean(entry.key, it) }
                 } else {
