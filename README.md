@@ -665,7 +665,7 @@ Add the following keys to your app's `AndroidManifest.xml` to define the initial
 
 Use Google's `setConsent` method to update the relevant consent checks when the appropriate purposes are consented to/rejected.
 
-> The consent checks updated via the `setConsent` method will vary and depends on how you are implementing Google Consent Mode 2.0 on your mobile property within the Sourcepoint portal. Review Sourcepoint's implementation documentation below for more information:
+> The consent checks updated via the `setConsent` method will vary and depends on how you are implementing Google Consent Mode 2.0 on your mobile property within the Sourcepoint portal. The method should only be called with consent checks that are mapped within your vendor list to custom purposes.<br><br> Review Sourcepoint's implementation documentation below for more information:
 >
 > - [Implement Google Consent Mode 2.0 on GDPR TCF (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26139951882643-Google-Consent-Mode-2-0-GDPR-TCF-mobile#h_01HPHHGSP42A36607MDC7NVBV9)
 > - [Implement Google Consent Mode 2.0 on GDPR Standard (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26159382698387-Google-Consent-Mode-2-0-GDPR-Standard-mobile#h_01HPJ2MT0F5B1G8ZZVD5PNXT9S)
@@ -686,6 +686,8 @@ Use Google's `setConsent` method to update the relevant consent checks when the 
 
 
 ```
+
+Be advised that the `googleConsentMode` object in `SPConsent` object will only return values for Google consent checks that are mapped to a custom purpose within your vendor list. For all other Google consent checks, the response will be `null`.
 
 ## ProGuard
 
