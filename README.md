@@ -647,7 +647,7 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 ## Google Consent Mode
 
-[Google Consent Mode 2.0](https://developers.google.com/tag-platform/security/concepts/consent-mode) ensures that Google vendors on your property comply with an end-user's consent choices for purposes (called consent checks) defined by Google. It is implemented via [Google Analytics for Firebase SDK](https://developers.google.com/tag-platform/security/guides/app-consent?consentmode=advanced&platform=ios).
+[Google Consent Mode 2.0](https://developers.google.com/tag-platform/security/concepts/consent-mode) ensures that Google vendors on your property comply with an end-user's consent choices for purposes (called consent checks) defined by Google. It is implemented via [Google Analytics for Firebase SDK](https://firebase.google.com/docs/analytics/get-started?platform=android).
 
 ### Set default consent state for consent checks
 
