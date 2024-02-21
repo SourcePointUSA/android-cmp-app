@@ -33,9 +33,7 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.USER_CONS
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.* // ktlint-disable
 import org.json.JSONObject
 import java.util.TreeMap
 
@@ -153,18 +151,12 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
         set(value) {
             val spEditor = preference.edit()
             value.forEach { entry ->
-                val primitive = (entry.value as? JsonPrimitive)
-                val isThisAString = primitive?.isString ?: false
-                if (isThisAString) {
-                    primitive?.content
-                        ?.let { spEditor.putString(entry.key, it) }
-                } else if (primitive?.booleanOrNull != null) {
-                    primitive.booleanOrNull
-                        ?.let { spEditor.putBoolean(entry.key, it) }
-                } else {
-                    primitive?.intOrNull
-                        ?.let { spEditor.putInt(entry.key, it) }
-                }
+                val primitive = entry.value as? JsonPrimitive
+                if(primitive?.isString == true) primitive.contentOrNull?.let { spEditor.putString(entry.key, it) }
+                else if(primitive?.intOrNull != null){ spEditor.putInt(entry.key, primitive.int) }
+                else if(primitive?.booleanOrNull != null){ spEditor.putBoolean(entry.key, primitive.boolean) }
+                else if(primitive?.floatOrNull != null){ spEditor.putFloat(entry.key, primitive.float) }
+                else if(primitive?.longOrNull != null){ spEditor.putLong(entry.key, primitive.long) }
             }
             spEditor.apply()
         }
