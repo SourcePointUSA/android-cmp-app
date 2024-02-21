@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.UnitySpClient
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
@@ -22,14 +23,16 @@ internal fun ClientEventManager.Companion.create(
     logger: Logger,
     executor: ExecutorManager,
     consentManagerUtils: ConsentManagerUtils,
-    spClient: SpClient
-): ClientEventManager = ClientEventManagerImpl(logger, executor, spClient, consentManagerUtils)
+    spClient: SpClient,
+    connectionManager: ConnectionManager,
+): ClientEventManager = ClientEventManagerImpl(logger, executor, spClient, consentManagerUtils, connectionManager)
 
 private class ClientEventManagerImpl(
     val logger: Logger,
     val executor: ExecutorManager,
     val spClient: SpClient,
     val consentManagerUtils: ConsentManagerUtils,
+    val connectionManager: ConnectionManager,
 ) : ClientEventManager {
 
     private var campaignsToProcess: Int = Int.MAX_VALUE
@@ -108,7 +111,13 @@ private class ClientEventManagerImpl(
     }
 
     override fun registerConsentResponse() {
-        campaignsToProcess--
+        when (connectionManager.isConnected) {
+            true -> campaignsToProcess--
+            false -> {
+                campaignsToProcess = 0
+                checkIfAllCampaignsWereProcessed()
+            }
+        }
     }
 
     private fun getSPConsents() = check<SPConsents> {

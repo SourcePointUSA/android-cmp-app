@@ -10,6 +10,8 @@ import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
+import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.Logger
@@ -53,7 +55,14 @@ internal fun networkClient(appCtx: Context, netClient: OkHttpClient, responseMan
             ?.let { NCMock(nc, it) }
     }.getOrNull()
 
-    return mockObject ?: nc
+    val mockObjectGDPRChoiceEx: NetworkClient? = com.sourcepoint.cmplibrary.util.check {
+        PreferenceManager.getDefaultSharedPreferences(appCtx).all
+            .toList()
+            .find { it.first == "gdpr_choice_exception" }
+            ?.let { NCMockStoreChoiceException(nc) }
+    }.getOrNull()
+
+    return mockObject ?: mockObjectGDPRChoiceEx ?: nc
 }
 
 internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient by nc {
@@ -69,4 +78,8 @@ internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient b
             )
         )
     }
+}
+
+internal class NCMockStoreChoiceException(nc: NetworkClient) : NetworkClient by nc {
+    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = Either.Left(RuntimeException())
 }

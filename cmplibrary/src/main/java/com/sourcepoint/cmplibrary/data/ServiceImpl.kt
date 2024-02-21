@@ -367,28 +367,35 @@ private class ServiceImpl(
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?,
     ): Either<ChoiceResp> {
-        return when (consentAction.campaignType) {
-            GDPR -> {
-                sendConsentGdpr(
-                    env = env,
-                    consentAction = consentAction,
-                    onSpConsentsSuccess = onSpConsentsSuccess,
-                ).map { gdpr -> ChoiceResp(gdpr = gdpr) }
+        return if (connectionManager.isConnected) {
+            when (consentAction.campaignType) {
+                GDPR -> {
+                    sendConsentGdpr(
+                        env = env,
+                        consentAction = consentAction,
+                        onSpConsentsSuccess = onSpConsentsSuccess,
+                    ).map { gdpr -> ChoiceResp(gdpr = gdpr) }
+                }
+                CCPA -> {
+                    sendConsentCcpa(
+                        env = env,
+                        consentAction = consentAction,
+                        onSpConsentsSuccess = onSpConsentsSuccess,
+                    ).map { ccpa -> ChoiceResp(ccpa = ccpa) }
+                }
+                USNAT -> {
+                    sendConsentUsNat(
+                        env = env,
+                        consentAction = consentAction,
+                        onSpConsentSuccess = onSpConsentsSuccess,
+                    ).map { usNat -> ChoiceResp(usNat = usNat) }
+                }
             }
-            CCPA -> {
-                sendConsentCcpa(
-                    env = env,
-                    consentAction = consentAction,
-                    onSpConsentsSuccess = onSpConsentsSuccess,
-                ).map { ccpa -> ChoiceResp(ccpa = ccpa) }
-            }
-            USNAT -> {
-                sendConsentUsNat(
-                    env = env,
-                    consentAction = consentAction,
-                    onSpConsentSuccess = onSpConsentsSuccess,
-                ).map { usNat -> ChoiceResp(usNat = usNat) }
-            }
+        } else {
+            consentManagerUtils
+                .spStoredConsent
+                .executeOnRight { onSpConsentsSuccess?.invoke(it) }
+                .map { campaignManager.storeChoiceResp }
         }
     }
 
@@ -427,6 +434,11 @@ private class ServiceImpl(
                 }
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        gdpr = campaignManager.gdprConsentStatus?.copy(applies = dataStorage.gdprApplies),
+                        consentManagerUtils = consentManagerUtils,
+                    )
+                    onSpConsentsSuccess?.invoke(spConsents)
                 }
                 .getOrNull()
         }
@@ -514,6 +526,11 @@ private class ServiceImpl(
                 }
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        gdpr = campaignManager.gdprConsentStatus?.copy(applies = dataStorage.gdprApplies),
+                        consentManagerUtils = consentManagerUtils,
+                    )
+                    onSpConsentsSuccess?.invoke(spConsents)
                 }
         }
 
