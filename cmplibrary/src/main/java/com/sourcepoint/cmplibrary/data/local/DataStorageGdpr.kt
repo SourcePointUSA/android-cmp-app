@@ -152,11 +152,8 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             val spEditor = preference.edit()
             value.forEach { entry ->
                 val primitive = entry.value as? JsonPrimitive
-                if(primitive?.isString == true) primitive.contentOrNull?.let { spEditor.putString(entry.key, it) }
-                else if(primitive?.intOrNull != null){ spEditor.putInt(entry.key, primitive.int) }
-                else if(primitive?.booleanOrNull != null){ spEditor.putBoolean(entry.key, primitive.boolean) }
-                else if(primitive?.floatOrNull != null){ spEditor.putFloat(entry.key, primitive.float) }
-                else if(primitive?.longOrNull != null){ spEditor.putLong(entry.key, primitive.long) }
+                if (primitive?.isString == true) primitive.contentOrNull?.let { spEditor.putString(entry.key, it) }
+                else if (primitive?.intOrNull != null) { spEditor.putInt(entry.key, primitive.int) } else if (primitive?.booleanOrNull != null) { spEditor.putBoolean(entry.key, primitive.boolean) } else if (primitive?.floatOrNull != null) { spEditor.putFloat(entry.key, primitive.float) } else if (primitive?.longOrNull != null) { spEditor.putLong(entry.key, primitive.long) }
             }
             spEditor.apply()
         }
