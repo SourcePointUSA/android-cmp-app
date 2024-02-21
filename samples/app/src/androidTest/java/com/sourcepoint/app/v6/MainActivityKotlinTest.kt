@@ -191,17 +191,20 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
-                getString("IABTCF_TCString", null).assertNotNull()
+                getBoolean("IABTCF_EnableAdvertiserConsentMode", false).assertTrue()
+
+                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)
                 getInt("IABTCF_PolicyVersion", -1).assertNotEquals(-1)
-                // TODO
-//                getInt("IABTCF_UseNonStandardStacks", -1).assertNotEquals(-1)
+                getInt("IABTCF_UseNonStandardTexts", -1).assertNotEquals(-1)
                 getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
-                getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
+
+                getString("IABTCF_TCString", null).assertNotNull()
+                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
                 getString("IABTCF_PurposeConsents", null).assertNotNull()
+                getString("IABTCF_VendorLegitimateInterests", null).assertNotNull()
                 getString("IABTCF_TCString", null).assertNotNull()
                 getString("IABTCF_PublisherRestrictions10", null).assertNotNull()
                 getString("IABTCF_SpecialFeaturesOptIns", null).assertNotNull()
