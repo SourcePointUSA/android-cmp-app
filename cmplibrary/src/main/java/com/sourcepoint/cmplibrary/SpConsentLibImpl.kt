@@ -303,13 +303,40 @@ internal class SpConsentLibImpl(
             legIntCategories = legIntCategories.toList(),
             success = {
                 it?.let { spc ->
-                    successCallback.transferCustomConsentToUnity(spc.toJsonObject().toString())
+                    check { spc.toJsonObject().toString() }
+                        .map { successCallback.transferCustomConsentToUnity(it) }
                 } ?: run {
                     spClient.onError(RuntimeException("An error occurred during the custom consent request"))
                     pLogger.clientEvent(
                         event = "onError",
                         msg = "An error occurred during the custom consent request",
                         content = "An error occurred during the custom consent request"
+                    )
+                }
+            }
+        )
+    }
+
+    override fun deleteCustomConsentTo(
+        vendors: Array<String>,
+        categories: Array<String>,
+        legIntCategories: Array<String>,
+        successCallback: CustomConsentClient
+    ) {
+        deleteCustomConsentTo(
+            vendors = vendors.toList(),
+            categories = categories.toList(),
+            legIntCategories = legIntCategories.toList(),
+            success = {
+                it?.let { spc ->
+                    check { spc.toJsonObject().toString() }
+                        .map { successCallback.transferCustomConsentToUnity(it) }
+                } ?: run {
+                    spClient.onError(RuntimeException("An error occurred during delete custom consent request"))
+                    pLogger.clientEvent(
+                        event = "onError",
+                        msg = "An error occurred during delete custom consent request",
+                        content = "An error occurred during delete custom consent request"
                     )
                 }
             }
@@ -551,7 +578,6 @@ internal class SpConsentLibImpl(
         override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
             /** spClient is called from [onActionFromWebViewClient] */
             (iConsentWebView as? View)?.let {
-                /** spClient is called from [onActionFromWebViewClient] */
                 pJsonConverter
                     .toConsentAction(actionData)
                     .map { ca ->
@@ -660,6 +686,15 @@ internal class SpConsentLibImpl(
     }
 
     private fun showOption(actionImpl: ConsentActionImpl, iConsentWebView: IConsentWebView) {
+
+        if (!connectionManager.isConnected) {
+            consentManager.run {
+                resetConsentCounter()
+                sendStoredConsentToClient()
+            }
+            return
+        }
+
         val view: View = (iConsentWebView as? View) ?: kotlin.run { return }
         when (val l = actionImpl.campaignType) {
             CampaignType.GDPR -> {

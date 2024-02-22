@@ -28,8 +28,8 @@
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
   - [Google Consent Mode](#google-consent-mode)
-    - [Setting Google Consent](#setting-google-consent)
-    - [Initial Consent State](#initial-consent-state)
+    - [Set default consent state for consent checks](#set-default-consent-state-for-consent-checks)
+    - [Update consent checks](#update-consent-checks)
   - [ProGuard](#proguard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
@@ -647,29 +647,11 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 ## Google Consent Mode
 
-If your app uses Google Firebase products, you might be interested in supporting [Google Consent Mode](https://developers.google.com/tag-platform/security/concepts/consent-mode). Our SDK makes it convenient for you to set consent using `Firebase.Analytics`.
+[Google Consent Mode 2.0](https://developers.google.com/tag-platform/security/concepts/consent-mode) ensures that Google vendors on your property comply with an end-user's consent choices for purposes (called consent checks) defined by Google. It is implemented via [Google Analytics for Firebase SDK](https://firebase.google.com/docs/analytics/get-started?platform=android).
 
-### Setting Google Consent
+### Set default consent state for consent checks
 
-```kotlin
-        override fun onSpFinished(sPConsents: SPConsents) {
-            // Set consent types.
-            val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
-            val consentMap = mapOf(
-              ConsentType.ANALYTICS_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_USER_DATA to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
-              ConsentType.AD_PERSONALIZATION to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
-            )
-            mFirebaseAnalytics.setConsent(consentMap)
-        }
-
-
-```
-
-### Initial Consent State
-
-Google requires you to define the initial consent state (`.granted` | `.denied`) of each purpose in your app's `AndroidManifest.xml`, adding the following key to it:
+Add the following keys to your app's `AndroidManifest.xml` to define the initial consent state (`.granted` | `.denied`) for each of Google's consent checks:
 
 ```editorconfig
   <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="true" />
@@ -679,7 +661,33 @@ Google requires you to define the initial consent state (`.granted` | `.denied`)
 
 ```
 
-For more information, please refer to [Manage consent settings (apps)](https://developers.google.com/tag-platform/security/guides/app-consent?platform=android)
+### Update consent checks
+
+Use Google's `setConsent` method to update the relevant consent checks when the appropriate purposes are consented to/rejected.
+
+> The consent checks updated via the `setConsent` method will vary and depends on how you are implementing Google Consent Mode 2.0 on your mobile property within the Sourcepoint portal. The method should only be called with consent checks that are mapped within your vendor list to custom purposes.<br><br> Review Sourcepoint's implementation documentation below for more information:
+>
+> - [Implement Google Consent Mode 2.0 on GDPR TCF (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26139951882643-Google-Consent-Mode-2-0-GDPR-TCF-mobile#h_01HPHHGSP42A36607MDC7NVBV9)
+> - [Implement Google Consent Mode 2.0 on GDPR Standard (mobile)](https://docs.sourcepoint.com/hc/en-us/articles/26159382698387-Google-Consent-Mode-2-0-GDPR-Standard-mobile#h_01HPJ2MT0F5B1G8ZZVD5PNXT9S)
+
+```kotlin
+//Example only. Consent checks updated via setConsent will depend on implementation
+        override fun onSpFinished(sPConsents: SPConsents) {
+            // Set consent types.
+            val gcmData = sPConsents.gdpr?.consent?.googleConsentMode
+            val consentMap = mapOf(
+              ConsentType.ANALYTICS_STORAGE to if(gcmData?.analyticsStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_STORAGE to if(gcmData?.adStorage == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_USER_DATA to if(gcmData?.adUserData == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED,
+              ConsentType.AD_PERSONALIZATION to if(gcmData?.adPersonalization == GCMStatus.GRANTED) ConsentStatus.GRANTED else ConsentStatus.DENIED
+            )
+            mFirebaseAnalytics.setConsent(consentMap)
+        }
+
+
+```
+
+Be advised that the `googleConsentMode` object in `SPConsent` object will only return values for Google consent checks that are mapped to a custom purpose within your vendor list. For all other Google consent checks, the response will be `null`.
 
 ## ProGuard
 
@@ -1176,3 +1184,19 @@ override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
     return consentAction
 }
 ```
+
+### 4. What if I want to migrate my application to use the Jetpack DataStore instead of SharedPreferences?
+
+The consumer of the SourcePoint CMP SDK **can migrate** their application to use the Jetpack DataStore, **but they have to keep in mind one thing**. The SDK is compliant with the IAB Transparency and Consent Framework, which [states](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#how-do-third-party-sdks-vendors-access-the-consent-information-) that all the consent data should be stored **only in default SharedPreferences** location/file.
+
+The consumer of the SDK is free to use any method of migration to the Jetpack DataStore, but in order to preserve consent data and prevent SDK failures, they have to make sure that the consent data is being left **as is** in the default SharedPreferences file.
+
+Keep in mind, that during such migrations, the default SharedPreferences file can be deleted. In such a case, the consumer has to figure out the way to recreate and repopulate default SharedPreferences file with the corresponding SourcePoint CMP data.
+
+**TLDR:** When consumer wants to migrate to Jetpack DataStore, they have to migrate **only** their locally stored data, and leave the SourcePoint CMP SDK data as is.
+
+Here are some references for a consumer of the SDK of what data is a consent data:
+- [USPrivacy](https://github.com/InteractiveAdvertisingBureau/USPrivacy/blob/master/CCPA/USP%20API.md#in-app-support)
+- [Global Privacy Platform](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/CMP%20API%20Specification.md#in-app-key-names)
+- [GDPR Transparency and Consent Framework](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#cmp-internal-structure-defined-api-)
+- etc.

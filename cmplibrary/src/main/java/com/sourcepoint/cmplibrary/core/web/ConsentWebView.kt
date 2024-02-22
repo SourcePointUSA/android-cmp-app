@@ -207,7 +207,7 @@ internal class ConsentWebView(
 
             if (action.actionType == ActionType.PM_DISMISS && currentCampaignModel != null) {
                 jsClientLib.onAction(this@ConsentWebView, actionData, currentCampaignModel!!)
-            } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty()) {
+            } else if (action.actionType != ActionType.SHOW_OPTIONS && campaignQueue.isNotEmpty() && connectionManager.isConnected) {
                 val campaign: CampaignModel = campaignQueue.poll()
                 jsClientLib.onAction(this@ConsentWebView, actionData, campaign)
             } else {

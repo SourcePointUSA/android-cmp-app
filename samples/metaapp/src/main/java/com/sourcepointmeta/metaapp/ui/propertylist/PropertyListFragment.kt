@@ -229,6 +229,24 @@ class PropertyListFragment : Fragment() {
             }
             true
         }
+
+        val intent: Intent = requireActivity().intent
+        val action: String? = intent.action
+        val type: String? = intent.type
+
+        if (Intent.ACTION_VIEW == action && type != null) {
+            if ("application/json" == type) {
+                intent.data
+                    ?.let { requireContext().readFileContent(it) }
+                    ?.string2Json()
+                    ?.let {
+                        val editor = sp.edit()
+                        editor.storeJson(it)
+                        editor.putBoolean(V7_CONSENT, true)
+                        editor.apply()
+                    }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
