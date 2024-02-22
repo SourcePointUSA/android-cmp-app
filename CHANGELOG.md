@@ -1,3 +1,11 @@
+## 7.7.1 (February, 22, 2024)
+* [DIA-3622](https://sourcepoint.atlassian.net/browse/DIA-3622) GCM flag missing (#787)
+* [DIA-3505](https://sourcepoint.atlassian.net/browse/DIA-3505) Handle no internet edge cases (#782)
+* [DIA-3623](https://sourcepoint.atlassian.net/browse/DIA-3623) Add clarity to googleConsentMode object return values (#789)
+* [DIA-3624](https://sourcepoint.atlassian.net/browse/DIA-3624) Load test data into the Metaapp by parsing a JSON obj (#788)
+* [HCD-489](https://sourcepoint.atlassian.net/browse/DIA-489) Update GCM 2.0 (#786)
+* [DIA-2585](https://sourcepoint.atlassian.net/browse/DIA-2585) Added overload of the `deleteCustomConsentTo` method for Unity3D feature support (#779)
+
 ## 7.7.0 (February, 08, 2024)
 * [DIA-3566](https://sourcepoint.atlassian.net/browse/DIA-3566) Support non-TCF GCM 2.0 (#783)
 * [DIA-3425](https://sourcepoint.atlassian.net/browse/DIA-3425) Add ethernet capability (#780)
