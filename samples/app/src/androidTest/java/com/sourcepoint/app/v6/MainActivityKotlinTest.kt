@@ -222,7 +222,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getBoolean("IABTCF_EnableAdvertiserConsentMode", false).assertTrue()
+                getInt("IABTCF_EnableAdvertiserConsentMode", -1).assertEquals(1)
 
                 getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
