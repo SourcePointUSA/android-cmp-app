@@ -4,6 +4,7 @@ import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.IncludeDataGppParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
+import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
 import kotlinx.serialization.json.Json
@@ -18,16 +19,25 @@ internal fun SpConfig.hasTransitionCCPAAuth() =
         ?.configParams
         ?.find { it == ConfigOption.TRANSITION_CCPA_AUTH } != null
 
-internal fun SpGppConfig?.toIncludeDataGppParam(): IncludeDataGppParam = IncludeDataGppParam(
+internal fun SpConfig.hasSupportForLegacyUSPString(): IncludeDataGppParam? = campaigns
+    .find { it.campaignType == USNAT }
+    ?.configParams
+    ?.find { it == ConfigOption.SUPPORT_LEGACY_USPSTRING }
+    ?.let { IncludeDataGppParam(uspString = true) }
+
+internal fun SpGppConfig?.toIncludeDataGppParam(supportLegacyUSPString: Boolean? = null): IncludeDataGppParam = IncludeDataGppParam(
     coveredTransaction = this?.coveredTransaction?.type,
     optOutOptionMode = this?.optOutOptionMode?.type,
     serviceProviderMode = this?.serviceProviderMode?.type,
+    uspString = supportLegacyUSPString
 )
 
-internal fun SpConfig.getGppCustomOption(): JsonElement? = when (isIncluded(CCPA)) {
-    false -> null
-    true ->
+internal fun SpConfig.getGppCustomOption(): JsonElement? = when {
+    isIncluded(CCPA) ->
         spGppConfig
             ?.toIncludeDataGppParam()
             ?.let { Json.encodeToJsonElement(it) }
+    isIncluded(USNAT) ->
+        hasSupportForLegacyUSPString()?.let { Json.encodeToJsonElement(it) }
+    else -> null
 }

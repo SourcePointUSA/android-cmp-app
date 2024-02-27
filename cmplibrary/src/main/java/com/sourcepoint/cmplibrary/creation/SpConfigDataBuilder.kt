@@ -138,7 +138,8 @@ fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
     return SpConfigDataBuilder().apply(dsl).build()
 }
 enum class ConfigOption(option: String) {
-    TRANSITION_CCPA_AUTH("transitionCCPAAuth")
+    TRANSITION_CCPA_AUTH("transitionCCPAAuth"),
+    SUPPORT_LEGACY_USPSTRING("supportLegacyUSPString")
 }
 
 infix fun CampaignType.to(config: Set<ConfigOption>): Map<CampaignType, Set<ConfigOption>> {
