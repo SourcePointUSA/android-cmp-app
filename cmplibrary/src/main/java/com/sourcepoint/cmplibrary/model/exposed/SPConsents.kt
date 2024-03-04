@@ -167,10 +167,10 @@ interface UsNatConsent {
 internal data class UsNatConsentInternal(
     override var gppData: Map<String, Any?> = emptyMap(),
     override val applies: Boolean = false,
-    override val consentStrings: List<USNatConsentData.ConsentString>? = null,
+    override val consentStrings: List<USNatConsentData.ConsentString> = emptyList(),
     override val dateCreated: String? = null,
-    override val vendors: List<ConsentableImpl>? = listOf(),
-    override val categories: List<ConsentableImpl>? = listOf(),
+    override val vendors: List<ConsentableImpl> = listOf(),
+    override val categories: List<ConsentableImpl> = listOf(),
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
     @Deprecated("`consentStatus` is deprecated and will be renamed to `statuses` in the next release.", ReplaceWith("statuses"))
