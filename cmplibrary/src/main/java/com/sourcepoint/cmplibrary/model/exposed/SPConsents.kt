@@ -108,6 +108,23 @@ enum class CcpaStatus {
     unknown
 }
 
+interface Consentable {
+    val id: String
+    val consented: Boolean
+}
+@Serializable
+data class ConsentableImpl(
+    @SerialName("_id") override val id: String,
+    override val consented: Boolean
+): Consentable {
+    fun toJsonObject(): JSONObject {
+        return JSONObject().apply {
+            put("id", id)
+            put("consented", consented)
+        }
+    }
+}
+
 data class UsNatStatuses(
     val hasConsentData: Boolean?,
     val rejectedAny: Boolean?,
@@ -141,6 +158,8 @@ interface UsNatConsent {
     val statuses: UsNatStatuses
     val consentStrings: List<USNatConsentData.ConsentString>?
     val dateCreated: String?
+    val vendors: List<Consentable>?
+    val categories: List<Consentable>?
     val uuid: String?
     val webConsentPayload: JsonObject?
 }
@@ -150,11 +169,12 @@ internal data class UsNatConsentInternal(
     override val applies: Boolean = false,
     override val consentStrings: List<USNatConsentData.ConsentString>? = null,
     override val dateCreated: String? = null,
+    override val vendors: List<ConsentableImpl>? = listOf(),
+    override val categories: List<ConsentableImpl>? = listOf(),
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
     @Deprecated("`consentStatus` is deprecated and will be renamed to `statuses` in the next release.", ReplaceWith("statuses"))
     override val consentStatus: USNatConsentStatus? = null,
-    val dateCreated: String? = null,
     val url: String? = null,
 ) : UsNatConsent {
     override val statuses: UsNatStatuses
@@ -271,6 +291,8 @@ internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
         put("statuses", statuses.toJsonObject())
         put("consentStrings", consentStrings?.toJsonObjectList())
         put("dateCreated", dateCreated)
+        put("vendors", vendors?.map { it.toJsonObject() })
+        put("categories", categories?.map { it.toJsonObject() })
         put("uuid", uuid)
     }
 }
