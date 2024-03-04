@@ -108,10 +108,37 @@ enum class CcpaStatus {
     unknown
 }
 
+data class UsNatStatuses(
+    val hasConsentData: Boolean?,
+    val rejectedAny: Boolean?,
+    val consentedToAll: Boolean?,
+    val consentedToAny: Boolean?,
+    val sellStatus: Boolean?,
+    val shareStatus: Boolean?,
+    val sensitiveDataStatus: Boolean?,
+    val gpcStatus: Boolean?,
+) {
+    fun toJsonObject(): Any {
+        return JSONObject().apply {
+            putOpt("hasConsentData", hasConsentData)
+            putOpt("rejectedAny", rejectedAny)
+            putOpt("consentedToAll", consentedToAll)
+            putOpt("consentedToAny", consentedToAny)
+            putOpt("sellStatus", sellStatus)
+            putOpt("shareStatus", shareStatus)
+            putOpt("sensitiveDataStatus", sensitiveDataStatus)
+            putOpt("gpcStatus", gpcStatus)
+        }
+    }
+}
+
 interface UsNatConsent {
     var gppData: Map<String, Any?>
     val applies: Boolean
+
+    @Deprecated("`consentStatus` is deprecated and will be renamed to `statuses` in the next release.", ReplaceWith("statuses"))
     val consentStatus: USNatConsentStatus?
+    val statuses: UsNatStatuses
     val consentStrings: List<USNatConsentData.ConsentString>?
     val dateCreated: String?
     val uuid: String?
@@ -121,13 +148,27 @@ interface UsNatConsent {
 internal data class UsNatConsentInternal(
     override var gppData: Map<String, Any?> = emptyMap(),
     override val applies: Boolean = false,
-    override val consentStatus: USNatConsentStatus? = null,
     override val consentStrings: List<USNatConsentData.ConsentString>? = null,
     override val dateCreated: String? = null,
     override val uuid: String? = null,
     override val webConsentPayload: JsonObject? = null,
+    @Deprecated("`consentStatus` is deprecated and will be renamed to `statuses` in the next release.", ReplaceWith("statuses"))
+    override val consentStatus: USNatConsentStatus? = null,
+    val dateCreated: String? = null,
     val url: String? = null,
-) : UsNatConsent
+) : UsNatConsent {
+    override val statuses: UsNatStatuses
+        get() = UsNatStatuses(
+            hasConsentData = consentStatus?.hasConsentData,
+            rejectedAny = consentStatus?.rejectedAny,
+            consentedToAll = consentStatus?.consentedToAll,
+            consentedToAny = consentStatus?.consentedToAny,
+            sellStatus = consentStatus?.granularStatus?.sellStatus,
+            shareStatus = consentStatus?.granularStatus?.shareStatus,
+            sensitiveDataStatus = consentStatus?.granularStatus?.sensitiveDataStatus,
+            gpcStatus = consentStatus?.granularStatus?.gpcStatus,
+        )
+}
 
 internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
@@ -227,7 +268,7 @@ internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
     return JSONObject().apply {
         put("applies", applies)
         put("gppData", gppData.toConsentJSONObj())
-        put("consentStatus", consentStatus?.toJsonObject())
+        put("statuses", statuses.toJsonObject())
         put("consentStrings", consentStrings?.toJsonObjectList())
         put("dateCreated", dateCreated)
         put("uuid", uuid)
@@ -242,16 +283,6 @@ internal fun SPConsents.toJsonObject(): JSONObject {
     }
 }
 
-internal fun USNatConsentStatus.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("rejectedAny", rejectedAny)
-        put("consentedToAll", consentedToAll)
-        put("consentedToAny", consentedToAny)
-        put("granularStatus", granularStatus?.toJsonObject())
-        put("hasConsentData", hasConsentData)
-    }
-}
-
 internal fun List<USNatConsentData.ConsentString>.toJsonObjectList(): List<JSONObject> {
     return this.map { consentString ->
         JSONObject().apply {
@@ -259,17 +290,5 @@ internal fun List<USNatConsentData.ConsentString>.toJsonObjectList(): List<JSONO
             put("sectionName", consentString.sectionName)
             put("consentString", consentString.consentString)
         }
-    }
-}
-
-internal fun USNatConsentStatus.USNatGranularStatus.toJsonObject(): JSONObject {
-    return JSONObject().apply {
-        put("sellStatus", sellStatus)
-        put("shareStatus", shareStatus)
-        put("sensitiveDataStatus", sensitiveDataStatus)
-        put("gpcStatus", gpcStatus)
-        put("defaultConsent", defaultConsent)
-        put("previousOptInAll", previousOptInAll)
-        put("purposeConsent", purposeConsent)
     }
 }

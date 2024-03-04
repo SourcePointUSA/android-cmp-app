@@ -163,7 +163,7 @@ class MainActivityKotlinAuthIdTest {
             it.usNat!!.consent.run {
                 (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YYN")
                 applies.assertTrue()
-                consentStatus!!.consentedToAll!!.assertTrue()
+                statuses.consentedToAll!!.assertTrue()
                 uuid.assertNotNull()
             }
         }) } }
