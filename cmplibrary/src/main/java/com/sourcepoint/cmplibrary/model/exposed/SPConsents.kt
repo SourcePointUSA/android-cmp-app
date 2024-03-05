@@ -116,7 +116,7 @@ interface Consentable {
 data class ConsentableImpl(
     @SerialName("_id") override val id: String,
     override val consented: Boolean
-): Consentable {
+) : Consentable {
     fun toJsonObject(): JSONObject {
         return JSONObject().apply {
             put("id", id)
@@ -289,10 +289,10 @@ internal fun UsNatConsentInternal.toJsonObject(): JSONObject {
         put("applies", applies)
         put("gppData", gppData.toConsentJSONObj())
         put("statuses", statuses.toJsonObject())
-        put("consentStrings", consentStrings?.toJsonObjectList())
+        put("consentStrings", consentStrings.toJsonObjectList())
         put("dateCreated", dateCreated)
-        put("vendors", vendors?.map { it.toJsonObject() })
-        put("categories", categories?.map { it.toJsonObject() })
+        put("vendors", vendors.map { it.toJsonObject() })
+        put("categories", categories.map { it.toJsonObject() })
         put("uuid", uuid)
     }
 }
