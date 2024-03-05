@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.model.exposed.ConsentableImpl
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.SerialName
@@ -87,7 +88,8 @@ data class USNatConsentData(
     @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
     @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
     @SerialName("url") override val url: String?,
-    @SerialName("expirationDate") override val expirationDate: String?
+    @SerialName("expirationDate") override val expirationDate: String?,
+    val userConsents: UserConsents?
 ) : CampaignMessage {
     @Serializable
     data class ConsentString(
@@ -95,6 +97,17 @@ data class USNatConsentData(
         @SerialName("sectionName") val sectionName: String?,
         @SerialName("consentString") val consentString: String?
     )
+
+    @Serializable
+    data class UserConsents(
+        val vendors: List<ConsentableImpl>? = emptyList(),
+        val categories: List<ConsentableImpl>? = emptyList()
+    )
+
+    val vendors: List<ConsentableImpl>
+        get() { return userConsents?.vendors ?: emptyList() }
+    val categories: List<ConsentableImpl>
+        get() { return userConsents?.categories ?: emptyList() }
 }
 
 @Serializable

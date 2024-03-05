@@ -45,7 +45,9 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableSomeConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -55,6 +57,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Test
@@ -96,7 +99,7 @@ class MainActivityKotlinTest {
         propertyId = 16893
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.USNAT)
+        +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
     }
 
     private val spConfGdprNoMessage = config {
@@ -134,6 +137,34 @@ class MainActivityKotlinTest {
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
         +(CampaignType.GDPR)
+    }
+
+    @Test
+    fun GIVEN_a_USNAT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfUsnat,
+                usnatPmId = "509688",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
+
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+        wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
+            it.usNat!!.consent.run {
+                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YYN")
+                applies.assertTrue()
+                statuses.consentedToAll!!.assertTrue()
+                uuid.assertNotNull()
+            }
+        }) } }
     }
 
     @Test
@@ -191,7 +222,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity { activity ->
             PreferenceManager.getDefaultSharedPreferences(activity).run {
-                getBoolean("IABTCF_EnableAdvertiserConsentMode", false).assertTrue()
+                getInt("IABTCF_EnableAdvertiserConsentMode", -1).assertEquals(1)
 
                 getInt("IABTCF_PurposeOneTreatment", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)

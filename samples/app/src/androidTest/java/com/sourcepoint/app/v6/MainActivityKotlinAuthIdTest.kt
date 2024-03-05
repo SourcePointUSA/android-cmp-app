@@ -8,13 +8,16 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonPrimitive
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -89,7 +92,7 @@ class MainActivityKotlinAuthIdTest {
         propertyName = "mobile.multicampaign.demo"
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +(CampaignType.USNAT)
+        +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
     }
 
     private val spConfNative = config {
@@ -154,9 +157,16 @@ class MainActivityKotlinAuthIdTest {
         wr { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 3) { spClient.onSpFinished(any()) } }
         wr { verify(exactly = 3) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 3) { spClient.onSpFinished( withArg {
+            it.usNat!!.consent.run {
+                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YYN")
+                applies.assertTrue()
+                statuses.consentedToAll!!.assertTrue()
+                uuid.assertNotNull()
+            }
+        }) } }
     }
 
 }

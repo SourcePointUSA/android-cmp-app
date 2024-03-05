@@ -402,8 +402,9 @@ class TestUseCase {
 
         fun mockModule(
             spConfig: SpConfig,
-            gdprPmId: String,
+            gdprPmId: String = "",
             ccpaPmId: String = "",
+            usnatPmId: String = "",
             pAuthId: String? = null,
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
