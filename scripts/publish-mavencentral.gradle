@@ -37,7 +37,6 @@ ext["signing.password"] = ''
 ext["signing.secretKeyRingFile"] = ''
 ext["ossrhUsername"] = ''
 ext["ossrhPassword"] = ''
-ext["sonatypeStagingProfileId"] = ''
 
 File secretPropsFile = project.rootProject.file('local.properties')
 if (secretPropsFile.exists()) {
@@ -52,7 +51,6 @@ if (secretPropsFile.exists()) {
     ext["signing.secretKeyRingFile"] = rootDir.path + "/" + System.getenv('SIGNING_SECRET_KEY_RING_FILE')
     ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
     ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
-    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
 }
 
 publishing {
@@ -81,9 +79,9 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'carmelo-iriti'
-                        name = 'Carmelo Iriti'
-                        email = 'carmelo@sourcepoint.com'
+                        id = 'andresilveirah'
+                        name = 'Andre Herculano'
+                        email = 'andresilveirah@gmail.com'
                     }
                 }
                 scm {
@@ -124,7 +122,6 @@ publishing {
 
 nexusStaging {
     packageGroup = GROUP_ID
-//    stagingProfileId = sonatypeStagingProfileId
     username = ossrhUsername
     password = ossrhPassword
 }
