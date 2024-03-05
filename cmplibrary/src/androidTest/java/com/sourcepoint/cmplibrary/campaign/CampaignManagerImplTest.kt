@@ -92,7 +92,8 @@ class CampaignManagerImplTest {
             dateCreated = null,
             consentStrings = null,
             gppData = null,
-            webConsentPayload = null
+            webConsentPayload = null,
+            userConsents = USNatConsentData.UserConsents(),
         )
     }
 
