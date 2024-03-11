@@ -30,7 +30,8 @@ internal data class ConsentStatusParamReq(
 enum class GranularState {
     ALL,
     SOME,
-    NONE
+    NONE,
+    EMPTY_VL
 }
 
 enum class GCMStatus(val status: String) {
