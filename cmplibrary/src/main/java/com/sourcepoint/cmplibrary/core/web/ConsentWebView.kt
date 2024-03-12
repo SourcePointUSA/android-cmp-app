@@ -180,6 +180,15 @@ internal class ConsentWebView(
         true
     }
 
+    override fun handleOnBackPress() {
+        evaluateJavascript(
+            """
+            window.postMessage({ name: 'sp.BACK' })
+            """.trimIndent(),
+            null
+        )
+    }
+
     inner class JSClientWebViewImpl : JSClientWebView {
 
         @JavascriptInterface

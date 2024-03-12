@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentActivity
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
@@ -62,6 +63,14 @@ class DemoActivityTv : FragmentActivity() {
         spConfig = config.copy(logger = logger)
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            spConsentLib.handleOnBackPress(isMessageDismissible = true) {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearAllData(this)
@@ -81,10 +90,7 @@ class DemoActivityTv : FragmentActivity() {
             intent.putExtra(JsonViewerFragmentTv.TITLE, "${it.type} - ${it.tag}")
             startActivity(intent)
         }
-    }
-
-    override fun onBackPressed() {
-        spConsentLib.verifyHome { super.onBackPressed() }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onResume() {

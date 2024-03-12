@@ -41,7 +41,7 @@ internal interface ViewsManager {
     fun removeAllViewsExcept(pView: View)
     fun dispose()
 
-    fun onBackPressed()
+    fun handleOnBackPress()
     companion object
 }
 
@@ -183,14 +183,10 @@ private class ViewsManagerImpl(
         weakReference.clear()
     }
 
-    override fun onBackPressed() {
-        (webview as? ConsentWebView)?.evaluateJavascript(
-            """
-            window.postMessage({ name: 'sp.BACK' })
-            """.trimIndent(),
-            null
-        )
+    override fun handleOnBackPress() {
+        webview?.handleOnBackPress()
     }
+
     override val isViewInLayout: Boolean
         get() = idsSet.isNotEmpty()
 }

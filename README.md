@@ -34,6 +34,7 @@
   - [ProGuard](#proguard)
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Sharing consent with a WebView](#sharing-consent-with-a-webview)
+  - [Navigation inside the Native OTT message](#navigation-inside-the-native-ott-message)
   - [The SpUtils file](#the-sputils-file)
     - `userConsents`
     - `clearAllData`
@@ -809,6 +810,45 @@ A few remarks:
 1. The web content being loaded (web property) needs to share the same vendor list as the app.
 2. The vendor list's consent scope needs to be set to _Shared Site_ instead of _Single Site_.
 3. Your web content needs to be loaded (or loading) on the webview and our web SDK should be included in it. Furthermore, you need to add the query param `_sp_pass_consent=true` to your URL, this will signal to Sourcepoint's web SDK it needs to wait for the consent data to be injected from the native code, instead of immediately querying it from our servers.
+
+## Navigation inside the Native OTT message
+
+Specifically for the Native OTT messages, CMP provides an inner navigation feature, that allows the users to navigate within the message by using system buttons (like back button). To make it work, the users have to utilize one of the native methods that handles back press (like overriding `onBackPressed` method in activity or using `onBackPressedDispatcher`) and `spConsentLib.handleOnBackPress()` method provided by the CMP API, for example:
+
+Kotlin (for Android 13+)
+
+```kotlin
+class YourKotlinActivity {
+    // ...
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            spConsentLib.handleOnBackPress(isMessageDismissible = true) {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        // ...
+    }
+}
+```
+
+Kotlin (for the versions where `onBackPressed` is not yet deprecated)
+
+```kotlin
+class YourKotlinActivity {
+    override fun onBackPressed() {
+        spConsentLib.verifyHome(isMessageDismissible = true) { super.onBackPressed() }
+    }
+}
+```
+
+Regarding `handleOnBackPress` from `spConsentLib`, there are 2 parameters:
+- isMessageDismissible - flag that can customize the behaviour, when the user clicks back button on "Home" page of the message (if true - message is dismissible, if false - when the user is on "Home" page and clicks back, then the back event will be dispatched to the activity delegating navigation to the app)
+- onHomePage - lambda, code in which should be invoked when the user clicks back on "Home" page of the message (in other words, the initial navigation position in message)
 
 ## Adding or Removing custom consents
 
