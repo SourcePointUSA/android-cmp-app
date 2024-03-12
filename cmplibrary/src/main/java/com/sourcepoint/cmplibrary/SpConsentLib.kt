@@ -89,7 +89,10 @@ interface SpConsentLib {
      *
      * @param ottDelegate functional interface that provides the mechanism to override onBackPress
      */
-    fun verifyHome(ottDelegate: SpBackPressOttDelegate)
+    fun handleOnBackPress(
+        isMessageDismissible: Boolean = true,
+        ottDelegate: SpBackPressOttDelegate,
+    )
 
     /**
      * Method that verifies home page and delegates navigation between the message view and the
@@ -99,5 +102,8 @@ interface SpConsentLib {
      *
      * @param onHomePage lambda that provides the mechanism to override onBackPress
      */
-    fun verifyHome(onHomePage: () -> Unit)
+    fun handleOnBackPress(
+        isMessageDismissible: Boolean = true,
+        onHomePage: () -> Unit,
+    )
 }
