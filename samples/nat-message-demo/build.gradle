@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
-    compileSdkVersion 29
     defaultConfig {
-        applicationId "com.sourcepoint.demo.native"
-        minSdkVersion 21
-        targetSdkVersion 29
+        applicationId "com.sourcepoint.nat.demo"
+        minSdk 21
+        compileSdk 33
+        targetSdk 33
         versionCode 2
         versionName "1.0.0"
         multiDexEnabled true
