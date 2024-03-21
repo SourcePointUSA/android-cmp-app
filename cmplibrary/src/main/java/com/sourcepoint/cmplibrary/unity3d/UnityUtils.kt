@@ -9,3 +9,7 @@ fun throwableToException(throwable: Throwable) {
 fun <T> arrayToList(array: Array<T>): List<T> {
     return array.toList()
 }
+
+fun <T> arrayToSet(array: Array<T>): Set<T> {
+    return array.toSet()
+}
