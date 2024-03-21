@@ -1,2 +1,2 @@
-* [DIA-3525](https://sourcepoint.atlassian.net/browse/DIA-3525) Add flag to enable support to uspstring within usnat campaign [https://github.com/SourcePointUSA/android-cmp-app/pull/785](#785)
-* [DIA-3560](https://sourcepoint.atlassian.net/browse/DIA-3560) expand usnat consents object [https://github.com/SourcePointUSA/android-cmp-app/pull/791](#791)
+* [DIA-3710](https://sourcepoint.atlassian.net/browse/DIA-3710) Fix an issue causing granular state consent status to assume a wrong value. [https://github.com/SourcePointUSA/android-cmp-app/pull/799](#799)
+* [DIA-3630](https://sourcepoint.atlassian.net/browse/DIA-3630) Update utility functions for Unity. [https://github.com/SourcePointUSA/android-cmp-app/pull/794](#794)
