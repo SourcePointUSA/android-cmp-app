@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
@@ -59,6 +60,13 @@ class MainActivityKotlin : AppCompatActivity() {
 //        }
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            spConsentLib.handleOnBackPress(isMessageDismissible = true) {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +114,7 @@ class MainActivityKotlin : AppCompatActivity() {
         }
         refresh_btn.setOnClickListener { executeCmpLib() }
         add_old_consent.setOnClickListener { addOldV6Consent() }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun openTransferConsentActivity() {

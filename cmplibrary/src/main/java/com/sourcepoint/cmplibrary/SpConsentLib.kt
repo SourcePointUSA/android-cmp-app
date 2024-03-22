@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import org.json.JSONObject
 
 interface SpConsentLib {
@@ -79,4 +80,30 @@ interface SpConsentLib {
     fun removeView(view: View)
 
     fun dispose()
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using functional interface.
+     *
+     * Applicable for Java and Kotlin implementations.
+     *
+     * @param ottDelegate functional interface that provides the mechanism to override onBackPress
+     */
+    fun handleOnBackPress(
+        isMessageDismissible: Boolean = true,
+        ottDelegate: SpBackPressOttDelegate,
+    )
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using lambda.
+     *
+     * Applicable for Kotlin implementation.
+     *
+     * @param onHomePage lambda that provides the mechanism to override onBackPress
+     */
+    fun handleOnBackPress(
+        isMessageDismissible: Boolean = true,
+        onHomePage: () -> Unit,
+    )
 }

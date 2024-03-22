@@ -41,6 +41,7 @@ internal interface ViewsManager {
     fun removeAllViewsExcept(pView: View)
     fun dispose()
 
+    fun handleOnBackPress()
     companion object
 }
 
@@ -65,6 +66,7 @@ private class ViewsManagerImpl(
     val messageTimeout: Long
 ) : ViewsManager {
 
+    private var webview: IConsentWebView? = null
     val idsSet = LinkedHashSet<Int>()
 
     val mainView: ViewGroup?
@@ -103,11 +105,16 @@ private class ViewsManagerImpl(
                 }
             }
         }
+        webview = null
         idsSet.clear()
     }
 
     override fun removeAllViewsExcept(pView: View) {
         val idsList = idsSet.toMutableList()
+        if (webview != null && webview is ConsentWebView && pView != webview) {
+            this.removeView(webview as ConsentWebView)
+            webview = null
+        }
         idsList.forEach { id ->
             mainView?.findViewById<View>(id)?.let { view ->
                 if (pView != view) {
@@ -130,7 +137,7 @@ private class ViewsManagerImpl(
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
-                ConsentWebView(
+                val newWebView = ConsentWebView(
                     context = it,
                     connectionManager = connectionManager,
                     jsClientLib = jsReceiverDelegate,
@@ -140,6 +147,8 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
+                this.webview = newWebView
+                newWebView
             }
         } ?: Either.Left(WebViewCreationException(description = "The activity reference in the ViewManager is null!!!"))
     }
@@ -153,7 +162,7 @@ private class ViewsManagerImpl(
     ): Either<IConsentWebView> {
         return weakReference.get()?.let {
             check {
-                ConsentWebView(
+                val newWebView = ConsentWebView(
                     context = it,
                     connectionManager = connectionManager,
                     jsClientLib = jsReceiverDelegate,
@@ -164,12 +173,18 @@ private class ViewsManagerImpl(
                     messageType = messageType,
                     viewId = cmpViewId
                 )
+                this.webview = newWebView
+                newWebView
             }
         } ?: Either.Left(WebViewCreationException(description = "The activity reference in the ViewManager is null!!!"))
     }
-
     override fun dispose() {
+        webview = null
         weakReference.clear()
+    }
+
+    override fun handleOnBackPress() {
+        webview?.handleOnBackPress()
     }
 
     override val isViewInLayout: Boolean
