@@ -1136,7 +1136,7 @@ In the following code snippets, replace `{status}` with a status from the table 
 
 The code snippets will check the configured status and execute the code you have set up for when an end-user is opted-out or opted-into a privacy choice, respectively.
 
-```java
+```kotlin
 //checks if end-user has opted out of the privacy choice
 if(sPConsents.usNat?.consent?.statuses?.{status}==false){
     //execute code if end-user opted out
