@@ -45,6 +45,7 @@
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
   - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
+  - [Check end-user consent status for U.S. Multi-State Privacy](#check-end-user-consent-status-for-us-multi-state-privacy)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
   - [Frequently Asked Questions](#frequently-asked-questions)
@@ -1089,7 +1090,7 @@ public class MainActivityJava extends AppCompatActivity {
 
 When migrating a property from the U.S. Privacy (Legacy) campaign to U.S. Multi-State Privacy campaign, the SDK will automatically detect previously set end-user opt-in/opt-out preferences for U.S. Privacy (Legacy) and have that transferred over to U.S. Multi-State Privacy.
 
-> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the *Sharing of Personal Information Targeted Advertisting* and *Sale of Personal Information* privacy choices or the *Sale or Share of Personal Information/Targeted Advertising* privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
+> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the _Sharing of Personal Information Targeted Advertisting_ and _Sale of Personal Information_ privacy choices or the _Sale or Share of Personal Information/Targeted Advertising_ privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
 
 If you ever used authenticated consent for CCPA, you'll have to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration to transfer an end-user's opt-in/opt-out preferences. The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId. This way, the SDK will look for authenticated consent within CCPA profiles and carry that over to USNat, even if the user current doesn't have CCPA local data (on a fresh install, for example).
 
@@ -1120,6 +1121,34 @@ private final SpConfig spConfig = new SpConfigDataBuilder()
         .addCampaign(CampaignType.GDPR)
         .build();
 ```
+
+## Check end-user consent status for U.S. Multi-State Privacy
+
+Your organization can check an end-user's consent status for a privacy choice by checking the `statuses` object for `usnat` in the `SpConsent` object.
+
+In the following code snippets, replace `{status}` with a status from the table below:
+
+| **Status**            | **Description**                                                                                                                                                                                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sellStatus`          | Checks end-user consent status for _Sale of Personal Information_ privacy choice.                                                                                                                                                                                            |
+| `shareStatus`         | Checks end-user consent status for _Sharing of Personal Information/Targeted Advertising_ privacy choice.                                                                                                                                                                    |
+| `sensitiveDataStatus` | Checks end-user consent status for _Processing of Sensitive Personal Information_ privacy choice.<br><br>Each sensitive data category configured by your organization is collated under this single privacy choice.The end-user either opts into all the categories or none. |
+
+The code snippets will check the configured status and execute the code you have set up for when an end-user is opted-out or opted-into a privacy choice, respectively.
+
+```kotlin
+//checks if end-user has opted out of the privacy choice
+if(sPConsents.usNat?.consent?.statuses?.{status}==false){
+    //execute code if end-user opted out
+}
+
+//checks if end-user has opted into of the privacy choice
+if(sPConsents.usNat?.consent?.statuses?.{status}==true){
+    //execute code if end-user opted in
+}
+```
+
+> If your organization has combined _Sharing of Personal Information/Targeted Advertising_ and _Sale of Personal Information_ into a single privacy choice in the Sourcepoint portal, you can elect to check either `sellStatus` or `shareStatus` for the end-user consent status.
 
 ## Delete user data
 
@@ -1180,6 +1209,7 @@ Keep in mind, that during such migrations, the default SharedPreferences file ca
 **TLDR:** When consumer wants to migrate to Jetpack DataStore, they have to migrate **only** their locally stored data, and leave the SourcePoint CMP SDK data as is.
 
 Here are some references for a consumer of the SDK of what data is a consent data:
+
 - [USPrivacy](https://github.com/InteractiveAdvertisingBureau/USPrivacy/blob/master/CCPA/USP%20API.md#in-app-support)
 - [Global Privacy Platform](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/CMP%20API%20Specification.md#in-app-key-names)
 - [GDPR Transparency and Consent Framework](https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Mobile%20In-App%20Consent%20APIs%20v1.0%20Final.md#cmp-internal-structure-defined-api-)
