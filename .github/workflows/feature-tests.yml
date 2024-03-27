@@ -11,11 +11,13 @@ jobs:
   UI-and-Unit-test-cmplib:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v4
+      - name: set up JDK 11
+        uses: actions/setup-java@v4
         with:
-          java-version: 1.8
+          distribution: zulu
+          java-version: 11
+          cache: gradle
       - name: creating local.properties # this file is normally added to .gitignore
         run: touch local.properties
       - name: Cache multiple paths
