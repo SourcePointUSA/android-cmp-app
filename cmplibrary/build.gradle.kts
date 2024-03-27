@@ -93,17 +93,17 @@ android {
 
 dependencies {
     // kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     //noinspection GradleDependency
     api("com.squareup.okhttp3:okhttp:4.9.0")
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
-    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 tasks.register("versionTxt") {
