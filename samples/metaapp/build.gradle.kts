@@ -96,7 +96,7 @@ dependencies {
 
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
-    implementation(Libs.kotlinReflect)
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")
 
     implementation(project(":cmplibrary"))
 
