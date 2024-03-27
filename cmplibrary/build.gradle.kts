@@ -18,13 +18,11 @@ group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
 android {
-    compileSdkVersion(33)
+    compileSdk = 34
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(33)
-        versionCode = 300
-        versionName = versionLib
+        minSdk = 21
+        targetSdk = 34
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -70,13 +68,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
         isCoreLibraryDesugaringEnabled = true
+    }
+    namespace = "com.example.cmplibrary"
+    testNamespace = "com.sourcepoint.cmplibrary"
+    lint {
+        abortOnError = false
     }
     tasks {
         withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "11"
         }
     }
 
@@ -86,27 +89,22 @@ android {
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
     }
-
-    lintOptions {
-        // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
-        isAbortOnError = false
-    }
 }
 
 dependencies {
     // kotlin
-    implementation(Libs.kotlinxCoroutinesCore)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring( "com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     //noinspection GradleDependency
-    api(Libs.okHttpCmp)
+    api("com.squareup.okhttp3:okhttp:4.9.0")
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
-    testImplementation(Libs.mockk)
-    testImplementation(Libs.mockwebserver)
-
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
 
 tasks.register("versionTxt") {
