@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepoint.app.v6.databinding.OnlyGdprBinding
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -16,7 +16,6 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import kotlinx.android.synthetic.main.only_gdpr.*
 import org.json.JSONObject
 
 class OnlyGdprOttKotlin : AppCompatActivity() {
@@ -33,14 +32,15 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
         }
     }
 
+    private lateinit var binding: OnlyGdprBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.only_gdpr)
-
+        binding = OnlyGdprBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.hide()
 
-        review_consents_gdpr.setOnClickListener {
+        binding.reviewConsentsGdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
                 "579231",
                 PMTab.PURPOSES,
@@ -48,7 +48,7 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
                 MessageType.LEGACY_OTT
             )
         }
-        review_consents_ccpa.setOnClickListener {
+        binding.reviewConsentsCcpa.setOnClickListener {
             spConsentLib.loadPrivacyManager(
                 "000000",
                 PMTab.PURPOSES,
@@ -57,9 +57,8 @@ class OnlyGdprOttKotlin : AppCompatActivity() {
             )
         }
 
-        reload.setOnClickListener { spConsentLib.loadMessage() }
-        clear_all.setOnClickListener { clearAllData(this) }
-
+        binding.reload.setOnClickListener { spConsentLib.loadMessage() }
+        binding.clearAll.setOnClickListener { clearAllData(this) }
     }
 
     private val pubData: JSONObject = JSONObject().apply {
