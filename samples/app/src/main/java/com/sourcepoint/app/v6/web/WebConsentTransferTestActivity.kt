@@ -6,7 +6,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import com.sourcepoint.app.v6.R
+import com.sourcepoint.app.v6.databinding.ActivityWebConsentTransferTestBinding
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
@@ -17,7 +17,6 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepoint.cmplibrary.util.extensions.preloadConsent
-import kotlinx.android.synthetic.main.activity_web_consent_transfer_test.*
 import org.json.JSONObject
 
 class WebConsentTransferTestActivity : AppCompatActivity() {
@@ -39,11 +38,13 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var binding: ActivityWebConsentTransferTestBinding
     private var sourcePointConsent: SPConsents? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_consent_transfer_test)
+        binding = ActivityWebConsentTransferTestBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initConsentWebView()
         initOnClickListeners()
     }
@@ -54,18 +55,18 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
     }
 
     private fun initOnClickListeners() {
-        web_consent_clear_data_button.setOnClickListener {
+        binding.webConsentClearDataButton.setOnClickListener {
             clearAllData(this)
-            ccpa_uuid_value_text_view.text = ""
-            gdpr_uuid_value_text_view.text = ""
-            to_web_view_consent_action.isEnabled = false
+            binding.ccpaUuidValueTextView.text = ""
+            binding.gdprUuidValueTextView.text = ""
+            binding.toWebViewConsentAction.isEnabled = false
         }
-        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
-        to_web_view_consent_action.setOnClickListener { transferConsent() }
+        binding.webConsentRefreshButton.setOnClickListener { spConsentLib.loadMessage() }
+        binding.toWebViewConsentAction.setOnClickListener { transferConsent() }
     }
 
     private fun initConsentWebView() {
-        consent_transfer_web_view.apply {
+        binding.consentTransferWebView.apply {
             webViewClient = consentWebViewClient
             webChromeClient = consentWebChromeClient
             settings.javaScriptEnabled = true
@@ -74,15 +75,15 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
     }
 
     private fun transferConsent() {
-        sourcePointConsent?.let { consent_transfer_web_view.preloadConsent(it) }
+        sourcePointConsent?.let { binding.consentTransferWebView.preloadConsent(it) }
     }
 
     private fun processConsentResponse(sPConsents: SPConsents) {
         sourcePointConsent = sPConsents
         runOnUiThread {
-            ccpa_uuid_value_text_view.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
-            gdpr_uuid_value_text_view.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
-            to_web_view_consent_action.isEnabled = true
+            binding.ccpaUuidValueTextView.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
+            binding.gdprUuidValueTextView.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
+            binding.toWebViewConsentAction.isEnabled = true
         }
     }
 

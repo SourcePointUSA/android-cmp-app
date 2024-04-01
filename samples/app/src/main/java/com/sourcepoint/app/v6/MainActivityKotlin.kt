@@ -10,6 +10,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.app.v6.databinding.ActivityMainV7Binding
+import com.sourcepoint.app.v6.databinding.NativeMessageBinding
 import com.sourcepoint.app.v6.web.WebConsentTransferTestActivity
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
@@ -26,15 +28,6 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import kotlinx.android.synthetic.main.activity_main.auth_id_activity
-import kotlinx.android.synthetic.main.activity_main.clear_all
-import kotlinx.android.synthetic.main.activity_main.consent_btn
-import kotlinx.android.synthetic.main.activity_main.custom_consent
-import kotlinx.android.synthetic.main.activity_main.delete_custom_consent
-import kotlinx.android.synthetic.main.activity_main.review_consents_ccpa
-import kotlinx.android.synthetic.main.activity_main.review_consents_gdpr
-import kotlinx.android.synthetic.main.activity_main_v7.*
-import kotlinx.android.synthetic.main.native_message.view.*
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
@@ -45,6 +38,9 @@ class MainActivityKotlin : AppCompatActivity() {
         const val CLIENT_PREF_KEY = "client_pref_key"
         const val CLIENT_PREF_VAL = "client_pref_val"
     }
+
+    private lateinit var binding: ActivityMainV7Binding
+    private lateinit var nativeMessageBinding: NativeMessageBinding
 
     private val dataProvider by inject<DataProvider>()
     private val spClientObserver: List<SpClient> by inject()
@@ -84,17 +80,18 @@ class MainActivityKotlin : AppCompatActivity() {
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
+        binding = ActivityMainV7Binding.inflate(layoutInflater)
         setContentView(R.layout.activity_main_v7)
-        review_consents_gdpr.setOnClickListener { _v: View? -> selectGDPRPM(dataProvider) }
-        review_consents_ccpa.setOnClickListener { _v: View? -> selectCCPAPM(dataProvider) }
-        clear_all.setOnClickListener { _v: View? ->
+        binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
+        binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
+        binding.clearAll.setOnClickListener {
             clearAllData(this)
             PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
         }
-        auth_id_activity.setOnClickListener { _v: View? ->
+        binding.authIdActivity.setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
-        custom_consent.setOnClickListener { _v: View? ->
+        binding.customConsent.setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -102,7 +99,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
-        delete_custom_consent.setOnClickListener { _v: View? ->
+        binding.deleteCustomConsent.setOnClickListener { _v: View? ->
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -110,13 +107,13 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
-        consent_btn.setOnClickListener {
+        binding.consentBtn.setOnClickListener {
             spConsentLib.dispose()
             finish()
             startActivity(Intent(this, MainActivityViewConsent::class.java))
         }
-        refresh_btn.setOnClickListener { executeCmpLib() }
-        add_old_consent.setOnClickListener { addOldV6Consent() }
+        binding.refreshBtn.setOnClickListener { executeCmpLib() }
+        binding.addOldConsent.setOnClickListener { addOldV6Consent() }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
@@ -200,58 +197,58 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     fun setNativeMessage(message: MessageStructure, messageController: NativeMessageController) {
-        val customLayout = View.inflate(this, R.layout.native_message, null)
-        customLayout.run {
+        nativeMessageBinding = NativeMessageBinding.inflate(layoutInflater, null, false)
+        nativeMessageBinding.run {
             message.messageComponents?.let {
-                setTitle(customLayout, it.title ?: throw RuntimeException())
-                setBody(customLayout, it.body ?: throw RuntimeException())
-                setAgreeBtn(customLayout, it.body ?: throw RuntimeException())
+                setTitle(it.title ?: throw RuntimeException())
+                setBody(it.body ?: throw RuntimeException())
+                setAgreeBtn(it.body ?: throw RuntimeException())
                 it.actions.forEach { a ->
                     when (a.choiceType) {
-                        NativeMessageActionType.REJECT_ALL -> setRejectAllBtn(customLayout, a)
-                        NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(customLayout, a)
-                        NativeMessageActionType.MSG_CANCEL -> setCancelBtn(customLayout, a)
-                        NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(customLayout, a)
+                        NativeMessageActionType.REJECT_ALL -> setRejectAllBtn(a)
+                        NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(a)
+                        NativeMessageActionType.MSG_CANCEL -> setCancelBtn(a)
+                        NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(a)
                         else -> {}
                     }
                 }
             }
-            accept_all.setOnClickListener {
+            acceptAll.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.ACCEPT_ALL, message.campaignType)
                 }
             }
             cancel.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.MSG_CANCEL, message.campaignType)
                 }
             }
-            reject_all.setOnClickListener {
+            rejectAll.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.REJECT_ALL, message.campaignType)
                 }
             }
-            show_options_btn.setOnClickListener {
+            showOptionsBtn.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     when (message.campaignType) {
                         CampaignType.GDPR -> dataProvider.gdprPmId
                         CampaignType.CCPA -> dataProvider.ccpaPmId
                         CampaignType.USNAT -> throw RuntimeException()
                     }.let { pmId ->
-                        messageController.showOptionNativeMessage(message.campaignType, pmId.toString())
+                        messageController.showOptionNativeMessage(message.campaignType, pmId)
                     }
                 }
             }
         }
-        messageController.showNativeView(customLayout)
+        messageController.showNativeView(nativeMessageBinding.root)
     }
 
-    fun setTitle(view: View, t: NativeComponent) {
-        view.title_nm.run {
+    private fun setTitle(t: NativeComponent) {
+        nativeMessageBinding.titleNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
@@ -259,8 +256,8 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun setBody(view: View, t: NativeComponent) {
-        view.body_nm.run {
+    private fun setBody(t: NativeComponent) {
+        nativeMessageBinding.bodyNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
@@ -269,47 +266,47 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun setAgreeBtn(view: View, t: NativeComponent) {
-        view.body_nm.run {
+    private fun setAgreeBtn(t: NativeComponent) {
+        nativeMessageBinding.bodyNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
         }
     }
 
-    fun setCancelBtn(view: View, na: NativeAction) {
-        view.cancel.run {
+    private fun setCancelBtn(na: NativeAction) {
+        nativeMessageBinding.cancel.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setOptionBtn(view: View, na: NativeAction) {
-        view.show_options_btn.run {
+    private fun setOptionBtn(na: NativeAction) {
+        nativeMessageBinding.showOptionsBtn.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setRejectAllBtn(view: View, na: NativeAction) {
-        view.reject_all.run {
+    private fun setRejectAllBtn(na: NativeAction) {
+        nativeMessageBinding.rejectAll.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setAcceptAllBtn(view: View, na: NativeAction) {
-        view.accept_all.run {
+    private fun setAcceptAllBtn(na: NativeAction) {
+        nativeMessageBinding.acceptAll.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
