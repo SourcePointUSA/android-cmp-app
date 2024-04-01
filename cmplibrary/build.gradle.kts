@@ -23,8 +23,6 @@ android {
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(33)
-        versionCode = 300
-        versionName = versionLib
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -70,13 +68,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
         isCoreLibraryDesugaringEnabled = true
+    }
+    namespace = "com.example.cmplibrary"
+    testNamespace = "com.sourcepoint.cmplibrary"
+    lint {
+        abortOnError = false
     }
     tasks {
         withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "11"
         }
     }
 
@@ -85,11 +88,6 @@ android {
         // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
-    }
-
-    lintOptions {
-        // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
-        isAbortOnError = false
     }
 }
 
