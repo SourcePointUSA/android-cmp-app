@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -11,6 +12,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapSettingsOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
@@ -42,6 +44,14 @@ class MainActivityKotlinOttTest {
         propertyName = "ott.test.suite"
         propertyId = 22231
         campaignsEnv = CampaignsEnv.PUBLIC
+        messLanguage = MessageLanguage.ENGLISH
+        +(CampaignType.GDPR)
+    }
+
+    private val spNewWebPmConfig = config {
+        accountId = 22
+        propertyId = 27927
+        propertyName = "sca-ott-newwebpm"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
     }
@@ -144,4 +154,26 @@ class MainActivityKotlinOttTest {
 
     }
 
+    @Test
+    fun GIVEN_user_clicks_back_button_in_message_SHOULD_not_close_the_activity() = runBlocking {
+
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = spNewWebPmConfig,
+                gdprPmId = "898241",
+                messageType = MessageType.OTT,
+                spClientObserver = listOf(spClient),
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr(backup = { clickOnRefreshBtnActivity() }) { tapSettingsOnWebView() }
+        wr { device.pressBack() }
+        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
+        wr { device.pressBack() }
+        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
+    }
 }

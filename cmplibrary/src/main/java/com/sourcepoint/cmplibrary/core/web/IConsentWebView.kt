@@ -18,4 +18,6 @@ internal interface IConsentWebView {
         url: HttpUrl,
         campaignType: CampaignType
     ): Either<Boolean>
+
+    fun handleOnBackPress()
 }

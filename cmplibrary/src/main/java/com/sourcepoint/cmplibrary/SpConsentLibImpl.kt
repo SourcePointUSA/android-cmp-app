@@ -59,6 +59,9 @@ internal class SpConsentLibImpl(
     private val remainingCampaigns: Queue<CampaignModel> = LinkedList()
     private var currentNativeMessageCampaign: CampaignModel? = null
 
+    private var isMessageDismissible: Boolean = false
+    private var onHomeCallback: (() -> Unit)? = null
+
     companion object {
         fun MessagesResp.toCampaignModelList(logger: Logger): List<CampaignModel> {
             val campaignList = this.campaignList
@@ -505,7 +508,39 @@ internal class SpConsentLibImpl(
         viewManager.removeAllViews()
     }
 
-    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, "$mess")
+    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using functional interface.
+     *
+     * Applicable for Java and Kotlin implementations.
+     *
+     * @param ottDelegate - functional interface that provides the mechanism to override onBackPress
+     */
+    override fun handleOnBackPress(
+        isMessageDismissible: Boolean,
+        ottDelegate: SpBackPressOttDelegate,
+    ) = handleOnBackPress(isMessageDismissible) {
+        ottDelegate.onHomePage()
+    }
+
+    /**
+     * Method that verifies home page and delegates navigation between the message view and the
+     * activity that utilizes the message, using lambda.
+     *
+     * Applicable for Kotlin implementation.
+     *
+     * @param onHomePage - lambda that provides the mechanism to override onBackPress
+     */
+    override fun handleOnBackPress(
+        isMessageDismissible: Boolean,
+        onHomePage: () -> Unit
+    ) {
+        this.onHomeCallback = onHomePage
+        this.isMessageDismissible = isMessageDismissible
+        if (viewManager.isViewInLayout) viewManager.handleOnBackPress() else onHomePage()
+    }
 
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {
@@ -635,6 +670,22 @@ internal class SpConsentLibImpl(
                         msg = "onUIFinished",
                         json = null
                     )
+
+                    /**
+                     * Following piece of code determines if the app should dismiss the FLM or delegate
+                     * back button event to the activity. This behaviour is customizable and is being
+                     * determined by the user in [SpConsentLib.handleOnBackPress].
+                     *
+                     * If the user chooses the message to be dismissible (passing true as the param)
+                     * then the app will only dismiss the message.
+                     *
+                     * If the user chooses the message NOT to be dismissible (passing false as the param)
+                     * then the app will delegate back button event to the activity, which will lead
+                     * to the app close or go back to the previous screen.
+                     */
+                    if (isMessageDismissible.not()) {
+                        onHomeCallback?.invoke()
+                    }
                 }
             }
         }
