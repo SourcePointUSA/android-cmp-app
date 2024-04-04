@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivityKotlin"
+            android:name=".web.WebConsentTransferTestActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
         <activity android:name=".MainActivityAuthId" />
         <activity android:name=".NativeMessageActivity" />
         <activity android:name=".MainActivityViewConsent" />
-        <activity android:name=".web.WebConsentTransferTestActivity" />
+<!--        <activity android:name=".web.WebConsentTransferTestActivity" />-->
         <activity
             android:name=".LinkActivity"
             android:exported="true">

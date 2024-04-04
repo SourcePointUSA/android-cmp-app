@@ -29,13 +29,13 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         activity = this@WebConsentTransferTestActivity
         spClient = LocalClient()
         config {
-            accountId = 22
-            propertyId = 16893
-            propertyName = "mobile.multicampaign.demo"
+            accountId = 1831
+            propertyId = 28034
+            propertyName = "formula1.ios.test"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
             +(CampaignType.GDPR)
-            +(CampaignType.CCPA)
+//            +(CampaignType.CCPA)
         }
     }
 
@@ -46,6 +46,11 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         setContentView(R.layout.activity_web_consent_transfer_test)
         initConsentWebView()
         initOnClickListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {
@@ -60,7 +65,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             gdpr_uuid_value_text_view.text = ""
             to_web_view_consent_action.isEnabled = false
         }
-        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
+//        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
         to_web_view_consent_action.setOnClickListener { transferConsent() }
     }
 
@@ -69,7 +74,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             webViewClient = consentWebViewClient
             webChromeClient = consentWebChromeClient
             settings.javaScriptEnabled = true
-            loadUrl(CONSENT_TEST_URL)
+            loadUrl(F1_TEST_URL)
         }
     }
 
@@ -83,6 +88,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             ccpa_uuid_value_text_view.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
             gdpr_uuid_value_text_view.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
             to_web_view_consent_action.isEnabled = true
+            sourcePointConsent?.let { consent_transfer_web_view.preloadConsent(it) }
         }
     }
 
@@ -133,5 +139,7 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
 
     companion object {
         private const val CONSENT_TEST_URL = "https://sourcepointusa.github.io/sdks-auth-consent-test-page/?_sp_pass_consent=true"
+        private const val F1_TEST_URL = "https://staging-interactioncloud.formula1.com/?h=cdn.monterosa.cloud&p=a2461346-31a0-4d05-9d67-353bcdc49335&e=c1217841-b352-4252-9e43-f9ca884bf03d&_sp_pass_consent=true#/"
+
     }
 }
