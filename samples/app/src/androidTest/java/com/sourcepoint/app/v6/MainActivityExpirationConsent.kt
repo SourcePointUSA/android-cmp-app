@@ -115,7 +115,6 @@ class MainActivityExpirationConsent {
 
     @Test
     fun GIVEN_an_expired_CCPA_consent_RELOAD_the_consent() = runBlocking<Unit> {
-
         val spClient = mockk<SpClient>(relaxed = true)
 
         val v7CCPALocalState = JSONObject(TestData.expiredCcpaStoredConsentV743)
@@ -147,7 +146,5 @@ class MainActivityExpirationConsent {
                 })
             }
         }
-
     }
-
 }
