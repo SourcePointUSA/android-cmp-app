@@ -16,9 +16,12 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
+import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
+import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -52,11 +55,11 @@ class MainActivityKotlin : AppCompatActivity() {
         spConfig = dataProvider.spConfig
 //        config {
 //            accountId = 22
-//            propertyName = "sca-ott-newwebpm"
+//            propertyId = 16893
+//            propertyName = "mobile.multicampaign.demo"
 //            messLanguage = MessageLanguage.ENGLISH
-//            propertyId = 27927
-//            +(CampaignType.GDPR)
-//            +(CampaignType.CCPA to listOf(("location" to "US")))
+//            messageTimeout = 5000
+//            +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 //        }
     }
 
