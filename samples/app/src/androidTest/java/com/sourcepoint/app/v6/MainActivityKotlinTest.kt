@@ -159,7 +159,7 @@ class MainActivityKotlinTest {
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
         wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
             it.usNat!!.consent.run {
-                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YYN")
+                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YNN")
                 applies.assertTrue()
                 statuses.consentedToAll!!.assertTrue()
                 uuid.assertNotNull()

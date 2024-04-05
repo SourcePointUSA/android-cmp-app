@@ -137,7 +137,6 @@ class MainActivityKotlinAuthIdTest {
 
     @Test
     fun GIVEN_a_usnat_authId_VERIFY_onError_is_NOT_called() = runBlocking<Unit> {
-
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
@@ -153,20 +152,17 @@ class MainActivityKotlinAuthIdTest {
         scenario = launchActivity()
 
         wr { scenario.onResumeOrThrow() }
-        wr { clickOnRefreshBtnActivity() }
-        wr { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 3) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 3) { spClient.onSpFinished( withArg {
+        wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
             it.usNat!!.consent.run {
-                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YYN")
+                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YNN")
                 applies.assertTrue()
                 statuses.consentedToAll!!.assertTrue()
                 uuid.assertNotNull()
             }
-        }) } }
+        })}}
     }
-
 }

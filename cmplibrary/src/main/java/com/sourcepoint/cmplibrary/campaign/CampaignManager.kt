@@ -637,6 +637,7 @@ private class CampaignManagerImpl(
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
             dataStorage.run {
                 usNatConsentData = serialised
+                gppData = value?.gppData
             }
         }
 
