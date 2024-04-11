@@ -7,13 +7,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.view.View
+import android.widget.CheckBox
 import android.widget.TextView
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.util.check
-import kotlinx.android.synthetic.main.item_log.view.* //ktlint-disable
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONArray
 import org.json.JSONObject
@@ -23,7 +24,7 @@ import java.util.* //ktlint-disable
 
 @SuppressLint("ResourceType")
 fun LogItemView.bind(item: LogItem, position: Int) {
-    checkbox.isSelected = item.selected
+    findViewById<CheckBox>(R.id.checkbox).isSelected = item.selected
     when (item.type) {
         "REQUEST" -> bindReq(item, position)
         "RESPONSE" -> bindResp(item, position)
@@ -38,19 +39,25 @@ fun LogItemView.bind(item: LogItem, position: Int) {
 
 fun LogItemView.bindReq(item: LogItem, position: Int) {
     val url = item.message
-    log_title.text = "${item.type} - ${item.tag}"
-    setWebLink(url, log_body)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    setWebLink(url, logBody)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun LogItemView.bindResp(item: LogItem, position: Int) {
-    log_title.text = "${item.type} - ${item.tag}"
-    setStatusField(item.status ?: "", log_body)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    setStatusField(item.status ?: "", logBody)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun LogItemView.setStatusField(status: String, textView: TextView) {
@@ -75,42 +82,54 @@ fun LogItemView.setWebLink(link: String, textView: TextView) {
 }
 
 fun LogItemView.bindWebAction(item: LogItem, position: Int) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.text = item.message
-    log_body.setTextColor(colorWebAction)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.text = item.message
+    logBody.setTextColor(colorWebAction)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun LogItemView.bindComputation(item: LogItem, position: Int) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.visibility = View.GONE
-    log_body_1.text = item.message
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.visibility = View.GONE
+    logBody1.text = item.message
 }
 
 fun LogItemView.bindClientEvent(item: LogItem, position: Int) {
-    log_title.text = "${item.type} - ${item.tag}"
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
     val errorObject =
         item.jsonBody?.let { check { JSONObject(it) }.getOrNull() } ?: JSONObject()
     val title: String? = errorObject.getOrNull("title")
     val stackTrace: String = errorObject.getOrNull("stackTrace") ?: ""
-    log_body.setTextColor(colorClientEvent)
+    logBody.setTextColor(colorClientEvent)
     when (title) {
-        null -> log_body.text = item.message
-        else -> log_body.text = "$title - $stackTrace"
+        null -> logBody.text = item.message
+        else -> logBody.text = "$title - $stackTrace"
     }
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun JSONObject.getOrNull(key: String): String? = if (has(key)) this.getString(key) else null
 
 fun LogItemView.bindClientError(item: LogItem, position: Int) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.visibility = View.GONE
-    log_body_1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.visibility = View.GONE
+    logBody1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
 }
 
 fun Activity.composeEmail(

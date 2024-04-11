@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.databinding.JsonviewerLayoutBinding
 import com.sourcepointmeta.metaapp.ui.BaseState
-import kotlinx.android.synthetic.main.jsonviewer_layout.* //ktlint-disable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class JsonViewerFragmentTv : Fragment() {
 
     private val viewModel by viewModel<JsonViewerViewModelTv>()
+    private lateinit var binding: JsonviewerLayoutBinding
 
     val colorJsonKey: Int by lazy {
         TypedValue().apply { requireContext().theme.resolveAttribute(R.attr.colorJsonKey, this, true) }
@@ -66,11 +67,12 @@ class JsonViewerFragmentTv : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = JsonviewerLayoutBinding.inflate(layoutInflater)
         viewModel.liveData.observe(viewLifecycleOwner, ::stateHandler)
         arguments?.getLong(LOG_ID)?.let { viewModel.fetchJson(it) }
-        log_title.text = arguments?.getString(TITLE)
+        binding.logTitle.text = arguments?.getString(TITLE)
 
-        rv_json.run {
+        binding.rvJson.run {
             setKeyColor(colorJsonKey)
             setValueTextColor(colorJsonValueText)
             setValueNumberColor(colorJsonValueNumber)
@@ -82,6 +84,6 @@ class JsonViewerFragmentTv : Fragment() {
     }
 
     private fun stateHandler(state: BaseState) {
-        (state as? BaseState.StateJson)?.let { rv_json.bindJson(it.json) }
+        (state as? BaseState.StateJson)?.let { binding.rvJson.bindJson(it.json) }
     }
 }

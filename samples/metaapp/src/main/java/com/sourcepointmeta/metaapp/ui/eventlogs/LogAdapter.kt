@@ -1,14 +1,12 @@
 package com.sourcepointmeta.metaapp.ui.eventlogs
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.databinding.ItemLogBinding
 import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.util.check
-import kotlinx.android.synthetic.main.item_log.view.*
 import org.json.JSONObject
 
 class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
@@ -19,9 +17,8 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
     val selectedIds = sortedSetOf<Long>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_log, parent, false)
-        return Vh(view)
+        val binding = ItemLogBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Vh(binding)
     }
 
     override fun getItemCount(): Int {
@@ -32,18 +29,16 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
         holder.bind(list[position], position)
     }
 
-    class Vh(val view: View) : RecyclerView.ViewHolder(view)
+    class Vh(val binding: ItemLogBinding) : RecyclerView.ViewHolder(binding.root)
 
     private fun Vh.bind(iv: LogItem, pos: Int) {
-        (view as LogItemView).run {
-            this.checkbox.setOnCheckedChangeListener { _, isChecked -> addId(isChecked, iv.id) }
-            setOnClickListener {
-                check { JSONObject(iv.jsonBody) }
-                    .getOrNull()
-                    ?.let { itemClickListener?.invoke(iv) }
-            }
-            this.bind(iv, pos)
+        binding.checkbox.setOnCheckedChangeListener { _, isChecked -> addId(isChecked, iv.id) }
+        binding.root.setOnClickListener {
+            check { JSONObject(iv.jsonBody) }
+                .getOrNull()
+                ?.let { itemClickListener?.invoke(iv) }
         }
+        this.bind(iv, pos)
     }
 
     private fun addId(checked: Boolean, id: Long?) {
