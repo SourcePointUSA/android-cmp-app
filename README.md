@@ -46,6 +46,7 @@
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
   - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
+  - [Support U.S. Privacy (Legacy) with U.S. Multi-State Privacy](#support-us-privacy-legacy-with-us-multi-state-privacy)
   - [Check end-user consent status for U.S. Multi-State Privacy](#check-end-user-consent-status-for-us-multi-state-privacy)
   - [Global Privacy Platform (GPP) Multi-State Privacy (MSPS) Support for OTT](#global-privacy-platform-multi-state-privacy-msps-support-for-ott)
   - [Delete user data](#delete-user-data)
@@ -1158,6 +1159,40 @@ private final SpConfig spConfig = new SpConfigDataBuilder()
         .addMessageTimeout(5000)
         .addCampaignsEnv(CampaignsEnv.PUBLIC)
         .addCampaign(new SpCampaign(CampaignType.USNAT, Collections.emptyList(), Set.of(ConfigOption.TRANSITION_CCPA_AUTH)))
+        .addCampaign(CampaignType.GDPR)
+        .build();
+```
+
+## Support U.S. Privacy (Legacy) with U.S. Multi-State Privacy
+
+If you're transitioning from U.S. Privacy (Legacy) to U.S. Multi-State Privacy, you may want to continue supporting the legacy US privacy string.
+
+> Since U.S. Privacy (Legacy) does not have support for sensitive data categories, any organization who require sensitive data opt-ins should not use this approach. Additionally, this approach should not be used by organizations who only require Sharing of Personal Information/Targeted Advertising. A uspString will only be set if you use either of the following privacy choices:
+>
+> - Sale of Personal Information
+> - Sale or Sharing of Personal Information/Targeted Advertising
+
+To do so, add `ConfigOption.SUPPORT_LEGACY_USPSTRING` to the `USNAT` campaign in your `config` object:
+
+```kotlin
+val cmpConfig : SpConfig = config {
+    accountId = 1549
+    propertyId = 123456
+    propertyName = "demo.android.test"
+    messLanguage = MessageLanguage.ENGLISH
+    +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+}
+```
+
+```java
+private final SpConfig spConfig = new SpConfigDataBuilder()
+        .addAccountId(1549)
+        .addPropertyName("demo.android.test")
+        .addPropertyId(123456)
+        .addMessageLanguage(MessageLanguage.ENGLISH)
+        .addMessageTimeout(5000)
+        .addCampaignsEnv(CampaignsEnv.PUBLIC)
+        .addCampaign(new SpCampaign(CampaignType.USNAT, Collections.emptyList(), Set.of(ConfigOption.SUPPORT_LEGACY_USPSTRING)))
         .addCampaign(CampaignType.GDPR)
         .build();
 ```
