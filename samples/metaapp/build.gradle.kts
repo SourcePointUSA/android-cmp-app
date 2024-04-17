@@ -133,12 +133,16 @@ dependencies {
     implementation(Libs.leanback_pref)
 
     // unit-test
-    testImplementation(Libs.mockk)
-    testImplementation(Libs.mockwebserver)
+//    testImplementation(Libs.mockk)
+    testImplementation("io.mockk:mockk:1.10.3-jdk8")
+//    testImplementation(Libs.mockwebserver)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
 
     // integration-test
-    androidTestImplementation(Libs.koinTest)
-    androidTestImplementation(Libs.mockkAndroid)
+//    androidTestImplementation(Libs.koinTest)
+    androidTestImplementation("io.insert-koin:koin-test:2.2.3")
+//    androidTestImplementation(Libs.mockkAndroid)
+    androidTestImplementation("io.mockk:mockk-android:1.10.3-jdk8")
 
 }
 
