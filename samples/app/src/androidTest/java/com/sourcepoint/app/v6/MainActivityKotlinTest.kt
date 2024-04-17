@@ -364,7 +364,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_a_dgpr_campaign_SHOW_message_and_REJECT_ALL() = runBlocking<Unit> {
 
-        val spClient = mockk<SpClient>(relaxed = true)
+        val spClient = SpClientMock()
 
         loadKoinModules(
             mockModule(
@@ -411,7 +411,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_a_campaignList_ACCEPT_all_legislation() = runBlocking<Unit> {
 
-        val spClient = mockk<SpClient>(relaxed = true)
+        val spClient = SpClientMock()
 
         loadKoinModules(
             mockModule(
@@ -467,7 +467,7 @@ class MainActivityKotlinTest {
     fun WITHOUT_a_stored_consent_given_no_internet_connection_exception_VERIFY_the_called_callbacks() =
         runBlocking<Unit> {
 
-            val spClient = mockk<SpClient>(relaxed = true)
+            val spClient = SpClientMock()
 
             loadKoinModules(
                 mockModule(
@@ -492,7 +492,7 @@ class MainActivityKotlinTest {
     @Test
     fun given_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time() = runBlocking<Unit> {
 
-        val spClient = mockk<SpClient>(relaxed = true)
+        val spClient = SpClientMock()
 
         loadKoinModules(
             mockModule(
