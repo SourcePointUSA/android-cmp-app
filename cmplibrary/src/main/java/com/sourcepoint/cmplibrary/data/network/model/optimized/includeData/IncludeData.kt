@@ -32,6 +32,5 @@ internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObje
         put("type", "RecordString")
     }
     put("GPPData", gppDataValue ?: JsonPrimitive(true))
-    put("translateMessage", true)
     put("categories", true)
 }

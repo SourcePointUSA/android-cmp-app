@@ -13,7 +13,6 @@ class IncludeDataKtTest {
     fun `GIVEN an include object VERIFY that contains the right objects`() {
         buildIncludeData().apply {
             containsKey("categories")
-            containsKey("translateMessage")
             containsKey("GPPData")
             containsKey("webConsentPayload")
             containsKey("campaigns")
