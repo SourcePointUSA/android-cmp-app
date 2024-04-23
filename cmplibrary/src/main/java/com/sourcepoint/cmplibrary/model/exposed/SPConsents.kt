@@ -189,8 +189,7 @@ internal data class UsNatConsentInternal(
             gpcStatus = consentStatus?.granularStatus?.gpcStatus,
         )
 }
-
-internal fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
+fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
         if (ccpaConsent.isWebConsentEligible()) {
             putJsonObject("ccpa") {
