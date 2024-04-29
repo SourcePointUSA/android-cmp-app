@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
         minSdk 21
