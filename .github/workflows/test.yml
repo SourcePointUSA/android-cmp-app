@@ -1,16 +1,12 @@
 name: Test
 on:
   push:
-    branches: [ develop, dia-2031-support-USNat ]
+    branches: [ develop ]
     paths:
       - '!README.md'
       - '!release_note.txt'
-#      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, dia-2031-support-USNat ]
-#    paths:
-#      - '!README.md'
-#      - '!samples/nativemessage/*'
+    branches: [ develop ]
 jobs:
   unit-test-cmplib:
     runs-on: macos-latest
@@ -48,18 +44,30 @@ jobs:
           cache: gradle
       - name: creating local.properties # this file is normally added to .gitignore
         run: touch local.properties
-      - name: Cache multiple paths
-        uses: actions/cache@v2
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
         with:
           path: |
-            ~/cache
-            !~/cache/exclude
-            **/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: Integration cmplibrary UI tests
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-33
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 27
+          api-level: 33
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: ./gradlew cmplibrary:connectedAndroidTest
-
-
