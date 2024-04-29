@@ -104,7 +104,6 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
     testImplementation("io.mockk:mockk:1.10.3-jdk8")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
 }
 
 tasks.register("versionTxt") {
