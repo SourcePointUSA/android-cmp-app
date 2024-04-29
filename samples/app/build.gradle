@@ -79,5 +79,5 @@ dependencies {
     // mockk
     androidTestImplementation(Libs.mockkAndroid)
 
-    androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.2.0'
+    androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.3.0'
 }
