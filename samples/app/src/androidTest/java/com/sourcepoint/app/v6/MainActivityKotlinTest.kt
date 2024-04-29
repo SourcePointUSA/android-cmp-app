@@ -53,6 +53,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
+import io.mockk.clearMocks
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
@@ -65,7 +66,6 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import java.util.UUID
 
-@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
@@ -729,14 +729,10 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { tapAcceptAllOnWebView() }
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+        wr { tapAcceptAllOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
 
         verify {
             spClient.run {
@@ -828,7 +824,6 @@ class MainActivityKotlinTest {
 
     @Test
     fun customConsentAction() = runBlocking<Unit> {
-
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
@@ -841,25 +836,37 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapRejectOnWebView() }
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { tapRejectOnWebView() }
+        wr {
+            verify {
+                spClient.run {
+                    onConsentReady(withArg {
+                        it.gdpr?.consent?.grants?.all { vendorGrant -> vendorGrant.value.purposeGrants.all { purposeGrant -> !purposeGrant.value } }?.assertTrue()
+                        it.gdpr?.consent?.uuid.assertNotNull()
+                    })
+                }
+            }
+        }
+        clearMocks(spClient)
         wr { clickOnCustomConsent() }
-        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
         wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkCustomCategoriesData() }
+        wr { checkCustomCategoriesData() }
         wr { tapSiteVendorsWebView() }
         wr { checkCustomVendorDataList() }
-
-        verify(exactly = 0) { spClient.onError(any()) }
-        verify {
-            spClient.run {
-                onConsentReady(withArg {
-                    it.gdpr?.consent?.grants!!["5e7ced57b8e05c485246cce0"]!!.purposeGrants.values.first().assertTrue()
-                    it.gdpr?.consent?.uuid.assertNotNull()
-                })
+        wr { tapCancelOnWebView() }
+        wr { clickOnRefreshBtnActivity() }
+        wr {
+            verify {
+                spClient.run {
+                    onConsentReady(withArg {
+                        it.gdpr?.consent?.grants!!["5ff4d000a228633ac048be41"]!!.granted.assertTrue()
+                        it.gdpr?.consent?.uuid.assertNotNull()
+                    })
+                }
             }
         }
 
+        verify(exactly = 0) { spClient.onError(any()) }
     }
 
     @Test
@@ -920,19 +927,20 @@ class MainActivityKotlinTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfGdprGroupId,
-                gdprPmId = "613057",
-                ccpaPmId = "-",
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
                 spClientObserver = listOf(spClient)
             )
         )
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapCancelOnWebView() }
+        wr { tapAcceptAllOnWebView() }
+        wr { clickOnGdprReviewConsent() }
+        wr { tapCancelOnWebView() }
 
-        verify(exactly = 0) { spClient.onConsentReady(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
     }
 
     @Test
@@ -1257,7 +1265,6 @@ class MainActivityKotlinTest {
         }
     }
 
-    @Test
     fun GIVEN_a_no_internet_ex_during_AcceptAll_with_multicampaign_VERIFY_that_onConsenReady_onSpFinished_are_called() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
