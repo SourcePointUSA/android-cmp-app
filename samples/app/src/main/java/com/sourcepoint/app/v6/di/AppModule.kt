@@ -18,10 +18,11 @@ import java.util.* // ktlint-disable
 val customVendorDataListStage = listOf("5fbe6f050d88c7d28d765d47" to "Amazon Advertising")
 val customCategoriesDataStage = listOf("60657acc9c97c400122f21f3" to "Store and/or access information on a device")
 
-val customVendorDataListProd = listOf("5e7ced57b8e05c485246cce0" to "Unruly Group LLC")
+val customVendorDataListProd = listOf("5ff4d000a228633ac048be41" to "Game Accounts")
 val customCategoriesDataProd = listOf(
-    "608bad95d08d3112188e0e29" to "Store and/or access information on a device",
+    "608bad95d08d3112188e0e36" to "Create profiles for personalised advertising",
     "608bad95d08d3112188e0e2f" to "Use limited data to select advertising",
+    "608bad95d08d3112188e0e3d" to "Use profiles to select personalised advertising"
 )
 
 val appModule = module {
