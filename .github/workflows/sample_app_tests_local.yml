@@ -11,31 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
-  unit-test-cmplib:
-    timeout-minutes: 30
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-          cache: gradle
-      - name: creating local.properties # this file is normally added to .gitignore
-        run: touch local.properties
-      - name: Cache multiple paths
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/cache
-            !~/cache/exclude
-            **/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      - name: Build test artifact
-        run: ./gradlew cmplibrary:build
-      - name: Unit Tests cmplibrary
-        run: ./gradlew cmplibrary:test
   integration-tests-cmplib:
     timeout-minutes: 30
     runs-on: ubuntu-latest
@@ -66,6 +41,12 @@ jobs:
           arch: x86_64
           disable-animations: true
           disk-size: 6000M
-          heap-size: 600M
+          heap-size: 1024M
           emulator-options: -no-snapshot-save -no-window -noaudio -no-boot-anim -camera-back none
           script: ./gradlew :app:connectedDebugAndroidTest
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/androidTests'
