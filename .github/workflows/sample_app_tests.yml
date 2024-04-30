@@ -37,6 +37,6 @@ jobs:
       - name: Run tests SampleApp on Firebase Test Lab
         uses: asadmansr/Firebase-Test-Lab-Action@v1.0
         with:
-          arg-spec: 'test_devices.yml:sample_app-nexus_low_res'
+          arg-spec: 'test_devices.yml:sample_app-Pixel2'
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}

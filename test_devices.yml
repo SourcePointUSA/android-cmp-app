@@ -1,22 +1,22 @@
-sample_app-nexus_low_res:
+sample_app-Pixel2:
   type: instrumentation
   app: app-debug.apk
   test: app-debug-androidTest.apk
   use-orchestrator: true
   num-flaky-test-attempts: 2
   device:
-    - model: NexusLowRes
+    - model: Pixel2
       version: 29
       locale: 'en'
       orientation: portrait
-metaapp-nexus_low_res:
+metaapp-Pixel2:
   type: instrumentation
   app: metaapp-debug.apk
   test: metaapp-debug-androidTest.apk
   use-orchestrator: true
   num-flaky-test-attempts: 2
   device:
-    - model: NexusLowRes
+    - model: Pixel2
       version: 29
       locale: 'en'
       orientation: portrait
