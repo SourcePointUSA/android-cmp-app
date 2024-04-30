@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   unit-test-cmplib:
+    timeout-minutes: 30
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,10 +37,11 @@ jobs:
       - name: Unit Tests cmplibrary
         run: ./gradlew cmplibrary:test
   integration-tests-cmplib:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - run: rm -rf "$AGENT_TOOLSDIRECTORY"
-      - run: rm -rf /usr/share/dotnet
+      - run: rm -rf "$AGENT_TOOLSDIRECTORY" # free up space, impacts on the emulator being able to install
+      - run: rm -rf /usr/share/dotnet # free up space, impacts on the emulator being able to install
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
