@@ -64,5 +64,4 @@ jobs:
           disk-size: 6000M
           heap-size: 600M
           emulator-options: -no-snapshot-save -no-window -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
           script: ./gradlew cmplibrary:connectedAndroidTest
