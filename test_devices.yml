@@ -2,6 +2,8 @@ sample_app-nexus_low_res:
   type: instrumentation
   app: app-debug.apk
   test: app-debug-androidTest.apk
+  use-orchestrator: true
+  num-flaky-test-attempts: 2
   device:
     - model: NexusLowRes
       version: 29
@@ -11,6 +13,8 @@ metaapp-nexus_low_res:
   type: instrumentation
   app: metaapp-debug.apk
   test: metaapp-debug-androidTest.apk
+  use-orchestrator: true
+  num-flaky-test-attempts: 2
   device:
     - model: NexusLowRes
       version: 29
