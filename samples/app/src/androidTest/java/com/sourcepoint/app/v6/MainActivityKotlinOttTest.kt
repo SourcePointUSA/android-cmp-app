@@ -2,9 +2,6 @@ package com.sourcepoint.app.v6
 
 import android.preference.PreferenceManager
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.launchActivity
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
@@ -12,6 +9,8 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapSettingsOnWebView
+import com.sourcepoint.app.v6.utils.LazyActivityScenario
+import com.sourcepoint.app.v6.utils.ScreenshotTakingRule
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -20,20 +19,20 @@ import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.After
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.koin.core.context.loadKoinModules
 
 class MainActivityKotlinOttTest {
-
-    lateinit var scenario: ActivityScenario<MainActivityKotlin>
+    val rule = LazyActivityScenario(launchActivity = false, MainActivityKotlin::class.java)
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
 
-    @After
-    fun cleanup() {
-        if (this::scenario.isLateinit) scenario.close()
-    }
+    @get:Rule
+    val ruleChain: RuleChain = RuleChain
+            .outerRule(rule)
+            .around(ScreenshotTakingRule())
 
     private val ottConfig = config {
         accountId = 22
@@ -56,7 +55,7 @@ class MainActivityKotlinOttTest {
     }
 
     private fun assert_IAB_TCString_notNull() {
-        scenario.onActivity {
+        rule.getScenario().onActivity {
             PreferenceManager.getDefaultSharedPreferences(it)
                     .getString("IABTCF_TCString", null)
                     .assertNotNull()
@@ -69,7 +68,7 @@ class MainActivityKotlinOttTest {
         val spClient = mockk<SpClient>(relaxed = true)
         loadModules(spClient)
 
-        scenario = launchActivity()
+        rule.launch()
 
         wr {
             tapAcceptAllOnWebView()
@@ -99,7 +98,7 @@ class MainActivityKotlinOttTest {
         val spClient = mockk<SpClient>(relaxed = true)
         loadModules(spClient)
 
-        scenario = launchActivity()
+        rule.launch()
 
         wr {
             tapAcceptAllOnWebView()
@@ -134,12 +133,12 @@ class MainActivityKotlinOttTest {
     fun given_user_clicks_back_button_in_message_SHOULD_not_close_the_activity() = runBlocking {
         loadModules()
 
-        scenario = launchActivity()
+        rule.launch()
 
         wr { tapSettingsOnWebView() }
         wr { device.pressBack() }
-        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
+        wr { rule.getScenario().state.assertNotEquals(Lifecycle.State.DESTROYED) }
         wr { device.pressBack() }
-        wr { scenario.state.assertNotEquals(Lifecycle.State.DESTROYED) }
+        wr { rule.getScenario().state.assertNotEquals(Lifecycle.State.DESTROYED) }
     }
 }
