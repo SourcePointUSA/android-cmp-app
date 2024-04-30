@@ -1,16 +1,15 @@
 name: Metaap UI Tests
 on:
   push:
-    branches: [ develop, dia-2031-support-USNat ]
+    branches: [ develop ]
     paths:
       - '!README.md'
       - '!release_note.txt'
-  #      - '!samples/nativemessage/*'
   pull_request:
-    branches: [ develop, dia-2031-support-USNat ]
-#    paths:
-#      - '!README.md'
-#      - '!samples/nativemessage/*'
+    branches: [ develop ]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   ui-test-metaapp:
     runs-on: ubuntu-latest
