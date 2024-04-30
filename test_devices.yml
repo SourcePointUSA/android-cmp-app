@@ -5,8 +5,8 @@ sample_app-Pixel2:
   use-orchestrator: true
   num-flaky-test-attempts: 2
   device:
-    - model: Pixel2
-      version: 29
+    - model: redfin # Pixel 5 real device
+      version: 30
       locale: 'en'
       orientation: portrait
 metaapp-Pixel2:
@@ -16,7 +16,7 @@ metaapp-Pixel2:
   use-orchestrator: true
   num-flaky-test-attempts: 2
   device:
-    - model: Pixel2
-      version: 29
+    - model: redfin  # Pixel 5 real device
+      version: 30
       locale: 'en'
       orientation: portrait
