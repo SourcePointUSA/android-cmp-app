@@ -37,8 +37,9 @@ jobs:
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 33
           arch: x86_64
+          profile: Pixel 5
           disable-animations: true
           disk-size: 6000M
           heap-size: 1024M
