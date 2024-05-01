@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
         minSdk 21
@@ -18,6 +18,10 @@ android {
     }
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+
+    adbOptions {
+        installOptions '-g', '-r'
     }
 
     buildTypes {
@@ -79,5 +83,79 @@ dependencies {
     // mockk
     androidTestImplementation(Libs.mockkAndroid)
 
-    androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.2.0'
+    androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.3.0'
+
+    def reportsDirectory = "$buildDir/reports/androidTests/connected"
+
+    def embedScreenshotsTask = task('embedScreenshots', group: 'reporting') {
+        doFirst {
+            def failureScreenshotsDirectory = new File(reportsDirectory, 'screenshots/failures')
+
+            if (!failureScreenshotsDirectory.exists()) {
+                println 'Could not find screenshot failures. Skipping...'
+                return
+            }
+
+            failureScreenshotsDirectory.eachFile { failedTestClassDirectory ->
+                def failedTestClassName = failedTestClassDirectory.name
+
+                failedTestClassDirectory.eachFile { failedTestFile ->
+                    def failedTestName = failedTestFile.name
+                    def failedTestNameWithoutExtension = failedTestName.take(failedTestName.lastIndexOf('.'))
+                    def failedTestClassJunitReportFile = new File(reportsDirectory, "${failedTestClassName}.html")
+
+                    if (!failedTestClassJunitReportFile.exists()) {
+                        println "Could not find JUnit report file for test class '${failedTestClassJunitReportFile}'"
+                        return
+                    }
+
+                    def failedTestJunitReportContent = failedTestClassJunitReportFile.text
+
+                    def patternToFind = "<h3 class=\"failures\">${failedTestNameWithoutExtension}</h3>"
+                    def patternToReplace = "${patternToFind} <img src=\"screenshots/failures/${failedTestClassName}/${failedTestName}\" width =\"360\" />"
+
+                    failedTestJunitReportContent = failedTestJunitReportContent.replaceAll(patternToFind, patternToReplace)
+
+                    failedTestClassJunitReportFile.write(failedTestJunitReportContent)
+                }
+            }
+        }
+    }
+
+    def clearScreenshotsTask = task('clearScreenshots', type: Exec) {
+        executable "${android.getAdbExe().toString()}"
+        args 'shell', 'rm', '-r', '/sdcard/Pictures/my_app_folder'
+        finalizedBy {
+            embedScreenshotsTask
+        }
+    }
+
+    def createScreenshotDirectoryTask = task('createScreenshotDirectory', type: Exec, group: 'reporting') {
+        executable "${android.getAdbExe().toString()}"
+        args 'shell', 'mkdir', '-p', '/sdcard/Pictures/my_app_folder'
+    }
+
+    def fetchScreenshotsTask = task('fetchScreenshots', type: Exec, group: 'reporting') {
+        executable "${android.getAdbExe().toString()}"
+        args 'pull', '/sdcard/Pictures/my_app_folder/.', reportsDirectory
+        finalizedBy {
+            clearScreenshotsTask
+        }
+
+        dependsOn {
+            createScreenshotDirectoryTask
+        }
+
+        doFirst {
+            new File(reportsDirectory).mkdirs()
+        }
+    }
+
+    tasks.configureEach { task ->
+        if (task.name == 'connectedDebugAndroidTest') {
+            task.finalizedBy {
+                fetchScreenshotsTask
+            }
+        }
+    }
 }

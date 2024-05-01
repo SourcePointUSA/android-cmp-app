@@ -1,63 +1,25 @@
-android-pixel-4:
+# these devices used to be needed when running UI tests on 
+# Firebase Test Lab via Github Actions
+# Check the file .github/workflows/sample_app_tests_firebase.yml
+sample_app-Pixel2:
   type: instrumentation
   app: app-debug.apk
   test: app-debug-androidTest.apk
+  use-orchestrator: true
+  num-flaky-test-attempts: 2
   device:
-    - model: walleye
-      version: 29
+    - model: redfin # Pixel 5 real device
+      version: 30
       locale: 'en'
       orientation: portrait
-android-pixel-3-api28:
-  type: instrumentation
-  app: app-debug.apk
-  test: app-debug-androidTest.apk
-  device:
-    - model: blueline
-      version: 28
-      locale: 'en'
-      orientation: portrait
-app-nexus_low_res:
-  type: instrumentation
-  app: app-debug.apk
-  test: app-debug-androidTest.apk
-  device:
-    - model: NexusLowRes
-      version: 29
-      locale: 'en'
-      orientation: portrait
-metaapp-nexus_low_res:
+metaapp-Pixel2:
   type: instrumentation
   app: metaapp-debug.apk
   test: metaapp-debug-androidTest.apk
+  use-orchestrator: true
+  num-flaky-test-attempts: 2
   device:
-    - model: NexusLowRes
-      version: 29
-      locale: 'en'
-      orientation: portrait
-meta-device:
-  type: instrumentation
-  app: metaapp-debug.apk
-  test: metaapp-debug-androidTest.apk
-  device:
-    - model: a10
-      version: 29
-      locale: 'en'
-      orientation: portrait
-meta-device-pixel-2:
-  type: instrumentation
-  app: metaapp-debug.apk
-  test: metaapp-debug-androidTest.apk
-  device:
-    - model: Pixel2
-      version: 29
-      locale: 'en'
-      orientation: portrait
-app-device:
-  type: instrumentation
-  app: app-debug.apk
-  test: app-debug-androidTest.apk
-  device:
-    - model: Pixel2
-      version: 29
+    - model: redfin  # Pixel 5 real device
+      version: 30
       locale: 'en'
       orientation: portrait

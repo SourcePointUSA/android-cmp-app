@@ -78,7 +78,7 @@ object TestData {
     var TITLE_GDPR = "GDPR Message"
     var EINSTELLUNGEN = "Einstellungen"
     var SETTINGS_OTT_EN = "Manage Preferences"
-    var ACCEPT_ALL = "Accept All"
+    var ACCEPT_ALL = "Accept"
     var NETWORK = "Network"
     var REJECT_ALL = "Reject All"
     var SAVE_AND_EXIT = "Save & Exit"
