@@ -1,14 +1,6 @@
 [![Test](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/test.yml/badge.svg)](https://github.com/SourcePointUSA/android-cmp-app/actions/workflows/test.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.sourcepoint.cmplibrary/cmplibrary)](https://search.maven.org/search?q=g:com.sourcepoint.cmplibrary)
 
-### Diagnostic tool for our SDK
-
-[![Get it on Google Play](art/gplay.png)](https://play.google.com/store/apps/details?id=com.sourcepointmeta.metaapp)
-
-### Compatibility
-
-<img src="art/react.png" width=10% height=10%/> <img src="art/flutter.png" width=20% height=20%/>
-
 # Table of Contents
 
 - [How to Install](#how-to-install)
