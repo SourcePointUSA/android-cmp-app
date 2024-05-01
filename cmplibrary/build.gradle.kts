@@ -103,7 +103,7 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
 
-    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("io.mockk:mockk:1.12.1")
 }
 
 tasks.register("versionTxt") {
