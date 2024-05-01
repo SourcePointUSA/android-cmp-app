@@ -24,6 +24,12 @@ jobs:
           cache: gradle
       - name: Unit Tests cmplibrary
         run: ./gradlew cmplibrary:test
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmplibrary-unit-test-reports
+          path: '**/build/reports/androidTests'
   integration-tests-cmplib:
     timeout-minutes: 30
     runs-on: ubuntu-latest
@@ -58,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: cmplibrary-integration-test-reports
           path: '**/build/reports/androidTests'
   ui-tests-sample-app:
     timeout-minutes: 30
@@ -95,7 +101,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: sampleapp-test-reports
           path: '**/build/reports/androidTests'
   ui-tests-metaapp:
     timeout-minutes: 30
@@ -132,5 +138,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: metaapp-test-reports
           path: '**/build/reports/androidTests'
