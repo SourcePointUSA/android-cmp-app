@@ -1,3 +1,6 @@
+# these devices used to be needed when running UI tests on 
+# Firebase Test Lab via Github Actions
+# Check the file .github/workflows/sample_app_tests_firebase.yml
 sample_app-Pixel2:
   type: instrumentation
   app: app-debug.apk
