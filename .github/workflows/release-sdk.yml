@@ -1,10 +1,9 @@
-name: Release SDK
+name: Release
 on:
   push:
     branches: [ master ]
 jobs:
-  build:
-    name: Create Release and tag
+  release-sdk:
     runs-on: macos-latest
     permissions:
       contents: write
@@ -77,3 +76,70 @@ jobs:
             ${{ steps.release_note.outputs.content }}
           draft: false
           prerelease: false
+  release-metaapp:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+          cache: gradle
+      - name: Bump versionCode
+        id: bump
+        run: |
+          git config user.email "andre@sourcepoint.com"
+          git config user.name "GitHub Action"
+          ./gradlew metaapp:bumpVersionCode
+      - name: creating local.properties
+        run: touch local.properties
+      - name: generating MetaApp build release
+        id: buildRelease
+        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease  :metaapp:assemblePreprod :metaapp:assembleDebug
+      - name: Sign APK
+        id: sign
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: samples/metaapp/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.SIGNING_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+      - name: Create service_account.json
+        id: createServiceAccount
+        run: |
+          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      - name: 'Publish release artifact'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'release-artifact'
+          path: ${{ steps.sign.outputs.signedReleaseFile }}
+      - name: Deploy to Play Store
+        id: deploy
+        uses: r0adkll/upload-google-play@v1.0.15
+        with:
+          serviceAccountJson: service_account.json
+          packageName: com.sourcepointmeta.metaapp
+          releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
+          track: production
+      - name: Add, commit and push edited files
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: ./gradlew addCommitPush
+      - name: Publish MetaAppPreprod artifact
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: MetaAppPreprod
+          path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
+      - name: Publish MetaAppDebug artifact
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: MetaAppDebug
+          path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
