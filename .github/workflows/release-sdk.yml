@@ -36,12 +36,12 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with:
           path: ./cmplibrary/version.txt
-      - name: Prepare environment
-        env:
-          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
-        run: |
-          sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+#      - name: Prepare environment
+#        env:
+#          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
+#          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+#        run: |
+#          sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
       - name: Release build
         run: ./gradlew cmplibrary:assemble
       - name: Source jar and dokka
