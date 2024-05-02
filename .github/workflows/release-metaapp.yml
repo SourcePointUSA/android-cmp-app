@@ -1,13 +1,7 @@
-name: RELEASE
+name: Release MetaApp
 on:
   push:
     branches: [ master ]
-#    paths:
-#      - '!*.yml'
-#      - '!README.md'
-#      - '!CHANGELOG.md'
-#      - '!samples/metaapp/gradle.properties'
-
 jobs:
   build:
     name: Build APK and Create release
@@ -16,19 +10,19 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: set up JDK 11
+    - name: set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: zulu
-        java-version: 11
+        java-version: 17
         cache: gradle
     - name: Bump versionCode
       id: bump
       run: |
-        git config user.email "carmelo@sourcepoint.com"
+        git config user.email "andre@sourcepoint.com"
         git config user.name "GitHub Action"
         ./gradlew metaapp:bumpVersionCode
-    - name: creating local.properties # this file is normally added to .gitignore
+    - name: creating local.properties
       run: touch local.properties
     - name: generating MetaApp build release
       id: buildRelease
@@ -65,15 +59,15 @@ jobs:
         GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       run: ./gradlew addCommitPush
-    - name: 'Publish MetaappPreprod artifact'
+    - name: Publish MetaAppPreprod artifact
       if: always()
       uses: actions/upload-artifact@v2-preview
       with:
-        name: 'MetaappPreprod'
+        name: MetaAppPreprod
         path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
-    - name: 'Publish MetaappDebug artifact'
+    - name: Publish MetaAppDebug artifact
       if: always()
       uses: actions/upload-artifact@v2-preview
       with:
-        name: 'MetaappDebug'
+        name: MetaAppDebug
         path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk

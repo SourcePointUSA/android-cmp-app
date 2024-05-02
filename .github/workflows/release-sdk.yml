@@ -1,14 +1,7 @@
-name: SDK Release
-
+name: Release SDK
 on:
   push:
-    branches:  [ master ] #[ release/* ]
-#    paths:
-#      - '!*.yml'
-#      - '!README.md'
-#      - '!CHANGELOG.md'
-#      - '!samples/metaapp/gradle.properties'
-
+    branches: [ master ]
 jobs:
   build:
     name: Create Release and tag
@@ -18,9 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build and test
-        run: |
-          ./gradlew cmplibrary:build
+      - name: Build
+        run: ./gradlew cmplibrary:build
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
@@ -44,19 +36,6 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with:
           path: ./cmplibrary/version.txt
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: v${{ steps.get_version.outputs.content }}
-          release_name: v${{ steps.get_version.outputs.content }}
-          body: |
-            ## ${{ steps.get_version.outputs.content }} ${{ steps.current-time.outputs.formattedTime }}
-            ${{ steps.release_note.outputs.content }}
-          draft: false
-          prerelease: false
       - name: Prepare environment
         env:
           SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
@@ -80,3 +59,16 @@ jobs:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: ./gradlew addCommitPush
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ steps.get_version.outputs.content }}
+          release_name: v${{ steps.get_version.outputs.content }}
+          body: |
+            ## ${{ steps.get_version.outputs.content }} ${{ steps.current-time.outputs.formattedTime }}
+            ${{ steps.release_note.outputs.content }}
+          draft: false
+          prerelease: false
