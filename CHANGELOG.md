@@ -1,3 +1,11 @@
+## 7.8.2 (May, 02, 2024)
+* [DIA-3785](https://sourcepoint.atlassian.net/browse/DIA-3785) Fix an issue preventing USNat consent data from being stored after PM save & exit [#805](https://github.com/SourcePointUSA/android-cmp-app/pull/805)
+* Fix an issue causing the SDK to show wrong translations in some scenarios. [#809](https://github.com/SourcePointUSA/android-cmp-app/pull/809)
+* [DIA-2066](https://sourcepoint.atlassian.net/browse/DIA-2066) Improve experience of the back button on AndroidTV [#715](https://github.com/SourcePointUSA/android-cmp-app/pull/715)
+* [HCD-496](https://sourcepoint.atlassian.net/browse/HCD-496) Improve documentation around MSPS consent status [#802](https://github.com/SourcePointUSA/android-cmp-app/pull/802)
+* [HCD-502](https://sourcepoint.atlassian.net/browse/HCD-502) Improve documentation regarding supporting US Privacy String along USNat campaigns [#806](https://github.com/SourcePointUSA/android-cmp-app/pull/806)
+* Internal code cleanup and dependencies updates from SDK and Example apps dependencies [#796](https://github.com/SourcePointUSA/android-cmp-app/pull/796), [#798](https://github.com/SourcePointUSA/android-cmp-app/pull/798), [#803](https://github.com/SourcePointUSA/android-cmp-app/pull/803), [#811](https://github.com/SourcePointUSA/android-cmp-app/pull/811), [#814](https://github.com/SourcePointUSA/android-cmp-app/pull/814)
+
 ## 7.7.1 (February, 22, 2024)
 * [DIA-3622](https://sourcepoint.atlassian.net/browse/DIA-3622) GCM flag missing (#787)
 * [DIA-3505](https://sourcepoint.atlassian.net/browse/DIA-3505) Handle no internet edge cases (#782)
