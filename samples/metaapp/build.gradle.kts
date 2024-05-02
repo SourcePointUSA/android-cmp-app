@@ -10,18 +10,18 @@ plugins {
     id("kotlin-android")
 }
 
-
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 
 val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
 
+@Suppress("UnstableApiUsage")
 android {
-    compileSdkVersion(33)
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
-        minSdkVersion(21)
-        targetSdkVersion(33)
+        minSdk = 21
+        targetSdk = 33
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
@@ -73,15 +73,14 @@ android {
         unitTests.isIncludeAndroidResources = true
     }
 
-    lintOptions {
+    lint {
         // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
-        isAbortOnError = false
+        abortOnError = false
     }
 
     kotlinOptions {
         jvmTarget = "11"
     }
-
 }
 
 sqldelight {
@@ -92,7 +91,6 @@ sqldelight {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-
 
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
@@ -115,12 +113,10 @@ dependencies {
     implementation("io.github.g00fy2:versioncompare:1.4.1")
 
     // TV
-    implementation("androidx.appcompat:appcompat:1.0.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.leanback:leanback:1.0.0")
 
     // Koin
-//    implementation(Libs.koinCore)
-//    implementation(Libs.koinCoreExt)
     implementation(Libs.koinAndroid)
     implementation(Libs.koinViewModel)
 
@@ -133,13 +129,9 @@ dependencies {
     implementation(Libs.leanback_pref)
 
     // unit-test
-    testImplementation(Libs.mockk)
-    testImplementation(Libs.mockwebserver)
-
-    // integration-test
-    androidTestImplementation(Libs.koinTest)
-    androidTestImplementation(Libs.mockkAndroid)
-
+    testImplementation("io.mockk:mockk:1.12.3")
+    androidTestImplementation("io.insert-koin:koin-test:2.2.3")
+    androidTestImplementation("io.mockk:mockk-android:1.12.3")
 }
 
 versionCodePropPath {

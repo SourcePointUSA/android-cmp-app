@@ -81,7 +81,8 @@ dependencies {
     androidTestImplementation "org.koin:koin-test:2.0.1"
 
     // mockk
-    androidTestImplementation(Libs.mockkAndroid)
+    testImplementation("io.mockk:mockk:1.12.3")
+    androidTestImplementation("io.mockk:mockk-android:1.12.3")
 
     androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.3.0'
 
