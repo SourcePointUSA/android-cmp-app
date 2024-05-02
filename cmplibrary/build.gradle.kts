@@ -17,6 +17,7 @@ val versionLib = project.property("VERSION_NAME") as String
 group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
+@Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
     testOptions.unitTests.isIncludeAndroidResources = true
