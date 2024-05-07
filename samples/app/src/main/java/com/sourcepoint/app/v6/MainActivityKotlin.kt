@@ -81,7 +81,7 @@ class MainActivityKotlin : AppCompatActivity() {
         sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
         binding = ActivityMainV7Binding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main_v7)
+        setContentView(binding.root)
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
         binding.clearAll.setOnClickListener {
