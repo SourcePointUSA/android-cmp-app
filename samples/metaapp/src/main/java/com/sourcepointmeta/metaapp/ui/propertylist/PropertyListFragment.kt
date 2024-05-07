@@ -89,6 +89,9 @@ class PropertyListFragment : Fragment() {
                 is StateProperty -> updateProperty(it)
                 is StateLoading -> savingProperty(it.propertyName, it.loading)
                 is StateVersion -> showVersionPopup(it.version)
+                else -> {
+                    // instead of else we need to provide a case for each BaseState heirs
+                }
             }
         }
         binding.propertyList.layoutManager = GridLayoutManager(context, 1)

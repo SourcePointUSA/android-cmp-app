@@ -124,8 +124,8 @@ dependencies {
     implementation(Libs.koinViewModel)
 
     // SQLDelight
-    implementation(Libs.sqlDelight)
-    implementation(Libs.sqlDelightCoroutines)
+    implementation("com.squareup.sqldelight:android-driver:1.5.4")
+    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.4")
 
     // tv
     implementation(Libs.leanback)
