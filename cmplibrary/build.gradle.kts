@@ -19,6 +19,7 @@ version = versionLib
 @Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
+    namespace = "com.sourcepoint.cmplibrary"
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdk = 21

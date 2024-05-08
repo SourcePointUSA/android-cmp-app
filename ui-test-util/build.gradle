@@ -5,6 +5,7 @@ plugins {
 
 android {
     compileSdk 33
+    namespace = "com.example.uitestutil"
     defaultConfig {
         minSdk 21
         targetSdk 33

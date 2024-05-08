@@ -5,6 +5,7 @@ apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
     compileSdk 34
+    namespace = "com.sourcepoint.app.v6"
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
         minSdk 21

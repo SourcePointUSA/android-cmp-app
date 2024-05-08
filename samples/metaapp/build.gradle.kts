@@ -17,6 +17,7 @@ val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
 @Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
+    namespace = "com.sourcepointmeta.metaapp"
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdk = 21
