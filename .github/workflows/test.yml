@@ -1,12 +1,12 @@
 name: Test
 on:
   push:
-    branches: [ develop, DIA-3574-update-sdk-dep-v3 ]
+    branches: [ develop ]
     paths:
       - '!README.md'
       - '!release_note.txt'
   pull_request:
-    branches: [ develop, DIA-3574-update-sdk-dep-v3 ]
+    branches: [ develop ]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
