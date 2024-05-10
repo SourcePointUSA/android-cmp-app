@@ -70,11 +70,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-<!--        <Button-->
-<!--                android:id="@+id/transfer_consent_to_web_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/transfer_consent_to_web_view"/>-->
+        <Button
+                android:id="@+id/transfer_consent_to_web_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/transfer_consent_to_web_view"/>
 
         <Button
                 android:id="@+id/refresh_btn"

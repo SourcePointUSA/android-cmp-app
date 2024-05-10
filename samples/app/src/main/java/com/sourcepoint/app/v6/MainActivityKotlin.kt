@@ -94,6 +94,9 @@ class MainActivityKotlin : AppCompatActivity() {
         auth_id_activity.setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
+        transfer_consent_to_web_view.setOnClickListener { _v: View? ->
+            startActivity(Intent(this, WebConsentTransferTestActivity::class.java))
+        }
         custom_consent.setOnClickListener { _v: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
