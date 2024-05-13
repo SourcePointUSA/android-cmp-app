@@ -17,6 +17,7 @@
   - [Setting a Targeting Param](#setting-a-targeting-param)
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
+  - [Overwriting default language](#overwriting-default-language)
   - [Google Consent Mode](#google-consent-mode)
     - [Set default consent state for consent checks](#set-default-consent-state-for-consent-checks)
     - [Update consent checks](#update-consent-checks)
@@ -622,6 +623,41 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 
 **Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
 
+## Overwriting default language
+
+If you wish to force a message to be displayed in a certain language include the appropriate attribute to the `config` object and set the default language.
+
+|        | **Attribute**                                 |
+| ------ | --------------------------------------------- |
+| Kotlin | `messLanguage = MessageLanguage.FRENCH`       |
+| Java   | `.addMessageLanguage(MessageLanguage.FRENCH)` |
+
+```Kotlin
+//Kotlin
+val cmpConfig : SpConfig = config {
+                accountId = 22
+                propertyId = 16893
+                propertyName = "mobile.multicampaign.demo"
+                messLanguage = MessageLanguage.FRENCH // overwrite default language
+                +CampaignType.GDPR
+            }
+```
+
+```java
+//Java
+private final SpConfig cmpConfig = new SpConfigDataBuilder()
+        .addAccountId(22)
+        .addPropertyId(16893)
+        .addPropertyName("mobile.multicampaign.demo")
+        .addMessageLanguage(MessageLanguage.FRENCH) //overwrite default language
+        .addCampaign(CampaignType.GDPR)
+        .build();
+```
+
+It's important to notice that if any of the components of the message doesn't have a translation for that language, the component will be rendered in the default language configured in the message builder.
+
+> When the **Use Browser Default** toggle is enabled in the message builder, Sourcepoint will ignore the language setting configured in the SDK and use the default language configured in the message builder. If the end-user's browser language is not supported by a translation in the message builder, the default language set in the message builder will be used instead.
+
 ## Google Consent Mode
 
 [Google Consent Mode 2.0](https://developers.google.com/tag-platform/security/concepts/consent-mode) ensures that Google vendors on your property comply with an end-user's consent choices for purposes (called consent checks) defined by Google. It is implemented via [Google Analytics for Firebase SDK](https://firebase.google.com/docs/analytics/get-started?platform=android).
@@ -816,6 +852,7 @@ class YourKotlinActivity {
 ```
 
 Regarding `handleOnBackPress` from `spConsentLib`, there are 2 parameters:
+
 - isMessageDismissible - flag that can customize the behaviour, when the user clicks back button on "Home" page of the message (if true - message is dismissible, if false - when the user is on "Home" page and clicks back, then the back event will be dispatched to the activity delegating navigation to the app)
 - onHomePage - lambda, code in which should be invoked when the user clicks back on "Home" page of the message (in other words, the initial navigation position in message)
 
