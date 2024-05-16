@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Web Consent Transfer Demo</string>
+
+    <string name="web_consent_ccpa_uuid">CCPA UUID</string>
+    <string name="web_consent_gdpr_uuid">GDPR UUID</string>
+    <string name="web_consent_clear_data">Clear</string>
+    <string name="web_consent_refresh_data">Refresh</string>
+    <string name="web_consent_transfer_data">Transfer</string>
+</resources>
