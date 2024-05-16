@@ -30,7 +30,6 @@ class ConsentTransferActivity : AppCompatActivity() {
     private lateinit var tvGdprUuid: AppCompatTextView
     private lateinit var btnClearData: AppCompatButton
     private lateinit var btnRefresh: AppCompatButton
-    private lateinit var btnTransferConsent: AppCompatButton
     private lateinit var wvTransferPage: WebView
 
     private val spConsentLib by spConsentLibLazy {
@@ -82,7 +81,6 @@ class ConsentTransferActivity : AppCompatActivity() {
             clearAllData(this)
             tvCcpaUuid.text = ""
             tvGdprUuid.text = ""
-            btnTransferConsent.isEnabled = false
         }
 
         // initialize web view
@@ -100,7 +98,6 @@ class ConsentTransferActivity : AppCompatActivity() {
         runOnUiThread {
             tvCcpaUuid.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
             tvGdprUuid.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
-            btnTransferConsent.isEnabled = true
             wvTransferPage.preloadConsent(sPConsents)
         }
     }

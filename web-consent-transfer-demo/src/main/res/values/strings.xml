@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Web Consent Transfer Demo</string>
+    <string name="app_name">Transfer Demo</string>
 
     <string name="web_consent_ccpa_uuid">CCPA UUID</string>
     <string name="web_consent_gdpr_uuid">GDPR UUID</string>

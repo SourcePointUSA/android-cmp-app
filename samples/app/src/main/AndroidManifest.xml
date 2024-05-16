@@ -27,7 +27,6 @@
         <activity android:name=".MainActivityAuthId" />
         <activity android:name=".NativeMessageActivity" />
         <activity android:name=".MainActivityViewConsent" />
-        <activity android:name=".web.WebConsentTransferTestActivity" />
         <activity
             android:name=".LinkActivity"
             android:exported="true">
