@@ -23,7 +23,12 @@ import org.json.JSONObject
 
 class ConsentTransferActivity : AppCompatActivity() {
 
-    private val consentWebViewClient = object : WebViewClient() { }
+    private val consentWebViewClient = object : WebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            sourcePointConsent?.let { wvTransferPage.preloadConsent(it) }
+        }
+    }
     private val consentWebChromeClient = object : WebChromeClient() { }
 
     private lateinit var tvCcpaUuid: AppCompatTextView
