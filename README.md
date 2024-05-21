@@ -72,8 +72,8 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 15000 // Optional, default 10000ms
-                  +CampaignType.CCPA // See campaign table
-                  +CampaignType.GDPR // See campaign table
+                  +CampaignType.USNAT // Only include if campaign configured in portal. See campaign table
+                  +CampaignType.GDPR // Only include if campaign configured in portal. See campaign table
                 }
 ```
 
@@ -90,8 +90,8 @@ Java
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
             .addMessageTimeout(4000) // Optional, default 3000ms
-            .addCampaign(CampaignType.GDPR) //see campaign table
-            .addCampaign(CampaignType.CCPA) //see campaign table
+            .addCampaign(CampaignType.GDPR) //Only include if campaign configured in portal. See campaign table
+            .addCampaign(CampaignType.USNAT) //Only include if campaign configured in portal. See campaign table
             .build();
 
 ```
