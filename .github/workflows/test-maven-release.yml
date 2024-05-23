@@ -1,0 +1,36 @@
+name: SDK Release
+
+on:
+  push:
+    branches:  [ DIA-3574-update-sdk-dep-view-binding ]
+
+jobs:
+  build:
+    name: Create Release and tag
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          ./gradlew cmplibrary:build
+      - name: Prepare environment
+        env:
+          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+        run: |
+          sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+      - name: Release build
+        run: ./gradlew cmplibrary:assemble
+      - name: Source jar and dokka
+        run: ./gradlew androidSourcesJar javadocJar
+      - name: Publish to MavenCentral
+        run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
