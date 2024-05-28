@@ -32,5 +32,6 @@ enum class MessageLanguage(val value: String) {
     SLOVENIAN("SL"),
     SPANISH("ES"),
     SWEDISH("SV"),
-    TURKISH("TR");
+    TURKISH("TR"),
+    TAGALOG("TL");
 }
