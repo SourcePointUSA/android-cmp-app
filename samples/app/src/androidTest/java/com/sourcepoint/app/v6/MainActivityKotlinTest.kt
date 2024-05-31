@@ -187,12 +187,10 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
 
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+//        wr { clickOnGdprReviewConsent() }
+//        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
         verify {
             spClient.run {

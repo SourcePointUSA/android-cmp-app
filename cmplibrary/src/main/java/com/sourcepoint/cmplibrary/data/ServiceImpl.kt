@@ -469,6 +469,8 @@ private class ServiceImpl(
         networkClient.storeGdprChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
                 campaignManager.gdprUuid = postConsentResponse.uuid
+//                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
+//                    ?.copy(uuid = postConsentResponse.uuid)
 
                 // don't overwrite gdpr consents if the action is accept all or reject all
                 // because the response from those endpoints does not contain a full consent
