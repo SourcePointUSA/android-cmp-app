@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data
 
-import android.util.Log
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
