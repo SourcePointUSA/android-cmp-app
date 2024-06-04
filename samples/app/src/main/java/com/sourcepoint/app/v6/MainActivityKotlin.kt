@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
@@ -16,17 +17,12 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
-import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.creation.to
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
@@ -41,7 +37,6 @@ import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class MainActivityKotlin : AppCompatActivity() {
-
     companion object {
         private const val TAG = "**MainActivity"
         const val CLIENT_PREF_KEY = "client_pref_key"
@@ -64,6 +59,8 @@ class MainActivityKotlin : AppCompatActivity() {
 //        }
     }
 
+    private val preferences: SharedPreferences get() = PreferenceManager.getDefaultSharedPreferences(this)
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             spConsentLib.handleOnBackPress(isMessageDismissible = true) {
@@ -77,20 +74,19 @@ class MainActivityKotlin : AppCompatActivity() {
 
         if (dataProvider.resetAll) {
             clearAllData(this)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
+            preferences.edit().clear().apply()
         }
 
         storeDiagnosticObj(dataProvider.diagnostic)
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
+        preferences.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
         setContentView(R.layout.activity_main_v7)
-        review_consents_gdpr.setOnClickListener { _v: View? -> selectGDPRPM(dataProvider) }
-        review_consents_ccpa.setOnClickListener { _v: View? -> selectCCPAPM(dataProvider) }
-        clear_all.setOnClickListener { _v: View? ->
+        review_consents_gdpr.setOnClickListener { selectGDPRPM(dataProvider) }
+        review_consents_ccpa.setOnClickListener { selectCCPAPM(dataProvider) }
+        clear_all.setOnClickListener {
             clearAllData(this)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
+            preferences.edit().clear().apply()
         }
         auth_id_activity.setOnClickListener { _v: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
@@ -149,6 +145,7 @@ class MainActivityKotlin : AppCompatActivity() {
             setNativeMessage(message, messageController)
         }
 
+        @Deprecated("should not be used")
         override fun onMessageReady(message: JSONObject) {
         }
 
@@ -242,8 +239,8 @@ class MainActivityKotlin : AppCompatActivity() {
                         CampaignType.GDPR -> dataProvider.gdprPmId
                         CampaignType.CCPA -> dataProvider.ccpaPmId
                         CampaignType.USNAT -> throw RuntimeException()
-                    }.let { pmId ->
-                        messageController.showOptionNativeMessage(message.campaignType, pmId.toString())
+                    }.let {
+                        messageController.showOptionNativeMessage(message.campaignType, it)
                     }
                 }
             }
@@ -251,7 +248,7 @@ class MainActivityKotlin : AppCompatActivity() {
         messageController.showNativeView(customLayout)
     }
 
-    fun setTitle(view: View, t: NativeComponent) {
+    private fun setTitle(view: View, t: NativeComponent) {
         view.title_nm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
@@ -260,7 +257,7 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun setBody(view: View, t: NativeComponent) {
+    private fun setBody(view: View, t: NativeComponent) {
         view.body_nm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
@@ -270,7 +267,7 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun setAgreeBtn(view: View, t: NativeComponent) {
+    private fun setAgreeBtn(view: View, t: NativeComponent) {
         view.body_nm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
@@ -278,46 +275,45 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun setCancelBtn(view: View, na: NativeAction) {
+    private fun setCancelBtn(view: View, na: NativeAction) {
         view.cancel.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setOptionBtn(view: View, na: NativeAction) {
+    private fun setOptionBtn(view: View, na: NativeAction) {
         view.show_options_btn.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setRejectAllBtn(view: View, na: NativeAction) {
+    private fun setRejectAllBtn(view: View, na: NativeAction) {
         view.reject_all.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setAcceptAllBtn(view: View, na: NativeAction) {
+    private fun setAcceptAllBtn(view: View, na: NativeAction) {
         view.accept_all.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun addOldV6Consent() {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this@MainActivityKotlin)
+    private fun addOldV6Consent() {
         val v6LocalState = JSONObject(consent)
-        val spEditor = sp.edit()
+        val spEditor = preferences.edit()
         v6LocalState.keys().forEach {
             check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
             check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
@@ -327,24 +323,18 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     fun prefToJsonObject() {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this@MainActivityKotlin)
-        val obj = JSONObject(consent)
-        sp.all.forEach {
-            obj.put(it.key, it.value)
-        }
+        preferences.all.forEach { JSONObject(consent).put(it.key, it.value) }
     }
 
-    private fun <E> check(block: () -> E): E? {
-        return try {
+    private fun <E> check(block: () -> E): E? =
+        try {
             block.invoke()
         } catch (e: Exception) {
             null
         }
-    }
 
     private fun storeDiagnosticObj(list: List<Pair<String, Any?>>) {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val spEditor = sp.edit()
+        val spEditor = preferences.edit()
         list.forEach {
             check { it.second as? String }?.let { v -> spEditor.putString(it.first, v) }
             check { it.second as? Boolean }?.let { v -> spEditor.putBoolean(it.first, v) }
@@ -357,7 +347,7 @@ class MainActivityKotlin : AppCompatActivity() {
         dataProvider.messageType
             ?.let {
                 spConsentLib.loadPrivacyManager(
-                    pmId = dataProvider.gdprPmId,
+                    pmId = "1144201",
                     pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.GDPR,
                     useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable,
