@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
@@ -53,15 +54,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 217
-            propertyId = 4369
-            propertyName = "focus.android"
-            campaignsEnv = CampaignsEnv.PUBLIC
-            messLanguage = MessageLanguage.GERMAN
-            +(CampaignType.GDPR)
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyId = 16893
+//            propertyName = "mobile.multicampaign.demo"
+//            addCampaign(CampaignType.GDPR)
+//            addCampaign(SpCampaign(CampaignType.USNAT, configParams = setOf(ConfigOption.TRANSITION_CCPA_AUTH)))
+//        }
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -167,9 +167,6 @@ class MainActivityKotlin : AppCompatActivity() {
             }
             spClientObserver.forEach { it.onConsentReady(consent) }
             Log.i(TAG, "onConsentReady: $consent")
-
-            Log.i("DIA-3946", "=== onConsentReady ===")
-            Log.v("DIA-3946", "consentUuid = ${consent.gdpr?.consent?.uuid}")
         }
 
         override fun onUIFinished(view: View) {
@@ -195,9 +192,6 @@ class MainActivityKotlin : AppCompatActivity() {
             spClientObserver.forEach { it.onSpFinished(sPConsents) }
             Log.i(TAG, "onSpFinish: $sPConsents")
             Log.i(TAG, "==================== onSpFinish ==================")
-
-            Log.i("DIA-3946", "=== onSpFinished ===")
-            Log.v("DIA-3946", "consentUuid = ${sPConsents.gdpr?.consent?.uuid}")
         }
 
         override fun onNoIntentActivitiesFound(url: String) {

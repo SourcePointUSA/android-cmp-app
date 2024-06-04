@@ -472,9 +472,9 @@ private class ServiceImpl(
 //                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
 //                    ?.copy(uuid = postConsentResponse.uuid)
 
-                // don't overwrite gdpr consents if the action is accept all or reject all
-                // because the response from those endpoints does not contain a full consent
-                // object.
+                // only overwrite the consent object on Save & Exit.
+                // since the consent object was already saved on the response of the GET choice
+                // when accepting / rejecting all
                 if (consentAction.actionType.isAcceptOrRejectAll().not()) {
                     campaignManager.gdprConsentStatus = postConsentResponse
                 }
