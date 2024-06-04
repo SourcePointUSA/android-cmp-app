@@ -423,7 +423,7 @@ private class CampaignManagerImpl(
                 )
             }
             ?.let { campaigns.add(it) }
-        mapTemplate[CampaignType.USNAT.name]
+        mapTemplate[USNAT.name]
             ?.let {
                 it.toCampaignReqImpl(
                     targetingParams = it.targetingParams,
