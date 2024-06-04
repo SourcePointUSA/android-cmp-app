@@ -469,8 +469,8 @@ private class ServiceImpl(
         networkClient.storeGdprChoice(postConsentParams)
             .executeOnRight { postConsentResponse ->
                 campaignManager.gdprUuid = postConsentResponse.uuid
-//                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
-//                    ?.copy(uuid = postConsentResponse.uuid)
+                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
+                    ?.copy(uuid = postConsentResponse.uuid)
 
                 // only overwrite the consent object on Save & Exit.
                 // since the consent object was already saved on the response of the GET choice
