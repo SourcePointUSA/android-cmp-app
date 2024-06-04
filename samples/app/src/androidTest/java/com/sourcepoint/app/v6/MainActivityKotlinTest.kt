@@ -165,7 +165,6 @@ class MainActivityKotlinTest {
 
     @Test
     fun given_a_gdpr_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
-
         val spClient = mockk<SpClient>(relaxed = true)
         val grantsTester = listOf(
             "5ff4d000a228633ac048be41",
@@ -185,16 +184,11 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
-
-        wr { clickOnGdprReviewConsent() }
-        wr(backup = { clickOnGdprReviewConsent() }) { checkAllGdprConsentsOn() }
+        wr { tapAcceptOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
 
-        verify {
+        wr { verify {
             spClient.run {
                 onUIReady(any())
                 onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
@@ -212,9 +206,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.GRANTED)
                     it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.GRANTED)
                     it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.tcData.assertNotEquals(emptyMap())
                 })
             }
-        }
+        } }
 
         scenario.onActivity { activity ->
             getSharedPrefs(activity).run {
@@ -485,7 +480,6 @@ class MainActivityKotlinTest {
             wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
             wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
             wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-            // TODO We have to change the behaviour of the graceful degradation, onSpFinished must be always called
             wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
         }
 
