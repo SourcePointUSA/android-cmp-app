@@ -347,7 +347,7 @@ class MainActivityKotlin : AppCompatActivity() {
         dataProvider.messageType
             ?.let {
                 spConsentLib.loadPrivacyManager(
-                    pmId = "1144201",
+                    pmId = dataProvider.gdprPmId,
                     pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.GDPR,
                     useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable,
