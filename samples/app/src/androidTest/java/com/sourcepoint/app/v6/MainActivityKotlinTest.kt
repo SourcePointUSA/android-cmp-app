@@ -484,6 +484,44 @@ class MainActivityKotlinTest {
         }
 
     @Test
+    fun acceptAll_works_even_if_legislation_applies_false() = runBlocking {
+        val spClient = mockk<SpClient>(relaxed = true)
+
+        loadKoinModules(
+            mockModule(
+                spConfig = config {
+                    accountId = 22
+                    propertyId = 36345
+                    propertyName = "android.applies.false.in.pm"
+                    messageTimeout = 5000
+                    +(CampaignType.GDPR)
+                },
+                gdprPmId = "1144201",
+                ccpaPmId = "",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr {
+            verify { spClient.onSpFinished(any()) }
+            clearMocks(spClient)
+        }
+        wr { clickOnGdprReviewConsent() }
+        wr { tapAcceptAllOnWebView() }
+
+        wr { verify {
+            spClient.onSpFinished(withArg { consents ->
+                consents.gdpr!!.consent.applies.assertFalse()
+                consents.gdpr!!.consent.euconsent.assertNotEquals("")
+                consents.gdpr!!.consent.euconsent.assertNotNull()
+                consents.gdpr!!.consent.uuid.assertNotNull()
+            })
+        }}
+    }
+
+    @Test
     fun given_a_campaignList_ACCEPT_all_legislation_and_verify_that_the_popup_apper_1_time() = runBlocking<Unit> {
 
         val spClient = mockk<SpClient>(relaxed = true)
