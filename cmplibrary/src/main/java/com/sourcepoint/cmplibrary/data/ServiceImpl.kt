@@ -376,6 +376,7 @@ private class ServiceImpl(
                         onSpConsentsSuccess = onSpConsentsSuccess,
                     ).map { gdpr -> ChoiceResp(gdpr = gdpr) }
                 }
+
                 CCPA -> {
                     sendConsentCcpa(
                         env = env,
@@ -383,6 +384,7 @@ private class ServiceImpl(
                         onSpConsentsSuccess = onSpConsentsSuccess,
                     ).map { ccpa -> ChoiceResp(ccpa = ccpa) }
                 }
+
                 USNAT -> {
                     sendConsentUsNat(
                         env = env,
@@ -420,11 +422,11 @@ private class ServiceImpl(
                     response.gdpr?.let { responseGdpr ->
                         campaignManager.gdprConsentStatus = responseGdpr.copy(uuid = campaignManager.gdprConsentStatus?.uuid)
                         val spConsents = ConsentManager.responseConsentHandler(
-                                gdpr = responseGdpr.copy(
-                                        uuid = campaignManager.gdprConsentStatus?.uuid,
-                                        applies = dataStorage.gdprApplies,
-                                ),
-                                consentManagerUtils = consentManagerUtils,
+                            gdpr = responseGdpr.copy(
+                                uuid = campaignManager.gdprConsentStatus?.uuid,
+                                applies = dataStorage.gdprApplies,
+                            ),
+                            consentManagerUtils = consentManagerUtils,
                         )
                         onSpConsentsSuccess?.invoke(spConsents)
                     }
@@ -442,24 +444,26 @@ private class ServiceImpl(
 
         val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.gdpr == null
 
-        networkClient.storeGdprChoice(PostChoiceParamReq(
-            env = env,
-            actionType = consentAction.actionType,
-            body = postChoiceGdprBody(
-                sampleRate = dataStorage.gdprSamplingValue,
-                propertyId = spConfig.propertyId.toLong(),
-                messageId = campaignManager.gdprMessageMetaData?.messageId?.toLong(),
-                granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus,
-                consentAllRef = getResp?.gdpr?.consentAllRef,
-                vendorListId = getResp?.gdpr?.vendorListId,
-                saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
-                authid = authId,
-                uuid = campaignManager.gdprConsentStatus?.uuid,
-                sendPvData = dataStorage.gdprSamplingResult,
-                pubData = consentAction.pubData.toJsonObject(),
-                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+        networkClient.storeGdprChoice(
+            PostChoiceParamReq(
+                env = env,
+                actionType = consentAction.actionType,
+                body = postChoiceGdprBody(
+                    sampleRate = dataStorage.gdprSamplingValue,
+                    propertyId = spConfig.propertyId.toLong(),
+                    messageId = campaignManager.gdprMessageMetaData?.messageId?.toLong(),
+                    granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus,
+                    consentAllRef = getResp?.gdpr?.consentAllRef,
+                    vendorListId = getResp?.gdpr?.vendorListId,
+                    saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
+                    authid = authId,
+                    uuid = campaignManager.gdprConsentStatus?.uuid,
+                    sendPvData = dataStorage.gdprSamplingResult,
+                    pubData = consentAction.pubData.toJsonObject(),
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+                )
             )
-        ))
+        )
             .executeOnRight { postConsentResponse ->
                 campaignManager.gdprUuid = postConsentResponse.uuid
                 campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
@@ -497,24 +501,28 @@ private class ServiceImpl(
     ): Either<CcpaCS> = check {
         var getResp: ChoiceResp? = null
         if (consentAction.actionType.isAcceptOrRejectAll()) {
-            getResp = networkClient.getChoice(GetChoiceParamReq(
-                choiceType = consentAction.actionType.toChoiceTypeParam(),
-                accountId = spConfig.accountId.toLong(),
-                propertyId = spConfig.propertyId.toLong(),
-                env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null),
-                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
-            ))
+            getResp = networkClient.getChoice(
+                GetChoiceParamReq(
+                    choiceType = consentAction.actionType.toChoiceTypeParam(),
+                    accountId = spConfig.accountId.toLong(),
+                    propertyId = spConfig.propertyId.toLong(),
+                    env = env,
+                    metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null),
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+                )
+            )
                 .executeOnRight { response ->
                     response.ccpa?.let { ccpaResponse ->
                         campaignManager.ccpaConsentStatus = ccpaResponse.copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
-                        onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                        onSpConsentsSuccess?.invoke(
+                            ConsentManager.responseConsentHandler(
                                 ccpa = ccpaResponse.copy(
-                                        uuid = campaignManager.ccpaConsentStatus?.uuid,
-                                        applies = dataStorage.ccpaApplies,
+                                    uuid = campaignManager.ccpaConsentStatus?.uuid,
+                                    applies = dataStorage.ccpaApplies,
                                 ),
                                 consentManagerUtils = consentManagerUtils,
-                        ))
+                            )
+                        )
                     }
                 }
                 .executeOnLeft { error ->
@@ -530,21 +538,23 @@ private class ServiceImpl(
 
         val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.ccpa == null
 
-        networkClient.storeCcpaChoice(PostChoiceParamReq(
+        networkClient.storeCcpaChoice(
+            PostChoiceParamReq(
                 env = env,
                 actionType = consentAction.actionType,
                 body = postChoiceCcpaBody(
-                        sampleRate = dataStorage.ccpaSamplingValue,
-                        propertyId = spConfig.propertyId.toLong(),
-                        messageId = campaignManager.ccpaMessageMetaData?.messageId?.toLong(),
-                        saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
-                        authid = authId,
-                        uuid = campaignManager.ccpaConsentStatus?.uuid,
-                        sendPvData = dataStorage.ccpaSamplingResult,
-                        pubData = consentAction.pubData.toJsonObject(),
-                        includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+                    sampleRate = dataStorage.ccpaSamplingValue,
+                    propertyId = spConfig.propertyId.toLong(),
+                    messageId = campaignManager.ccpaMessageMetaData?.messageId?.toLong(),
+                    saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
+                    authid = authId,
+                    uuid = campaignManager.ccpaConsentStatus?.uuid,
+                    sendPvData = dataStorage.ccpaSamplingResult,
+                    pubData = consentAction.pubData.toJsonObject(),
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
-        ))
+            )
+        )
             .executeOnRight { postConsentResponse ->
                 campaignManager.ccpaUuid = postConsentResponse.uuid
                 campaignManager.ccpaConsentStatus =
@@ -582,23 +592,25 @@ private class ServiceImpl(
         consentAction: ConsentActionImpl,
         onSpConsentSuccess: ((SPConsents) -> Unit)?,
     ): Either<USNatConsentData> = check {
-        networkClient.storeUsNatChoice(PostChoiceParamReq(
-            env = env,
-            actionType = consentAction.actionType,
-            body = postChoiceUsNatBody(
-                granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
-                messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
-                saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
-                propertyId = spConfig.propertyId.toLong(),
-                pubData = consentAction.pubData.toJsonObject(),
-                sendPvData = dataStorage.usNatSamplingResult,
-                sampleRate = dataStorage.usNatSamplingValue,
-                uuid = campaignManager.usNatConsentData?.uuid,
-                vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
-                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),
-                authId = campaignManager.authId
-            ),
-        ))
+        networkClient.storeUsNatChoice(
+            PostChoiceParamReq(
+                env = env,
+                actionType = consentAction.actionType,
+                body = postChoiceUsNatBody(
+                    granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
+                    messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
+                    saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
+                    propertyId = spConfig.propertyId.toLong(),
+                    pubData = consentAction.pubData.toJsonObject(),
+                    sendPvData = dataStorage.usNatSamplingResult,
+                    sampleRate = dataStorage.usNatSamplingValue,
+                    uuid = campaignManager.usNatConsentData?.uuid,
+                    vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),
+                    authId = campaignManager.authId
+                ),
+            )
+        )
             .executeOnRight { postChoiceUsNatResponse ->
                 campaignManager.usNatConsentData = postChoiceUsNatResponse
             }
@@ -606,10 +618,12 @@ private class ServiceImpl(
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
 
-        onSpConsentSuccess?.invoke(ConsentManager.responseConsentHandler(
-            usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
-            consentManagerUtils = consentManagerUtils,
-        ))
+        onSpConsentSuccess?.invoke(
+            ConsentManager.responseConsentHandler(
+                usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
+                consentManagerUtils = consentManagerUtils,
+            )
+        )
 
         campaignManager.usNatConsentData ?: throw InvalidConsentResponse(
             cause = null,
@@ -648,4 +662,4 @@ private class ServiceImpl(
                 }
             }
         }
-    }
+}
