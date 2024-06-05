@@ -1,3 +1,8 @@
+## 7.8.3 (June, 05, 2024)
+*[DIA-3945](https://sourcepoint.atlassian.net/browse/DIA-3945) Added Tagalog as message language [#819](https://github.com/SourcePointUSA/android-cmp-app/pull/819)
+*[DIA-3946](https://sourcepoint.atlassian.net/browse/DIA-3946) Fixed an issue causing consent uuid to be null for server-sided sampled properties [#820](https://github.com/SourcePointUSA/android-cmp-app/pull/820)
+*[DIA-4086](https://sourcepoint.atlassian.net/browse/DIA-4086) Fixed an issue affecting users taking consent action when legislation applies is false [#822](https://github.com/SourcePointUSA/android-cmp-app/pull/822)
+
 ## 7.8.2 (May, 02, 2024)
 * [DIA-3785](https://sourcepoint.atlassian.net/browse/DIA-3785) Fix an issue preventing USNat consent data from being stored after PM save & exit [#805](https://github.com/SourcePointUSA/android-cmp-app/pull/805)
 * Fix an issue causing the SDK to show wrong translations in some scenarios. [#809](https://github.com/SourcePointUSA/android-cmp-app/pull/809)
