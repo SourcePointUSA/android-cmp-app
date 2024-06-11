@@ -1172,7 +1172,7 @@ private val spConsentLib by spConsentLibLazy {
         propertyName = "automation-mobile-usnat"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
-        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
+        +mapOf(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
     }
 }
 ```
@@ -1207,7 +1207,7 @@ val cmpConfig : SpConfig = config {
     propertyId = 123456
     propertyName = "demo.android.test"
     messLanguage = MessageLanguage.ENGLISH
-    +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+    +mapOf(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 }
 ```
 
