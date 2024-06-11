@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.Operatin
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
-import com.sourcepoint.cmplibrary.util.extensions.getGppCustomOption
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
@@ -136,7 +135,7 @@ internal fun MessagesParamReq.toConsentStatusParamReq(
         metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
         authId = authId,
         localState = localState,
-        includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+        includeData = buildIncludeData(campaignManager.spConfig)
     )
 }
 

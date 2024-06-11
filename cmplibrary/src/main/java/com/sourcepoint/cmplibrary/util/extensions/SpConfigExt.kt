@@ -19,11 +19,10 @@ internal fun SpConfig.hasTransitionCCPAAuth() =
         ?.configParams
         ?.find { it == ConfigOption.TRANSITION_CCPA_AUTH } != null
 
-internal fun SpConfig.hasSupportForLegacyUSPString(): IncludeDataGppParam? = campaigns
+internal fun SpConfig.hasSupportForLegacyUSPString() = campaigns
     .find { it.campaignType == USNAT }
     ?.configParams
-    ?.find { it == ConfigOption.SUPPORT_LEGACY_USPSTRING }
-    ?.let { IncludeDataGppParam(uspString = true) }
+    ?.find { it == ConfigOption.SUPPORT_LEGACY_USPSTRING } != null
 
 internal fun SpGppConfig?.toIncludeDataGppParam(supportLegacyUSPString: Boolean? = null): IncludeDataGppParam = IncludeDataGppParam(
     coveredTransaction = this?.coveredTransaction?.type,
@@ -38,6 +37,6 @@ internal fun SpConfig.getGppCustomOption(): JsonElement? = when {
             ?.toIncludeDataGppParam()
             ?.let { Json.encodeToJsonElement(it) }
     isIncluded(USNAT) ->
-        hasSupportForLegacyUSPString()?.let { Json.encodeToJsonElement(it) }
+        hasSupportForLegacyUSPString().let { Json.encodeToJsonElement(it) }
     else -> null
 }

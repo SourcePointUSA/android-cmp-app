@@ -2,6 +2,8 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized.includeData
 
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.cmplibrary.model.exposed.SpConfig
+import com.sourcepoint.cmplibrary.util.extensions.hasSupportForLegacyUSPString
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -21,7 +23,8 @@ internal data class IncludeDataGppParam(
 
 internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)
 
-internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObject {
+internal fun buildIncludeData(spConfig: SpConfig) = buildJsonObject {
+
     putJsonObject("TCData") {
         put("type", "RecordString")
     }
@@ -31,6 +34,8 @@ internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObje
     putJsonObject("webConsentPayload") {
         put("type", "RecordString")
     }
-    put("GPPData", gppDataValue ?: JsonPrimitive(true))
+    putJsonObject("GPPData") {
+        put("uspString", spConfig.hasSupportForLegacyUSPString())
+    }
     put("categories", true)
 }
