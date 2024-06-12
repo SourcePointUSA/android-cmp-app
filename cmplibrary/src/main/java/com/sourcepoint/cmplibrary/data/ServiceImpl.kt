@@ -194,7 +194,7 @@ private class ServiceImpl(
                     campaigns = campaignManager.campaigns4Config,
                     consentLanguage = campaignManager.messageLanguage.value,
                     campaignEnv = campaignManager.spConfig.campaignsEnv,
-                    includeData = buildIncludeData(campaignManager.spConfig)
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
 
                 val messagesParamReq = MessagesParamReq(
@@ -414,7 +414,7 @@ private class ServiceImpl(
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
                 metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null, usNat = null),
-                includeData = buildIncludeData(campaignManager.spConfig)
+                includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
             )
 
             getResp = networkClient.getChoice(getChoiceParamReq)
@@ -460,7 +460,7 @@ private class ServiceImpl(
                     uuid = campaignManager.gdprConsentStatus?.uuid,
                     sendPvData = dataStorage.gdprSamplingResult,
                     pubData = consentAction.pubData.toJsonObject(),
-                    includeData = buildIncludeData(campaignManager.spConfig)
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
             )
         )
@@ -508,7 +508,7 @@ private class ServiceImpl(
                     propertyId = spConfig.propertyId.toLong(),
                     env = env,
                     metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null),
-                    includeData = buildIncludeData(campaignManager.spConfig)
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
             )
                 .executeOnRight { response ->
@@ -551,7 +551,7 @@ private class ServiceImpl(
                     uuid = campaignManager.ccpaConsentStatus?.uuid,
                     sendPvData = dataStorage.ccpaSamplingResult,
                     pubData = consentAction.pubData.toJsonObject(),
-                    includeData = buildIncludeData(campaignManager.spConfig)
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
             )
         )
@@ -606,7 +606,7 @@ private class ServiceImpl(
                     sampleRate = dataStorage.usNatSamplingValue,
                     uuid = campaignManager.usNatConsentData?.uuid,
                     vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
-                    includeData = buildIncludeData(campaignManager.spConfig),
+                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),
                     authId = campaignManager.authId
                 ),
             )
