@@ -511,6 +511,8 @@ Java
     }
 ```
 
+>If required for your app's log out process, your organization can use the [`clearAllData`](#clearalldata) function to erase local data. Once cleared, your organization can then call `spConsentLib.loadMessage` to collect consent from a non-authenticated user or `spConsentLib.loadMessage` with a new `authId` for a new authenticated user.
+
 ## Setting a Targeting Param
 
 Targeting params allow you to set arbitrary key/value pairs. These key/value pairs are sent to Sourcepoint servers where they can be used to take a decision within the scenario builder.
@@ -1172,7 +1174,7 @@ private val spConsentLib by spConsentLibLazy {
         propertyName = "automation-mobile-usnat"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
-        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
+        +mapOf(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
     }
 }
 ```
@@ -1207,7 +1209,7 @@ val cmpConfig : SpConfig = config {
     propertyId = 123456
     propertyName = "demo.android.test"
     messLanguage = MessageLanguage.ENGLISH
-    +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+    +mapOf(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 }
 ```
 
