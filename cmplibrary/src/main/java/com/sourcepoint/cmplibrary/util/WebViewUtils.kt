@@ -15,14 +15,13 @@ internal fun Context.loadLinkOnExternalBrowser(
 ) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val canBeProcessed = isIntentExecutable(this, intent)
-    if (canBeProcessed)
+    if (canOpenURLIntent(this, intent))
         startActivity(intent)
     else
         onNoIntentActivitiesFound(url)
 }
 
-internal fun isIntentExecutable(context: Context, uriIntent: Intent): Boolean {
+internal fun canOpenURLIntent(context: Context, uriIntent: Intent): Boolean {
     val packageManager = context.packageManager
     val scheme = uriIntent.scheme
     if (scheme == null || scheme != "http" && scheme != "https") {
@@ -35,23 +34,17 @@ internal fun isIntentExecutable(context: Context, uriIntent: Intent): Boolean {
         packageManager.queryIntentActivities(uriIntent, 0)
     }.filterNot { it.activityInfo?.packageName?.startsWith("com.google.android.tv.frameworkpackagestubs") ?: false }
 
-    if (resolvedActivityList.isEmpty()) {
-        return false
-    }
-
-    return true
+    return resolvedActivityList.isNotEmpty()
 }
 
 internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
     if (doesLinkContainImage(testResult)) {
-        val handler = Handler()
-        val message = handler.obtainMessage()
+        val message = Handler().obtainMessage()
         requestFocusNodeHref(message)
         return message.data["url"] as? String ?: ""
     }
     return testResult.extra ?: ""
 }
 
-internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean {
-    return testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-}
+internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean =
+    testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
