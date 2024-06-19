@@ -1,11 +1,11 @@
 ## 7.8.4 (June, 19, 2024)
-*[ DIA-4112](https://sourcepoint.atlassian.net/browse/ DIA-4112) Fixed an issue preventing links from being opened on external browser [#825](https://github.com/SourcePointUSA/android-cmp-app/pull/825)
-*[HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)
+* [DIA-4112](https://sourcepoint.atlassian.net/browse/DIA-4112) Fixed an issue preventing links from being opened on external browser [#825](https://github.com/SourcePointUSA/android-cmp-app/pull/825)
+*[ HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)
 
 ## 7.8.3 (June, 05, 2024)
-*[DIA-3945](https://sourcepoint.atlassian.net/browse/DIA-3945) Added Tagalog as message language [#819](https://github.com/SourcePointUSA/android-cmp-app/pull/819)
-*[DIA-3946](https://sourcepoint.atlassian.net/browse/DIA-3946) Fixed an issue causing consent uuid to be null for server-sided sampled properties [#820](https://github.com/SourcePointUSA/android-cmp-app/pull/820)
-*[DIA-4086](https://sourcepoint.atlassian.net/browse/DIA-4086) Fixed an issue affecting users taking consent action when legislation applies is false [#822](https://github.com/SourcePointUSA/android-cmp-app/pull/822)
+* [DIA-3945](https://sourcepoint.atlassian.net/browse/DIA-3945) Added Tagalog as message language [#819](https://github.com/SourcePointUSA/android-cmp-app/pull/819)
+* [DIA-3946](https://sourcepoint.atlassian.net/browse/DIA-3946) Fixed an issue causing consent uuid to be null for server-sided sampled properties [#820](https://github.com/SourcePointUSA/android-cmp-app/pull/820)
+* [DIA-4086](https://sourcepoint.atlassian.net/browse/DIA-4086) Fixed an issue affecting users taking consent action when legislation applies is false [#822](https://github.com/SourcePointUSA/android-cmp-app/pull/822)
 
 ## 7.8.2 (May, 02, 2024)
 * [DIA-3785](https://sourcepoint.atlassian.net/browse/DIA-3785) Fix an issue preventing USNat consent data from being stored after PM save & exit [#805](https://github.com/SourcePointUSA/android-cmp-app/pull/805)
