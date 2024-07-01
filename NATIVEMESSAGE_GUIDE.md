@@ -118,7 +118,7 @@ available functions:
 - `removeNativeView`: allows the app to remove the native layout after the user take an action.
 
 ## A complete example
-A complete example can be found into the `samples/native-message-demo`
+A complete example can be found into the `samples/nat-message-demo`
 
 
 

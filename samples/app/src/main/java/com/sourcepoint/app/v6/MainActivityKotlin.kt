@@ -1,6 +1,7 @@
 package com.sourcepoint.app.v6
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.method.ScrollingMovementMethod
@@ -18,12 +19,9 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
-import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -53,11 +51,12 @@ class MainActivityKotlin : AppCompatActivity() {
 //            accountId = 22
 //            propertyId = 16893
 //            propertyName = "mobile.multicampaign.demo"
-//            messLanguage = MessageLanguage.ENGLISH
-//            messageTimeout = 5000
-//            +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+//            addCampaign(CampaignType.GDPR)
+//            addCampaign(SpCampaign(CampaignType.USNAT, configParams = setOf(ConfigOption.TRANSITION_CCPA_AUTH)))
 //        }
     }
+
+    private val preferences: SharedPreferences get() = PreferenceManager.getDefaultSharedPreferences(this)
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -72,13 +71,11 @@ class MainActivityKotlin : AppCompatActivity() {
 
         if (dataProvider.resetAll) {
             clearAllData(this)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
         }
 
         storeDiagnosticObj(dataProvider.diagnostic)
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        sp.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
+        preferences.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
         binding = ActivityMainV7Binding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -86,12 +83,11 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
         binding.clearAll.setOnClickListener {
             clearAllData(this)
-            PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply()
         }
-        binding.authIdActivity.setOnClickListener { _v: View? ->
+        binding.authIdActivity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
-        binding.customConsent.setOnClickListener { _v: View? ->
+        binding.customConsent.setOnClickListener { _: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -99,7 +95,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
-        binding.deleteCustomConsent.setOnClickListener { _v: View? ->
+        binding.deleteCustomConsent.setOnClickListener { _: View? ->
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -137,7 +133,6 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     internal inner class LocalClient : SpClient {
-
         override fun onNativeMessageReady(
             message: MessageStructure,
             messageController: NativeMessageController
@@ -145,6 +140,7 @@ class MainActivityKotlin : AppCompatActivity() {
             setNativeMessage(message, messageController)
         }
 
+        @Deprecated("onMessageReady callback will be removed in favor of onUIReady. Currently this callback is disabled.")
         override fun onMessageReady(message: JSONObject) {
         }
 
@@ -310,24 +306,15 @@ class MainActivityKotlin : AppCompatActivity() {
         }
     }
 
-    fun addOldV6Consent() {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this@MainActivityKotlin)
+    private fun addOldV6Consent() {
         val v6LocalState = JSONObject(consent)
-        val spEditor = sp.edit()
+        val spEditor = preferences.edit()
         v6LocalState.keys().forEach {
             check { v6LocalState.getString(it) }?.let { v -> spEditor.putString(it, v) }
             check { v6LocalState.getBoolean(it) }?.let { v -> spEditor.putBoolean(it, v) }
             check { v6LocalState.getInt(it) }?.let { v -> spEditor.putInt(it, v) }
         }
         spEditor.apply()
-    }
-
-    fun prefToJsonObject() {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this@MainActivityKotlin)
-        val obj = JSONObject(consent)
-        sp.all.forEach {
-            obj.put(it.key, it.value)
-        }
     }
 
     private fun <E> check(block: () -> E): E? {
@@ -339,8 +326,7 @@ class MainActivityKotlin : AppCompatActivity() {
     }
 
     private fun storeDiagnosticObj(list: List<Pair<String, Any?>>) {
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val spEditor = sp.edit()
+        val spEditor = preferences.edit()
         list.forEach {
             check { it.second as? String }?.let { v -> spEditor.putString(it.first, v) }
             check { it.second as? Boolean }?.let { v -> spEditor.putBoolean(it.first, v) }

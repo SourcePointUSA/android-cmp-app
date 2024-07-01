@@ -1,0 +1,145 @@
+name: Release
+on:
+  push:
+    branches: [ master ]
+jobs:
+  release-sdk:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+          cache: gradle
+      - name: Build
+        run: ./gradlew cmplibrary:build
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: (MMMM, DD, YYYY)
+      - name: Set version lib into VERSION_NAME variable
+        run: |
+          ./gradlew cmplibrary:versionTxt
+          echo "VERSION_NAME=$(cat app/version.txt)" >> $GITHUB_ENV
+      - name: Update CHANGELOG.md
+        run: ./gradlew cmplibrary:changeLogUpdate
+      - name: Update README.md
+        run: ./gradlew cmplibrary:replaceInFile
+      - name: Read Release Note
+        id: release_note
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/release_note.txt
+      - name: Get the version
+        id: get_version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./cmplibrary/version.txt
+      - name: Prepare environment
+        env:
+          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+        run: sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+      - name: Release build
+        run: ./gradlew cmplibrary:assemble
+      - name: Source jar and dokka
+        run: ./gradlew androidSourcesJar javadocJar
+      - name: Publish to MavenCentral
+        run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
+        env:
+          OSSRH_TOKEN_USER: ${{ secrets.OSSRH_TOKEN_USER }}
+          OSSRH_TOKEN_PASSWORD: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+      - name: Add, commit and push edited files
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: ./gradlew addCommitPush
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ steps.get_version.outputs.content }}
+          release_name: v${{ steps.get_version.outputs.content }}
+          body: |
+            ## ${{ steps.get_version.outputs.content }} ${{ steps.current-time.outputs.formattedTime }}
+            ${{ steps.release_note.outputs.content }}
+          draft: false
+          prerelease: false
+  release-metaapp:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+          cache: gradle
+      - name: Bump versionCode
+        id: bump
+        run: |
+          git config user.email "andre@sourcepoint.com"
+          git config user.name "GitHub Action"
+          ./gradlew metaapp:bumpVersionCode
+      - name: creating local.properties
+        run: touch local.properties
+      - name: generating MetaApp build release
+        id: buildRelease
+        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease  :metaapp:assemblePreprod :metaapp:assembleDebug
+      - name: Sign APK
+        id: sign
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: samples/metaapp/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.SIGNING_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+      - name: Create service_account.json
+        id: createServiceAccount
+        run: |
+          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      - name: 'Publish release artifact'
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: 'release-artifact'
+          path: ${{ steps.sign.outputs.signedReleaseFile }}
+      - name: Deploy to Play Store
+        id: deploy
+        uses: r0adkll/upload-google-play@v1.0.15
+        with:
+          serviceAccountJson: service_account.json
+          packageName: com.sourcepointmeta.metaapp
+          releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
+          track: production
+      - name: Add, commit and push edited files
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: ./gradlew addCommitPush
+      - name: Publish MetaAppPreprod artifact
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: MetaAppPreprod
+          path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
+      - name: Publish MetaAppDebug artifact
+        if: always()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: MetaAppDebug
+          path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk

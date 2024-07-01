@@ -1,2 +1,2 @@
-* [DIA-3710](https://sourcepoint.atlassian.net/browse/DIA-3710) Fix an issue causing granular state consent status to assume a wrong value. [https://github.com/SourcePointUSA/android-cmp-app/pull/799](#799)
-* [DIA-3630](https://sourcepoint.atlassian.net/browse/DIA-3630) Update utility functions for Unity. [https://github.com/SourcePointUSA/android-cmp-app/pull/794](#794)
+*[ DIA-4112](https://sourcepoint.atlassian.net/browse/ DIA-4112) Fixed an issue preventing links from being opened on external browser [#825](https://github.com/SourcePointUSA/android-cmp-app/pull/825)
+*[HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)

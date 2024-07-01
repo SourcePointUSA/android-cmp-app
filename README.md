@@ -17,6 +17,7 @@
   - [Setting a Targeting Param](#setting-a-targeting-param)
   - [Targeting parameters to target the right environment](#targeting-parameters-to-target-the-right-environment)
   - [Setting a Privacy Manager Id for the Property Group](#setting-a-privacy-manager-id-for-the-property-group)
+  - [Overwriting default language](#overwriting-default-language)
   - [Google Consent Mode](#google-consent-mode)
     - [Set default consent state for consent checks](#set-default-consent-state-for-consent-checks)
     - [Update consent checks](#update-consent-checks)
@@ -50,7 +51,7 @@ To use `cmplibrary` in your app, include `com.sourcepoint.cmplibrary:cmplibrary:
 ```
 ...
 dependencies {
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.7.1'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.8.4'
 }
 ```
 
@@ -71,8 +72,8 @@ Kotlin
                   messLanguage = MessageLanguage.ENGLISH // Optional, default ENGLISH
                   campaignsEnv = CampaignsEnv.PUBLIC // Optional, default PUBLIC
                   messageTimeout = 15000 // Optional, default 10000ms
-                  +CampaignType.CCPA // See campaign table
-                  +CampaignType.GDPR // See campaign table
+                  +CampaignType.USNAT // Only include if campaign configured in portal. See campaign table
+                  +CampaignType.GDPR // Only include if campaign configured in portal. See campaign table
                 }
 ```
 
@@ -89,8 +90,8 @@ Java
             .addMessageLanguage(MessageLanguage.ENGLISH) // Optional, default ENGLISH
             .addCampaignsEnv(CampaignsEnv.PUBLIC) // Optional, default PUBLIC
             .addMessageTimeout(4000) // Optional, default 3000ms
-            .addCampaign(CampaignType.GDPR) //see campaign table
-            .addCampaign(CampaignType.CCPA) //see campaign table
+            .addCampaign(CampaignType.GDPR) //Only include if campaign configured in portal. See campaign table
+            .addCampaign(CampaignType.USNAT) //Only include if campaign configured in portal. See campaign table
             .build();
 
 ```
@@ -510,6 +511,8 @@ Java
     }
 ```
 
+>If required for your app's log out process, your organization can use the [`clearAllData`](#clearalldata) function to erase local data. Once cleared, your organization can then call `spConsentLib.loadMessage` to collect consent from a non-authenticated user or `spConsentLib.loadMessage` with a new `authId` for a new authenticated user.
+
 ## Setting a Targeting Param
 
 Targeting params allow you to set arbitrary key/value pairs. These key/value pairs are sent to Sourcepoint servers where they can be used to take a decision within the scenario builder.
@@ -621,6 +624,41 @@ After adding the `Privacy Manager Id for the Property Group`, you should set the
 ```
 
 **Note**: CCPA campaign `Privacy Manager Id for the Property Group` feature is currently not supported.
+
+## Overwriting default language
+
+If you wish to force a message to be displayed in a certain language include the appropriate attribute to the `config` object and set the default language.
+
+|        | **Attribute**                                 |
+| ------ | --------------------------------------------- |
+| Kotlin | `messLanguage = MessageLanguage.FRENCH`       |
+| Java   | `.addMessageLanguage(MessageLanguage.FRENCH)` |
+
+```Kotlin
+//Kotlin
+val cmpConfig : SpConfig = config {
+                accountId = 22
+                propertyId = 16893
+                propertyName = "mobile.multicampaign.demo"
+                messLanguage = MessageLanguage.FRENCH // overwrite default language
+                +CampaignType.GDPR
+            }
+```
+
+```java
+//Java
+private final SpConfig cmpConfig = new SpConfigDataBuilder()
+        .addAccountId(22)
+        .addPropertyId(16893)
+        .addPropertyName("mobile.multicampaign.demo")
+        .addMessageLanguage(MessageLanguage.FRENCH) //overwrite default language
+        .addCampaign(CampaignType.GDPR)
+        .build();
+```
+
+It's important to notice that if any of the components of the message doesn't have a translation for that language, the component will be rendered in the default language configured in the message builder.
+
+> When the **Use Browser Default** toggle is enabled in the message builder, Sourcepoint will ignore the language setting configured in the SDK and use the default language configured in the message builder. If the end-user's browser language is not supported by a translation in the message builder, the default language set in the message builder will be used instead.
 
 ## Google Consent Mode
 
@@ -816,6 +854,7 @@ class YourKotlinActivity {
 ```
 
 Regarding `handleOnBackPress` from `spConsentLib`, there are 2 parameters:
+
 - isMessageDismissible - flag that can customize the behaviour, when the user clicks back button on "Home" page of the message (if true - message is dismissible, if false - when the user is on "Home" page and clicks back, then the back event will be dispatched to the activity delegating navigation to the app)
 - onHomePage - lambda, code in which should be invoked when the user clicks back on "Home" page of the message (in other words, the initial navigation position in message)
 
@@ -1135,7 +1174,7 @@ private val spConsentLib by spConsentLibLazy {
         propertyName = "automation-mobile-usnat"
         messLanguage = MessageLanguage.ENGLISH
         +(CampaignType.GDPR)
-        +(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
+        +mapOf(CampaignType.USNAT to setOf(ConfigOption.TRANSITION_CCPA_AUTH)) // or use addCampaign(SpCampaign(campaignType = CampaignType.USNAT, configParams = setOf(TRANSITION_CCPA_AUTH)))
     }
 }
 ```
@@ -1170,7 +1209,7 @@ val cmpConfig : SpConfig = config {
     propertyId = 123456
     propertyName = "demo.android.test"
     messLanguage = MessageLanguage.ENGLISH
-    +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+    +mapOf(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 }
 ```
 

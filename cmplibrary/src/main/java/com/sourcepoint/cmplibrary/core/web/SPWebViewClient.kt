@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.core.web
 
 import android.graphics.Bitmap
 import android.net.http.SslError
-import android.os.Build
 import android.webkit.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
@@ -62,6 +61,7 @@ internal class SPWebViewClient(
         onError(WebViewException(description = error.toString()))
     }
 
+    @Deprecated("Will be removed once we bump min supported API level to 24")
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
         super.onReceivedError(view, errorCode, description, failingUrl)
         onError(WebViewException(description = description))
@@ -78,10 +78,14 @@ internal class SPWebViewClient(
         return false
     }
 
+    @Deprecated("Will be removed once we bump min supported API level to 24")
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-        wv.context.loadLinkOnExternalBrowser(url) {
-            onNoIntentActivitiesFoundFor(it)
-        }
+        wv.context.loadLinkOnExternalBrowser(url, onNoIntentActivitiesFoundFor)
+        return true
+    }
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        wv.context.loadLinkOnExternalBrowser(request?.url.toString(), onNoIntentActivitiesFoundFor)
         return true
     }
 
@@ -95,16 +99,14 @@ internal class SPWebViewClient(
         errorResponse: WebResourceResponse?
     ) {
         super.onReceivedHttpError(view, request, errorResponse)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val nl = System.getProperty("line.separator")
-            val message = errorResponse?.responseHeaders!!.toList().fold(StringBuilder()) { acc, pair ->
-                acc.append("${pair.first}:${pair.second} $nl")
-                acc
-            }.toString()
-            val errMess = "Error loading SPWebViewClient $nl StatusCode ---> ${errorResponse.statusCode} $nl$message "
-            logger.e(this::class.java.name, errMess)
-            onError(UrlLoadingException(description = "The client failed to load the resource!!"))
-        }
+        val nl = System.lineSeparator()
+        val message = errorResponse?.responseHeaders!!.toList().fold(StringBuilder()) { acc, pair ->
+            acc.append("${pair.first}:${pair.second} $nl")
+            acc
+        }.toString()
+        val errMess = "Error loading SPWebViewClient $nl StatusCode ---> ${errorResponse.statusCode} $nl$message "
+        logger.e(this::class.java.name, errMess)
+        onError(UrlLoadingException(description = "The client failed to load the resource!!"))
     }
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {
