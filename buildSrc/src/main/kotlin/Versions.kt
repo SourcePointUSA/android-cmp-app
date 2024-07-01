@@ -10,5 +10,4 @@ object Versions {
     const val constraintLayoutVersion: String = "2.0.4"
     const val vectorDrawableVersion: String = "1.1.0"
     const val androidxLifecycleVersion: String = "2.3.1"
-    const val sqlDelightVersion: String = "1.5.0"
 }

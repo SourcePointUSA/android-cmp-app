@@ -2,10 +2,11 @@ package com.sourcepointmeta.metaapp.tv.properties
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.leanback.widget.BaseCardView
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
-import kotlinx.android.synthetic.main.property_item.view.* //ktlint-disable
 
 class PropertyCardView : BaseCardView {
     constructor(context: Context) : super(context)
@@ -18,12 +19,19 @@ class PropertyCardView : BaseCardView {
 }
 
 fun PropertyCardView.bind(item: PropertyDTO) {
-    campaign_env.text = item.campaignEnv
-    property_name.text = item.propertyName
-    account_id.text = "${item.accountId}"
-    gdpr_icon.setImageResource(getResStatusResIcon(item.gdprEnabled))
-    ccpa_icon.setImageResource(getResStatusResIcon(item.ccpaEnabled))
-    ccpa_icon.setImageResource(getResStatusResIcon(item.usnatEnabled))
+    val campaignEnv = findViewById<TextView>(R.id.campaign_env)
+    val propertyName = findViewById<TextView>(R.id.property_name)
+    val accountId = findViewById<TextView>(R.id.account_id)
+    val gdprIcon = findViewById<ImageView>(R.id.gdpr_icon)
+    val ccpaIcon = findViewById<ImageView>(R.id.ccpa_icon)
+    val usNatIcon = findViewById<ImageView>(R.id.usnat_icon)
+
+    campaignEnv.text = item.campaignEnv
+    propertyName.text = item.propertyName
+    accountId.text = "${item.accountId}"
+    gdprIcon.setImageResource(getResStatusResIcon(item.gdprEnabled))
+    ccpaIcon.setImageResource(getResStatusResIcon(item.ccpaEnabled))
+    usNatIcon.setImageResource(getResStatusResIcon(item.usnatEnabled))
 }
 
 fun getResStatusResIcon(enable: Boolean) = when (enable) {

@@ -199,7 +199,7 @@ private class LocalDataSourceImpl(
                     insertTargetingParameter(
                         property_name = property.propertyName,
                         key = it.key,
-                        value = it.value,
+                        value_ = it.value,
                         campaign = it.campaign.name
                     )
                 }

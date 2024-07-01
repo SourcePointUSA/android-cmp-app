@@ -11,12 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.databinding.LogFragmentLayoutBinding
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.BaseState.StateSharingLogs
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import kotlinx.android.synthetic.main.log_fragment_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LogFragment : Fragment() {
@@ -42,6 +41,7 @@ class LogFragment : Fragment() {
     var logClickListener: ((logId: LogItem) -> Unit)? = null
     private val adapter by lazy { LogAdapter() }
     private val viewModel by viewModel<LogViewModel>()
+    private lateinit var binding: LogFragmentLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,19 +53,20 @@ class LogFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.log_fragment_layout, container, false)
+        binding = LogFragmentLayoutBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        log_list.layoutManager = GridLayoutManager(context, 1)
-        log_list.adapter = adapter
+        binding.logList.layoutManager = GridLayoutManager(context, 1)
+        binding.logList.adapter = adapter
         adapter.itemClickListener = { logClickListener?.invoke(it) }
-        log_list.addItemDecoration(DividerItemDecoration(log_list.context, DividerItemDecoration.VERTICAL))
+        binding.logList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
             if (it.type != "INFO") {
                 adapter.addItem(it)
-                log_list.scrollToPosition(0)
+                binding.logList.scrollToPosition(0)
             }
         }
         viewModel.liveData.observe(viewLifecycleOwner, ::stateHandler)

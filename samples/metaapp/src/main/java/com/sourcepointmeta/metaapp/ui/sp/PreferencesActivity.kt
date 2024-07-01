@@ -5,24 +5,26 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.databinding.PrefActivityBinding
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
-import kotlinx.android.synthetic.main.activity_demo.*
 
 class PreferencesActivity : AppCompatActivity() {
 
     private val spPref by lazy { SpFragment.instance() }
+    private lateinit var binding: PrefActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.pref_activity)
+        binding = PrefActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.frag_container, spPref)
                 .commitNow()
         }
 
-        tool_bar.run {
+        binding.toolBar.run {
             title = "${BuildConfig.VERSION_NAME} - Preferences"
             setNavigationOnClickListener { onBackPressed() }
         }

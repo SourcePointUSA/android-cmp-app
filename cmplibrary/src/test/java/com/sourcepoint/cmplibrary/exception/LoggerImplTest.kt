@@ -47,6 +47,9 @@ class LoggerImplTest {
                     method.assertEquals("POST")
                 }
             }
+            else -> {
+                // we had to implement both cases, should leave this case empty
+            }
         }
     }
 
@@ -70,6 +73,9 @@ class LoggerImplTest {
                     url.toString().assertEquals("https://myserver.com/?scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
                     method.assertEquals("POST")
                 }
+            }
+            else -> {
+                // we had to implement both cases, should leave this case empty
             }
         }
     }

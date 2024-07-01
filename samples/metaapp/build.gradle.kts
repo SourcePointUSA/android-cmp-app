@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
@@ -18,6 +17,7 @@ val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
 @Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
+    namespace = "com.sourcepointmeta.metaapp"
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdk = 21
@@ -26,6 +26,10 @@ android {
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -121,8 +125,8 @@ dependencies {
     implementation(Libs.koinViewModel)
 
     // SQLDelight
-    implementation(Libs.sqlDelight)
-    implementation(Libs.sqlDelightCoroutines)
+    implementation("com.squareup.sqldelight:android-driver:1.5.4")
+    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.4")
 
     // tv
     implementation(Libs.leanback)

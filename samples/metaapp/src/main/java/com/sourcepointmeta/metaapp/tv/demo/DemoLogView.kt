@@ -9,9 +9,6 @@ import androidx.leanback.widget.BaseCardView
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import kotlinx.android.synthetic.main.log_item.view.log_body
-import kotlinx.android.synthetic.main.log_item.view.log_body_1
-import kotlinx.android.synthetic.main.log_item.view.log_title
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
 
@@ -75,19 +72,25 @@ fun DemoLogView.bind(item: LogItem) {
 
 fun DemoLogView.bindReq(item: LogItem) {
     val url = item.message
-    log_title.text = "${item.type} - ${item.tag}"
-    setWebLink(url, log_body)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    setWebLink(url, logBody)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun DemoLogView.bindResp(item: LogItem) {
-    log_title.text = "${item.type} - ${item.tag}"
-    setStatusField(item.status ?: "", log_body)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    setStatusField(item.status ?: "", logBody)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun DemoLogView.setStatusField(status: String, textView: TextView) {
@@ -112,40 +115,52 @@ fun DemoLogView.setWebLink(link: String, textView: TextView) {
 }
 
 fun DemoLogView.bindWebAction(item: LogItem) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.text = item.message
-    log_body.setTextColor(colorWebAction)
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.text = item.message
+    logBody.setTextColor(colorWebAction)
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun DemoLogView.bindComputation(item: LogItem) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.visibility = View.GONE
-    log_body_1.text = item.message
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.visibility = View.GONE
+    logBody1.text = item.message
 }
 
 fun DemoLogView.bindClientEvent(item: LogItem) {
-    log_title.text = "${item.type} - ${item.tag}"
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
     val errorObject =
         item.jsonBody?.let { com.sourcepointmeta.metaapp.util.check { JSONObject(it) }.getOrNull() } ?: JSONObject()
     val title: String? = errorObject.getOrNull("title")
     val stackTrace: String = errorObject.getOrNull("stackTrace") ?: ""
-    log_body.setTextColor(colorClientEvent)
+    logBody.setTextColor(colorClientEvent)
     when (title) {
-        null -> log_body.text = item.message
-        else -> log_body.text = "$title - $stackTrace"
+        null -> logBody.text = item.message
+        else -> logBody.text = "$title - $stackTrace"
     }
     item.jsonBody
-        ?.let { log_body_1.text = if (it.length > 200) it.subSequence(0, 200) else it }
-        ?: run { log_body_1.visibility = View.GONE }
+        ?.let { logBody1.text = if (it.length > 200) it.subSequence(0, 200) else it }
+        ?: run { logBody1.visibility = View.GONE }
 }
 
 fun JSONObject.getOrNull(key: String): String? = if (has(key)) this.getString(key) else null
 
 fun DemoLogView.bindClientError(item: LogItem) {
-    log_title.text = "${item.type} - ${item.tag}"
-    log_body.visibility = View.GONE
-    log_body_1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
+    val logTitle = findViewById<TextView>(R.id.log_title)
+    val logBody = findViewById<TextView>(R.id.log_body)
+    val logBody1 = findViewById<TextView>(R.id.log_body_1)
+    logTitle.text = "${item.type} - ${item.tag}"
+    logBody.visibility = View.GONE
+    logBody1.text = if (item.message.length > 200) item.message.subSequence(0, 200) else item.message
 }
