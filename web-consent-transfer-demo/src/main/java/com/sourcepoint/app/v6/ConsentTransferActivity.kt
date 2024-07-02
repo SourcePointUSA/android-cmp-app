@@ -1,12 +1,14 @@
-package com.sourcepoint.app.v6.web
+package com.sourcepoint.app.v6
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
+import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
-import com.sourcepoint.app.v6.R
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatTextView
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
@@ -17,16 +19,26 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
 import com.sourcepoint.cmplibrary.util.extensions.preloadConsent
-import kotlinx.android.synthetic.main.activity_web_consent_transfer_test.*
 import org.json.JSONObject
 
-class WebConsentTransferTestActivity : AppCompatActivity() {
+class ConsentTransferActivity : AppCompatActivity() {
 
-    private val consentWebViewClient = object : WebViewClient() { }
+    private val consentWebViewClient = object : WebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            sourcePointConsent?.let { wvTransferPage.preloadConsent(it) }
+        }
+    }
     private val consentWebChromeClient = object : WebChromeClient() { }
 
+    private lateinit var tvCcpaUuid: AppCompatTextView
+    private lateinit var tvGdprUuid: AppCompatTextView
+    private lateinit var btnClearData: AppCompatButton
+    private lateinit var btnRefresh: AppCompatButton
+    private lateinit var wvTransferPage: WebView
+
     private val spConsentLib by spConsentLibLazy {
-        activity = this@WebConsentTransferTestActivity
+        activity = this@ConsentTransferActivity
         spClient = LocalClient()
         config {
             accountId = 22
@@ -43,9 +55,13 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_consent_transfer_test)
-        initConsentWebView()
-        initOnClickListeners()
+        setContentView(R.layout.activity_consent_transfer)
+        initViews()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage()
     }
 
     override fun onDestroy() {
@@ -53,19 +69,28 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         spConsentLib.dispose()
     }
 
-    private fun initOnClickListeners() {
-        web_consent_clear_data_button.setOnClickListener {
-            clearAllData(this)
-            ccpa_uuid_value_text_view.text = ""
-            gdpr_uuid_value_text_view.text = ""
-            to_web_view_consent_action.isEnabled = false
-        }
-        web_consent_refresh_button.setOnClickListener { spConsentLib.loadMessage() }
-        to_web_view_consent_action.setOnClickListener { transferConsent() }
-    }
+    /**
+     * Method to initialize views on the activity (should be modified when ViewBinding is integrated into the project)
+     */
+    private fun initViews() {
 
-    private fun initConsentWebView() {
-        consent_transfer_web_view.apply {
+        // initialize text views
+        tvCcpaUuid = findViewById(R.id.tv_ccpa_uuid_value)
+        tvGdprUuid = findViewById(R.id.tv_gdpr_uuid_value)
+
+        // initialize buttons
+        btnRefresh = findViewById(R.id.btn_refresh)
+        btnRefresh.setOnClickListener { spConsentLib.loadMessage() }
+        btnClearData = findViewById(R.id.btn_clear_data)
+        btnClearData.setOnClickListener {
+            clearAllData(this)
+            tvCcpaUuid.text = ""
+            tvGdprUuid.text = ""
+        }
+
+        // initialize web view
+        wvTransferPage = findViewById(R.id.wv_transfer_page)
+        wvTransferPage.apply {
             webViewClient = consentWebViewClient
             webChromeClient = consentWebChromeClient
             settings.javaScriptEnabled = true
@@ -73,22 +98,15 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         }
     }
 
-    private fun transferConsent() {
-        sourcePointConsent?.let { consent_transfer_web_view.preloadConsent(it) }
-    }
-
     private fun processConsentResponse(sPConsents: SPConsents) {
         sourcePointConsent = sPConsents
         runOnUiThread {
-            ccpa_uuid_value_text_view.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
-            gdpr_uuid_value_text_view.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
-            to_web_view_consent_action.isEnabled = true
+            tvCcpaUuid.text = sPConsents.ccpa?.consent?.uuid ?: "NULL"
+            tvGdprUuid.text = sPConsents.gdpr?.consent?.uuid ?: "NULL"
+            wvTransferPage.preloadConsent(sPConsents)
         }
     }
 
-    /**
-     * Local client class
-     */
     internal inner class LocalClient : SpClient {
 
         override fun onNoIntentActivitiesFound(url: String) {
@@ -133,5 +151,6 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
 
     companion object {
         private const val CONSENT_TEST_URL = "https://sourcepointusa.github.io/sdks-auth-consent-test-page/?_sp_pass_consent=true"
+//        private const val CONSENT_TEST_URL = "https://www.cgmaurer.com/android/webview.html?_sp_pass_consent=true&accountId=155&propHref=www.cgmaurer.com&gdprCamp=true&ccpaCamp=false&usnatCamp=false&usnatCCPACamp=true"
     }
 }
