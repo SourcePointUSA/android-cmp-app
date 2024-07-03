@@ -862,6 +862,9 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
+            else -> {
+                // instead of else we need to provide a case for USNAT
+            }
         }
     }
 

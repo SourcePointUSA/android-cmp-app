@@ -5,14 +5,19 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
+import com.sourcepoint.app.v6.databinding.ActivityMainAuthIdBinding
 import com.sourcepoint.cmplibrary.util.setAuthId
 import org.koin.android.ext.android.inject
 
 class MainActivityOttIssue : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainAuthIdBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main_auth_id)
+            binding = ActivityMainAuthIdBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+
             val webview = findViewById<WebView>(R.id.webview)
             webview.settings.loadsImagesAutomatically = true
             webview.settings.javaScriptEnabled = true

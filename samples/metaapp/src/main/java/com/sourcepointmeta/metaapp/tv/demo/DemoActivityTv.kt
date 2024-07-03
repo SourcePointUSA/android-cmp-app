@@ -81,6 +81,9 @@ class DemoActivityTv : FragmentActivity() {
             when (it) {
                 CampaignType.GDPR -> spConsentLib.loadPrivacyManager(gdprPmId.toString(), CampaignType.GDPR)
                 CampaignType.CCPA -> spConsentLib.loadPrivacyManager(ccpaPmId.toString(), CampaignType.CCPA)
+                else -> {
+                    // instead of else we need to provide a case for USNAT
+                }
             }
         }
         fragment.logClickListener = {

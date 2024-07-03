@@ -9,6 +9,7 @@ import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
+import com.sourcepointmeta.metaapp.databinding.DemoHeaderBinding
 import com.sourcepointmeta.metaapp.tv.bounceEventAndSelectFirstElement
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.ui.BaseState
@@ -16,7 +17,6 @@ import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.eventlogs.createFileWithContent
-import kotlinx.android.synthetic.main.demo_header.* //ktlint-disable
 import kotlinx.coroutines.channels.BroadcastChannel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,6 +40,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
     var logClickListener: ((logId: LogItem) -> Unit)? = null
 
     private val viewModel by viewModel<LogViewModel>()
+    private lateinit var binding: DemoHeaderBinding
 
     private val propertyName by lazy {
         arguments?.getString(PROPERTY_NAME) ?: throw RuntimeException("Property name not set!!!")
@@ -57,6 +58,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = DemoHeaderBinding.inflate(layoutInflater)
         title = ""
         gridPresenter = localGridPresenter
         adapter = presenterAdapter
@@ -68,15 +70,15 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gdpr_pm.run {
+        binding.gdprPm.run {
             visibility = config.getPmVisibility(CampaignType.GDPR)
             setOnClickListener { pmListener?.invoke(CampaignType.GDPR) }
         }
-        ccpa_pm.run {
+        binding.ccpaPm.run {
             visibility = config.getPmVisibility(CampaignType.CCPA)
             setOnClickListener { pmListener?.invoke(CampaignType.CCPA) }
         }
-        refresh_flm.setOnClickListener { flmListener?.invoke() }
+        binding.refreshFlm.setOnClickListener { flmListener?.invoke() }
         viewModel.liveDataLog.observe(viewLifecycleOwner) {
             if (it.type != "INFO") {
                 presenterAdapter.add(0, it)

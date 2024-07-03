@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sourcepointmeta.metaapp.R
-import kotlinx.android.synthetic.main.activity_demo.*
-import kotlinx.android.synthetic.main.add_property_fragment.*
-import kotlinx.android.synthetic.main.jsonviewer_layout.*
+import com.sourcepointmeta.metaapp.databinding.JsonviewerLayoutBinding
 
 abstract class JsonViewerBaseFragment : Fragment() {
+
+    private lateinit var binding: JsonviewerLayoutBinding
 
     val colorJsonKey: Int by lazy {
         TypedValue().apply { requireContext().theme.resolveAttribute(R.attr.colorJsonKey, this, true) }
@@ -48,13 +48,14 @@ abstract class JsonViewerBaseFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.jsonviewer_layout, container, false)
+        binding = JsonviewerLayoutBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rv_json.run {
+        binding.rvJson.run {
             setKeyColor(colorJsonKey)
             setValueTextColor(colorJsonValueText)
             setValueNumberColor(colorJsonValueNumber)
