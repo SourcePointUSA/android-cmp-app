@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils.Companion.DEFAULT_SAMPLE_RATE
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.KEY_USNAT_CHILD_PM_ID
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat.Companion.USNAT_SAMPLING_RESULT
@@ -46,7 +47,7 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
         set(value) = preference.putString(KEY_USNAT_CHILD_PM_ID, value)
 
     override var usnatSampleRate: Double
-        get() = preference.getFloat(USNAT_SAMPLING_VALUE, 1.0F).toDouble()
+        get() = preference.getFloat(USNAT_SAMPLING_VALUE, DEFAULT_SAMPLE_RATE.toFloat()).toDouble()
         set(value) = preference.putFloat(USNAT_SAMPLING_VALUE, value.toFloat())
 
     override var usnatSampled: Boolean?
