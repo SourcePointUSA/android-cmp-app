@@ -55,7 +55,7 @@ internal fun Service.Companion.create(
 /**
  * Implementation os the [Service] interface
  */
-private class ServiceImpl(
+internal class ServiceImpl(
     private val networkClient: NetworkClient,
     private val campaignManager: CampaignManager,
     private val consentManagerUtils: ConsentManagerUtils,
@@ -232,8 +232,6 @@ private class ServiceImpl(
                         }
 
                         if (campaignManager.hasLocalData.not()) {
-
-                            // save tc data in the data storage
                             it.campaigns?.gdpr?.TCData?.let { tcData ->
                                 dataStorage.tcData = tcData.toMapOfAny()
                             }
@@ -266,96 +264,74 @@ private class ServiceImpl(
                 execManager.executeOnMain { showConsent() }
             }
 
-            val isGdprInConfig = spConfig.isIncluded(GDPR)
+            pvData(messageReq, onFailure)
+        }
+    }
 
-            logger.computation(
-                tag = "PvData condition GdprSample",
-                msg = """
-                    isGdprInConfig[$isGdprInConfig]
-                    shouldTriggerByGdprSample[${consentManagerUtils.shouldTriggerByGdprSample}]
-                    res[${consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig}]
-                """.trimIndent()
-            )
-
-            if (consentManagerUtils.shouldTriggerByGdprSample && isGdprInConfig) {
-                val pvParams = PvDataParamReq(
+    fun pvData(messageReq: MessagesParamReq, onFailure: (Throwable, Boolean) -> Unit) {
+        if (spConfig.isIncluded(GDPR)) {
+            dataStorage.gdprSamplingResult = sampleAndPvData(
+                wasSampled = dataStorage.gdprSamplingResult,
+                rate = dataStorage.gdprSamplingValue,
+                pvDataParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getGdprPvDataBody(messageReq),
                     campaignType = GDPR
-                )
-
-                postPvData(pvParams)
-                    .executeOnLeft { gdprPvDataError ->
-                        onFailure(gdprPvDataError, false)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight { pvDataResponse ->
-                        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                            uuid = pvDataResponse.gdpr?.uuid
-                        )
-                    }
-            }
-
-            val isCcpaInConfig = spConfig.isIncluded(CCPA)
-
-            logger.computation(
-                tag = "PvData condition CcpaSample",
-                msg = """
-                    isCcpaInConfig[$isCcpaInConfig]
-                    shouldTriggerByCcpaSample[${consentManagerUtils.shouldTriggerByCcpaSample}]
-                    res[${consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig}]
-                """.trimIndent()
+                ),
+                onFailure = onFailure
             )
+        }
 
-            if (consentManagerUtils.shouldTriggerByCcpaSample && isCcpaInConfig) {
-                val pvParams = PvDataParamReq(
+        if (spConfig.isIncluded(CCPA)) {
+            dataStorage.ccpaSamplingResult = sampleAndPvData(
+                wasSampled = dataStorage.ccpaSamplingResult,
+                rate = dataStorage.ccpaSamplingValue,
+                pvDataParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getCcpaPvDataBody(messageReq),
                     campaignType = CCPA
-                )
-
-                postPvData(pvParams)
-                    .executeOnLeft { ccpaPvDataError ->
-                        onFailure(ccpaPvDataError, false)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight { pvDataResponse ->
-                        campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copy(
-                            uuid = pvDataResponse.ccpa?.uuid
-                        )
-                    }
-            }
-
-            val isUsNatInConfig = spConfig.isIncluded(USNAT)
-
-            logger.computation(
-                tag = "PvData condition UsNatSample",
-                msg = """
-                    isUsNatInConfig[$isUsNatInConfig]
-                    shouldTriggerByUsNatSample[${consentManagerUtils.shouldTriggerByUsNatSample}]
-                    res[${consentManagerUtils.shouldTriggerByUsNatSample && isUsNatInConfig}]
-                """.trimIndent()
+                ),
+                onFailure = onFailure
             )
+        }
 
-            if (consentManagerUtils.shouldTriggerByUsNatSample && isUsNatInConfig) {
-                val pvParams = PvDataParamReq(
+        if (spConfig.isIncluded(USNAT)) {
+            dataStorage.usnatSampled = sampleAndPvData(
+                wasSampled = dataStorage.usnatSampled,
+                rate = dataStorage.usnatSampleRate,
+                pvDataParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getUsNatPvDataBody(messageReq),
                     campaignType = USNAT
-                )
-
-                postPvData(pvParams)
-                    .executeOnLeft { usNatPvDataError ->
-                        onFailure(usNatPvDataError, false)
-                        return@executeOnWorkerThread
-                    }
-                    .executeOnRight { pvDataResponse ->
-                        campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(
-                            uuid = pvDataResponse.usnat?.uuid
-                        )
-                    }
-            }
+                ),
+                onFailure = onFailure
+            )
         }
+    }
+
+    private fun sampleAndPvData(
+        wasSampled: Boolean?,
+        rate: Double,
+        pvDataParams: PvDataParamReq,
+        onFailure: (Throwable, Boolean) -> Unit
+    ): Boolean {
+        val sampled = wasSampled == true || consentManagerUtils.sample(rate)
+        if (sampled) {
+            postPvData(pvDataParams)
+                .executeOnLeft { onFailure(it, false) }
+                .executeOnRight { response ->
+                    response.usnat?.let {
+                        usNatConsentData = usNatConsentData?.copy(uuid = it.uuid)
+                    }
+                    response.gdpr?.let {
+                        gdprConsentStatus = gdprConsentStatus?.copy(uuid = it.uuid)
+                    }
+                    response.ccpa?.let {
+                        ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = it.uuid)
+                    }
+                }
+        }
+        return sampled
     }
 
     override fun sendConsent(
@@ -397,7 +373,7 @@ private class ServiceImpl(
         }
     }
 
-    fun sendConsentGdpr(
+    private fun sendConsentGdpr(
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?
@@ -490,7 +466,7 @@ private class ServiceImpl(
         )
     }
 
-    fun sendConsentCcpa(
+    private fun sendConsentCcpa(
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?
@@ -583,7 +559,7 @@ private class ServiceImpl(
         )
     }
 
-    fun sendConsentUsNat(
+    private fun sendConsentUsNat(
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentSuccess: ((SPConsents) -> Unit)?,
