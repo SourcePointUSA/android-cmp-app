@@ -315,6 +315,8 @@ internal class ServiceImpl(
         pvDataParams: PvDataParamReq,
         onFailure: (Throwable, Boolean) -> Unit
     ): Boolean {
+        if (wasSampled == false) return false
+
         val sampled = wasSampled == true || consentManagerUtils.sample(rate)
         if (sampled) {
             postPvData(pvDataParams)

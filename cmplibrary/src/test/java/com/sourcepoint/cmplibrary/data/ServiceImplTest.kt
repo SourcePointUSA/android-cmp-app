@@ -3,7 +3,6 @@ package com.sourcepoint.cmplibrary.data
 import com.sourcepoint.cmplibrary.* // ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
@@ -77,12 +76,6 @@ class ServiceImplTest {
 
     @MockK
     private lateinit var errorMock: (Throwable, Boolean) -> Unit
-
-    private val nativeCampaign = Campaign(
-        accountId = 22,
-        propertyName = "tcfv2.mobile.demo",
-        pmId = "179657"
-    )
 
     private val spConfig = SpConfig(
         22,
@@ -242,7 +235,7 @@ class ServiceImplTest {
         val metadataJson = "v7/meta_data.json".file2String()
         val metadata = JsonConverter.converter.decodeFromString<MetaDataResp>(metadataJson)
 
-        every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
+        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
         every { cm.shouldCallConsentStatus(any()) }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
@@ -267,8 +260,8 @@ class ServiceImplTest {
         val consentStatusJson = "v7/consent_status_with_auth_id.json".file2String()
         val consentStatus = JsonConverter.converter.decodeFromString<ConsentStatusResp>(consentStatusJson)
 
-        every { ncMock.getMetaData(any()) }.returns(Either.Right(metadata))
-        every { ncMock.getConsentStatus(any()) }.returns(Either.Right(consentStatus))
+        every { ncMock.getMetaData(any()) }.returns(Right(metadata))
+        every { ncMock.getConsentStatus(any()) }.returns(Right(consentStatus))
         every { cm.shouldCallConsentStatus(any()) }.returns(true)
         every { cm.spConfig }.returns(spConfig)
 
@@ -390,6 +383,9 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { ds.ccpaSamplingResult } returns null
+        every { ds.gdprSamplingResult } returns null
+        every { cmu.sample(any()) } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
         every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
@@ -433,6 +429,9 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
+        every { ds.ccpaSamplingResult } returns null
+        every { ds.gdprSamplingResult } returns null
+        every { cmu.sample(any()) } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
