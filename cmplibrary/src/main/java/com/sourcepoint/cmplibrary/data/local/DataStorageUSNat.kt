@@ -15,8 +15,8 @@ internal interface DataStorageUSNat {
     var usNatConsentData: String?
     var usnatChildPmId: String?
 
-    var usNatSamplingValue: Double
-    var usNatSamplingResult: Boolean?
+    var sampledAtRate: Double
+    var sampled: Boolean?
 
     fun deleteUsNatConsent()
 
@@ -33,7 +33,6 @@ internal fun DataStorageUSNat.Companion.create(
 ): DataStorageUSNat = DataStorageUSNatImpl(context)
 
 private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
-
     override val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -58,7 +57,7 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
                 .apply()
         }
 
-    override var usNatSamplingValue: Double
+    override var sampledAtRate: Double
         get() = preference.getFloat(USNAT_SAMPLING_VALUE, 1.0F).toDouble()
         set(value) {
             preference
@@ -67,7 +66,6 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
                 .apply()
         }
 
-    override var usNatSamplingResult: Boolean?
         get() {
             return if (preference.contains(USNAT_SAMPLING_RESULT))
                 preference.getBoolean(USNAT_SAMPLING_RESULT, false)
@@ -86,6 +84,7 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
                     .apply()
             }
         }
+    override var sampled: Boolean?
 
     override fun deleteUsNatConsent() {
 
