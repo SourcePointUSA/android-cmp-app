@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.* // ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Left
@@ -29,6 +30,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
@@ -279,16 +281,10 @@ class ServiceImplTest {
             onSuccess = successMockV7,
             onFailure = errorMock,
         )
-
-        // TODO
     }
 
     @Test
     fun `GIVEN a Left during getMetaData req RETURN call the error callback`() {
-
-        val messageJson = "v7/messagesObj.json".file2String()
-        val messageResp = JsonConverter.converter.decodeFromString<MessagesResp>(messageJson)
-
         every { ncMock.getMetaData(any()) }.returns(Left(RuntimeException()))
 
         val sut = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
@@ -396,8 +392,6 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { cmu.shouldTriggerByGdprSample } returns true
-        every { cmu.shouldTriggerByCcpaSample } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
         every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
@@ -441,8 +435,6 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { cmu.shouldTriggerByGdprSample } returns true
-        every { cmu.shouldTriggerByCcpaSample } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
@@ -461,5 +453,16 @@ class ServiceImplTest {
         verify(exactly = 1) { ncMock.getMessages(any()) }
         verify(exactly = 2) { ncMock.postPvData(any()) }
         verify(atLeast = 2) { cm.ccpaConsentStatus = any() }
+    }
+
+    @Test
+    fun `does not call pv-data if sampled false`() {
+        every { cm.spConfig } returns spConfig.copy(
+            campaigns = listOf(SpCampaign(campaignType = CampaignType.USNAT))
+        )
+        every { ds.usnatSampled } returns false
+        val service = ServiceImpl(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
+        service.pvData(messagesParamReq, onFailure = { _,_ -> })
+        verify(exactly = 0) { ncMock.postPvData(any()) }
     }
 }
