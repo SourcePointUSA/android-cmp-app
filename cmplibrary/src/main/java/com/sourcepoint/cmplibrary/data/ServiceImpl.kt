@@ -135,7 +135,6 @@ private class ServiceImpl(
         onFailure: (Throwable, Boolean) -> Unit,
     ) {
         execManager.executeOnWorkerThread {
-
             if (connectionManager.isConnected.not()) {
                 val noInternetConnectionException = NoInternetConnectionException()
                 onFailure(noInternetConnectionException, true)
@@ -184,26 +183,23 @@ private class ServiceImpl(
                 ?.let { campaignManager.usNatConsentData = campaignManager.usNatConsentData?.copy(consentStatus = it) }
 
             if (campaignManager.shouldCallMessages) {
-
-                val body = getMessageBody(
-                    accountId = messageReq.accountId,
-                    propertyHref = messageReq.propertyHref,
-                    gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
-                    ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
-                    usNatConsentStatus = campaignManager.usNatConsentData?.consentStatus,
-                    campaigns = campaignManager.campaigns4Config,
-                    consentLanguage = campaignManager.messageLanguage.value,
-                    campaignEnv = campaignManager.spConfig.campaignsEnv,
-                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
-                )
-
                 val messagesParamReq = MessagesParamReq(
                     accountId = messageReq.accountId,
                     propertyId = messageReq.propertyId,
                     authId = messageReq.authId,
                     propertyHref = messageReq.propertyHref,
                     env = messageReq.env,
-                    body = body.toString(),
+                    body = getMessageBody(
+                        accountId = messageReq.accountId,
+                        propertyHref = messageReq.propertyHref,
+                        gdprConsentStatus = campaignManager.gdprConsentStatus?.consentStatus,
+                        ccpaConsentStatus = campaignManager.ccpaConsentStatus?.status?.name,
+                        usNatConsentStatus = campaignManager.usNatConsentData?.consentStatus,
+                        campaigns = campaignManager.campaigns4Config,
+                        consentLanguage = campaignManager.messageLanguage.value,
+                        campaignEnv = campaignManager.spConfig.campaignsEnv,
+                        includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+                    ).toString(),
                     metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                     localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
@@ -602,8 +598,8 @@ private class ServiceImpl(
                     saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
                     propertyId = spConfig.propertyId.toLong(),
                     pubData = consentAction.pubData.toJsonObject(),
-                    sendPvData = dataStorage.sampled,
-                    sampleRate = dataStorage.sampledAtRate,
+                    sendPvData = dataStorage.usnatSampled,
+                    sampleRate = dataStorage.usnatSampleRate,
                     uuid = campaignManager.usNatConsentData?.uuid,
                     vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),

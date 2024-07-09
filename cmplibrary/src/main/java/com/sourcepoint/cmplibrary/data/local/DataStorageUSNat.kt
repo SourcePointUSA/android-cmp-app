@@ -15,8 +15,8 @@ internal interface DataStorageUSNat {
     var usNatConsentData: String?
     var usnatChildPmId: String?
 
-    var sampledAtRate: Double
-    var sampled: Boolean?
+    var usnatSampleRate: Double
+    var usnatSampled: Boolean?
 
     fun deleteUsNatConsent()
 
@@ -39,66 +39,53 @@ private class DataStorageUSNatImpl(context: Context) : DataStorageUSNat {
 
     override var usNatConsentData: String?
         get() = preference.getString(USNAT_CONSENT_STATUS, null)
-        set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putString(USNAT_CONSENT_STATUS, it)
-                    .apply()
-            }
-        }
+        set(value) = preference.putString(USNAT_CONSENT_STATUS, value)
 
     override var usnatChildPmId: String?
         get() = preference.getString(KEY_USNAT_CHILD_PM_ID, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(KEY_USNAT_CHILD_PM_ID, value)
-                .apply()
-        }
+        set(value) = preference.putString(KEY_USNAT_CHILD_PM_ID, value)
 
-    override var sampledAtRate: Double
+    override var usnatSampleRate: Double
         get() = preference.getFloat(USNAT_SAMPLING_VALUE, 1.0F).toDouble()
-        set(value) {
+        set(value) = preference.putFloat(USNAT_SAMPLING_VALUE, value.toFloat())
+
+    override var usnatSampled: Boolean?
+        get() = preference.getBoolean(USNAT_SAMPLING_RESULT)
+        set(value) = preference.putBoolean(USNAT_SAMPLING_RESULT, value)
+
+    override fun deleteUsNatConsent() = preference.edit()
+        .apply {
+            remove(USNAT_CONSENT_STATUS)
+            remove(KEY_USNAT_CHILD_PM_ID)
+            remove(USNAT_SAMPLING_RESULT)
+            remove(USNAT_SAMPLING_VALUE)
             preference
-                .edit()
-                .putFloat(USNAT_SAMPLING_VALUE, value.toFloat())
-                .apply()
+                .all
+                .filter { entry -> entry.key.startsWith(DataStorageCcpa.KEY_IABGPP_PREFIX) }
+                .keys
+                .forEach { gppKey -> remove(gppKey) }
         }
+        .apply()
+}
 
-        get() {
-            return if (preference.contains(USNAT_SAMPLING_RESULT))
-                preference.getBoolean(USNAT_SAMPLING_RESULT, false)
-            else null
-        }
-        set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putBoolean(USNAT_SAMPLING_RESULT, it)
-                    .apply()
-            } ?: kotlin.run {
-                preference
-                    .edit()
-                    .remove(USNAT_SAMPLING_RESULT)
-                    .apply()
-            }
-        }
-    override var sampled: Boolean?
+fun SharedPreferences.getBoolean(key: String): Boolean? {
+    return if (contains(key)) { getBoolean(key, false) } else null
+}
 
-    override fun deleteUsNatConsent() {
-
-        val gppKeysList = preference.all
-            .filter { entry -> entry.key.startsWith(DataStorageCcpa.KEY_IABGPP_PREFIX) }.keys
-
-        preference.edit()
-            .apply {
-                remove(USNAT_CONSENT_STATUS)
-                remove(KEY_USNAT_CHILD_PM_ID)
-                remove(USNAT_SAMPLING_RESULT)
-                remove(USNAT_SAMPLING_VALUE)
-                gppKeysList.forEach { gppKey -> remove(gppKey) }
-            }
-            .apply()
+fun SharedPreferences.putFloat(key: String, value: Float?) {
+    if (value != null) {
+        edit().putFloat(key, value).apply()
+    } else {
+        edit().remove(key).apply()
     }
 }
+
+fun SharedPreferences.putBoolean(key: String, value: Boolean?) {
+    if (value != null) {
+        edit().putBoolean(key, value).apply()
+    } else {
+        edit().remove(key).apply()
+    }
+}
+
+fun SharedPreferences.putString(key: String, value: String?) = edit().putString(key, value).apply()
