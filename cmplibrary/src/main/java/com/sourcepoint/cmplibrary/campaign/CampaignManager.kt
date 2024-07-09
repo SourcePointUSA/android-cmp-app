@@ -732,37 +732,31 @@ private class CampaignManagerImpl(
 
         if (response == null) return
 
-        response.ccpa?.apply {
-            applies?.let { i ->
-                ccpaConsentStatus?.let { ccpaCS ->
-                    val updatedCcpaCS = ccpaCS.copy(applies = i)
-                    // update the new uspstring value based on the applies
-                    val uspstring = updateCcpaUspString(updatedCcpaCS, logger)
-                    ccpaConsentStatus = updatedCcpaCS.copy(uspstring = uspstring)
-                }
-            }
+        response.ccpa?.let { ccpa ->
+            ccpaConsentStatus = ccpaConsentStatus?.copy(
+                applies = ccpa.applies,
+                uspstring = updateCcpaUspString(ccpaConsentStatus, logger)
+            )
 
-            sampleRate?.let { i ->
-                if (i != dataStorage.ccpaSamplingValue) {
-                    dataStorage.ccpaSamplingValue = i
+            ccpa.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.ccpaSamplingValue) {
+                    dataStorage.ccpaSamplingValue = newRate
                     dataStorage.ccpaSamplingResult = null
                 }
             }
         }
 
-        response.gdpr?.apply {
-            applies?.let { gdprApplies ->
-                gdprConsentStatus?.let { gdprCS ->
-                    val updatedGdprConsentStatus = gdprCS.copy(applies = gdprApplies)
-                    gdprConsentStatus = updatedGdprConsentStatus
+        response.gdpr?.let { gdpr ->
+            gdprConsentStatus = gdprConsentStatus?.copy(applies = gdpr.applies)
+
+            gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
+            gdpr.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.gdprSamplingValue) {
+                    dataStorage.gdprSamplingValue = newRate
+                    dataStorage.gdprSamplingResult = null
                 }
             }
 
-            childPmId?.let { i -> dataStorage.gdprChildPmId = i }
-            sampleRate?.let { i ->
-                if (i != dataStorage.gdprSamplingValue) {
-                    dataStorage.gdprSamplingValue = i
-                    dataStorage.gdprSamplingResult = null
                 }
             }
         }
@@ -804,12 +798,10 @@ private class CampaignManagerImpl(
             val additionsChangeDateDate = formatter.parse(additionsChangeDate)
             val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
 
-            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-            val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
+            val creationLessThanAdditions = dataRecordedConsentDate?.before(additionsChangeDateDate) ?: false
+            val creationLessThanLegalBasis = dataRecordedConsentDate?.before(legalBasisChangeDateConsentDate) ?: false
 
             val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
-
-            if (!shouldReconsent) return null
 
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
@@ -824,17 +816,17 @@ private class CampaignManagerImpl(
                 json = JSONObject(map)
             )
 
+            if (!shouldReconsent) return null
+
             if (creationLessThanAdditions) {
                 updatedGdprConsentStatus.vendorListAdditions = true
             }
             if (creationLessThanLegalBasis) {
                 updatedGdprConsentStatus.legalBasisChanges = true
             }
-            if (creationLessThanAdditions || creationLessThanLegalBasis) {
-                if (updatedGdprConsentStatus.consentedAll == true) {
-                    updatedGdprConsentStatus.granularStatus?.previousOptInAll = true
-                    updatedGdprConsentStatus.consentedAll = false
-                }
+            if (updatedGdprConsentStatus.consentedAll == true) {
+                updatedGdprConsentStatus.granularStatus?.previousOptInAll = true
+                updatedGdprConsentStatus.consentedAll = false
             }
 
             updatedGdprConsentStatus
@@ -853,13 +845,9 @@ private class CampaignManagerImpl(
             updatedUSNatConsentStatus != null &&
             additionsChangeDate != null
         ) {
-
             val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
             val additionsChangeDateDate = formatter.parse(additionsChangeDate)
-
-            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-
-            if (!creationLessThanAdditions) return null
+            val creationLessThanAdditions = dataRecordedConsentDate?.before(additionsChangeDateDate) ?: false
 
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
@@ -872,6 +860,8 @@ private class CampaignManagerImpl(
                 msg = JSONObject(map).toString(),
                 json = JSONObject(map)
             )
+
+            if (!creationLessThanAdditions) return null
 
             updatedUSNatConsentStatus.vendorListAdditions = true
 
