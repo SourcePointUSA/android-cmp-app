@@ -10,7 +10,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkConstructor
 import io.mockk.unmockkConstructor
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 

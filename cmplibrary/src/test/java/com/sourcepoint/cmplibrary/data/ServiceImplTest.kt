@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary.data
 
 import com.sourcepoint.cmplibrary.* // ktlint-disable
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.campaign.create
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.Either.Left
@@ -30,7 +29,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
@@ -462,7 +460,7 @@ class ServiceImplTest {
         )
         every { ds.usnatSampled } returns false
         val service = ServiceImpl(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
-        service.pvData(messagesParamReq, onFailure = { _,_ -> })
+        service.pvData(messagesParamReq, onFailure = { _, _ -> })
         verify(exactly = 0) { ncMock.postPvData(any()) }
     }
 }
