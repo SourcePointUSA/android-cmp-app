@@ -17,9 +17,7 @@ internal interface ConsentManagerUtils {
 
     val spStoredConsent: Either<SPConsents>
 
-    val shouldTriggerByGdprSample: Boolean
-    val shouldTriggerByCcpaSample: Boolean
-    val shouldTriggerByUsNatSample: Boolean
+    fun sample(samplingRate: Double): Boolean
 
     companion object {
         const val DEFAULT_SAMPLE_RATE: Double = 1.0
@@ -66,63 +64,6 @@ private class ConsentManagerUtilsImpl(
         )
     }
 
-    override val shouldTriggerByGdprSample: Boolean get() = ds.gdprSamplingResult ?: run {
-        val sampling = (ds.gdprSamplingValue * 100).toInt()
-        when {
-            sampling <= 0 -> {
-                ds.gdprSamplingResult = false
-                false
-            }
-            sampling >= 100 -> {
-                ds.gdprSamplingResult = true
-                true
-            }
-            else -> {
-                val num = (1 until 100).random()
-                val res = num in (1..sampling)
-                ds.gdprSamplingResult = res
-                res
-            }
-        }
-    }
-
-    override val shouldTriggerByCcpaSample: Boolean get() = ds.ccpaSamplingResult ?: run {
-        val sampling = (ds.ccpaSamplingValue * 100).toInt()
-        when {
-            sampling <= 0 -> {
-                ds.ccpaSamplingResult = false
-                false
-            }
-            sampling >= 100 -> {
-                ds.ccpaSamplingResult = true
-                true
-            }
-            else -> {
-                val num = (1 until 100).random()
-                val res = num in (1..sampling)
-                ds.ccpaSamplingResult = res
-                res
-            }
-        }
-    }
-
-    override val shouldTriggerByUsNatSample: Boolean get() = ds.usNatSamplingResult ?: run {
-        val sampling = (ds.usNatSamplingValue * 100).toInt()
-        when {
-            sampling <= 0 -> {
-                ds.usNatSamplingResult = false
-                false
-            }
-            sampling >= 100 -> {
-                ds.usNatSamplingResult = true
-                true
-            }
-            else -> {
-                val num = (1 until 100).random()
-                val res = num in (1..sampling)
-                ds.usNatSamplingResult = res
-                res
-            }
-        }
-    }
+    override fun sample(samplingRate: Double): Boolean =
+        (1 until 100).random() in (1..(samplingRate * 100).toInt())
 }
