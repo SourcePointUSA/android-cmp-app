@@ -756,7 +756,15 @@ private class CampaignManagerImpl(
                     dataStorage.gdprSamplingResult = null
                 }
             }
+        }
 
+        response.usNat?.let { usnat ->
+            usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
+
+            usnat.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.usnatSampleRate) {
+                    dataStorage.usnatSampleRate = newRate
+                    dataStorage.usnatSampled = null
                 }
             }
         }
