@@ -1,3 +1,6 @@
+## 7.8.5 (July, 10, 2024)
+*[DIA-4254](https://sourcepoint.atlassian.net/browse/DIA-4254) Fixed an preventing users from being sampled when calling the pv-data endpoint [#826](https://github.com/SourcePointUSA/android-cmp-app/pull/826)
+
 ## 7.8.4 (June, 19, 2024)
 * [DIA-4112](https://sourcepoint.atlassian.net/browse/DIA-4112) Fixed an issue preventing links from being opened on external browser [#825](https://github.com/SourcePointUSA/android-cmp-app/pull/825)
 *[ HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)
