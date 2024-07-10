@@ -23,7 +23,6 @@ import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
@@ -90,10 +89,10 @@ class MainActivityKotlin : AppCompatActivity() {
             clearAllData(this)
             preferences.edit().clear().apply()
         }
-        auth_id_activity.setOnClickListener { _v: View? ->
+        auth_id_activity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
-        custom_consent.setOnClickListener { _v: View? ->
+        custom_consent.setOnClickListener { _: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -101,7 +100,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
-        delete_custom_consent.setOnClickListener { _v: View? ->
+        delete_custom_consent.setOnClickListener { _: View? ->
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
