@@ -383,8 +383,8 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { ds.ccpaSamplingResult } returns null
-        every { ds.gdprSamplingResult } returns null
+        every { ds.ccpaSampled } returns null
+        every { ds.gdprSampled } returns null
         every { cmu.sample(any()) } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
@@ -429,8 +429,8 @@ class ServiceImplTest {
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
         every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
-        every { ds.ccpaSamplingResult } returns null
-        every { ds.gdprSamplingResult } returns null
+        every { ds.ccpaSampled } returns null
+        every { ds.gdprSampled } returns null
         every { cmu.sample(any()) } returns true
         every { ncMock.getMetaData(any()) } returns Right(mockMetaDataResp)
         every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)

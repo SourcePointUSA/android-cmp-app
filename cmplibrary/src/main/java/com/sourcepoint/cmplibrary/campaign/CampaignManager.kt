@@ -739,9 +739,9 @@ private class CampaignManagerImpl(
             )
 
             ccpa.sampleRate?.let { newRate ->
-                if (newRate != dataStorage.ccpaSamplingValue) {
-                    dataStorage.ccpaSamplingValue = newRate
-                    dataStorage.ccpaSamplingResult = null
+                if (newRate != dataStorage.ccpaSampleRate) {
+                    dataStorage.ccpaSampleRate = newRate
+                    dataStorage.ccpaSampled = null
                 }
             }
         }
@@ -751,16 +751,15 @@ private class CampaignManagerImpl(
 
             gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
             gdpr.sampleRate?.let { newRate ->
-                if (newRate != dataStorage.gdprSamplingValue) {
-                    dataStorage.gdprSamplingValue = newRate
-                    dataStorage.gdprSamplingResult = null
+                if (newRate != dataStorage.gdprSampleRate) {
+                    dataStorage.gdprSampleRate = newRate
+                    dataStorage.gdprSampled = null
                 }
             }
         }
 
         response.usNat?.let { usnat ->
             usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
-
             usnat.sampleRate?.let { newRate ->
                 if (newRate != dataStorage.usnatSampleRate) {
                     dataStorage.usnatSampleRate = newRate

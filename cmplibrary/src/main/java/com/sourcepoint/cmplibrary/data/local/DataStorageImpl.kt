@@ -221,3 +221,26 @@ private class DataStorageImpl(
 
     companion object
 }
+
+// TODO: test these
+fun SharedPreferences.getBoolean(key: String): Boolean? {
+    return if (contains(key)) { getBoolean(key, false) } else null
+}
+
+fun SharedPreferences.putFloat(key: String, value: Float?) {
+    if (value != null) {
+        edit().putFloat(key, value).apply()
+    } else {
+        edit().remove(key).apply()
+    }
+}
+
+fun SharedPreferences.putBoolean(key: String, value: Boolean?) {
+    if (value != null) {
+        edit().putBoolean(key, value).apply()
+    } else {
+        edit().remove(key).apply()
+    }
+}
+
+fun SharedPreferences.putString(key: String, value: String?) = edit().putString(key, value).apply()

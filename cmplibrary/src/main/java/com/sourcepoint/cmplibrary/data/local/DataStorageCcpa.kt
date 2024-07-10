@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils.Companion.DEFAULT_SAMPLE_RATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.CCPA_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_CONSENT_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorageCcpa.Companion.CCPA_DATE_CREATED
@@ -38,8 +39,8 @@ internal interface DataStorageCcpa {
 
     var ccpaDateCreated: String?
 
-    var ccpaSamplingValue: Double
-    var ccpaSamplingResult: Boolean?
+    var ccpaSampleRate: Double
+    var ccpaSampled: Boolean?
 
     var ccpaExpirationDate: String?
 
@@ -146,34 +147,13 @@ private class DataStorageCcpaImpl(context: Context) : DataStorageCcpa {
             }
         }
 
-    override var ccpaSamplingValue: Double
-        get() = preference.getFloat(CCPA_SAMPLING_VALUE, 1.0F).toDouble()
-        set(value) {
-            preference
-                .edit()
-                .putFloat(CCPA_SAMPLING_VALUE, value.toFloat())
-                .apply()
-        }
+    override var ccpaSampleRate: Double
+        get() = preference.getFloat(CCPA_SAMPLING_VALUE, DEFAULT_SAMPLE_RATE.toFloat()).toDouble()
+        set(value) = preference.putFloat(CCPA_SAMPLING_VALUE, value.toFloat())
 
-    override var ccpaSamplingResult: Boolean?
-        get() {
-            return if (preference.contains(CCPA_SAMPLING_RESULT))
-                preference.getBoolean(CCPA_SAMPLING_RESULT, false)
-            else null
-        }
-        set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putBoolean(CCPA_SAMPLING_RESULT, it)
-                    .apply()
-            } ?: kotlin.run {
-                preference
-                    .edit()
-                    .remove(CCPA_SAMPLING_RESULT)
-                    .apply()
-            }
-        }
+    override var ccpaSampled: Boolean?
+        get() = preference.getBoolean(CCPA_SAMPLING_RESULT)
+        set(value) = preference.putBoolean(CCPA_SAMPLING_RESULT, value)
 
     override var ccpaExpirationDate: String?
         get() = preference.getString(CCPA_EXPIRATION_DATE_MESSAGE, null)

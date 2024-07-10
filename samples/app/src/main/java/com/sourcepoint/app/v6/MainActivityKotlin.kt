@@ -23,6 +23,7 @@ import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.util.clearAllData
 import kotlinx.android.synthetic.main.activity_main.auth_id_activity
 import kotlinx.android.synthetic.main.activity_main.clear_all
@@ -49,14 +50,15 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-        spConfig = dataProvider.spConfig
-//        config {
-//            accountId = 22
-//            propertyId = 16893
-//            propertyName = "mobile.multicampaign.demo"
-//            addCampaign(CampaignType.GDPR)
-//            addCampaign(SpCampaign(CampaignType.USNAT, configParams = setOf(ConfigOption.TRANSITION_CCPA_AUTH)))
-//        }
+//        spConfig = dataProvider.spConfig
+        config {
+            accountId = 22
+            propertyId = 16893
+            propertyName = "mobile.multicampaign.demo"
+            addCampaign(CampaignType.GDPR)
+            addCampaign(SpCampaign(CampaignType.USNAT))
+            addCampaign(SpCampaign(CampaignType.CCPA))
+        }
     }
 
     private val preferences: SharedPreferences get() = PreferenceManager.getDefaultSharedPreferences(this)

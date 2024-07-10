@@ -270,9 +270,9 @@ internal class ServiceImpl(
 
     fun pvData(messageReq: MessagesParamReq, onFailure: (Throwable, Boolean) -> Unit) {
         if (spConfig.isIncluded(GDPR)) {
-            dataStorage.gdprSamplingResult = sampleAndPvData(
-                wasSampled = dataStorage.gdprSamplingResult,
-                rate = dataStorage.gdprSamplingValue,
+            dataStorage.gdprSampled = sampleAndPvData(
+                wasSampled = dataStorage.gdprSampled,
+                rate = dataStorage.gdprSampleRate,
                 pvDataParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getGdprPvDataBody(messageReq),
@@ -283,9 +283,9 @@ internal class ServiceImpl(
         }
 
         if (spConfig.isIncluded(CCPA)) {
-            dataStorage.ccpaSamplingResult = sampleAndPvData(
-                wasSampled = dataStorage.ccpaSamplingResult,
-                rate = dataStorage.ccpaSamplingValue,
+            dataStorage.ccpaSampled = sampleAndPvData(
+                wasSampled = dataStorage.ccpaSampled,
+                rate = dataStorage.ccpaSampleRate,
                 pvDataParams = PvDataParamReq(
                     env = messageReq.env,
                     body = campaignManager.getCcpaPvDataBody(messageReq),
@@ -423,7 +423,7 @@ internal class ServiceImpl(
                 env = env,
                 actionType = consentAction.actionType,
                 body = postChoiceGdprBody(
-                    sampleRate = dataStorage.gdprSamplingValue,
+                    sampleRate = dataStorage.gdprSampleRate,
                     propertyId = spConfig.propertyId.toLong(),
                     messageId = campaignManager.gdprMessageMetaData?.messageId?.toLong(),
                     granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus,
@@ -432,7 +432,7 @@ internal class ServiceImpl(
                     saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
                     authid = authId,
                     uuid = campaignManager.gdprConsentStatus?.uuid,
-                    sendPvData = dataStorage.gdprSamplingResult,
+                    sendPvData = dataStorage.gdprSampled,
                     pubData = consentAction.pubData.toJsonObject(),
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
@@ -517,13 +517,13 @@ internal class ServiceImpl(
                 env = env,
                 actionType = consentAction.actionType,
                 body = postChoiceCcpaBody(
-                    sampleRate = dataStorage.ccpaSamplingValue,
+                    sampleRate = dataStorage.ccpaSampleRate,
                     propertyId = spConfig.propertyId.toLong(),
                     messageId = campaignManager.ccpaMessageMetaData?.messageId?.toLong(),
                     saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
                     authid = authId,
                     uuid = campaignManager.ccpaConsentStatus?.uuid,
-                    sendPvData = dataStorage.ccpaSamplingResult,
+                    sendPvData = dataStorage.ccpaSampled,
                     pubData = consentAction.pubData.toJsonObject(),
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
