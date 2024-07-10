@@ -23,12 +23,12 @@ import kotlinx.serialization.decodeFromString
 private const val DEFAULT_CCPA_USP_STRING = "1---"
 
 internal fun updateCcpaUspString(
-    ccpaCS: CcpaCS,
+    ccpaCS: CcpaCS?,
     logger: Logger? = null,
 ): String {
-    val applies: Boolean? = ccpaCS.applies
-    val ccpaStatus: CcpaStatus? = ccpaCS.status
-    val signedLspa: Boolean? = ccpaCS.signedLspa
+    val applies = ccpaCS?.applies
+    val ccpaStatus = ccpaCS?.status
+    val signedLspa = ccpaCS?.signedLspa
     return if (applies == true) {
         val specificationVersion = "1"
         val opportunityToOptOut = "Y"

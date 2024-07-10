@@ -20,9 +20,9 @@ internal data class MetaDataParamReq(
 
 @Serializable
 data class MetaDataResp(
-    @SerialName("ccpa") val ccpa: Ccpa?,
-    @SerialName("gdpr") val gdpr: Gdpr?,
-    @SerialName("usnat") val usNat: USNat?,
+    @SerialName("ccpa") val ccpa: Ccpa? = null,
+    @SerialName("gdpr") val gdpr: Gdpr? = null,
+    @SerialName("usnat") val usNat: USNat? = null,
 ) {
     @Serializable
     data class Ccpa(
@@ -44,11 +44,11 @@ data class MetaDataResp(
 
     @Serializable
     data class USNat(
-        @SerialName("_id") val vendorListId: String?,
-        @SerialName("additionsChangeDate") val additionsChangeDate: String?,
-        @SerialName("applies") val applies: Boolean?,
-        @SerialName("sampleRate") val sampleRate: Double?,
-        @SerialName("applicableSections") val applicableSections: JsonElement?,
+        @SerialName("_id") val vendorListId: String? = null,
+        @SerialName("additionsChangeDate") val additionsChangeDate: String? = null,
+        @SerialName("applies") val applies: Boolean? = null,
+        @SerialName("sampleRate") val sampleRate: Double? = null,
+        @SerialName("applicableSections") val applicableSections: JsonElement? = null,
     )
 
     override fun toString(): String {

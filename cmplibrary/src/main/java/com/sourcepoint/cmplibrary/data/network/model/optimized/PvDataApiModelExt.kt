@@ -19,7 +19,6 @@ internal fun toPvDataBody(
     metaDataResp: MetaDataResp?,
     pubData: JsonObject = JsonObject(mapOf())
 ): JsonObject {
-
     return buildJsonObject {
         gdprCs?.let { cs ->
             put(

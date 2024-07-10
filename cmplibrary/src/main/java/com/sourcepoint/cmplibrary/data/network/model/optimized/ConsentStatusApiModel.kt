@@ -78,19 +78,19 @@ data class CcpaCS(
 
 @Serializable
 data class USNatConsentData(
-    val applies: Boolean?,
-    @SerialName("consentStatus") val consentStatus: USNatConsentStatus?,
-    @SerialName("consentStrings") val consentStrings: List<ConsentString>?,
-    @SerialName("dateCreated") override var dateCreated: String?,
-    @SerialName("uuid") var uuid: String?,
-    @SerialName("webConsentPayload") val webConsentPayload: JsonObject?,
-    @SerialName("message") override val message: JsonElement?,
-    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>?,
-    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData?,
+    val applies: Boolean? = null,
+    @SerialName("consentStatus") val consentStatus: USNatConsentStatus? = null,
+    @SerialName("consentStrings") val consentStrings: List<ConsentString>? = null,
+    @SerialName("dateCreated") override var dateCreated: String? = null,
+    @SerialName("uuid") var uuid: String? = null,
+    @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
+    @SerialName("message") override val message: JsonElement? = null,
+    @SerialName("GPPData") @Serializable(with = JsonMapSerializer::class) val gppData: Map<String, JsonElement>? = null,
+    @SerialName("messageMetaData") override val messageMetaData: MessageMetaData? = null,
     @SerialName("type") override val type: CampaignType = CampaignType.USNAT,
-    @SerialName("url") override val url: String?,
-    @SerialName("expirationDate") override val expirationDate: String?,
-    val userConsents: UserConsents?
+    @SerialName("url") override val url: String? = null,
+    @SerialName("expirationDate") override val expirationDate: String? = null,
+    val userConsents: UserConsents? = null
 ) : CampaignMessage {
     @Serializable
     data class ConsentString(

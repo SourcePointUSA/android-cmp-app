@@ -55,7 +55,8 @@ class MainActivityKotlin : AppCompatActivity() {
 //            propertyId = 16893
 //            propertyName = "mobile.multicampaign.demo"
 //            addCampaign(CampaignType.GDPR)
-//            addCampaign(SpCampaign(CampaignType.USNAT, configParams = setOf(ConfigOption.TRANSITION_CCPA_AUTH)))
+//            addCampaign(SpCampaign(CampaignType.USNAT))
+//            addCampaign(SpCampaign(CampaignType.CCPA))
 //        }
     }
 
@@ -88,10 +89,10 @@ class MainActivityKotlin : AppCompatActivity() {
             clearAllData(this)
             preferences.edit().clear().apply()
         }
-        auth_id_activity.setOnClickListener { _v: View? ->
+        auth_id_activity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
-        custom_consent.setOnClickListener { _v: View? ->
+        custom_consent.setOnClickListener { _: View? ->
             spConsentLib.customConsentGDPR(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,
@@ -99,7 +100,7 @@ class MainActivityKotlin : AppCompatActivity() {
                 success = { spCustomConsents -> spClientObserver.forEach { it.onConsentReady(spCustomConsents!!) } }
             )
         }
-        delete_custom_consent.setOnClickListener { _v: View? ->
+        delete_custom_consent.setOnClickListener { _: View? ->
             spConsentLib.deleteCustomConsentTo(
                 vendors = dataProvider.customVendorList,
                 categories = dataProvider.customCategories,

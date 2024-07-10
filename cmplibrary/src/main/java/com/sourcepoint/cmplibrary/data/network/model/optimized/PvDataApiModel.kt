@@ -19,9 +19,9 @@ internal data class PvDataParamReq(
 
 @Serializable
 data class PvDataResp(
-    @SerialName("ccpa") val ccpa: Campaign?,
-    @SerialName("gdpr") val gdpr: Campaign?,
-    @SerialName("usnat") val usnat: Campaign?,
+    @SerialName("ccpa") val ccpa: Campaign? = null,
+    @SerialName("gdpr") val gdpr: Campaign? = null,
+    @SerialName("usnat") val usnat: Campaign? = null,
 ) {
     @Serializable
     data class Campaign(
