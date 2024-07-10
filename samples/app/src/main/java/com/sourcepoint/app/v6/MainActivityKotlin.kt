@@ -50,15 +50,15 @@ class MainActivityKotlin : AppCompatActivity() {
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
-//        spConfig = dataProvider.spConfig
-        config {
-            accountId = 22
-            propertyId = 16893
-            propertyName = "mobile.multicampaign.demo"
-            addCampaign(CampaignType.GDPR)
-            addCampaign(SpCampaign(CampaignType.USNAT))
-            addCampaign(SpCampaign(CampaignType.CCPA))
-        }
+        spConfig = dataProvider.spConfig
+//        config {
+//            accountId = 22
+//            propertyId = 16893
+//            propertyName = "mobile.multicampaign.demo"
+//            addCampaign(CampaignType.GDPR)
+//            addCampaign(SpCampaign(CampaignType.USNAT))
+//            addCampaign(SpCampaign(CampaignType.CCPA))
+//        }
     }
 
     private val preferences: SharedPreferences get() = PreferenceManager.getDefaultSharedPreferences(this)
