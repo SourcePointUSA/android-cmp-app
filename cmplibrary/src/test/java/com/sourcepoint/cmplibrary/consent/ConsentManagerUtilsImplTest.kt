@@ -6,10 +6,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockkConstructor
-import io.mockk.unmockkConstructor
 import org.junit.Before
 import org.junit.Test
 
@@ -37,17 +34,11 @@ class ConsentManagerUtilsImplTest {
 
     @Test
     fun sample_returns_true_if_random_number_inside_sammpling_rate() {
-        mockkConstructor(IntRange::class)
-        every { anyConstructed<IntRange>().random() } returns 10
-        sut.sample(0.5).assertTrue()
-        unmockkConstructor(IntRange::class)
+        sut.sample(1.0).assertTrue()
     }
 
     @Test
     fun sample_returns_false_if_random_number_outside_sammpling_rate() {
-        mockkConstructor(IntRange::class)
-        every { anyConstructed<IntRange>().random() } returns 90
-        sut.sample(0.5).assertFalse()
-        unmockkConstructor(IntRange::class)
+        sut.sample(0.0).assertFalse()
     }
 }

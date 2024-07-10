@@ -65,5 +65,5 @@ private class ConsentManagerUtilsImpl(
     }
 
     override fun sample(samplingRate: Double): Boolean =
-        (1 until 100).random() in (1..(samplingRate * 100).toInt())
+        IntRange(1, 100).random() in (1..(samplingRate * 100).toInt())
 }
