@@ -860,8 +860,7 @@ Regarding `handleOnBackPress` from `spConsentLib`, there are 2 parameters:
 
 ## Programmatically rejecting all for a user
 
-It's possible to programmatically issue a "reject all" action in behalf of the current user by calling the `rejectAll(campaignType)` function. The `rejectAll` function behaves exactly the same way as if a user would have pressed the "reject all" button on the 1st layer or privacy manager.
-Upon completion, the sdk will call either `onConsentReady` in case of success or `onError` in case of failure.
+It’s possible to programmatically issue a “reject all” action on behalf of the current end-user by calling the rejectAll(campaignType) function. The rejectAll function behaves in the exact same manner as if an end-user  pressed the “reject all” button on the 1st layer message or privacy manager. Upon completion, the SDK will call either onConsentReady in case of success or onError in case of failure.
 
 ```kotlin
     spConsentLib.rejectAll(CampaignType.GDPR)
