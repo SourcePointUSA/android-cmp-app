@@ -176,7 +176,7 @@ internal class SpConsentLibImpl(
                                     messageType = firstCampaign2Process.messageSubCategory.toMessageType(),
                                     cmpViewId = cmpViewId,
                                 )
-                                .executeOnLeft { spClient.onError(it) }
+                                .executeOnLeft { error -> spClient.onError(error) }
                                 .getOrNull()
 
                             /** inject the message into the WebView */
@@ -304,7 +304,7 @@ internal class SpConsentLibImpl(
             vendors = vendors.toList(),
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
-            success = {
+            success = { it ->
                 it?.let { spc ->
                     check { spc.toJsonObject().toString() }
                         .map { successCallback.transferCustomConsentToUnity(it) }
@@ -330,8 +330,8 @@ internal class SpConsentLibImpl(
             vendors = vendors.toList(),
             categories = categories.toList(),
             legIntCategories = legIntCategories.toList(),
-            success = {
-                it?.let { spc ->
+            success = { response ->
+                response?.let { spc ->
                     check { spc.toJsonObject().toString() }
                         .map { successCallback.transferCustomConsentToUnity(it) }
                 } ?: run {
@@ -490,7 +490,7 @@ internal class SpConsentLibImpl(
                     consent = storedConsent,
                 )
             }
-            .executeOnLeft { logMess("PmUrlConfig is null") }
+            .executeOnLeft { pLogger.d(this::class.java.simpleName, "PmUrlConfig is null") }
     }
 
     override fun showView(view: View) {
@@ -507,8 +507,6 @@ internal class SpConsentLibImpl(
         executor.dispose()
         viewManager.removeAllViews()
     }
-
-    private fun logMess(mess: String) = pLogger.d(this::class.java.simpleName, mess)
 
     /**
      * Method that verifies home page and delegates navigation between the message view and the
@@ -550,27 +548,11 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            check { JSONObject(msg).toString() }
-                .getOrNull()
-                ?.let {
-//                    pLogger.clientEvent(
-//                        event = "log",
-//                        msg = "RenderingApp",
-//                        content = it
-//                    )
-                }
+            // TODO(not implemented)
         }
 
         override fun log(view: View, msg: String?) {
-            check { JSONObject(msg).toString() }
-                .getOrNull()
-                ?.let {
-//                    pLogger.clientEvent(
-//                        event = "log",
-//                        msg = "RenderingApp",
-//                        content = it
-//                    )
-                }
+            // TODO(not implemented)
         }
 
         override fun onError(view: View, errorMessage: String) {
@@ -610,20 +592,20 @@ internal class SpConsentLibImpl(
             )
         }
 
-        override fun onAction(iConsentWebView: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
+        override fun onAction(view: IConsentWebView, actionData: String, nextCampaign: CampaignModel) {
             /** spClient is called from [onActionFromWebViewClient] */
-            (iConsentWebView as? View)?.let {
+            (view as? View)?.let {
                 pJsonConverter
                     .toConsentAction(actionData)
                     .map { ca ->
-                        onActionFromWebViewClient(ca, iConsentWebView)
+                        onActionFromWebViewClient(ca, view)
                         if (ca.actionType != SHOW_OPTIONS) {
                             val legislation = nextCampaign.type
                             val url = nextCampaign.url
                             when (nextCampaign.messageSubCategory) {
                                 TCFv2, OTT, NATIVE_OTT -> {
                                     executor.executeOnMain {
-                                        iConsentWebView.loadConsentUI(
+                                        view.loadConsentUI(
                                             nextCampaign,
                                             url,
                                             legislation
@@ -632,7 +614,7 @@ internal class SpConsentLibImpl(
                                 }
                                 NATIVE_IN_APP -> {
                                     executor.executeOnMain {
-                                        viewManager.removeView(iConsentWebView)
+                                        viewManager.removeView(view)
                                         currentNativeMessageCampaign = nextCampaign
                                         spClient.onNativeMessageReady(
                                             nextCampaign.message.toNativeMessageDTO(
@@ -862,6 +844,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
+            CampaignType.USNAT -> { /* TODO(Not implemented) */ }
         }
     }
 
