@@ -493,6 +493,10 @@ internal class SpConsentLibImpl(
             .executeOnLeft { pLogger.d(this::class.java.simpleName, "PmUrlConfig is null") }
     }
 
+    override fun rejectAll(campaignType: CampaignType) {
+        sendConsent(NativeMessageActionType.REJECT_ALL, campaignType)
+    }
+
     override fun showView(view: View) {
         checkMainThread("showView")
         viewManager.showView(view)
