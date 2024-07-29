@@ -4,7 +4,6 @@ import android.content.Context
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.consent.ClientEventManager
 import com.sourcepoint.cmplibrary.consent.ConsentManager
-import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.data.Service
@@ -14,7 +13,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.Campaign
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory.OTT
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
@@ -28,9 +26,6 @@ import org.junit.Before
 import org.junit.Test
 
 class SpConsentLibImplTest {
-
-    internal var campaign = Campaign(22, "tcfv2.mobile.webview", "122058")
-
     @MockK
     private lateinit var appCtx: Context
 
@@ -57,9 +52,6 @@ class SpConsentLibImplTest {
 
     @MockK
     private lateinit var consentManager: ConsentManager
-
-    @MockK
-    private lateinit var consentManagerUtils: ConsentManagerUtils
 
     @MockK
     private lateinit var execManager: ExecutorManager
