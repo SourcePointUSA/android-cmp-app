@@ -83,6 +83,8 @@ class MainActivityKotlin : AppCompatActivity() {
         preferences.edit().putString(CLIENT_PREF_KEY, CLIENT_PREF_VAL).apply()
 
         setContentView(R.layout.activity_main_v7)
+
+        reject_all_gdpr_button.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
         review_consents_gdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         review_consents_ccpa.setOnClickListener { selectCCPAPM(dataProvider) }
         clear_all.setOnClickListener {
