@@ -17,10 +17,16 @@
             android:padding="16dp">
 
         <Button
-                android:id="@+id/review_consents_gdpr"
+                android:id="@+id/reject_all_gdpr_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/review_consents"/>
+                android:text="@string/reject_all_gdpr_button_label"/>
+
+        <Button
+            android:id="@+id/review_consents_gdpr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/review_consents" />
 
         <Button
                 android:id="@+id/review_consents_ccpa"

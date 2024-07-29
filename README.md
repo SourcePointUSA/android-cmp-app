@@ -858,6 +858,14 @@ Regarding `handleOnBackPress` from `spConsentLib`, there are 2 parameters:
 - isMessageDismissible - flag that can customize the behaviour, when the user clicks back button on "Home" page of the message (if true - message is dismissible, if false - when the user is on "Home" page and clicks back, then the back event will be dispatched to the activity delegating navigation to the app)
 - onHomePage - lambda, code in which should be invoked when the user clicks back on "Home" page of the message (in other words, the initial navigation position in message)
 
+## Programmatically rejecting all for a user
+
+It’s possible to programmatically issue a “reject all” action on behalf of the current end-user by calling the rejectAll(campaignType) function. The rejectAll function behaves in the exact same manner as if an end-user  pressed the “reject all” button on the 1st layer message or privacy manager. Upon completion, the SDK will call either onConsentReady in case of success or onError in case of failure.
+
+```kotlin
+    spConsentLib.rejectAll(CampaignType.GDPR)
+```
+
 ## Adding or Removing custom consents
 
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
@@ -1160,7 +1168,7 @@ public class MainActivityJava extends AppCompatActivity {
 
 When migrating a property from the U.S. Privacy (Legacy) campaign to U.S. Multi-State Privacy campaign, the SDK will automatically detect previously set end-user opt-in/opt-out preferences for U.S. Privacy (Legacy) and have that transferred over to U.S. Multi-State Privacy.
 
-> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the _Sharing of Personal Information Targeted Advertisting_ and _Sale of Personal Information_ privacy choices or the _Sale or Share of Personal Information/Targeted Advertising_ privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
+> If an end-user rejected a vendor or category for U.S. Privacy, Sourcepoint will set the _Sharing of Personal Information Targeted Advertising_ and _Sale of Personal Information_ privacy choices or the _Sale or Share of Personal Information/Targeted Advertising_ privacy choice (depending on your configuration) to **opted-out** when the preferences are transferred.
 
 If you ever used authenticated consent for CCPA, you'll have to specify the `ConfigOption.TRANSITION_CCPA_AUTH` option in your configuration to transfer an end-user's opt-in/opt-out preferences. The `ConfigOption.TRANSITION_CCPA_AUTH` option is crucial if you are using AuthId. This way, the SDK will look for authenticated consent within CCPA profiles and carry that over to USNat, even if the user current doesn't have CCPA local data (on a fresh install, for example).
 
