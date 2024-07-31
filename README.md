@@ -1282,6 +1282,18 @@ import com.sourcepoint.cmplibrary.util.SpUtils;
 SpUtils.clearAllData(context: Context)
 ```
 
+## Dealing with device rotation
+
+Make sure to add the following to your `AndroidManifest.xml` file:
+```xml
+    <activity
+        android:name=".ActivityWhereTheConsentUIIsPresented"
+        android:configChanges="orientation|screenSize"
+        ...
+    >
+```
+This way, Android won't re-instantiate your activity when users rotate the device, keeping the consent UI in the view hierarchy and maitaining its state.
+
 ## Frequently Asked Questions
 
 ### 1. How big is the SDK?
