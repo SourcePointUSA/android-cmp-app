@@ -44,13 +44,15 @@ class ClientEventManagerTest {
     }
 
     @Test
-    fun `GIVEN 2 successfully sendConsent (GDPR, CCPA) calls, TRIGGER 1 onSpFinish`() {
+    fun `GIVEN 3 successfully sendConsent (GDPR, CCPA, USNAT) calls, TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
             setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.USNAT)) // accept the USNAT
             registerConsentResponse() // first consent saved
             registerConsentResponse() // second consent saved
+            registerConsentResponse() // third consent saved
             checkIfAllCampaignsWereProcessed() // check the status
         }
 
