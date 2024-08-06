@@ -356,4 +356,35 @@ class NetworkClientImplTest {
             method.assertEquals("POST")
         }
     }
+
+    @Test
+    fun `storeUsNatChoice - WHEN executed with pubData in request params THEN should have pubData in request for GDPR`() {
+        // GIVEN
+        val slot = slot<Request>()
+        val mockResponse = mockk<Response>()
+        val mockCall = mockk<Call>()
+        val mockBody = JsonObject(
+                mapOf(
+                        "pb_key" to JsonPrimitive("pb_value")
+                )
+        )
+        val mockRequest = PostChoiceParamReq(
+                env = Env.PROD,
+                actionType = ActionType.ACCEPT_ALL,
+                body = mockBody
+        )
+
+        // WHEN
+        every { okHttp.newCall(any()) }.returns(mockCall)
+        every { mockCall.execute() }.returns(mockResponse)
+        sut.storeUsNatChoice(mockRequest)
+
+        // THEN
+        verify(exactly = 1) { responseManager.parsePostUsNatChoiceResp(mockResponse) }
+        verify(exactly = 1) { okHttp.newCall(capture(slot)) }
+        slot.captured.run {
+            readText().let { Json.parseToJsonElement(it).jsonObject }.assertEquals(mockBody)
+            method.assertEquals("POST")
+        }
+    }
 }

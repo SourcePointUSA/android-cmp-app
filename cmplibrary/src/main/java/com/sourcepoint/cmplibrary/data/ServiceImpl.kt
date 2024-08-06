@@ -502,7 +502,7 @@ internal class ServiceImpl(
                 .executeOnLeft { error ->
                     (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                     val spConsents = ConsentManager.responseConsentHandler(
-                        gdpr = campaignManager.gdprConsentStatus?.copy(applies = dataStorage.gdprApplies),
+                        ccpa = campaignManager.ccpaConsentStatus?.copy(applies = dataStorage.ccpaApplies),
                         consentManagerUtils = consentManagerUtils,
                     )
                     onSpConsentsSuccess?.invoke(spConsents)
@@ -544,7 +544,7 @@ internal class ServiceImpl(
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
 
-        // don't overwrite gdpr consents if the action is accept all or reject all
+        // don't overwrite ccpa consents if the action is accept all or reject all
         // because the response from those endpoints does not contain a full consent
         // object.
         if (shouldWaitForPost) {
@@ -566,6 +566,45 @@ internal class ServiceImpl(
         consentAction: ConsentActionImpl,
         onSpConsentSuccess: ((SPConsents) -> Unit)?,
     ): Either<USNatConsentData> = check {
+        var getResp: ChoiceResp? = null
+        if (consentAction.actionType.isAcceptOrRejectAll()) {
+            getResp = networkClient.getChoice(
+                    GetChoiceParamReq(
+                            choiceType = consentAction.actionType.toChoiceTypeParam(),
+                            accountId = spConfig.accountId.toLong(),
+                            propertyId = spConfig.propertyId.toLong(),
+                            env = env,
+                            metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, ccpa = null),
+                            includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
+                    )
+            )
+                    .executeOnRight { response ->
+                        response.usNat?.let { usnatResponse ->
+                            campaignManager.usNatConsentData = usnatResponse.copy(uuid = campaignManager.usNatConsentData?.uuid)
+                            onSpConsentSuccess?.invoke(
+                                    ConsentManager.responseConsentHandler(
+                                            usNat = usnatResponse.copy(
+                                                    uuid = campaignManager.usNatConsentData?.uuid,
+                                                    applies = dataStorage.usNatApplies,
+                                            ),
+                                            consentManagerUtils = consentManagerUtils,
+                                    )
+                            )
+                        }
+                    }
+                    .executeOnLeft { error ->
+                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                        val spConsents = ConsentManager.responseConsentHandler(
+                                usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
+                                consentManagerUtils = consentManagerUtils,
+                        )
+                        onSpConsentSuccess?.invoke(spConsents)
+                    }
+                    .getOrNull()
+        }
+
+        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.usNat == null
+
         networkClient.storeUsNatChoice(
             PostChoiceParamReq(
                 env = env,
@@ -592,12 +631,16 @@ internal class ServiceImpl(
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
 
-        onSpConsentSuccess?.invoke(
-            ConsentManager.responseConsentHandler(
-                usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
-                consentManagerUtils = consentManagerUtils,
+        // don't overwrite usNat consents if the action is accept all or reject all
+        // because the response from those endpoints does not contain a full consent
+        // object.
+        if (shouldWaitForPost) {
+            val spConsents = ConsentManager.responseConsentHandler(
+                    usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
+                    consentManagerUtils = consentManagerUtils,
             )
-        )
+            onSpConsentSuccess?.invoke(spConsents)
+        }
 
         campaignManager.usNatConsentData ?: throw InvalidConsentResponse(
             cause = null,
