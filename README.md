@@ -1285,10 +1285,10 @@ SpUtils.clearAllData(context: Context)
 ## Dealing with device rotation
 
 Make sure to add the following to your `AndroidManifest.xml` file:
-```xml
+```diff
     <activity
         android:name=".ActivityWhereTheConsentUIIsPresented"
-        android:configChanges="orientation|screenSize"
++       android:configChanges="orientation|screenSize"
         ...
     >
 ```
