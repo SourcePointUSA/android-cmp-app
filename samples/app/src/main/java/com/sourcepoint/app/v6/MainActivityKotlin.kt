@@ -11,7 +11,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
-import com.sourcepoint.app.v6.web.WebConsentTransferTestActivity
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
@@ -118,10 +117,6 @@ class MainActivityKotlin : AppCompatActivity() {
         refresh_btn.setOnClickListener { executeCmpLib() }
         add_old_consent.setOnClickListener { addOldV6Consent() }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
-
-    private fun openTransferConsentActivity() {
-        startActivity(Intent(this, WebConsentTransferTestActivity::class.java))
     }
 
     override fun onResume() {

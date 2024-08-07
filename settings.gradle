@@ -4,6 +4,7 @@ include ":metaapp"
 include ":web-message-demo"
 include ":ott-message-demo"
 include ':nat-message-demo'
+include ':web-consent-transfer-demo'
 include ":ui-test-util"
 project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
 project(':app').projectDir = new File(settingsDir, "samples/app")
