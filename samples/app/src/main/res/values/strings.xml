@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">SourcePoint</string>
+    <string name="reject_all_gdpr_button_label">Reject All GDPR</string>
     <string name="review_consents">Review Consents GDPR</string>
     <string name="source_point_logo">LOGO</string>
     <string name="authid_activity">AuthId activity</string>

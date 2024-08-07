@@ -40,6 +40,9 @@ import org.koin.dsl.module
 class TestUseCase {
 
     companion object {
+        fun progRejectAll() {
+            performClickById(R.id.reject_all_gdpr_button)
+        }
 
         fun checkConsentIsNotSelected() {
             CONSENT_LIST.forEach { consent ->
