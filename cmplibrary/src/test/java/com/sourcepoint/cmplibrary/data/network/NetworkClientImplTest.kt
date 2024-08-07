@@ -364,14 +364,14 @@ class NetworkClientImplTest {
         val mockResponse = mockk<Response>()
         val mockCall = mockk<Call>()
         val mockBody = JsonObject(
-                mapOf(
-                        "pb_key" to JsonPrimitive("pb_value")
-                )
+            mapOf(
+                "pb_key" to JsonPrimitive("pb_value")
+            )
         )
         val mockRequest = PostChoiceParamReq(
-                env = Env.PROD,
-                actionType = ActionType.ACCEPT_ALL,
-                body = mockBody
+            env = Env.PROD,
+            actionType = ActionType.ACCEPT_ALL,
+            body = mockBody
         )
 
         // WHEN
