@@ -167,7 +167,7 @@ private class CampaignManagerImpl(
                         )
                     }
 
-                    CampaignType.USNAT -> {
+                    USNAT -> {
                         addCampaign(
                             it.campaignType,
                             CampaignTemplate(
@@ -215,7 +215,7 @@ private class CampaignManagerImpl(
                     )
                 }
                 ?.let { campaigns.add(it) }
-            mapTemplate[CampaignType.USNAT.name]
+            mapTemplate[USNAT.name]
                 ?.let {
                     it.toCampaignReqImpl(
                         targetingParams = it.targetingParams,
@@ -237,7 +237,7 @@ private class CampaignManagerImpl(
     }
 
     override fun getCampaignTemplate(campaignType: CampaignType): Either<CampaignTemplate> = check {
-        mapTemplate[campaignType.name] ?: fail("${campaignType.name} Campain is missing!!!")
+        mapTemplate[campaignType.name] ?: fail("${campaignType.name} Campaign is missing!!!")
     }
 
     override fun getPmConfig(
@@ -250,7 +250,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> getUsNatPmConfig(pmId, groupPmId)
+            USNAT -> getUsNatPmConfig(pmId, groupPmId)
         }
     }
 
@@ -262,7 +262,7 @@ private class CampaignManagerImpl(
         return when (campaignType) {
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CCPA -> getCcpaPmConfig(pmId)
-            CampaignType.USNAT -> getUsNatPmConfig(pmId)
+            USNAT -> getUsNatPmConfig(pmId)
         }
     }
 
@@ -515,8 +515,7 @@ private class CampaignManagerImpl(
                 spConfig.isIncluded(USNAT)
             )
 
-        val storedCcpaWithoutGPP: Boolean = ccpaConsentStatus
-            ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
+        val storedCcpaWithoutGPP = ccpaConsentStatus?.let { it.gppData.isNullOrEmpty() } ?: false
 
         return ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
             isV630LocalStatePresent ||
@@ -540,8 +539,7 @@ private class CampaignManagerImpl(
                 usNatConsentData == null &&
                 spConfig.isIncluded(USNAT)
             )
-        val storedCcpaWithoutGPP: Boolean = ccpaConsentStatus
-            ?.let { it.gppData == null || it.gppData.isEmpty() } ?: false
+        val storedCcpaWithoutGPP = ccpaConsentStatus?.let { it.gppData.isNullOrEmpty() } ?: false
 
         val shouldCallConsentStatus =
             ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
@@ -720,7 +718,6 @@ private class CampaignManagerImpl(
     }
 
     override fun handleMetaDataResponse(response: MetaDataResp?) {
-
         if (hasGdprVendorListIdChanged(gdprVendorListId = response?.gdpr?.vendorListId)) {
             dataStorage.deleteGdprConsent()
         }
@@ -735,37 +732,38 @@ private class CampaignManagerImpl(
 
         if (response == null) return
 
-        response.ccpa?.apply {
-            applies?.let { i ->
-                ccpaConsentStatus?.let { ccpaCS ->
-                    val updatedCcpaCS = ccpaCS.copy(applies = i)
-                    // update the new uspstring value based on the applies
-                    val uspstring = updateCcpaUspString(updatedCcpaCS, logger)
-                    ccpaConsentStatus = updatedCcpaCS.copy(uspstring = uspstring)
-                }
-            }
+        response.ccpa?.let { ccpa ->
+            ccpaConsentStatus = ccpaConsentStatus?.copy(
+                applies = ccpa.applies,
+                uspstring = updateCcpaUspString(ccpaConsentStatus, logger)
+            )
 
-            sampleRate?.let { i ->
-                if (i != dataStorage.ccpaSamplingValue) {
-                    dataStorage.ccpaSamplingValue = i
-                    dataStorage.ccpaSamplingResult = null
+            ccpa.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.ccpaSampleRate) {
+                    dataStorage.ccpaSampleRate = newRate
+                    dataStorage.ccpaSampled = null
                 }
             }
         }
 
-        response.gdpr?.apply {
-            applies?.let { gdprApplies ->
-                gdprConsentStatus?.let { gdprCS ->
-                    val updatedGdprConsentStatus = gdprCS.copy(applies = gdprApplies)
-                    gdprConsentStatus = updatedGdprConsentStatus
+        response.gdpr?.let { gdpr ->
+            gdprConsentStatus = gdprConsentStatus?.copy(applies = gdpr.applies)
+
+            gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
+            gdpr.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.gdprSampleRate) {
+                    dataStorage.gdprSampleRate = newRate
+                    dataStorage.gdprSampled = null
                 }
             }
+        }
 
-            childPmId?.let { i -> dataStorage.gdprChildPmId = i }
-            sampleRate?.let { i ->
-                if (i != dataStorage.gdprSamplingValue) {
-                    dataStorage.gdprSamplingValue = i
-                    dataStorage.gdprSamplingResult = null
+        response.usNat?.let { usnat ->
+            usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
+            usnat.sampleRate?.let { newRate ->
+                if (newRate != dataStorage.usnatSampleRate) {
+                    dataStorage.usnatSampleRate = newRate
+                    dataStorage.usnatSampled = null
                 }
             }
         }
@@ -794,7 +792,6 @@ private class CampaignManagerImpl(
         additionsChangeDate: String?,
         legalBasisChangeDate: String?
     ): ConsentStatus? {
-
         val dataRecordedConsent = gdprConsentStatus?.dateCreated
 
         val updatedGdprConsentStatus = gdprConsentStatus?.consentStatus
@@ -804,17 +801,14 @@ private class CampaignManagerImpl(
             additionsChangeDate != null &&
             legalBasisChangeDate != null
         ) {
-
             val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
             val additionsChangeDateDate = formatter.parse(additionsChangeDate)
             val legalBasisChangeDateConsentDate = formatter.parse(legalBasisChangeDate)
 
-            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-            val creationLessThanLegalBasis = dataRecordedConsentDate.before(legalBasisChangeDateConsentDate)
+            val creationLessThanAdditions = dataRecordedConsentDate?.before(additionsChangeDateDate) ?: false
+            val creationLessThanLegalBasis = dataRecordedConsentDate?.before(legalBasisChangeDateConsentDate) ?: false
 
             val shouldReconsent = creationLessThanAdditions || creationLessThanLegalBasis
-
-            if (!shouldReconsent) return null
 
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
@@ -829,17 +823,17 @@ private class CampaignManagerImpl(
                 json = JSONObject(map)
             )
 
+            if (!shouldReconsent) return null
+
             if (creationLessThanAdditions) {
                 updatedGdprConsentStatus.vendorListAdditions = true
             }
             if (creationLessThanLegalBasis) {
                 updatedGdprConsentStatus.legalBasisChanges = true
             }
-            if (creationLessThanAdditions || creationLessThanLegalBasis) {
-                if (updatedGdprConsentStatus.consentedAll == true) {
-                    updatedGdprConsentStatus.granularStatus?.previousOptInAll = true
-                    updatedGdprConsentStatus.consentedAll = false
-                }
+            if (updatedGdprConsentStatus.consentedAll == true) {
+                updatedGdprConsentStatus.granularStatus?.previousOptInAll = true
+                updatedGdprConsentStatus.consentedAll = false
             }
 
             updatedGdprConsentStatus
@@ -858,13 +852,9 @@ private class CampaignManagerImpl(
             updatedUSNatConsentStatus != null &&
             additionsChangeDate != null
         ) {
-
             val dataRecordedConsentDate = formatter.parse(dataRecordedConsent)
             val additionsChangeDateDate = formatter.parse(additionsChangeDate)
-
-            val creationLessThanAdditions = dataRecordedConsentDate.before(additionsChangeDateDate)
-
-            if (!creationLessThanAdditions) return null
+            val creationLessThanAdditions = dataRecordedConsentDate?.before(additionsChangeDateDate) ?: false
 
             val map = mapOf(
                 "dataRecordedConsentDate" to "$dataRecordedConsentDate",
@@ -877,6 +867,8 @@ private class CampaignManagerImpl(
                 msg = JSONObject(map).toString(),
                 json = JSONObject(map)
             )
+
+            if (!creationLessThanAdditions) return null
 
             updatedUSNatConsentStatus.vendorListAdditions = true
 

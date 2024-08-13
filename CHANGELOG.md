@@ -1,6 +1,14 @@
+## 7.9.0 (August, 07, 2024)
+* [DIA-4323](https://sourcepoint.atlassian.net/browse/DIA-4323) New feature enabling developers to programmatically reject all for a given user.[#828](https://github.com/SourcePointUSA/android-cmp-app/pull/828)
+* [DIA-3891](https://sourcepoint.atlassian.net/browse/DIA-3891) Handle Accept/Reject all actions from USNat messages.[#829](https://github.com/SourcePointUSA/android-cmp-app/pull/829)
+* [DIA-4258](https://sourcepoint.atlassian.net/browse/DIA-4258) Add an example on how to deal with device rotations without closing the consent UI.
+
+## 7.8.5 (July, 10, 2024)
+* [DIA-4254](https://sourcepoint.atlassian.net/browse/DIA-4254) Fixed an preventing users from being sampled when calling the pv-data endpoint [#826](https://github.com/SourcePointUSA/android-cmp-app/pull/826)
+
 ## 7.8.4 (June, 19, 2024)
 * [DIA-4112](https://sourcepoint.atlassian.net/browse/DIA-4112) Fixed an issue preventing links from being opened on external browser [#825](https://github.com/SourcePointUSA/android-cmp-app/pull/825)
-*[ HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)
+* [HCD-525](https://sourcepoint.atlassian.net/browse/HCD-525) Improve documentation on authenticated consent [#823](https://github.com/SourcePointUSA/android-cmp-app/pull/823)
 
 ## 7.8.3 (June, 05, 2024)
 * [DIA-3945](https://sourcepoint.atlassian.net/browse/DIA-3945) Added Tagalog as message language [#819](https://github.com/SourcePointUSA/android-cmp-app/pull/819)

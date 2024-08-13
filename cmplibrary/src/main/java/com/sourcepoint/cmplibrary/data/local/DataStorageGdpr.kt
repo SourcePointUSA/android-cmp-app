@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils.Companion.DEFAULT_SAMPLE_RATE
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.GDPR_CONSENT_STATUS
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.AUTH_ID_KEY
 import com.sourcepoint.cmplibrary.data.local.DataStorageGdpr.Companion.CMP_SDK_ID_KEY
@@ -50,8 +51,8 @@ internal interface DataStorageGdpr {
 
     var gdprDateCreated: String?
 
-    var gdprSamplingValue: Double
-    var gdprSamplingResult: Boolean?
+    var gdprSampleRate: Double
+    var gdprSampled: Boolean?
 
     var gdprExpirationDate: String?
 
@@ -80,9 +81,7 @@ internal interface DataStorageGdpr {
         const val AUTH_ID_KEY = "sp.gdpr.authId"
         const val DEFAULT_EMPTY_UUID = ""
         const val CMP_SDK_ID_KEY = "IABTCF_CmpSdkID"
-        const val CMP_SDK_ID = 6
         const val CMP_SDK_VERSION_KEY = "IABTCF_CmpSdkVersion"
-        const val CMP_SDK_VERSION = 2
         const val DEFAULT_EMPTY_CONSENT_STRING = ""
         const val DEFAULT_META_DATA = "{}"
         val DEFAULT_AUTH_ID: String? = null
@@ -220,29 +219,13 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
                 .apply()
         }
 
-    override var gdprSamplingValue: Double
-        get() = preference.getFloat(GDPR_SAMPLING_VALUE, 1.0F).toDouble()
-        set(value) {
-            preference
-                .edit()
-                .putFloat(GDPR_SAMPLING_VALUE, value.toFloat())
-                .apply()
-        }
+    override var gdprSampleRate: Double
+        get() = preference.getFloat(GDPR_SAMPLING_VALUE, DEFAULT_SAMPLE_RATE.toFloat()).toDouble()
+        set(value) = preference.putFloat(GDPR_SAMPLING_VALUE, value.toFloat())
 
-    override var gdprSamplingResult: Boolean?
-        get() {
-            return if (preference.contains(GDPR_SAMPLING_RESULT))
-                preference.getBoolean(GDPR_SAMPLING_RESULT, false)
-            else null
-        }
-        set(value) {
-            value?.let {
-                preference
-                    .edit()
-                    .putBoolean(GDPR_SAMPLING_RESULT, it)
-                    .apply()
-            }
-        }
+    override var gdprSampled: Boolean?
+        get() = preference.getBoolean(GDPR_SAMPLING_RESULT)
+        set(value) = preference.putBoolean(GDPR_SAMPLING_RESULT, value)
 
     override var gdprExpirationDate: String?
         get() = preference.getString(GDPR_EXPIRATION_DATE_MESSAGE, null)
@@ -328,6 +311,4 @@ private class DataStorageGdprImpl(context: Context) : DataStorageGdpr {
             .forEach { entry -> spEditor.remove(entry.key) }
         spEditor.apply()
     }
-
-    private fun fail(param: String): Nothing = throw RuntimeException("$param not fund in local storage.")
 }

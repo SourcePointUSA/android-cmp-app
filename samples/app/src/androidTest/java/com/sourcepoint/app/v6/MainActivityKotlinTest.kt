@@ -26,6 +26,7 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnDeleteCustomConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
+import com.sourcepoint.app.v6.TestUseCase.Companion.progRejectAll
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
@@ -134,6 +135,30 @@ class MainActivityKotlinTest {
     }
 
     private fun getSharedPrefs(activity: Activity) = PreferenceManager.getDefaultSharedPreferences(activity)
+
+    @Test
+    fun programatically_reject_all_calls_callbacks_and_rejects_all() = runBlocking {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                gdprPmId = "488393",
+                spClientObserver = listOf(spClient)
+            )
+        )
+
+        scenario = launchActivity()
+
+        wr { tapAcceptOnWebView() }
+        wr { progRejectAll() }
+        wr {
+            verify(exactly = 2) {
+                spClient.onConsentReady(any())
+            }
+        }
+        wr { clickOnGdprReviewConsent() }
+        wr { checkAllTogglesOFF() }
+    }
 
     @Test
     fun given_a_USNAT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking {

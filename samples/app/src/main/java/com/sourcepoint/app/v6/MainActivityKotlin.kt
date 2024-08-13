@@ -52,7 +52,8 @@ class MainActivityKotlin : AppCompatActivity() {
 //            propertyId = 16893
 //            propertyName = "mobile.multicampaign.demo"
 //            addCampaign(CampaignType.GDPR)
-//            addCampaign(SpCampaign(CampaignType.USNAT, configParams = setOf(ConfigOption.TRANSITION_CCPA_AUTH)))
+//            addCampaign(SpCampaign(CampaignType.USNAT))
+//            addCampaign(SpCampaign(CampaignType.CCPA))
 //        }
     }
 
