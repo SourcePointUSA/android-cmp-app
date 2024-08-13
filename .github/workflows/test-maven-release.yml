@@ -1,42 +1,42 @@
-name: SDK Release
+# name: SDK Release
 
-on:
-  push:
-    branches: [ DIA-3574-update-sdk-dep-view-binding ]
+# on:
+#   push:
+#     branches: [ DIA-3574-update-sdk-dep-view-binding ]
 
-jobs:
-  build:
-    name: Create Release and tag
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-          cache: gradle
-      - name: Build and test
-        run: |
-          ./gradlew cmplibrary:build
-      - name: Prepare environment
-        env:
-          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
-        run: |
-          sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
-      - name: Release build
-        run: ./gradlew cmplibrary:assemble
-      - name: Source jar and dokka
-        run: ./gradlew androidSourcesJar javadocJar
-      - name: Publish to MavenCentral
-        run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
-        env:
-          OSSRH_TOKEN_USER: ${{ secrets.OSSRH_TOKEN_USER }}
-          OSSRH_TOKEN_PASSWORD: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+# jobs:
+#   build:
+#     name: Create Release and tag
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#       - name: set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           distribution: zulu
+#           java-version: 17
+#           cache: gradle
+#       - name: Build and test
+#         run: |
+#           ./gradlew cmplibrary:build
+#       - name: Prepare environment
+#         env:
+#           SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
+#           SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+#         run: |
+#           sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+#       - name: Release build
+#         run: ./gradlew cmplibrary:assemble
+#       - name: Source jar and dokka
+#         run: ./gradlew androidSourcesJar javadocJar
+#       - name: Publish to MavenCentral
+#         run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
+#         env:
+#           OSSRH_TOKEN_USER: ${{ secrets.OSSRH_TOKEN_USER }}
+#           OSSRH_TOKEN_PASSWORD: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
+#           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+#           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+#           SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
