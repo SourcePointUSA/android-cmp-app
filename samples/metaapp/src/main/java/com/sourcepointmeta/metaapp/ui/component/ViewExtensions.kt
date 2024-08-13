@@ -1,32 +1,33 @@
 package com.sourcepointmeta.metaapp.ui.component
 
 import android.app.AlertDialog
+import android.widget.TextView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
-import kotlinx.android.synthetic.main.item_action_demo.view.* // ktlint-disable
-import kotlinx.android.synthetic.main.property_item.view.* // ktlint-disable
+import com.sourcepointmeta.metaapp.databinding.PropertyItemBinding
 
 fun PropertyItemView.bind(
-    item: PropertyDTO
+    item: PropertyDTO,
+    binding: PropertyItemBinding
 ) {
 
-    chip_gdpr.setOnCheckedChangeListener(null)
-    chip_ccpa.setOnCheckedChangeListener(null)
-    chip_usnat.setOnCheckedChangeListener(null)
+    binding.chipGdpr?.setOnCheckedChangeListener(null)
+    binding.chipCcpa?.setOnCheckedChangeListener(null)
+    binding.chipUsnat?.setOnCheckedChangeListener(null)
 
-    campaign_env.text = item.campaignEnv
-    property_name.text = item.propertyName
-    account_id.text = "${item.accountId}"
-    chip_gdpr.isChecked = item.gdprEnabled
-    chip_ccpa.isChecked = item.ccpaEnabled
-    chip_usnat.isChecked = item.usnatEnabled
-    play_demo_group.saving = item.saving
+    binding.campaignEnv.text = item.campaignEnv
+    binding.propertyName.text = item.propertyName
+    binding.accountId.text = "${item.accountId}"
+    binding.chipGdpr?.isChecked = item.gdprEnabled
+    binding.chipCcpa?.isChecked = item.ccpaEnabled
+    binding.chipUsnat?.isChecked = item.usnatEnabled
+    binding.playDemoGroup?.saving = item.saving
 }
 
 fun DemoActionItemView.bind(item: DemoActionItem) {
-    action_item.text = item.message
+    findViewById<TextView>(R.id.action_item).text = item.message
 }
 
 fun ChipGroup.addChip(content: String) {

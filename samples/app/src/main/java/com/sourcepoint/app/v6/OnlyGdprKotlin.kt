@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.sourcepoint.app.v6.databinding.OnlyGdprBinding
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
@@ -14,7 +15,6 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.clearAllData
-import kotlinx.android.synthetic.main.only_gdpr.*
 import org.json.JSONObject
 
 class OnlyGdprKotlin : AppCompatActivity() {
@@ -24,18 +24,21 @@ class OnlyGdprKotlin : AppCompatActivity() {
         spClient = LocalClient()
         config {
             accountId = 22
+            propertyId = 16893
             propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
             +(CampaignType.GDPR)
         }
     }
 
+    private lateinit var binding: OnlyGdprBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.only_gdpr)
+        binding = OnlyGdprBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        review_consents_gdpr.setOnClickListener {
+        binding.reviewConsentsGdpr.setOnClickListener {
             spConsentLib.loadPrivacyManager(
                 "488393",
                 PMTab.PURPOSES,
@@ -43,9 +46,9 @@ class OnlyGdprKotlin : AppCompatActivity() {
             )
         }
 
-        clear_all.setOnClickListener { clearAllData(this) }
+        binding.clearAll.setOnClickListener { clearAllData(this) }
 
-        custom_consent.setOnClickListener {
+        binding.customConsent.setOnClickListener {
             spConsentLib.customConsentGDPR(
                 vendors = listOf("5ff4d000a228633ac048be41"),
                 categories = listOf("608bad95d08d3112188e0e29", "608bad95d08d3112188e0e2f"),

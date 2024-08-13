@@ -6,6 +6,7 @@ import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* //ktlint-disable
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.databinding.PropertyListTitleBinding
 import com.sourcepointmeta.metaapp.tv.createNewProperty
 import com.sourcepointmeta.metaapp.tv.initEntranceTransition
 import com.sourcepointmeta.metaapp.tv.lastIndex
@@ -14,7 +15,6 @@ import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.PropertyDTO
 import com.sourcepointmeta.metaapp.ui.component.toPropertyDTO
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListViewModel
-import kotlinx.android.synthetic.main.property_list_title.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
@@ -25,12 +25,14 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
     }
 
     private val viewModel: PropertyListViewModel by viewModel()
+    private lateinit var binding: PropertyListTitleBinding
     private val presenterAdapter by lazy { ArrayObjectAdapter(PropertyViewPresenter(requireActivity())) }
     private val localGridPresenter by lazy { VerticalGridPresenter(ZOOM_FACTOR).apply { numberOfColumns = COLUMNS } }
     var deleteAllListener: ((View) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = PropertyListTitleBinding.inflate(layoutInflater)
         gridPresenter = localGridPresenter
         adapter = presenterAdapter
         onItemViewClickedListener = this
@@ -40,8 +42,8 @@ class PropertyListFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        remove_all_btn?.setOnClickListener(deleteAllListener)
-        add_property_button?.setOnClickListener { requireContext().createNewProperty() }
+        binding.removeAllBtn.setOnClickListener(deleteAllListener)
+        binding.addPropertyButton.setOnClickListener { requireContext().createNewProperty() }
         title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {

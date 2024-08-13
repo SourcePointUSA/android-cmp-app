@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
     compileSdk 34
+    namespace = "com.sourcepoint.app.v6"
     defaultConfig {
         applicationId "com.sourcepoint.app.v6"
         minSdk 21
@@ -16,6 +16,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
@@ -62,11 +67,11 @@ dependencies {
     implementation fileTree(include: ['*.aar'], dir: 'libs')
 
     // kotlin
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     //noinspection GradleCompatible
-    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation(Libs.androidxCore)
 

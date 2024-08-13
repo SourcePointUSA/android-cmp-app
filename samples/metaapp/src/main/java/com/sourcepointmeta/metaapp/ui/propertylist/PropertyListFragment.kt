@@ -18,6 +18,7 @@ import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.addFragment
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
+import com.sourcepointmeta.metaapp.databinding.FragmentPropertyListBinding
 import com.sourcepointmeta.metaapp.ui.BaseState.* //ktlint-disable
 import com.sourcepointmeta.metaapp.ui.component.PropertyAdapter
 import com.sourcepointmeta.metaapp.ui.component.SwipeToDeleteCallback
@@ -26,7 +27,6 @@ import com.sourcepointmeta.metaapp.ui.demo.DemoActivity
 import com.sourcepointmeta.metaapp.ui.property.AddUpdatePropertyFragment
 import com.sourcepointmeta.metaapp.ui.sp.PreferencesActivity
 import com.sourcepointmeta.metaapp.util.* //ktlint-disable
-import kotlinx.android.synthetic.main.fragment_property_list.* //ktlint-disable
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,6 +48,7 @@ class PropertyListFragment : Fragment() {
     private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
         SwipeToDeleteCallback(requireContext()) { showDeleteDialog(it, adapter) }
     }
+    private lateinit var binding: FragmentPropertyListBinding
 
     companion object {
         const val OLD_V6_CONSENT = "sp.old.v6.consent"
@@ -69,7 +70,8 @@ class PropertyListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_property_list, container, false)
+        binding = FragmentPropertyListBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +80,7 @@ class PropertyListFragment : Fragment() {
             viewModel.clearDB()
         }
 
-        tool_bar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
+        binding.toolBar.title = "${getString(R.string.app_name)} - ${BuildConfig.VERSION_NAME}"
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -87,11 +89,14 @@ class PropertyListFragment : Fragment() {
                 is StateProperty -> updateProperty(it)
                 is StateLoading -> savingProperty(it.propertyName, it.loading)
                 is StateVersion -> showVersionPopup(it.version)
+                else -> {
+                    // instead of else we need to provide a case for each BaseState heirs
+                }
             }
         }
-        property_list.layoutManager = GridLayoutManager(context, 1)
-        property_list.adapter = adapter
-        fab.setOnClickListener {
+        binding.propertyList.layoutManager = GridLayoutManager(context, 1)
+        binding.propertyList.adapter = adapter
+        binding.fab.setOnClickListener {
             (activity as? AppCompatActivity)?.addFragment(R.id.container, AddUpdatePropertyFragment())
         }
         (activity as? AppCompatActivity)?.supportFragmentManager?.addOnBackStackChangedListener {
@@ -105,12 +110,12 @@ class PropertyListFragment : Fragment() {
         }
         adapter.propertyChangedListener = { viewModel.updateProperty(it) }
         adapter.demoProperty = { runDemo(it) }
-        itemTouchHelper.attachToRecyclerView(property_list)
+        itemTouchHelper.attachToRecyclerView(binding.propertyList)
 
         if (BuildConfig.BUILD_TYPE == "release") {
             viewModel.fetchLatestVersion()
         }
-        tool_bar.setOnMenuItemClickListener { item ->
+        binding.toolBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_clear_sp -> {
                     context?.let { PreferenceManager.getDefaultSharedPreferences(it).edit().clear().apply() }
@@ -297,8 +302,8 @@ class PropertyListFragment : Fragment() {
     }
 
     private fun showVersionPopup(version: String) {
-        tool_bar.setTitleTextColor(errorColor)
-        tool_bar.title = "${tool_bar.title} -> $version"
+        binding.toolBar.setTitleTextColor(errorColor)
+        binding.toolBar.title = "${binding.toolBar.title} -> $version"
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Metaapp version ${BuildConfig.VERSION_NAME} out of date, new version $version is available.")
             .setPositiveButton("Update it") { _, _ ->

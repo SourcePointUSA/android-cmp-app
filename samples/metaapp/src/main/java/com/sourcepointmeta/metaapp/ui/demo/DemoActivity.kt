@@ -31,6 +31,8 @@ import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.RemoteDataSource
+import com.sourcepointmeta.metaapp.databinding.ActivityDemoBinding
+import com.sourcepointmeta.metaapp.databinding.NativeMessageBinding
 import com.sourcepointmeta.metaapp.logger.LoggerImpl
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogFragment
 import com.sourcepointmeta.metaapp.ui.propertylist.PropertyListFragment
@@ -41,8 +43,6 @@ import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Compa
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewer4SharedPrefFragment.Companion.SP_VALUE
 import com.sourcepointmeta.metaapp.ui.viewer.JsonViewerActivity
 import io.github.g00fy2.versioncompare.Version
-import kotlinx.android.synthetic.main.activity_demo.* // ktlint-disable
-import kotlinx.android.synthetic.main.native_message.view.* // ktlint-disable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -116,28 +116,32 @@ class DemoActivity : FragmentActivity() {
 
     private val sp by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
+    private lateinit var binding: ActivityDemoBinding
+    private lateinit var nativeMessageBinding: NativeMessageBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDemoBinding.inflate(layoutInflater)
         if (!sp.contains(PropertyListFragment.OLD_V6_CONSENT) &&
             !sp.contains(PropertyListFragment.V7_CONSENT)
         ) {
             clearAllData(this)
         }
-        setContentView(R.layout.activity_demo)
+        setContentView(binding.root)
 
-        tool_bar.run {
+        binding.toolBar.run {
             title = "${BuildConfig.VERSION_NAME} - ${config.propertyName}"
             setNavigationOnClickListener { onBackPressed() }
         }
 
         val pagerAdapter = ScreenSlidePagerAdapter(this)
-        pager.adapter = pagerAdapter
+        binding.pager.adapter = pagerAdapter
 
         demoFr.demoListener = { action ->
 
             // don't go to the first fragment during UI tests
             if (!isUITestRunning) {
-                pager.currentItem = 0
+                binding.pager.currentItem = 0
             }
 
             when (action) {
@@ -201,7 +205,7 @@ class DemoActivity : FragmentActivity() {
             startActivity(intent)
         }
 
-        tool_bar.setOnMenuItemClickListener { item ->
+        binding.toolBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_share -> logFr.shareLogs()
                 R.id.action_share_sp -> logFr.sendEmail(getAllPref())
@@ -308,13 +312,13 @@ class DemoActivity : FragmentActivity() {
     }
 
     override fun onBackPressed() {
-        if (pager.currentItem == 0) {
+        if (binding.pager.currentItem == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
         } else {
             // Otherwise, select the previous step.
-            pager.currentItem = pager.currentItem - 1
+            binding.pager.currentItem = binding.pager.currentItem - 1
         }
     }
 
@@ -324,50 +328,50 @@ class DemoActivity : FragmentActivity() {
                 .getOrNull()
                 ?.let {
                     if (!Version(BuildConfig.VERSION_NAME).isEqual(it)) {
-                        tool_bar.setTitleTextColor(errorColor)
+                        binding.toolBar.setTitleTextColor(errorColor)
                     }
                 }
         }
     }
 
     fun setNativeMessage(message: MessageStructure, messageController: NativeMessageController) {
-        val customLayout = View.inflate(this, R.layout.native_message, null)
-        customLayout.run {
+        nativeMessageBinding = NativeMessageBinding.inflate(layoutInflater, null, false)
+        nativeMessageBinding.run {
             message.messageComponents?.let {
-                setTitle(customLayout, it.title ?: throw RuntimeException())
-                setBody(customLayout, it.body ?: throw RuntimeException())
-                setAgreeBtn(customLayout, it.body ?: throw RuntimeException())
+                setTitle(it.title ?: throw RuntimeException())
+                setBody(it.body ?: throw RuntimeException())
+                setAgreeBtn(it.body ?: throw RuntimeException())
                 it.actions.forEach { a ->
                     when (a.choiceType) {
-                        NativeMessageActionType.REJECT_ALL -> setRejectAllBtn(customLayout, a)
-                        NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(customLayout, a)
-                        NativeMessageActionType.MSG_CANCEL -> setCancelBtn(customLayout, a)
-                        NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(customLayout, a)
+                        NativeMessageActionType.REJECT_ALL -> setRejectAllBtn(a)
+                        NativeMessageActionType.ACCEPT_ALL -> setAcceptAllBtn(a)
+                        NativeMessageActionType.MSG_CANCEL -> setCancelBtn(a)
+                        NativeMessageActionType.SHOW_OPTIONS -> setOptionBtn(a)
                         else -> {}
                     }
                 }
             }
-            accept_all.setOnClickListener {
+            acceptAll.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.ACCEPT_ALL, message.campaignType)
                 }
             }
             cancel.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.MSG_CANCEL, message.campaignType)
                 }
             }
-            reject_all.setOnClickListener {
+            rejectAll.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     sendConsent(NativeMessageActionType.REJECT_ALL, message.campaignType)
                 }
             }
-            show_options_btn.setOnClickListener {
+            showOptionsBtn.setOnClickListener {
                 messageController.run {
-                    removeNativeView(customLayout)
+                    removeNativeView(nativeMessageBinding.root)
                     when (message.campaignType) {
                         CampaignType.GDPR -> gdprPmId
                         CampaignType.CCPA -> ccpaPmId
@@ -378,11 +382,11 @@ class DemoActivity : FragmentActivity() {
                 }
             }
         }
-        messageController.showNativeView(customLayout)
+        messageController.showNativeView(nativeMessageBinding.root)
     }
 
-    fun setTitle(view: View, t: NativeComponent) {
-        view.title_nm.run {
+    private fun setTitle(t: NativeComponent) {
+        nativeMessageBinding.titleNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
@@ -390,8 +394,8 @@ class DemoActivity : FragmentActivity() {
         }
     }
 
-    fun setBody(view: View, t: NativeComponent) {
-        view.body_nm.run {
+    private fun setBody(t: NativeComponent) {
+        nativeMessageBinding.bodyNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
@@ -400,47 +404,47 @@ class DemoActivity : FragmentActivity() {
         }
     }
 
-    fun setAgreeBtn(view: View, t: NativeComponent) {
-        view.body_nm.run {
+    private fun setAgreeBtn(t: NativeComponent) {
+        nativeMessageBinding.bodyNm.run {
             text = t.text ?: ""
             setBackgroundColor(t.style?.backgroundColor?.toColorInt() ?: throw RuntimeException())
             setTextColor(t.style?.color?.toColorInt() ?: throw RuntimeException())
         }
     }
 
-    fun setCancelBtn(view: View, na: NativeAction) {
-        view.cancel.run {
+    private fun setCancelBtn(na: NativeAction) {
+        nativeMessageBinding.cancel.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setOptionBtn(view: View, na: NativeAction) {
-        view.show_options_btn.run {
+    private fun setOptionBtn(na: NativeAction) {
+        nativeMessageBinding.showOptionsBtn.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setRejectAllBtn(view: View, na: NativeAction) {
-        view.reject_all.run {
+    private fun setRejectAllBtn(na: NativeAction) {
+        nativeMessageBinding.rejectAll.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 
-    fun setAcceptAllBtn(view: View, na: NativeAction) {
-        view.accept_all.run {
+    private fun setAcceptAllBtn(na: NativeAction) {
+        nativeMessageBinding.acceptAll.run {
             text = na.text
-            setBackgroundColor(na.style.backgroundColor.toColorInt() ?: throw RuntimeException())
+            setBackgroundColor(na.style.backgroundColor.toColorInt())
             setTextColor(na.style.color?.toColorInt() ?: throw RuntimeException())
-            textSize = na.style.fontSize ?: 10F
+            textSize = na.style.fontSize
         }
     }
 }

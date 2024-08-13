@@ -82,7 +82,7 @@ data class MetaLog(
 
 fun Targeting_param.toTargetingParam() = MetaTargetingParam(
     propertyName = property_name,
-    value = value,
+    value = value_,
     key = key,
     campaign = CampaignType.values().find { it.name == campaign } ?: CampaignType.GDPR
 )

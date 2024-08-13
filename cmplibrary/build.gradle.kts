@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
     id("io.github.dryrum.update-changelog")
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
@@ -20,6 +19,7 @@ version = versionLib
 @Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
+    namespace = "com.sourcepoint.cmplibrary"
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdk = 21
@@ -94,7 +94,7 @@ android {
 
 dependencies {
     // kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")

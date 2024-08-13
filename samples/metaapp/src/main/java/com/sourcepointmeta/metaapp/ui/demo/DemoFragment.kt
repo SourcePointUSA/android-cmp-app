@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
+import com.sourcepointmeta.metaapp.databinding.DemoFragmentLayoutBinding
 import com.sourcepointmeta.metaapp.ui.demo.DemoFragment.DemoAction.* // ktlint-disable
-import kotlinx.android.synthetic.main.demo_fragment_layout.* // ktlint-disable
 import org.koin.android.ext.android.inject
 
 class DemoFragment : Fragment() {
@@ -41,29 +40,32 @@ class DemoFragment : Fragment() {
         dataSource.getSPConfig(propertyName).getOrNull() ?: throw RuntimeException("Property name not set!!!")
     }
 
+    private lateinit var binding: DemoFragmentLayoutBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.demo_fragment_layout, container, false)
+        binding = DemoFragmentLayoutBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        campaign_name_fr.text = propertyName
-        review_consents_ccpa_fr.setOnClickListener { _v: View? -> demoListener?.invoke(CCPA_PM) }
-        review_consents_gdpr_fr.setOnClickListener { _v: View? -> demoListener?.invoke(GDPR_PM) }
-        review_consents_usnat_fr.setOnClickListener { _v: View? -> demoListener?.invoke(USNAT_PM) }
+        binding.campaignNameFr.text = propertyName
+        binding.reviewConsentsCcpaFr.setOnClickListener { demoListener?.invoke(CCPA_PM) }
+        binding.reviewConsentsGdprFr.setOnClickListener { demoListener?.invoke(GDPR_PM) }
+        binding.reviewConsentsUsnatFr.setOnClickListener { demoListener?.invoke(USNAT_PM) }
 
         config.campaigns.find { it.campaignType == CampaignType.GDPR }
-            ?.let { review_consents_gdpr_fr.isEnabled = true }
-            ?: run { review_consents_gdpr_fr.isEnabled = false }
+            ?.let { binding.reviewConsentsGdprFr.isEnabled = true }
+            ?: run { binding.reviewConsentsGdprFr.isEnabled = false }
         config.campaigns.find { it.campaignType == CampaignType.CCPA }
-            ?.let { review_consents_ccpa_fr.isEnabled = true }
-            ?: run { review_consents_ccpa_fr.isEnabled = false }
+            ?.let { binding.reviewConsentsCcpaFr.isEnabled = true }
+            ?: run { binding.reviewConsentsCcpaFr.isEnabled = false }
         config.campaigns.find { it.campaignType == CampaignType.USNAT }
-            ?.let { review_consents_usnat_fr.isEnabled = true }
-            ?: run { review_consents_usnat_fr.isEnabled = false }
+            ?.let { binding.reviewConsentsUsnatFr.isEnabled = true }
+            ?: run { binding.reviewConsentsUsnatFr.isEnabled = false }
     }
 }

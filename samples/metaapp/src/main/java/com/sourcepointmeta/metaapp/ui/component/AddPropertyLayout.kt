@@ -17,12 +17,9 @@ import com.sourcepointmeta.metaapp.data.localdatasource.GPP
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaTargetingParam
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
+import com.sourcepointmeta.metaapp.databinding.AddPropertyFragmentBinding
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.util.check
-import kotlinx.android.synthetic.main.add_property_fragment.view.* // ktlint-disable
-import kotlinx.android.synthetic.main.add_property_fragment.view.chip_ccpa
-import kotlinx.android.synthetic.main.add_property_fragment.view.chip_gdpr
-import kotlinx.android.synthetic.main.add_property_fragment.view.chip_usnat
 
 class AddPropertyLayout : ConstraintLayout {
     constructor(context: Context) : super(context)
@@ -34,75 +31,75 @@ class AddPropertyLayout : ConstraintLayout {
     )
 }
 
-internal fun AddPropertyLayout.bind(property: Property) {
-    prop_name_ed.setText(property.propertyName)
-    prop_id_ed.setText(property.propertyId.toString())
-    account_id_ed.setText(property.accountId.toString())
-    radio_stage.isChecked = property.is_staging
-    radio_prod.isChecked = !property.is_staging
-    chip_gdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
-    chip_ccpa.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.CCPA }?.enabled ?: false
-    chip_usnat.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.USNAT }?.enabled ?: false
-    message_language_autocomplete.setText(property.messageLanguage)
-    message_type_autocomplete.setText(property.messageType.name)
-    auth_id_ed.setText(property.authId)
-    pm_tab_autocomplete.setText(property.pmTab)
-    gdpr_pm_id_ed.setText(property.gdprPmId?.toString() ?: "")
-    ccpa_pm_id_ed.setText(property.ccpaPmId?.toString() ?: "")
-    usnat_pm_id_ed.setText(property.usnatPmId?.toString() ?: "")
-    message_language_autocomplete.setText(property.messageLanguage)
+internal fun AddPropertyLayout.bind(property: Property, binding: AddPropertyFragmentBinding) {
+    binding.propNameEd.setText(property.propertyName)
+    binding.propIdEd.setText(property.propertyId.toString())
+    binding.accountIdEd.setText(property.accountId.toString())
+    binding.radioStage.isChecked = property.is_staging
+    binding.radioProd.isChecked = !property.is_staging
+    binding.chipGdpr.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.GDPR }?.enabled ?: false
+    binding.chipCcpa.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.CCPA }?.enabled ?: false
+    binding.chipUsnat.isChecked = property.statusCampaignSet.find { it.campaignType == CampaignType.USNAT }?.enabled ?: false
+    binding.messageLanguageAutocomplete.setText(property.messageLanguage)
+    binding.messageTypeAutocomplete.setText(property.messageType.name)
+    binding.authIdEd.setText(property.authId)
+    binding.pmTabAutocomplete.setText(property.pmTab)
+    binding.gdprPmIdEd.setText(property.gdprPmId?.toString() ?: "")
+    binding.ccpaPmIdEd.setText(property.ccpaPmId?.toString() ?: "")
+    binding.usnatPmIdEd.setText(property.usnatPmId?.toString() ?: "")
+    binding.messageLanguageAutocomplete.setText(property.messageLanguage)
     val gdprTp = property.targetingParameters.filter { it.campaign == CampaignType.GDPR }
     val ccpaTp = property.targetingParameters.filter { it.campaign == CampaignType.CCPA }
     val usnatTp = property.targetingParameters.filter { it.campaign == CampaignType.USNAT }
     // campaignEnv is presented as a radio btn, no need to add it as chip
-    gdprTp.forEach { gdpr_chip_group.addChip("${it.key}:${it.value}") }
-    ccpaTp.forEach { ccpa_chip_group.addChip("${it.key}:${it.value}") }
-    usnatTp.forEach { usnat_chip_group.addChip("${it.key}:${it.value}") }
-    timeout_ed.setText("${property.timeout ?: 3000}")
-    group_pm_id_ed.setText(property.gdprGroupPmId ?: "")
-    gdpr_groupId_switch.isChecked = property.useGdprGroupPmIfAvailable
-    usnat_transition_switch.isChecked = property.ccpa2usnat
+    gdprTp.forEach { binding.gdprChipGroup.addChip("${it.key}:${it.value}") }
+    ccpaTp.forEach { binding.ccpaChipGroup.addChip("${it.key}:${it.value}") }
+    usnatTp.forEach { binding.usnatChipGroup.addChip("${it.key}:${it.value}") }
+    binding.timeoutEd.setText("${property.timeout ?: 3000}")
+    binding.groupPmIdEd.setText(property.gdprGroupPmId ?: "")
+    binding.gdprGroupIdSwitch.isChecked = property.useGdprGroupPmIfAvailable
+    binding.usnatTransitionSwitch.isChecked = property.ccpa2usnat
 
     property.gpp
         ?.let {
-            gpp_switch.isChecked = true
-            it.coveredTransaction?.let { ct -> gpp_field_coveredTransaction.isChecked = (ct == SpGppOptionBinary.YES) }
+            binding.gppSwitch.isChecked = true
+            it.coveredTransaction?.let { ct -> binding.gppFieldCoveredTransaction.isChecked = (ct == SpGppOptionBinary.YES) }
             it.optOutOptionMode?.let { ooo ->
                 when (ooo) {
-                    NOT_APPLICABLE -> { opt_out_option_radio_na.isChecked = true }
-                    NO -> { opt_out_option_radio_no.isChecked = true }
-                    YES -> { opt_out_option_radio_yes.isChecked = true }
+                    NOT_APPLICABLE -> { binding.optOutOptionRadioNa.isChecked = true }
+                    NO -> { binding.optOutOptionRadioNo.isChecked = true }
+                    YES -> { binding.optOutOptionRadioYes.isChecked = true }
                 }
             }
             it.serviceProviderMode?.let { spm ->
                 when (spm) {
-                    NOT_APPLICABLE -> { service_provider_radio_na.isChecked = true }
-                    NO -> { service_provider_radio_no.isChecked = true }
-                    YES -> { service_provider_radio_yes.isChecked = true }
+                    NOT_APPLICABLE -> { binding.serviceProviderRadioNa.isChecked = true }
+                    NO -> { binding.serviceProviderRadioNo.isChecked = true }
+                    YES -> { binding.serviceProviderRadioYes.isChecked = true }
                 }
             }
         }
         ?: run {
-            gpp_switch.isChecked = false
-            opt_out_option_radio_group.isEnabled = false
-            service_provider_mode_radio_group.isEnabled = false
-            opt_out_option_radio_na.isEnabled = false
-            opt_out_option_radio_no.isEnabled = false
-            opt_out_option_radio_yes.isEnabled = false
-            service_provider_radio_na.isEnabled = false
-            service_provider_radio_no.isEnabled = false
-            service_provider_radio_yes.isEnabled = false
-            gpp_field_coveredTransaction.isEnabled = false
+            binding.gppSwitch.isChecked = false
+            binding.optOutOptionRadioGroup.isEnabled = false
+            binding.serviceProviderModeRadioGroup.isEnabled = false
+            binding.optOutOptionRadioNa.isEnabled = false
+            binding.optOutOptionRadioNo.isEnabled = false
+            binding.optOutOptionRadioYes.isEnabled = false
+            binding.serviceProviderRadioNa.isEnabled = false
+            binding.serviceProviderRadioNo.isEnabled = false
+            binding.serviceProviderRadioYes.isEnabled = false
+            binding.gppFieldCoveredTransaction.isEnabled = false
         }
 }
 
-internal fun AddPropertyLayout.toProperty(): Property {
+internal fun AddPropertyLayout.toProperty(binding: AddPropertyFragmentBinding): Property {
 
-    val gdprTp = gdpr_chip_group.children
+    val gdprTp = binding.gdprChipGroup.children
         .map { (it as Chip).text.split(":") }
         .map {
             MetaTargetingParam(
-                propertyName = prop_name_ed.text.toString(),
+                propertyName = binding.propNameEd.text.toString(),
                 campaign = CampaignType.GDPR,
                 key = it[0],
                 value = it[1]
@@ -110,11 +107,11 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
-    val ccpaTp = ccpa_chip_group.children
+    val ccpaTp = binding.ccpaChipGroup.children
         .map { (it as Chip).text.split(":") }
         .map {
             MetaTargetingParam(
-                propertyName = prop_name_ed.text.toString(),
+                propertyName = binding.propNameEd.text.toString(),
                 campaign = CampaignType.CCPA,
                 key = it[0],
                 value = it[1]
@@ -122,11 +119,11 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
-    val usNatTp = usnat_chip_group.children
+    val usNatTp = binding.usnatChipGroup.children
         .map { (it as Chip).text.split(":") }
         .map {
             MetaTargetingParam(
-                propertyName = prop_name_ed.text.toString(),
+                propertyName = binding.propNameEd.text.toString(),
                 campaign = CampaignType.USNAT,
                 key = it[0],
                 value = it[1]
@@ -134,110 +131,110 @@ internal fun AddPropertyLayout.toProperty(): Property {
         }
         .toMutableList()
 
-    val gpp = if (gpp_switch.isChecked) {
+    val gpp = if (binding.gppSwitch.isChecked) {
         GPP(
-            propertyName = prop_name_ed.text.toString(),
-            coveredTransaction = if (gpp_field_coveredTransaction.isChecked) SpGppOptionBinary.YES else SpGppOptionBinary.NO,
-            optOutOptionMode = this.getOptOutOptionMode(),
-            serviceProviderMode = this.getServiceProviderMode()
+            propertyName = binding.propNameEd.text.toString(),
+            coveredTransaction = if (binding.gppFieldCoveredTransaction.isChecked) SpGppOptionBinary.YES else SpGppOptionBinary.NO,
+            optOutOptionMode = this.getOptOutOptionMode(binding),
+            serviceProviderMode = this.getServiceProviderMode(binding)
         )
     } else null
 
-    val chipGdprChecked = chip_gdpr.isChecked
-    val chipCcpaChecked = chip_ccpa.isChecked
-    val chipUsnatChecked = chip_usnat.isChecked
+    val chipGdprChecked = binding.chipGdpr.isChecked
+    val chipCcpaChecked = binding.chipCcpa.isChecked
+    val chipUsnatChecked = binding.chipUsnat.isChecked
 
-    val gdprStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.GDPR, chipGdprChecked)
-    val ccpaStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.CCPA, chipCcpaChecked)
-    val usnatStatus = StatusCampaign(prop_name_ed.text.toString(), CampaignType.USNAT, chipUsnatChecked)
+    val gdprStatus = StatusCampaign(binding.propNameEd.text.toString(), CampaignType.GDPR, chipGdprChecked)
+    val ccpaStatus = StatusCampaign(binding.propNameEd.text.toString(), CampaignType.CCPA, chipCcpaChecked)
+    val usnatStatus = StatusCampaign(binding.propNameEd.text.toString(), CampaignType.USNAT, chipUsnatChecked)
 
-    val gdprGroupPmId = group_pm_id_ed.text.toString()
+    val gdprGroupPmId = binding.groupPmIdEd.text.toString()
 
     return Property(
-        propertyName = prop_name_ed.text.toString(),
-        accountId = account_id_ed.text.toString().toLongOrNull() ?: 0L,
-        gdprPmId = gdpr_pm_id_ed.text.toString().toLongOrNull(),
-        usnatPmId = usnat_pm_id_ed.text.toString().toLongOrNull(),
-        is_staging = radio_stage.isChecked,
+        propertyName = binding.propNameEd.text.toString(),
+        accountId = binding.accountIdEd.text.toString().toLongOrNull() ?: 0L,
+        gdprPmId = binding.gdprPmIdEd.text.toString().toLongOrNull(),
+        usnatPmId = binding.usnatPmIdEd.text.toString().toLongOrNull(),
+        is_staging = binding.radioStage.isChecked,
         targetingParameters = ccpaTp + gdprTp + usNatTp,
-        timeout = timeout_ed.text.toString().toTimeout(),
-        authId = auth_id_ed.text.toString(),
-        messageLanguage = message_language_autocomplete.text.toString(),
-        messageType = MessageType.values().find { it.name == message_type_autocomplete.text.toString() }
+        timeout = binding.timeoutEd.text.toString().toTimeout(),
+        authId = binding.authIdEd.text.toString(),
+        messageLanguage = binding.messageLanguageAutocomplete.text.toString(),
+        messageType = MessageType.values().find { it.name == binding.messageTypeAutocomplete.text.toString() }
             ?: MessageType.MOBILE,
-        pmTab = pm_tab_autocomplete.text.toString(),
+        pmTab = binding.pmTabAutocomplete.text.toString(),
         statusCampaignSet = setOf(gdprStatus, ccpaStatus, usnatStatus),
-        campaignsEnv = if (radio_stage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
+        campaignsEnv = if (binding.radioStage.isChecked) CampaignsEnv.STAGE else CampaignsEnv.PUBLIC,
         gdprGroupPmId = if (gdprGroupPmId.isEmpty() || gdprGroupPmId.isBlank()) null else gdprGroupPmId,
-        useGdprGroupPmIfAvailable = gdpr_groupId_switch.isChecked,
-        ccpa2usnat = usnat_transition_switch.isChecked,
-        propertyId = prop_id_ed.text.toString().toInt(),
-        ccpaPmId = ccpa_pm_id_ed.text.toString().toLongOrNull(),
+        useGdprGroupPmIfAvailable = binding.gdprGroupIdSwitch.isChecked,
+        ccpa2usnat = binding.usnatTransitionSwitch.isChecked,
+        propertyId = binding.propIdEd.text.toString().toInt(),
+        ccpaPmId = binding.ccpaPmIdEd.text.toString().toLongOrNull(),
         gpp = gpp
     )
 }
 
-private fun AddPropertyLayout.getServiceProviderMode(): SpGppOptionTernary? {
-    return if (service_provider_radio_na.isChecked) NOT_APPLICABLE
-    else if (service_provider_radio_no.isChecked) NO
-    else if (service_provider_radio_yes.isChecked) YES
+private fun AddPropertyLayout.getServiceProviderMode(binding: AddPropertyFragmentBinding): SpGppOptionTernary? {
+    return if (binding.serviceProviderRadioNa.isChecked) NOT_APPLICABLE
+    else if (binding.serviceProviderRadioNo.isChecked) NO
+    else if (binding.serviceProviderRadioYes.isChecked) YES
     else null
 }
 
-private fun AddPropertyLayout.getOptOutOptionMode(): SpGppOptionTernary? {
-    return if (opt_out_option_radio_na.isChecked) NOT_APPLICABLE
-    else if (opt_out_option_radio_no.isChecked) NO
-    else if (opt_out_option_radio_yes.isChecked) YES
+private fun AddPropertyLayout.getOptOutOptionMode(binding: AddPropertyFragmentBinding): SpGppOptionTernary? {
+    return if (binding.optOutOptionRadioNa.isChecked) NOT_APPLICABLE
+    else if (binding.optOutOptionRadioNo.isChecked) NO
+    else if (binding.optOutOptionRadioYes.isChecked) YES
     else null
 }
 
 fun String.toTimeout(): Long = check { toLong() }.getOrNull() ?: 3000L
 
-fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField) = when (it.uiCode) {
+fun AddPropertyLayout.errorField(it: BaseState.StateErrorValidationField, binding: AddPropertyFragmentBinding) = when (it.uiCode) {
     UIErrorCode.PropertyId -> {
-        prop_id_ed.run {
+        binding.propIdEd.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.PropertyName -> {
-        prop_name_ed.run {
+        binding.propNameEd.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.PmTab -> {
-        pm_tab_autocomplete.run {
+        binding.pmTabAutocomplete.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.AccountId -> {
-        account_id_ed.run {
+        binding.accountIdEd.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.MessageLanguage -> {
-        message_language_autocomplete.run {
+        binding.messageLanguageAutocomplete.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.CcpaPmId -> {
-        ccpa_pm_id_ed.run {
+        binding.ccpaPmIdEd.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.GdprPmId -> {
-        gdpr_pm_id_ed.run {
+        binding.gdprPmIdEd.run {
             requestFocus()
             error = it.message
         }
     }
     UIErrorCode.AuthId -> {
-        auth_id_ed.run {
+        binding.authIdEd.run {
             requestFocus()
             error = it.message
         }

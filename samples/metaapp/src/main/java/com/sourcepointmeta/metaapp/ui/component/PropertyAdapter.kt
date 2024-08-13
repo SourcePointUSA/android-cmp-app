@@ -1,14 +1,12 @@
 package com.sourcepointmeta.metaapp.ui.component
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepointmeta.metaapp.R
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
 import com.sourcepointmeta.metaapp.data.localdatasource.StatusCampaign
-import kotlinx.android.synthetic.main.property_item.view.*
+import com.sourcepointmeta.metaapp.databinding.PropertyItemBinding
 
 internal class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
 
@@ -18,9 +16,9 @@ internal class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
     var demoProperty: ((property: Property) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Vh {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.property_item, parent, false)
-        return Vh(view)
+        val binding = PropertyItemBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return Vh(binding)
     }
 
     override fun getItemCount(): Int {
@@ -31,40 +29,40 @@ internal class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.Vh>() {
         holder.bind(list[position], position)
     }
 
-    class Vh(val view: View) : RecyclerView.ViewHolder(view)
+    class Vh(val binding: PropertyItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     private fun Vh.bind(iv: PropertyDTO, pos: Int) {
-        (view.property_view_item as PropertyItemView).bind(iv)
-        view.run {
-            val p = list[pos].property
-            setOnClickListener { itemClickListener?.invoke(list[pos]) }
-            chip_gdpr.setOnCheckedChangeListener { _, isChecked ->
-                val editedSet = mutableSetOf<StatusCampaign>().apply {
-                    add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
-                    addAll(p.statusCampaignSet)
-                }
-                play_demo_group.saving = true
-                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+        (binding.propertyViewItem as PropertyItemView).bind(iv, binding)
+
+        val p = list[pos].property
+        binding.root.setOnClickListener { itemClickListener?.invoke(list[pos]) }
+
+        binding.chipGdpr?.setOnCheckedChangeListener { _, isChecked ->
+            val editedSet = mutableSetOf<StatusCampaign>().apply {
+                add(StatusCampaign(p.propertyName, CampaignType.GDPR, isChecked))
+                addAll(p.statusCampaignSet)
             }
-            chip_ccpa.setOnCheckedChangeListener { _, isChecked ->
-                val editedSet = mutableSetOf<StatusCampaign>().apply {
-                    add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
-                    addAll(p.statusCampaignSet)
-                }
-                play_demo_group.saving = true
-                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+            binding.playDemoGroup?.saving = true
+            propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+        }
+        binding.chipCcpa?.setOnCheckedChangeListener { _, isChecked ->
+            val editedSet = mutableSetOf<StatusCampaign>().apply {
+                add(StatusCampaign(p.propertyName, CampaignType.CCPA, isChecked))
+                addAll(p.statusCampaignSet)
             }
-            chip_usnat.setOnCheckedChangeListener { _, isChecked ->
-                val editedSet = mutableSetOf<StatusCampaign>().apply {
-                    add(StatusCampaign(p.propertyName, CampaignType.USNAT, isChecked))
-                    addAll(p.statusCampaignSet)
-                }
-                play_demo_group.saving = true
-                propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+            binding.playDemoGroup?.saving = true
+            propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+        }
+        binding.chipUsnat?.setOnCheckedChangeListener { _, isChecked ->
+            val editedSet = mutableSetOf<StatusCampaign>().apply {
+                add(StatusCampaign(p.propertyName, CampaignType.USNAT, isChecked))
+                addAll(p.statusCampaignSet)
             }
-            play_demo_btn.setOnClickListener {
-                demoProperty?.invoke(p)
-            }
+            binding.playDemoGroup?.saving = true
+            propertyChangedListener?.invoke(p.copy(statusCampaignSet = editedSet))
+        }
+        binding.playDemoBtn?.setOnClickListener {
+            demoProperty?.invoke(p)
         }
     }
 

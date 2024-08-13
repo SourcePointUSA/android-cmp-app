@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.TextView
-import com.sourcepointmeta.metaapp.R
-import kotlinx.android.synthetic.main.sp_list_group.view.*
-import kotlinx.android.synthetic.main.sp_list_item.view.*
+import com.sourcepointmeta.metaapp.databinding.SpListGroupBinding
+import com.sourcepointmeta.metaapp.databinding.SpListItemBinding
 import java.util.SortedMap
 
 internal class SpPairsAdapter(
@@ -22,17 +20,14 @@ internal class SpPairsAdapter(
     override fun getGroupView(listPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
         val listTitle = getGroup(listPosition) as String
 
-        val view = convertView ?: run {
-            val layoutInflater: LayoutInflater =
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            layoutInflater.inflate(R.layout.sp_list_group, parent, false)
+        val groupBinding = SpListGroupBinding.inflate(LayoutInflater.from(context), parent, false)
+
+        groupBinding.listTitle.apply {
+            setTypeface(null, Typeface.BOLD)
+            text = listTitle
         }
 
-        val listTitleTextView: TextView = view.listTitle
-        listTitleTextView.setTypeface(null, Typeface.BOLD)
-        listTitleTextView.text = listTitle
-
-        return view
+        return groupBinding.root
     }
 
     override fun getChildView(
@@ -44,15 +39,11 @@ internal class SpPairsAdapter(
     ): View {
         val expandedListText = getChild(listPosition, expandedListPosition) as String
 
-        val view = convertView ?: run {
-            val layoutInflater: LayoutInflater =
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            layoutInflater.inflate(R.layout.sp_list_item, parent, false)
-        }
+        val itemBinding = SpListItemBinding.inflate(LayoutInflater.from(context), parent, false)
 
-        view.expandedListItem.text = expandedListText
+        itemBinding.expandedListItem.text = expandedListText
 
-        return view
+        return itemBinding.root
     }
 
     fun addAndClearElements(expandableList: SortedMap<String, List<String>>) {

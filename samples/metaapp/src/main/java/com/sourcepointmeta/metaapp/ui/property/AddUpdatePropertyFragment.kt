@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -16,21 +15,19 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepointmeta.metaapp.BuildConfig
 import com.sourcepointmeta.metaapp.R
+import com.sourcepointmeta.metaapp.databinding.AddPropertyFragmentBinding
+import com.sourcepointmeta.metaapp.databinding.AddTargetingParameterBinding
 import com.sourcepointmeta.metaapp.ui.BaseState
 import com.sourcepointmeta.metaapp.ui.component.addChip
 import com.sourcepointmeta.metaapp.ui.component.bind
 import com.sourcepointmeta.metaapp.ui.component.errorField
 import com.sourcepointmeta.metaapp.ui.component.toProperty
-import kotlinx.android.synthetic.main.activity_demo.*
-import kotlinx.android.synthetic.main.add_property_fragment.*
-import kotlinx.android.synthetic.main.add_property_fragment.tool_bar
-import kotlinx.android.synthetic.main.add_property_fragment.view.*
-import kotlinx.android.synthetic.main.add_targeting_parameter.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddUpdatePropertyFragment : Fragment() {
 
     private val viewModel by viewModel<AddUpdatePropertyViewModel>()
+    private lateinit var binding: AddPropertyFragmentBinding
 
     private val messageLanguage = MessageLanguage.values()
     private val pmTabs = PMTab.values()
@@ -48,14 +45,15 @@ class AddUpdatePropertyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.add_property_fragment, container, false)
+        binding = AddPropertyFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tool_bar.run {
+        binding.toolBar.run {
             title = "${BuildConfig.VERSION_NAME} - ${getString(R.string.add_prop_title)}"
             setNavigationOnClickListener { activity?.onBackPressed() }
         }
@@ -63,93 +61,90 @@ class AddUpdatePropertyFragment : Fragment() {
         val languages = messageLanguage.map { it.name }
         val messageLanguageAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, languages)
-        message_language_autocomplete.setAdapter(messageLanguageAdapter)
-        message_language_autocomplete.setText(languages.first { it.startsWith("ENG") })
-        message_language_autocomplete.threshold = 1
+        binding.messageLanguageAutocomplete.setAdapter(messageLanguageAdapter)
+        binding.messageLanguageAutocomplete.setText(languages.first { it.startsWith("ENG") })
+        binding.messageLanguageAutocomplete.threshold = 1
 
         val types = MessageType.values().map { it.name }
         val messageTypeAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, types)
-        message_type_autocomplete.setAdapter(messageTypeAdapter)
-        message_type_autocomplete.setText(types.first { it.startsWith("MOBILE") })
-        message_type_autocomplete.threshold = 1
+        binding.messageTypeAutocomplete.setAdapter(messageTypeAdapter)
+        binding.messageTypeAutocomplete.setText(types.first { it.startsWith("MOBILE") })
+        binding.messageTypeAutocomplete.threshold = 1
 
         val tabs = pmTabs.map { it.name }
         val pmTabsAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(requireContext(), R.layout.item_for_autocomplete, tabs)
-        pm_tab_autocomplete.setAdapter(pmTabsAdapter)
-        pm_tab_autocomplete.setText(tabs.first { it.startsWith("PUR") })
-        pm_tab_autocomplete.threshold = 1
+        binding.pmTabAutocomplete.setAdapter(pmTabsAdapter)
+        binding.pmTabAutocomplete.setText(tabs.first { it.startsWith("PUR") })
+        binding.pmTabAutocomplete.threshold = 1
 
         arguments?.getString("property_name")?.let { viewModel.fetchProperty(it) }
 
-        btn_targeting_params_gdpr.setOnClickListener {
+        binding.btnTargetingParamsGdpr.setOnClickListener {
+            val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
                 .setView(R.layout.add_targeting_parameter)
-                .setPositiveButton("Create") { dialog, _ ->
-                    (dialog as? AlertDialog)?.let { d ->
-                        val key = d.tp_key_ed.text
-                        val value = d.tp_value_et.text
-                        gdpr_chip_group.addChip("$key:$value")
-                    }
+                .setPositiveButton("Create") { _, _ ->
+                    val key = dialogBinding.tpKeyEd.text
+                    val value = dialogBinding.tpValueEt.text
+                    binding.gdprChipGroup.addChip("$key:$value")
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
 
-        btn_targeting_params_ccpa.setOnClickListener {
+        binding.btnTargetingParamsCcpa.setOnClickListener {
+            val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
                 .setView(R.layout.add_targeting_parameter)
-                .setPositiveButton("Create") { dialog, _ ->
-                    (dialog as? AlertDialog)?.let { d ->
-                        val key = d.tp_key_ed.text
-                        val value = d.tp_value_et.text
-                        ccpa_chip_group.addChip("$key:$value")
-                    }
+                .setPositiveButton("Create") { _, _ ->
+                    val key = dialogBinding.tpKeyEd.text
+                    val value = dialogBinding.tpValueEt.text
+                    binding.ccpaChipGroup.addChip("$key:$value")
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
 
-        btn_targeting_params_usnat.setOnClickListener {
+        binding.btnTargetingParamsUsnat.setOnClickListener {
+            val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
                 .setView(R.layout.add_targeting_parameter)
-                .setPositiveButton("Create") { dialog, _ ->
-                    (dialog as? AlertDialog)?.let { d ->
-                        val key = d.tp_key_ed.text
-                        val value = d.tp_value_et.text
-                        usnat_chip_group.addChip("$key:$value")
-                    }
+                .setPositiveButton("Create") { _, _ ->
+                    val key = dialogBinding.tpKeyEd.text
+                    val value = dialogBinding.tpValueEt.text
+                    binding.usnatChipGroup.addChip("$key:$value")
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
 
-        save_btn.setOnClickListener {
-            viewModel.createOrUpdateProperty(add_property_layout.toProperty())
+        binding.saveBtn.setOnClickListener {
+            viewModel.createOrUpdateProperty(binding.addPropertyLayout.toProperty(binding))
         }
 
-        gpp_switch.setOnCheckedChangeListener { _, isChecked ->
-            opt_out_option_radio_group.isEnabled = isChecked
-            service_provider_mode_radio_group.isEnabled = isChecked
-            opt_out_option_radio_na.isEnabled = isChecked
-            opt_out_option_radio_no.isEnabled = isChecked
-            opt_out_option_radio_yes.isEnabled = isChecked
-            service_provider_radio_na.isEnabled = isChecked
-            service_provider_radio_no.isEnabled = isChecked
-            service_provider_radio_yes.isEnabled = isChecked
-            gpp_field_coveredTransaction.isEnabled = isChecked
+        binding.gppSwitch.setOnCheckedChangeListener { _, isChecked ->
+            binding.optOutOptionRadioGroup.isEnabled = isChecked
+            binding.serviceProviderModeRadioGroup.isEnabled = isChecked
+            binding.optOutOptionRadioNa.isEnabled = isChecked
+            binding.optOutOptionRadioNo.isEnabled = isChecked
+            binding.optOutOptionRadioYes.isEnabled = isChecked
+            binding.serviceProviderRadioNa.isEnabled = isChecked
+            binding.serviceProviderRadioNo.isEnabled = isChecked
+            binding.serviceProviderRadioYes.isEnabled = isChecked
+            binding.gppFieldCoveredTransaction.isEnabled = isChecked
         }
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             when (it) {
                 is BaseState.StatePropertySaved -> propertySavedState()
-                is BaseState.StateProperty -> add_property_layout.bind(it.property)
+                is BaseState.StateProperty -> binding.addPropertyLayout.bind(it.property, binding)
                 is BaseState.StateError -> errorState(it)
-                is BaseState.StateErrorValidationField -> add_property_layout.errorField(it)
+                is BaseState.StateErrorValidationField -> binding.addPropertyLayout.errorField(it, binding)
                 else -> { }
             }
         }
