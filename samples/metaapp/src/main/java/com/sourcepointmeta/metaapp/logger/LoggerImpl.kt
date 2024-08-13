@@ -1,20 +1,16 @@
 package com.sourcepointmeta.metaapp.logger
 
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.* // ktlint-disable
 import android.util.Log
-import android.widget.TextView
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.* // ktlint-disable
 
+@OptIn(DelicateCoroutinesApi::class)
 internal class LoggerImpl(
     private val propertyName: String,
     private val ds: LocalDataSource,
@@ -264,52 +260,4 @@ internal class LoggerImpl(
             )
         }
     }
-}
-
-fun TextView.setColorOfSubstring(substring: String, color: Int) {
-    try {
-        val spannable = android.text.SpannableString(text)
-        val start = text.indexOf(substring)
-        spannable.setSpan(
-            ForegroundColorSpan(ContextCompat.getColor(context, color)),
-            start,
-            start + substring.length,
-            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        text = spannable
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-
-fun SpannableStringBuilder.spanText(span: Any): SpannableStringBuilder {
-    setSpan(span, 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-    return this
-}
-
-private fun String.toSpannable() = SpannableStringBuilder(this)
-
-fun String.foregroundColor(@ColorInt color: Int): SpannableStringBuilder {
-    val span = ForegroundColorSpan(color)
-    return toSpannable().spanText(span)
-}
-
-fun String.backgroundColor(@ColorInt color: Int): SpannableStringBuilder {
-    val span = BackgroundColorSpan(color)
-    return toSpannable().spanText(span)
-}
-
-fun String.relativeSize(size: Float): SpannableStringBuilder {
-    val span = RelativeSizeSpan(size)
-    return toSpannable().spanText(span)
-}
-
-fun String.supserscript(): SpannableStringBuilder {
-    val span = SuperscriptSpan()
-    return toSpannable().spanText(span)
-}
-
-fun String.strike(): SpannableStringBuilder {
-    val span = StrikethroughSpan()
-    return toSpannable().spanText(span)
 }

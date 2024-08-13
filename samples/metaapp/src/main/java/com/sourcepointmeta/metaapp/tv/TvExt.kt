@@ -66,7 +66,6 @@ fun FullWidthDetailsOverviewRowPresenter.setTransitionListener(
 }
 
 fun DetailsOverviewRow.arrayObjectAdapter(vararg pairs: Pair<Long, String>): DetailsOverviewRow {
-    val arr = ArrayObjectAdapter()
     pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(elem) } }
     actionsAdapter =
         pairs.fold(ArrayObjectAdapter()) { acc, elem -> acc.apply { add(Action(elem.first, elem.second)) } }
@@ -135,10 +134,10 @@ fun Activity.updatePropertyListAndGoBack() {
 fun DemoEventFragmentTv.bounceEventAndSelectFirstElement() {
     MainScope().launch {
         withContext(Dispatchers.Default) {
-            channel.send(0)
+            flow.emit(0)
         }
-        channel
-            .asFlow()
+
+        flow
             .debounce(300)
             .collect {
                 setSelectedPosition(0)

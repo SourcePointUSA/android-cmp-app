@@ -98,7 +98,7 @@ dependencies {
 
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.24")
 
     implementation(project(":cmplibrary"))
 
@@ -112,12 +112,12 @@ dependencies {
     implementation(Libs.vectorDrawable)
     implementation(Libs.androidxLifLivedata)
     implementation(Libs.androidxLifViewModel)
-    implementation("androidx.fragment:fragment-ktx:1.3.5")
-    implementation("androidx.core:core-ktx:1.5.0") // ext drawable
+    implementation("androidx.fragment:fragment-ktx:1.8.2")
+    implementation("androidx.core:core-ktx:1.13.1") // ext drawable
     implementation("io.github.g00fy2:versioncompare:1.4.1")
 
     // TV
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.leanback:leanback:1.0.0")
 
     // Koin

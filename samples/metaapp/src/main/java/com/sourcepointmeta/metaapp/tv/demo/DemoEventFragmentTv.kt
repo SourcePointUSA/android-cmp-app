@@ -17,7 +17,7 @@ import com.sourcepointmeta.metaapp.ui.component.LogItem
 import com.sourcepointmeta.metaapp.ui.eventlogs.LogViewModel
 import com.sourcepointmeta.metaapp.ui.eventlogs.composeEmail
 import com.sourcepointmeta.metaapp.ui.eventlogs.createFileWithContent
-import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedListener {
@@ -33,7 +33,7 @@ class DemoEventFragmentTv : VerticalGridSupportFragment(), OnItemViewClickedList
         }
     }
 
-    val channel = BroadcastChannel<Int>(1)
+    val flow = MutableStateFlow(1)
 
     var pmListener: ((CampaignType) -> Unit)? = null
     var flmListener: (() -> Unit)? = null
