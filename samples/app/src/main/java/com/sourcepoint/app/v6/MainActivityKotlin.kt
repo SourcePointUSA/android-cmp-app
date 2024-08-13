@@ -80,6 +80,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
         binding = ActivityMainV7Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
         binding.clearAll.setOnClickListener {
