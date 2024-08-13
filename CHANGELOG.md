@@ -1,3 +1,6 @@
+## 7.10.0 (August, 13, 2024)
+* [DIA-3574](https://sourcepoint.atlassian.net/browse/DIA-3574) Update all dependencies and Kotlin from 1.6 to 1.9.24. [#808](https://github.com/SourcePointUSA/android-cmp-app/pull/808)
+
 ## 7.9.0 (August, 07, 2024)
 * [DIA-4323](https://sourcepoint.atlassian.net/browse/DIA-4323) New feature enabling developers to programmatically reject all for a given user.[#828](https://github.com/SourcePointUSA/android-cmp-app/pull/828)
 * [DIA-3891](https://sourcepoint.atlassian.net/browse/DIA-3891) Handle Accept/Reject all actions from USNat messages.[#829](https://github.com/SourcePointUSA/android-cmp-app/pull/829)
