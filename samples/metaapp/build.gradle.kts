@@ -98,7 +98,7 @@ dependencies {
 
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.24")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
 
     implementation(project(":cmplibrary"))
 
