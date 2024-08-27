@@ -15,12 +15,17 @@ enum class MessageLanguage(val value: String) {
     GAELIC("GD"),
     GERMAN("DE"),
     GREEK("EL"),
+    HEBREW("HE"),
     HUNGARIAN("HU"),
     ICELANDIC("IS"),
+    INDONESIAN("ID"),
     ITALIAN("IT"),
     JAPANESE("JA"),
+    KOREAN("KO"),
     LATVIAN("LV"),
     LITHUANIAN("LT"),
+    MACEDONIAN("MK"),
+    MALAY("MS"),
     NORWEGIAN("NO"),
     POLISH("PL"),
     PORTUGUESE("PT"),
@@ -32,6 +37,6 @@ enum class MessageLanguage(val value: String) {
     SLOVENIAN("SL"),
     SPANISH("ES"),
     SWEDISH("SV"),
-    TURKISH("TR"),
-    TAGALOG("TL");
+    TAGALOG("TL"),
+    TURKISH("TR");
 }

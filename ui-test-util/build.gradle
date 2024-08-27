@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     namespace = "com.example.uitestutil"
     defaultConfig {
         minSdk 21
@@ -24,23 +24,23 @@ android {
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1"
 
     implementation(Libs.material)
 
-    implementation "androidx.test:runner:1.5.2"
-    androidTestUtil "androidx.test:orchestrator:1.4.2"
-    implementation "androidx.test:rules:1.5.0"
-    implementation "androidx.test.ext:junit-ktx:1.1.5"
-    implementation "androidx.test:core-ktx:1.5.0"
-    implementation "androidx.test.espresso:espresso-contrib:3.5.1"
+    implementation "androidx.test:runner:1.6.2"
+    androidTestUtil "androidx.test:orchestrator:1.5.0"
+    implementation "androidx.test:rules:1.6.1"
+    implementation "androidx.test.ext:junit-ktx:1.2.1"
+    implementation "androidx.test:core-ktx:1.6.1"
+    implementation "androidx.test.espresso:espresso-contrib:3.6.1"
 
     // Set this dependency to build and run Espresso tests espresso web
-    implementation "androidx.test.espresso:espresso-core:3.5.1"
-    implementation "androidx.test.espresso:espresso-web:3.5.1"
+    implementation "androidx.test.espresso:espresso-core:3.6.1"
+    implementation "androidx.test.espresso:espresso-web:3.6.1"
 
     // Activity rules for instrumentation test
-    implementation('androidx.test:rules:1.5.0') {
+    implementation('androidx.test:rules:1.6.1') {
         exclude module: 'support-annotations'
     }
 }

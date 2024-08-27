@@ -248,7 +248,7 @@ class MainActivityKotlinTest {
                 getInt("IABTCF_gdprApplies", -1).assertNotEquals(-1)
 
                 getString("IABTCF_TCString", null).assertNotNull()
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("00000000000")
                 getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
                 getString("IABTCF_PurposeConsents", null).assertNotNull()
                 getString("IABTCF_VendorLegitimateInterests", null).assertNotNull()
@@ -617,7 +617,7 @@ class MainActivityKotlinTest {
         scenario.onActivity {
             getSharedPrefs(it).run {
                 getString("IABTCF_AddtlConsent", null).assertEquals("1~")
-                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("0000000000")
+                getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("00000000000")
                 getString("IABTCF_TCString", null).assertNotNull()
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
                 getInt("IABTCF_CmpSdkID", -1).assertNotEquals(-1)

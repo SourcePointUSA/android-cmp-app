@@ -8,15 +8,11 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
 class App : Application() {
-
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            // Use Koin Android Logger
-            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
-            // declare Android context
+            androidLogger(Level.ERROR)
             androidContext(this@App)
-            // declare modules to use
             modules(appModule)
         }
     }
