@@ -79,11 +79,11 @@ dependencies {
 //    implementation 'com.sourcepoint.cmplibrary:cmplibrary:6.0.3'
 
     // Koin
-    implementation "org.koin:koin-core:2.0.1"
-    implementation "org.koin:koin-core-ext:2.0.1"
-    implementation "org.koin:koin-android:2.0.1"
-    implementation "org.koin:koin-java:2.0.1"
-    androidTestImplementation "org.koin:koin-test:2.0.1"
+    implementation "io.insert-koin:koin-core:2.0.1"
+    implementation "io.insert-koin:koin-core-ext:2.0.1"
+    implementation "io.insert-koin:koin-android:2.0.1"
+    implementation "io.insert-koin:koin-java:2.0.1"
+    androidTestImplementation "io.insert-koin:koin-test:2.0.1"
 
     // mockk
     testImplementation("io.mockk:mockk:1.12.3")
