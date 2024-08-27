@@ -1,3 +1,7 @@
+## 7.10.1 (August, 27, 2024)
+* [DIA-3942](https://sourcepoint.atlassian.net/browse/DIA-3942) Update all dependencies and Kotlin from 1.6 to 1.9.24. [#830](https://github.com/SourcePointUSA/android-cmp-app/pull/830)
+* Updated sample apps dependencies and project Kotlin version to 1.9.25 [#831](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
+
 ## 7.10.0 (August, 13, 2024)
 * [DIA-3574](https://sourcepoint.atlassian.net/browse/DIA-3574) Update all dependencies and Kotlin from 1.6 to 1.9.24. [#808](https://github.com/SourcePointUSA/android-cmp-app/pull/808)
 
