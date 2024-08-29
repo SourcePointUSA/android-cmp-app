@@ -23,10 +23,11 @@ buildscript {
 }
 
 plugins {
-    id 'io.github.dryrum.update-changelog' version '0.6.4'
-    id 'io.github.dryrum.replace-in-file' version '0.6.4'
-    id 'io.github.dryrum.git-utils' version '0.6.4'
-    id 'io.github.dryrum.bump-version-code' version '0.6.4'
+    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'io.github.dryrum.update-changelog' version '0.7.0'
+    id 'io.github.dryrum.replace-in-file' version '0.7.0'
+    id 'io.github.dryrum.git-utils' version '0.7.0'
+    id 'io.github.dryrum.bump-version-code' version '0.7.0'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.25'
 }
 

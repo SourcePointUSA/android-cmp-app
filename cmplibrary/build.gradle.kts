@@ -93,18 +93,15 @@ android {
 }
 
 dependencies {
-    // kotlin
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.1")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.0")
+    // kotlinx-serialization-json >= 1.7.x requires Kotlin 2.0
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    //noinspection GradleDependency
-    api("com.squareup.okhttp3:okhttp:4.9.0")
-
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1")
-
-    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("io.mockk:mockk:1.13.12")
 }
 
 tasks.register("versionTxt") {

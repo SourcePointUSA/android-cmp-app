@@ -102,7 +102,7 @@ dependencies {
 
     implementation(project(":cmplibrary"))
 
-    api(Libs.okHttpLatest)
+    implementation(Libs.okHttpLatest)
 
     // UI
     implementation(Libs.androidxAppcompat)
@@ -114,7 +114,7 @@ dependencies {
     implementation(Libs.androidxLifViewModel)
     implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.13.1") // ext drawable
-    implementation("io.github.g00fy2:versioncompare:1.4.1")
+    implementation("io.github.g00fy2:versioncompare:1.5.0")
 
     // TV
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -125,17 +125,17 @@ dependencies {
     implementation(Libs.koinViewModel)
 
     // SQLDelight
-    implementation("com.squareup.sqldelight:android-driver:1.5.4")
-    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.4")
+    implementation("com.squareup.sqldelight:android-driver:1.5.5")
+    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.5")
 
     // tv
     implementation(Libs.leanback)
     implementation(Libs.leanback_pref)
 
     // unit-test
-    testImplementation("io.mockk:mockk:1.12.3")
-    androidTestImplementation("io.insert-koin:koin-test:2.2.3")
-    androidTestImplementation("io.mockk:mockk-android:1.12.3")
+    testImplementation("io.mockk:mockk:1.13.12")
+    androidTestImplementation("io.insert-koin:koin-test:3.5.6")
+    androidTestImplementation("io.mockk:mockk-android:1.13.12")
 }
 
 versionCodePropPath {
