@@ -16,6 +16,7 @@ internal interface ClientEventManager {
     fun setAction(action: ConsentActionImpl)
     fun setAction(action: NativeMessageActionType)
     fun checkIfAllCampaignsWereProcessed()
+    var isFirstLayerMessage: Boolean
     companion object
 }
 
@@ -36,7 +37,7 @@ private class ClientEventManagerImpl(
 ) : ClientEventManager {
 
     private var campaignsToProcess: Int = Int.MAX_VALUE
-    private var isFirstLayerMessage = true
+    override var isFirstLayerMessage = true
 
     override fun setCampaignsToProcess(numberOfCampaigns: Int) {
         campaignsToProcess = numberOfCampaigns
