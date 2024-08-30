@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
@@ -33,48 +32,6 @@ class MainActivityKotlinAuthIdTest {
         if (this::scenario.isLateinit) scenario.close()
     }
 
-    private val spConfCcpa = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.CCPA)
-    }
-
-    private val spConfGdpr = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.GDPR)
-    }
-
-    private val toggoConfig = config {
-        accountId = 1631
-        propertyId = 18893
-        propertyName = "TOGGO-App-iOS"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-    }
-
-    private val spConfGdprNoMessage = config {
-        accountId = 22
-        propertyId = 29498
-        propertyName = "ott-ccpa-22"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-    }
-
-    private val spConfGdprGroupId = config {
-        accountId = 22
-        propertyId = 24188
-        propertyName = "mobile.prop-1"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056" )
-    }
 
     private val spConf = config {
         accountId = 22
@@ -93,15 +50,6 @@ class MainActivityKotlinAuthIdTest {
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
         +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
-    }
-
-    private val spConfNative = config {
-        accountId = 22
-        propertyId = 18958
-        propertyName = "mobile.multicampaign.native.demo" // gdprPmId = 545258
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
     }
 
     @Test

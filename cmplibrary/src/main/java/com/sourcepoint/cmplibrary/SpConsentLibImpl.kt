@@ -706,11 +706,7 @@ internal class SpConsentLibImpl(
                     spClient.onAction(view, actionImpl) as? ConsentActionImpl
                 }
             }
-            CUSTOM -> {
-                executor.executeOnSingleThread {
-                    spClient.onAction(view, actionImpl) as? ConsentActionImpl
-                }
-            }
+            CUSTOM,
             MSG_CANCEL,
             PM_DISMISS -> {
                 executor.executeOnSingleThread {
