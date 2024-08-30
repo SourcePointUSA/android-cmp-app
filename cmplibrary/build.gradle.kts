@@ -99,10 +99,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.0")
 
-    //noinspection GradleDependency
-    api("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     testImplementation("io.mockk:mockk:1.12.3")
 }
