@@ -1,5 +1,7 @@
 package com.sourcepoint.app.v6
 
+import android.app.Activity
+import android.preference.PreferenceManager
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
@@ -16,7 +18,6 @@ import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonPrimitive
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,6 +33,7 @@ class MainActivityKotlinAuthIdTest {
         if (this::scenario.isLateinit) scenario.close()
     }
 
+    private fun getSharedPrefs(activity: Activity) = PreferenceManager.getDefaultSharedPreferences(activity)
 
     private val spConf = config {
         accountId = 22
@@ -106,7 +108,9 @@ class MainActivityKotlinAuthIdTest {
         wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
             it.usNat!!.consent.run {
-                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YNN")
+                scenario.onActivity { activity ->
+                    getSharedPrefs(activity).getString("IABUSPrivacy_String", null).assertEquals("1YNN")
+                }
                 applies.assertTrue()
                 statuses.consentedToAll!!.assertTrue()
                 uuid.assertNotNull()
