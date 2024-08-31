@@ -14,8 +14,8 @@ import com.sourcepointmeta.metaapp.databinding.PropertyItemBinding
 
 class PlayDemoGroup : FrameLayout {
 
-    private val binding: PropertyItemBinding = PropertyItemBinding
-        .inflate(LayoutInflater.from(context), this, true)
+//    private val binding: PropertyItemBinding = PropertyItemBinding
+//        .inflate(LayoutInflater.from(context), this, true)
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -27,9 +27,9 @@ class PlayDemoGroup : FrameLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        val spec = CircularProgressIndicatorSpec(context, /*attrs=*/null, 0, R.style.Widget_MaterialComponents_CircularProgressIndicator_ExtraSmall)
+        val spec = CircularProgressIndicatorSpec(context, /*attrs=*/null, 0)
         val progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(context, spec)
-        binding.catProgressIndicatorChip?.chipIcon = progressIndicatorDrawable
+//        binding.catProgressIndicatorChip?.chipIcon = progressIndicatorDrawable
     }
 }
 

@@ -55,14 +55,14 @@ abstract class JsonViewerBaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvJson.run {
-            setKeyColor(colorJsonKey)
-            setValueTextColor(colorJsonValueText)
-            setValueNumberColor(colorJsonValueNumber)
-            setValueUrlColor(colorJsonValueUrl)
-            setValueNullColor(colorJsonValueNull)
-            setBracesColor(colorJsonValueBraces)
-            setTextSize(16.toFloat())
-        }
+//        binding.rvJson.run {
+//            setKeyColor(colorJsonKey)
+//            setValueTextColor(colorJsonValueText)
+//            setValueNumberColor(colorJsonValueNumber)
+//            setValueUrlColor(colorJsonValueUrl)
+//            setValueNullColor(colorJsonValueNull)
+//            setBracesColor(colorJsonValueBraces)
+//            setTextSize(16.toFloat())
+//        }
     }
 }

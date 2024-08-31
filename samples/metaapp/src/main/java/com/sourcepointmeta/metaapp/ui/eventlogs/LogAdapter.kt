@@ -34,11 +34,12 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
     private fun Vh.bind(iv: LogItem, pos: Int) {
         binding.checkbox.setOnCheckedChangeListener { _, isChecked -> addId(isChecked, iv.id) }
         binding.root.setOnClickListener {
-            check { JSONObject(iv.jsonBody) }
-                .getOrNull()
-                ?.let { itemClickListener?.invoke(iv) }
+            iv.jsonBody?.let {
+                itemClickListener?.invoke(iv)
+            }
         }
-        this.bind(iv, pos)
+        binding.logBody.text = iv.jsonBody
+        binding.logTitle.text = iv.message
     }
 
     private fun addId(checked: Boolean, id: Long?) {
