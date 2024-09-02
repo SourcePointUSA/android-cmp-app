@@ -57,7 +57,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Test
@@ -180,7 +179,9 @@ class MainActivityKotlinTest {
         verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
         wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
             it.usNat!!.consent.run {
-                (gppData["IABUSPrivacy_String"] as JsonPrimitive).content.assertEquals("1YNN")
+                scenario.onActivity { activity ->
+                    getSharedPrefs(activity).getString("IABUSPrivacy_String", null).assertEquals("1YNN")
+                }
                 applies.assertTrue()
                 statuses.consentedToAll!!.assertTrue()
                 uuid.assertNotNull()

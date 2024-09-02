@@ -2,20 +2,16 @@ package com.sourcepointmeta.metaapp.ui.component
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import com.google.android.material.chip.Chip
-import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
-import com.google.android.material.progressindicator.IndeterminateDrawable
 import com.sourcepointmeta.metaapp.R
-import com.sourcepointmeta.metaapp.databinding.PropertyItemBinding
 
 class PlayDemoGroup : FrameLayout {
 
-    private val binding: PropertyItemBinding = PropertyItemBinding
-        .inflate(LayoutInflater.from(context), this, true)
+//    private val binding: PropertyItemBinding = PropertyItemBinding
+//        .inflate(LayoutInflater.from(context), this, true)
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -25,12 +21,12 @@ class PlayDemoGroup : FrameLayout {
         defStyleAttr
     )
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        val spec = CircularProgressIndicatorSpec(context, /*attrs=*/null, 0, R.style.Widget_MaterialComponents_CircularProgressIndicator_ExtraSmall)
-        val progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(context, spec)
-        binding.catProgressIndicatorChip?.chipIcon = progressIndicatorDrawable
-    }
+//    override fun onFinishInflate() {
+//        super.onFinishInflate()
+//        val spec = CircularProgressIndicatorSpec(context, /*attrs=*/null, 0)
+//        val progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(context, spec)
+//        binding.catProgressIndicatorChip?.chipIcon = progressIndicatorDrawable
+//    }
 }
 
 var PlayDemoGroup.saving: Boolean

@@ -41,9 +41,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:hint="Property Id"
-                app:helperText="Property name"
+                app:helperText="Property Id"
                 app:helperTextEnabled="true"
-                app:placeholderText="i.e. mobile.prop.com">
+                app:placeholderText="123">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/prop_id_ed"
                     android:maxLines="1"
