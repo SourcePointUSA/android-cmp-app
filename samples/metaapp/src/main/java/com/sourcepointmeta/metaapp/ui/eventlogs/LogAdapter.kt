@@ -3,11 +3,8 @@ package com.sourcepointmeta.metaapp.ui.eventlogs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.databinding.ItemLogBinding
 import com.sourcepointmeta.metaapp.ui.component.LogItem
-import com.sourcepointmeta.metaapp.util.check
-import org.json.JSONObject
 
 class LogAdapter : RecyclerView.Adapter<LogAdapter.Vh>() {
 
