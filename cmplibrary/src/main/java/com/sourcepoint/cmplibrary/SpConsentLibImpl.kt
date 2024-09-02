@@ -602,36 +602,40 @@ internal class SpConsentLibImpl(
                 pJsonConverter
                     .toConsentAction(actionData)
                     .map { ca ->
-                        onActionFromWebViewClient(ca, view)
-                        if (ca.actionType != SHOW_OPTIONS) {
-                            val legislation = nextCampaign.type
-                            val url = nextCampaign.url
-                            when (nextCampaign.messageSubCategory) {
-                                TCFv2, OTT, NATIVE_OTT -> {
-                                    executor.executeOnMain {
-                                        view.loadConsentUI(
-                                            nextCampaign,
-                                            url,
-                                            legislation
-                                        )
+                        if(ca.actionType == PM_DISMISS && clientEventManager.isFirstLayerMessage) {
+                            onAction(view, actionData)
+                        } else {
+                            onActionFromWebViewClient(ca, view)
+                            if (ca.actionType != SHOW_OPTIONS) {
+                                val legislation = nextCampaign.type
+                                val url = nextCampaign.url
+                                when (nextCampaign.messageSubCategory) {
+                                    TCFv2, OTT, NATIVE_OTT -> {
+                                        executor.executeOnMain {
+                                            view.loadConsentUI(
+                                                nextCampaign,
+                                                url,
+                                                legislation
+                                            )
+                                        }
                                     }
-                                }
-                                NATIVE_IN_APP -> {
-                                    executor.executeOnMain {
-                                        viewManager.removeView(view)
-                                        currentNativeMessageCampaign = nextCampaign
-                                        spClient.onNativeMessageReady(
-                                            nextCampaign.message.toNativeMessageDTO(
-                                                dataStorage = dataStorage,
-                                                campaignType = legislation
-                                            ),
-                                            this@SpConsentLibImpl
-                                        )
-                                        pLogger.nativeMessageAction(
-                                            tag = "onNativeMessageReady",
-                                            msg = "onNativeMessageReady",
-                                            json = nextCampaign.message
-                                        )
+                                    NATIVE_IN_APP -> {
+                                        executor.executeOnMain {
+                                            viewManager.removeView(view)
+                                            currentNativeMessageCampaign = nextCampaign
+                                            spClient.onNativeMessageReady(
+                                                nextCampaign.message.toNativeMessageDTO(
+                                                    dataStorage = dataStorage,
+                                                    campaignType = legislation
+                                                ),
+                                                this@SpConsentLibImpl
+                                            )
+                                            pLogger.nativeMessageAction(
+                                                tag = "onNativeMessageReady",
+                                                msg = "onNativeMessageReady",
+                                                json = nextCampaign.message
+                                            )
+                                        }
                                     }
                                 }
                             }
