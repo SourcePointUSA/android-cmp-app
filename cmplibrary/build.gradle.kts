@@ -16,7 +16,6 @@ val versionLib = project.property("VERSION_NAME") as String
 group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
-@Suppress("UnstableApiUsage")
 android {
     compileSdk = 34
     namespace = "com.sourcepoint.cmplibrary"
@@ -93,17 +92,20 @@ android {
 }
 
 dependencies {
+    implementation("com.sourcepoint:core:0.0.5")
+
     // kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
+    // kotlinx-serialization-json > 1.6.3 requires kotlin 2.0.x
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("io.mockk:mockk:1.13.12")
 }
 
 tasks.register("versionTxt") {
