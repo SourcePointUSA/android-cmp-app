@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils.Companion.DEFAULT_SAMPLE_RATE
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
@@ -16,7 +17,7 @@ internal fun toPvDataBody(
     ccpaMessageMetaData: MessageMetaData?,
     ccpaCS: CcpaCS?,
     usNatCS: USNatConsentData?,
-    metaDataResp: MetaDataResp?,
+    metaDataResp: MetaDataResponse?,
     pubData: JsonObject = JsonObject(mapOf())
 ): JsonObject {
     return buildJsonObject {
@@ -61,12 +62,12 @@ internal fun toPvDataBody(
                 buildJsonObject {
                     put("uuid", cs.uuid)
                     put("accountId", accountId)
-                    put("applies", metaDataResp?.usNat?.applies)
+                    put("applies", metaDataResp?.usnat?.applies)
                     put("siteId", propertyId)
                     cs.consentStatus?.let { put("consentStatus", JsonConverter.converter.encodeToJsonElement(it)) }
                     put("messageId", usNatCS.messageMetaData?.messageId)
                     put("uuid", cs.uuid)
-                    put("sampleRate", metaDataResp?.usNat?.sampleRate ?: DEFAULT_SAMPLE_RATE)
+                    put("sampleRate", metaDataResp?.usnat?.sampleRate ?: DEFAULT_SAMPLE_RATE)
                     put("pubData", pubData)
                 }
             )

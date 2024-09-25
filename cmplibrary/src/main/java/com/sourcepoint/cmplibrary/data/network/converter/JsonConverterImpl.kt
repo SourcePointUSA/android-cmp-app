@@ -77,10 +77,6 @@ private class JsonConverterImpl : JsonConverter {
         JSONObject(body).toTreeMap().toNativeMessageDto()
     }
 
-    override fun toMetaDataRespResp(body: String): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
-        JsonConverter.converter.decodeFromString(body)
-    }
-
     override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
         JsonConverter.converter.decodeFromString(body)
     }

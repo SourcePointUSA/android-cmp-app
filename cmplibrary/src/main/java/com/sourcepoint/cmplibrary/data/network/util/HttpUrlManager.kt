@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CustomConsentReq
@@ -31,7 +30,6 @@ internal interface HttpUrlManager {
     ): HttpUrl
 
     // Optimized
-    fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl
     fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
     fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
@@ -165,22 +163,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
                 pmConf.uuid?.let { addQueryParameter("uuid", it) }
                 pmConf.messageId?.let { addQueryParameter("message_id", it) }
             }
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    override fun getMetaDataUrl(param: MetaDataParamReq): HttpUrl {
-        // http://localhost:3000/wrapper/v2/meta-data?env=localProd&accountId=22&propertyId=17801&metadata={"gdpr": {}, "ccpa": {}}
-
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(param.env.host)
-            .addPathSegments("wrapper/v2/meta-data")
-            .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("accountId", param.accountId.toString())
-            .addQueryParameter("propertyId", param.propertyId.toString())
-            .addEncodedQueryParameter("metadata", param.metadata)
             .addQueryParameter("scriptType", scriptType)
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()

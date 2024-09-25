@@ -1,16 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
-import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataArg.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus.* //ktlint-disable
-import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.hasTransitionCCPAAuth
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
-import kotlinx.serialization.encodeToString
 
 internal fun UsNatArg.createMetadataArg(campaignManager: CampaignManager): UsNatArg {
 
@@ -45,6 +40,3 @@ internal fun UsNatArg.createMetadataArg(campaignManager: CampaignManager): UsNat
         optedOut = optedOut,
     )
 }
-
-internal fun MetaDataParamReq.stringify(): String =
-    check { JsonConverter.converter.encodeToString(this) }.getOrNull() ?: "{}"

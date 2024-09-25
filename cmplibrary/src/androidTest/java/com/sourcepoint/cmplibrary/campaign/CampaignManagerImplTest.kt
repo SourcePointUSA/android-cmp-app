@@ -19,7 +19,6 @@ import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.TargetingParam
 import com.sourcepoint.cmplibrary.util.file2String
-import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test

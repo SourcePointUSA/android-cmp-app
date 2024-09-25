@@ -14,7 +14,6 @@ internal interface ResponseManager {
     fun parseCustomConsentRes(r: Response): CustomConsentResp
 
     // Optimized
-    fun parseMetaDataRes(r: Response): MetaDataResp
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp
     fun parsePostGdprChoiceResp(r: Response): GdprCS
