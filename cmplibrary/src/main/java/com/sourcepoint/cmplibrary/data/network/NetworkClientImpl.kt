@@ -23,6 +23,10 @@ import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.network.SourcepointClient
+import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -30,17 +34,31 @@ import okhttp3.Request
 import okhttp3.RequestBody
 
 internal fun createNetworkClient(
+    accountId: Int,
+    propertyId: Int,
+    propertyName: String,
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
     logger: Logger,
     responseManager: ResponseManager
-): NetworkClient = NetworkClientImpl(httpClient, urlManager, logger, responseManager)
+): NetworkClient = NetworkClientImpl(
+    httpClient,
+    urlManager,
+    logger,
+    responseManager,
+    coreClient = SourcepointClient(
+        accountId = accountId,
+        propertyId = propertyId,
+        propertyName = propertyName
+    )
+)
 
 private class NetworkClientImpl(
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val logger: Logger,
     private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create(), logger),
+    private val coreClient: SourcepointClient
 ) : NetworkClient {
 
     override fun sendCustomConsent(
