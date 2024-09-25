@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
@@ -113,24 +112,8 @@ private class NetworkClientImpl(
         responseManager.parseCustomConsentRes(response)
     }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
-        val url = urlManager.getMetaDataUrl(param)
-
-        logger.req(
-            tag = "getMetaData",
-            url = url.toString(),
-            body = param.stringify(),
-            type = "GET"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseMetaDataRes(response)
+    override fun getMetaData(campaigns: MetaDataRequest.Campaigns) = runBlocking {
+        coreClient.getMetaData(campaigns)
     }
 
     override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {

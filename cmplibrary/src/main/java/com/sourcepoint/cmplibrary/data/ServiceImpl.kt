@@ -23,13 +23,17 @@ import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus.rejectedAll
+import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus.rejectedSome
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.toJsonElement
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
-import kotlinx.serialization.decodeFromString
+import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -148,20 +152,33 @@ internal class ServiceImpl(
 
             campaignManager.deleteExpiredConsents()
 
-            val metadataResponse = this.getMetaData(messageReq.toMetaDataParamReq(campaigns4Config))
-                .executeOnRight { metaDataResponse -> handleMetaDataResponse(metaDataResponse) }
-                .executeOnLeft { metaDataError ->
-                    onFailure(metaDataError, true)
-                    return@executeOnWorkerThread
-                }
+            val metadataResponse: MetaDataResponse
+
+            try {
+                metadataResponse = networkClient.getMetaData(campaigns = MetaDataRequest.Campaigns(
+                    gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let {
+                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                    },
+                    usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let {
+                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                    },
+                    ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let {
+                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                    }
+                ))
+                handleMetaDataResponse(metadataResponse)
+            } catch (error: Throwable) {
+                onFailure(error, true)
+                return@executeOnWorkerThread
+            }
 
             campaignManager.consentStatusLog(messageReq.authId)
             if (campaignManager.shouldCallConsentStatus(messageReq.authId)) {
                 triggerConsentStatus(
                     messageReq = messageReq,
-                    gdprApplies = metadataResponse.getOrNull()?.gdpr?.applies,
-                    ccpaApplies = metadataResponse.getOrNull()?.ccpa?.applies,
-                    usNatApplies = metadataResponse.getOrNull()?.usNat?.applies,
+                    gdprApplies = metadataResponse.gdpr?.applies,
+                    ccpaApplies = metadataResponse.ccpa?.applies,
+                    usNatApplies = metadataResponse.usnat?.applies,
                 )
                     .executeOnLeft { consentStatusError ->
                         onFailure(consentStatusError, true)
@@ -200,7 +217,48 @@ internal class ServiceImpl(
                         campaignEnv = campaignManager.spConfig.campaignsEnv,
                         includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                     ).toString(),
-                    metadataArg = metadataResponse.getOrNull()?.toMetaDataArg(),
+                    metadataArg = MetaDataArg(
+                        gdpr = metadataResponse.gdpr?.let { gdpr ->
+                            MetaDataArg.GdprArg(
+                                applies = gdpr.applies,
+                                hasLocalData = gdprUuid != null,
+                                groupPmId = getGroupId(GDPR),
+                                targetingParams =
+                                    campaigns4Config.firstOrNull { it.campaignType == GDPR }?.targetingParams?.toJsonElement(),
+                                uuid = gdprUuid
+                            )
+                        },
+                        usNat = metadataResponse.usnat?.let { usnat ->
+                            var optedOut = false
+                            var dateCreated = usNatConsentData?.dateCreated
+                            if (ccpaConsentStatus != null &&
+                                campaignManager.usNatConsentData == null &&
+                                (ccpaConsentStatus?.status == rejectedSome || ccpaConsentStatus?.status == rejectedAll)
+                            ) {
+                                optedOut = true
+                                dateCreated = ccpaConsentStatus?.dateCreated
+                            }
+                            MetaDataArg.UsNatArg(
+                                applies = usnat.applies,
+                                hasLocalData = usNatConsentData?.uuid != null,
+                                groupPmId = getGroupId(USNAT),
+                                targetingParams = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.targetingParams?.toJsonElement(),
+                                uuid = usNatConsentData?.uuid,
+                                transitionCCPAAuth = spConfig.hasTransitionCCPAAuth() && campaignManager.authId != null,
+                                optedOut = optedOut,
+                                dateCreated = dateCreated
+                            )
+                        },
+                        ccpa = metadataResponse.ccpa?.let { ccpa ->
+                            MetaDataArg.CcpaArg(
+                                applies = ccpa.applies,
+                                hasLocalData = ccpaUuid != null,
+                                groupPmId = getGroupId(CCPA),
+                                targetingParams = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.targetingParams?.toJsonElement(),
+                                uuid = ccpaUuid
+                            )
+                        },
+                    ),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
                     localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
                 )
@@ -246,13 +304,13 @@ internal class ServiceImpl(
                             campaignManager.run {
                                 if ((messageReq.authId != null || campaignManager.shouldCallConsentStatus(messageReq.authId)).not()) {
                                     if (spConfig.isIncluded(GDPR)) {
-                                        this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.getOrNull()?.gdpr?.applies)
+                                        this.gdprConsentStatus = it.campaigns?.gdpr?.toGdprCS(metadataResponse.gdpr?.applies)
                                     }
                                     if (spConfig.isIncluded(CCPA)) {
-                                        this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.getOrNull()?.ccpa?.applies)
+                                        this.ccpaConsentStatus = it.campaigns?.ccpa?.toCcpaCS(metadataResponse.ccpa?.applies)
                                     }
                                     if (spConfig.isIncluded(USNAT)) {
-                                        this.usNatConsentData = usNatConsentData?.copy(applies = metadataResponse.getOrNull()?.usNat?.applies)
+                                        this.usNatConsentData = usNatConsentData?.copy(applies = metadataResponse.usnat?.applies)
                                     }
                                 }
                             }
@@ -387,7 +445,9 @@ internal class ServiceImpl(
                 accountId = spConfig.accountId.toLong(),
                 propertyId = spConfig.propertyId.toLong(),
                 env = env,
-                metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(ccpa = null, usNat = null),
+                metadataArg = GetChoiceParamReq.MetaData(
+                    gdpr = GetChoiceParamReq.MetaData.Campaign(applies = metaDataResp?.gdpr?.applies ?: false)
+                ),
                 includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
             )
 
@@ -481,7 +541,9 @@ internal class ServiceImpl(
                     accountId = spConfig.accountId.toLong(),
                     propertyId = spConfig.propertyId.toLong(),
                     env = env,
-                    metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, usNat = null),
+                    metadataArg = GetChoiceParamReq.MetaData(
+                        ccpa = GetChoiceParamReq.MetaData.Campaign(applies = metaDataResp?.ccpa?.applies ?: false)
+                    ),
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
             )
@@ -574,7 +636,9 @@ internal class ServiceImpl(
                     accountId = spConfig.accountId.toLong(),
                     propertyId = spConfig.propertyId.toLong(),
                     env = env,
-                    metadataArg = campaignManager.metaDataResp?.toMetaDataArg()?.copy(gdpr = null, ccpa = null),
+                    metadataArg = GetChoiceParamReq.MetaData(
+                        usnat = GetChoiceParamReq.MetaData.Campaign(applies = metaDataResp?.usnat?.applies ?: false)
+                    ),
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
             )
@@ -618,7 +682,7 @@ internal class ServiceImpl(
                     sendPvData = dataStorage.usnatSampled,
                     sampleRate = dataStorage.usnatSampleRate,
                     uuid = campaignManager.usNatConsentData?.uuid,
-                    vendorListId = campaignManager.metaDataResp?.usNat?.vendorListId,
+                    vendorListId = campaignManager.metaDataResp?.usnat?.vendorListId,
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),
                     authId = campaignManager.authId
                 ),

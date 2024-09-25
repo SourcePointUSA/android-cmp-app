@@ -26,7 +26,7 @@ import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.updateCcpaUspString
-import kotlinx.serialization.decodeFromString
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -91,7 +91,7 @@ internal interface CampaignManager {
     var gdprDateCreated: String?
     var ccpaDateCreated: String?
 
-    var metaDataResp: MetaDataResp?
+    var metaDataResp: MetaDataResponse?
     var choiceResp: ChoiceResp?
     var dataRecordedConsent: Instant?
     var authId: String?
@@ -103,7 +103,7 @@ internal interface CampaignManager {
     val usnatAdditionsChangeDate: String?
 
     fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
-    fun handleMetaDataResponse(response: MetaDataResp?)
+    fun handleMetaDataResponse(response: MetaDataResponse?)
     fun handleOldLocalData()
     fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
     fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
@@ -113,7 +113,7 @@ internal interface CampaignManager {
     fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
     fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
-    fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean
+    fun hasUsnatApplicableSectionsChanged(usnatMetaData: MetaDataResponse.MetaDataResponseUSNat?): Boolean
     fun consentStatusLog(authId: String?)
 
     companion object {
@@ -629,7 +629,7 @@ private class CampaignManagerImpl(
         get() {
             return dataStorage.usNatConsentData
                 ?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
-                ?.copy(applies = metaDataResp?.usNat?.applies)
+                ?.copy(applies = metaDataResp?.usnat?.applies)
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
@@ -691,7 +691,7 @@ private class CampaignManagerImpl(
         get() = metaDataResp?.gdpr?.legalBasisChangeDate
 
     override val usnatAdditionsChangeDate: String?
-        get() = metaDataResp?.usNat?.additionsChangeDate
+        get() = metaDataResp?.usnat?.additionsChangeDate
 
     override fun handleAuthIdOrPropertyIdChange(
         newAuthId: String?,
@@ -717,16 +717,16 @@ private class CampaignManagerImpl(
         propertyId = newPropertyId
     }
 
-    override fun handleMetaDataResponse(response: MetaDataResp?) {
+    override fun handleMetaDataResponse(response: MetaDataResponse?) {
         if (hasGdprVendorListIdChanged(gdprVendorListId = response?.gdpr?.vendorListId)) {
             dataStorage.deleteGdprConsent()
         }
 
-        if (hasUsNatVendorListIdChanged(usNatVendorListId = response?.usNat?.vendorListId)) {
+        if (hasUsNatVendorListIdChanged(usNatVendorListId = response?.usnat?.vendorListId)) {
             dataStorage.deleteUsNatConsent()
         }
 
-        usnatApplicableSectionChanged = hasUsnatApplicableSectionsChanged(response)
+        usnatApplicableSectionChanged = hasUsnatApplicableSectionsChanged(response?.usnat)
 
         metaDataResp = response
 
@@ -738,9 +738,9 @@ private class CampaignManagerImpl(
                 uspstring = updateCcpaUspString(ccpaConsentStatus, logger)
             )
 
-            ccpa.sampleRate?.let { newRate ->
-                if (newRate != dataStorage.ccpaSampleRate) {
-                    dataStorage.ccpaSampleRate = newRate
+            ccpa.sampleRate.let { newRate ->
+                if (newRate.toDouble() != dataStorage.ccpaSampleRate) {
+                    dataStorage.ccpaSampleRate = newRate.toDouble()
                     dataStorage.ccpaSampled = null
                 }
             }
@@ -750,30 +750,30 @@ private class CampaignManagerImpl(
             gdprConsentStatus = gdprConsentStatus?.copy(applies = gdpr.applies)
 
             gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
-            gdpr.sampleRate?.let { newRate ->
-                if (newRate != dataStorage.gdprSampleRate) {
-                    dataStorage.gdprSampleRate = newRate
+            gdpr.sampleRate.let { newRate ->
+                if (newRate.toDouble() != dataStorage.gdprSampleRate) {
+                    dataStorage.gdprSampleRate = newRate.toDouble()
                     dataStorage.gdprSampled = null
                 }
             }
         }
 
-        response.usNat?.let { usnat ->
+        response.usnat?.let { usnat ->
             usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
-            usnat.sampleRate?.let { newRate ->
-                if (newRate != dataStorage.usnatSampleRate) {
-                    dataStorage.usnatSampleRate = newRate
+            usnat.sampleRate.let { newRate ->
+                if (newRate.toDouble() != dataStorage.usnatSampleRate) {
+                    dataStorage.usnatSampleRate = newRate.toDouble()
                     dataStorage.usnatSampled = null
                 }
             }
         }
     }
 
-    override fun hasUsnatApplicableSectionsChanged(response: MetaDataResp?): Boolean {
-        if (!spConfig.isIncluded(USNAT) || metaDataResp?.usNat == null || response == null) {
+    override fun hasUsnatApplicableSectionsChanged(usnatMetaData: MetaDataResponse.MetaDataResponseUSNat?): Boolean {
+        if (!spConfig.isIncluded(USNAT) || metaDataResp?.usnat == null || usnatMetaData == null) {
             return false
         }
-        return metaDataResp?.usNat?.applicableSections != response.usNat?.applicableSections
+        return metaDataResp?.usnat?.applicableSections != usnatMetaData.applicableSections
     }
 
     override fun hasGdprVendorListIdChanged(gdprVendorListId: String?): Boolean {
@@ -783,7 +783,7 @@ private class CampaignManagerImpl(
     }
 
     override fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean {
-        val storedUsNatVendorListId = metaDataResp?.usNat?.vendorListId
+        val storedUsNatVendorListId = metaDataResp?.usnat?.vendorListId
         return usNatVendorListId != null && storedUsNatVendorListId != null &&
             storedUsNatVendorListId != usNatVendorListId
     }
@@ -911,9 +911,9 @@ private class CampaignManagerImpl(
             dataStorage.ccpaDateCreated = value
         }
 
-    override var metaDataResp: MetaDataResp?
+    override var metaDataResp: MetaDataResponse?
         get() {
-            return dataStorage.metaDataResp?.let { JsonConverter.converter.decodeFromString<MetaDataResp>(it) }
+            return dataStorage.metaDataResp?.let { JsonConverter.converter.decodeFromString<MetaDataResponse>(it) }
         }
         set(value) {
             val serialised = value?.let { JsonConverter.converter.encodeToString(value) }

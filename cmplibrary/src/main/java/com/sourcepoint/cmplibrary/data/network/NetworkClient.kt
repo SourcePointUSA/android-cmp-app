@@ -4,11 +4,12 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 
 const val DEFAULT_TIMEOUT = 10000L
 
@@ -27,10 +28,7 @@ internal interface NetworkClient {
         env: Env
     ): Either<CustomConsentResp>
 
-    // Optimized
-    fun getMetaData(
-        param: MetaDataParamReq
-    ): Either<MetaDataResp>
+    fun getMetaData(campaigns: MetaDataRequest.Campaigns): MetaDataResponse
 
     fun getConsentStatus(
         param: ConsentStatusParamReq
