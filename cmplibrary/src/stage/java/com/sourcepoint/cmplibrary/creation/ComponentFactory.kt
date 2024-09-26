@@ -20,10 +20,10 @@ internal fun networkClient(
     netClient: OkHttpClient,
     responseManage: ResponseManager,
     logger: Logger
-): = createNetworkClient(
-    accountId: accountId,
-    propertyId: propertyId,
-    propertyName: propertyName,
+) = createNetworkClient(
+    accountId = accountId,
+    propertyId = propertyId,
+    propertyName = propertyName,
     httpClient = netClient,
     responseManager = responseManage,
     urlManager = HttpUrlManagerSingleton,
