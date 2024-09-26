@@ -86,10 +86,10 @@ class Builder {
             accountId = spc.accountId,
             propertyId = spc.propertyId,
             propertyName = spc.propertyName,
-            appCtx,
-            okHttpClient,
-            responseManager,
-            logger
+            appCtx = appCtx,
+            netClient = okHttpClient,
+            responseManage = responseManager,
+            logger = logger,
         )
         val viewManager = ViewsManager.create(activityWeakRef, connManager, spc.messageTimeout)
         val execManager = ExecutorManager.create(appCtx)

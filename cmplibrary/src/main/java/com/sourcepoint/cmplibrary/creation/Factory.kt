@@ -66,10 +66,10 @@ fun makeConsentLib(
         accountId = spConfig.accountId,
         propertyId = spConfig.propertyId,
         propertyName = spConfig.propertyName,
-        appCtx,
-        okHttpClient,
-        responseManager,
-        logger,
+        appCtx = appCtx,
+        netClient = okHttpClient,
+        responseManage = responseManager,
+        logger = logger,
     )
     val viewManager = ViewsManager.create(WeakReference<Activity>(activity), connManager, spConfig.messageTimeout)
     val execManager = ExecutorManager.create(appCtx)
