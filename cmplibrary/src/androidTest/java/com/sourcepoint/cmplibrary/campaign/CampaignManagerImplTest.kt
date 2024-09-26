@@ -358,13 +358,13 @@ class CampaignManagerImplTest {
     fun resets_usnatSampled_when_usnatSampleRate_changes() {
         dataStorage.usnatSampleRate = 1.0
         dataStorage.usnatSampled = true
-        val newRate = 0.5f
+        val newRate = 0.5
         campaignManager.handleMetaDataResponse(
             MetaDataResponse(
                 gdpr = null,
                 usnat = MetaDataResponse.MetaDataResponseUSNat(
                     applies = false,
-                    sampleRate = newRate,
+                    sampleRate = newRate.toFloat(),
                     additionsChangeDate = "",
                     applicableSections = emptyList(),
                     vendorListId = ""
@@ -380,13 +380,13 @@ class CampaignManagerImplTest {
     fun calls_pvData_if_sampled_true() {
         dataStorage.usnatSampleRate = 1.0
         dataStorage.usnatSampled = true
-        val newRate = 0.5f
+        val newRate = 0.5
         campaignManager.handleMetaDataResponse(
             MetaDataResponse(
                 gdpr = null,
                 usnat = MetaDataResponse.MetaDataResponseUSNat(
                     applies = false,
-                    sampleRate = newRate,
+                    sampleRate = newRate.toFloat(),
                     additionsChangeDate = "",
                     applicableSections = emptyList(),
                     vendorListId = ""
