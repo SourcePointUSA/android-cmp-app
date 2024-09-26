@@ -314,7 +314,7 @@ class CampaignManagerTest {
     fun `GIVEN a different applicableSections compared with the stored one RETURN true`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 
@@ -328,14 +328,14 @@ class CampaignManagerTest {
     fun `GIVEN an applicableSections without changes compared with the stored one RETURN false`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}} 
             """.trimIndent()
         )
 
         CampaignManager
             .create(dataStorage, spConfigWithUsnat)
-            .hasUsnatApplicableSectionsChanged(createMetaDataResp(sections = listOf(8)).usnat)
-            .assertTrue()
+            .hasUsnatApplicableSectionsChanged(createMetaDataResp(sections = listOf(7)).usnat)
+            .assertFalse()
     }
 
     @Test
@@ -343,7 +343,7 @@ class CampaignManagerTest {
 
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 
@@ -366,7 +366,7 @@ class CampaignManagerTest {
     fun `GIVEN an applicableSections without usnat configured RETURN false`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 

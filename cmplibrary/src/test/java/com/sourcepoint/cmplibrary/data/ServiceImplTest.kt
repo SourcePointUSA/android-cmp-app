@@ -207,26 +207,20 @@ class ServiceImplTest {
 
     @Test
     fun `GIVEN a custom consent THROWS an exception`() {
-        val newConsent = "custom_consent/new_consent.json".file2String()
-
-        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
         every { cm.gdprConsentStatus } answers { null }
 
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
-        (res as? Left).assertNotNull()
+        (Service
+            .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+            .sendCustomConsentServ(mockk(), Env.STAGE) as? Left).assertNotNull()
     }
 
     @Test
     fun `GIVEN a deleted custom consent THROWS an exception`() {
-        val newConsent = "custom_consent/new_consent.json".file2String()
+        every { cm.gdprConsentStatus } answers { null }
 
-        every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { ds.getGdprConsentResp() }.throws(RuntimeException("test"))
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        val res = sut.sendCustomConsentServ(mockk(), Env.STAGE)
-        (res as? Left).assertNotNull()
+        (Service
+            .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+            .deleteCustomConsentToServ(mockk(), Env.STAGE) as? Left).assertNotNull()
     }
 
     @Test
@@ -364,20 +358,12 @@ class ServiceImplTest {
      */
     @Test
     fun `getMessages - WHEN called THEN should always have UUIDs for GDPR and CCPA`() {
-        // GIVEN
-        val mockMessagesParamReq = messagesParamReq.copy(
-            authId = "mock_auth_id"
-        )
+        val mockMessagesParamReq = messagesParamReq.copy(authId = "mock_auth_id")
         val mockCampaignsList = listOf(
-            SpCampaign(
-                campaignType = CampaignType.GDPR
-            ),
-            SpCampaign(
-                campaignType = CampaignType.CCPA
-            ),
+            SpCampaign(campaignType = CampaignType.GDPR),
+            SpCampaign(campaignType = CampaignType.CCPA),
         )
 
-        // WHEN
         every { cm.shouldCallMessages } returns true
         every { cm.shouldCallConsentStatus(any()) } returns true
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
@@ -387,6 +373,7 @@ class ServiceImplTest {
         every { ds.gdprSampled } returns null
         every { cmu.sample(any()) } returns true
         every { ncMock.getMetaData(any()) } returns mockMetaDataResp
+        every { ncMock.getConsentStatus(any()) } returns Right(mockConsentStatusResp)
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
         every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
 
@@ -398,7 +385,6 @@ class ServiceImplTest {
             onFailure = errorMock,
         )
 
-        // THEN
         verify(exactly = 1) { ncMock.getMetaData(any()) }
         verify(exactly = 1) { ncMock.getConsentStatus(any()) }
         verify(exactly = 1) { ncMock.getMessages(any()) }
