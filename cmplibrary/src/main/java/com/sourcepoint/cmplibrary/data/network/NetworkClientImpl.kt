@@ -24,7 +24,6 @@ import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
-import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType

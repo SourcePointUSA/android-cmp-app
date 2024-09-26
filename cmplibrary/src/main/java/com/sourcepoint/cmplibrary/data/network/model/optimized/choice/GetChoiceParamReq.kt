@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.choice
 
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataArg
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject

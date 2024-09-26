@@ -602,7 +602,7 @@ internal class SpConsentLibImpl(
                 pJsonConverter
                     .toConsentAction(actionData)
                     .map { ca ->
-                        if(ca.actionType == PM_DISMISS && clientEventManager.isFirstLayerMessage) {
+                        if (ca.actionType == PM_DISMISS && clientEventManager.isFirstLayerMessage) {
                             onAction(view, actionData)
                         } else {
                             onActionFromWebViewClient(ca, view)

@@ -155,17 +155,19 @@ internal class ServiceImpl(
             val metadataResponse: MetaDataResponse
 
             try {
-                metadataResponse = networkClient.getMetaData(campaigns = MetaDataRequest.Campaigns(
-                    gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let {
-                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
-                    },
-                    usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let {
-                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
-                    },
-                    ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let {
-                        MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
-                    }
-                ))
+                metadataResponse = networkClient.getMetaData(
+                    campaigns = MetaDataRequest.Campaigns(
+                        gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let {
+                            MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                        },
+                        usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let {
+                            MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                        },
+                        ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let {
+                            MetaDataRequest.Campaigns.Campaign(groupPmId = it.groupPmId)
+                        }
+                    )
+                )
                 handleMetaDataResponse(metadataResponse)
             } catch (error: Throwable) {
                 onFailure(error, true)
@@ -223,8 +225,7 @@ internal class ServiceImpl(
                                 applies = gdpr.applies,
                                 hasLocalData = gdprUuid != null,
                                 groupPmId = getGroupId(GDPR),
-                                targetingParams =
-                                    campaigns4Config.firstOrNull { it.campaignType == GDPR }?.targetingParams?.toJsonElement(),
+                                targetingParams = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.targetingParams?.toJsonElement(),
                                 uuid = gdprUuid
                             )
                         },
@@ -637,7 +638,9 @@ internal class ServiceImpl(
                     propertyId = spConfig.propertyId.toLong(),
                     env = env,
                     metadataArg = GetChoiceParamReq.MetaData(
-                        usnat = GetChoiceParamReq.MetaData.Campaign(applies = metaDataResp?.usnat?.applies ?: false)
+                        usnat = GetChoiceParamReq.MetaData.Campaign(
+                            applies = metaDataResp?.usnat?.applies ?: false
+                        )
                     ),
                     includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
                 )
