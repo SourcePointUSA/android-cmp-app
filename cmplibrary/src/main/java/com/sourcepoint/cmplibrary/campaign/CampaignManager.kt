@@ -740,7 +740,7 @@ private class CampaignManagerImpl(
             )
 
             ccpa.sampleRate.let { newRate ->
-                if (newRate.toDouble().almostSameAs(dataStorage.ccpaSampleRate)) {
+                if (!newRate.toDouble().almostSameAs(dataStorage.ccpaSampleRate)) {
                     dataStorage.ccpaSampleRate = newRate.toDouble()
                     dataStorage.ccpaSampled = null
                 }
@@ -752,7 +752,7 @@ private class CampaignManagerImpl(
 
             gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
             gdpr.sampleRate.let { newRate ->
-                if (newRate.toDouble().almostSameAs(dataStorage.gdprSampleRate)) {
+                if (!newRate.toDouble().almostSameAs(dataStorage.gdprSampleRate)) {
                     dataStorage.gdprSampleRate = newRate.toDouble()
                     dataStorage.gdprSampled = null
                 }
@@ -762,7 +762,7 @@ private class CampaignManagerImpl(
         response.usnat?.let { usnat ->
             usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
             usnat.sampleRate.let { newRate ->
-                if (newRate.toDouble().almostSameAs(dataStorage.usnatSampleRate)) {
+                if (!newRate.toDouble().almostSameAs(dataStorage.usnatSampleRate)) {
                     dataStorage.usnatSampleRate = newRate.toDouble()
                     dataStorage.usnatSampled = null
                 }
