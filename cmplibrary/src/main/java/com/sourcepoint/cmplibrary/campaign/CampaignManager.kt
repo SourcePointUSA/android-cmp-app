@@ -35,6 +35,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.* //ktlint-disable
+import kotlin.math.abs
 
 internal interface CampaignManager {
     val spConfig: SpConfig
@@ -739,7 +740,7 @@ private class CampaignManagerImpl(
             )
 
             ccpa.sampleRate.let { newRate ->
-                if (newRate.toDouble() != dataStorage.ccpaSampleRate) {
+                if (newRate.toDouble().almostSameAs(dataStorage.ccpaSampleRate)) {
                     dataStorage.ccpaSampleRate = newRate.toDouble()
                     dataStorage.ccpaSampled = null
                 }
@@ -751,7 +752,7 @@ private class CampaignManagerImpl(
 
             gdpr.childPmId?.let { dataStorage.gdprChildPmId = it }
             gdpr.sampleRate.let { newRate ->
-                if (newRate.toDouble() != dataStorage.gdprSampleRate) {
+                if (newRate.toDouble().almostSameAs(dataStorage.gdprSampleRate)) {
                     dataStorage.gdprSampleRate = newRate.toDouble()
                     dataStorage.gdprSampled = null
                 }
@@ -761,7 +762,7 @@ private class CampaignManagerImpl(
         response.usnat?.let { usnat ->
             usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
             usnat.sampleRate.let { newRate ->
-                if (newRate.toDouble() != dataStorage.usnatSampleRate) {
+                if (newRate.toDouble().almostSameAs(dataStorage.usnatSampleRate)) {
                     dataStorage.usnatSampleRate = newRate.toDouble()
                     dataStorage.usnatSampled = null
                 }
@@ -1022,3 +1023,5 @@ private class CampaignManagerImpl(
         )
     }
 }
+
+fun Double.almostSameAs(other: Double) = abs(this - other) < 0.000001
