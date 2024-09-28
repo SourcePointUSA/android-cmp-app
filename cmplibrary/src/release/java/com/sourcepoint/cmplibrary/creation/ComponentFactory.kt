@@ -12,11 +12,20 @@ import okhttp3.OkHttpClient
 
 internal fun getConnectionManager(appCtx: Context): ConnectionManager = ConnectionManager.create(appCtx)
 
-internal fun networkClient(appCtx: Context, netClient: OkHttpClient, responseManage: ResponseManager, logger: Logger): NetworkClient {
-    return createNetworkClient(
-        httpClient = netClient,
-        responseManager = responseManage,
-        urlManager = HttpUrlManagerSingleton,
-        logger = logger
-    )
-}
+internal fun networkClient(
+    accountId: Int,
+    propertyId: Int,
+    propertyName: String,
+    appCtx: Context,
+    netClient: OkHttpClient,
+    responseManage: ResponseManager,
+    logger: Logger
+) = createNetworkClient(
+    accountId = accountId,
+    propertyId = propertyId,
+    propertyName = propertyName,
+    httpClient = netClient,
+    responseManager = responseManage,
+    urlManager = HttpUrlManagerSingleton,
+    logger = logger
+)

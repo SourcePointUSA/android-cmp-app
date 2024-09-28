@@ -22,9 +22,8 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.PV_DATA_RESP
 import com.sourcepoint.cmplibrary.data.local.DataStorage.Companion.SAVED_CONSENT
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.util.check
-import kotlinx.serialization.decodeFromString
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 
 /**
  * Factory method to create an instance of a [DataStorage] using its implementation
@@ -95,21 +94,21 @@ private class DataStorageImpl(
      */
     override val ccpaApplies: Boolean
         get() = metaDataResp?.let { metaData ->
-            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).ccpa }
+            check { JsonConverter.converter.decodeFromString<MetaDataResponse>(metaData).ccpa }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false
 
     override val usNatApplies: Boolean
         get() = metaDataResp?.let { metaData ->
-            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).usNat }
+            check { JsonConverter.converter.decodeFromString<MetaDataResponse>(metaData).usnat }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false
 
     override val gdprApplies: Boolean
         get() = metaDataResp?.let { metaData ->
-            check { JsonConverter.converter.decodeFromString<MetaDataResp>(metaData).gdpr }
+            check { JsonConverter.converter.decodeFromString<MetaDataResponse>(metaData).gdpr }
                 .getOrNull()
                 ?.applies ?: false
         } ?: false

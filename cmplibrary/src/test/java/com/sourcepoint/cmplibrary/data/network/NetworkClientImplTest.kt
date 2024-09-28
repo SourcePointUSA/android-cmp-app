@@ -48,6 +48,9 @@ class NetworkClientImplTest {
 
     private val sut by lazy {
         createNetworkClient(
+            accountId = 123,
+            propertyId = 123,
+            propertyName = "",
             httpClient = okHttp,
             responseManager = responseManager,
             urlManager = HttpUrlManagerSingleton,
@@ -177,64 +180,6 @@ class NetworkClientImplTest {
 
         val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Left
         res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE getMetaData and VERIFY that the result is a RIGHT obj`() {
-        val respConsent = JSONObject("v7/meta_data.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
-
-        val param = MetaDataParamReq(
-            accountId = 22,
-            propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
-            env = Env.LOCAL_PROD
-        )
-
-        val res = sut.getMetaData(param) as? Either.Right<MetaDataResp>
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE getMetaData THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("v7/meta_data.json".file2String())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(RuntimeException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
-
-        val param = MetaDataParamReq(
-            accountId = 22,
-            propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
-            env = Env.LOCAL_PROD
-        )
-
-        val res = sut.getMetaData(param) as? Either.Left
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE getMetaData THROWS an InterruptedIOException and the result is a LEFT obj`() {
-        val respConsent = JSONObject()
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
-        every { responseManager.parseMetaDataRes(any()) }.returns(MetaDataResp(null, null, null))
-
-        val param = MetaDataParamReq(
-            accountId = 22,
-            propertyId = 17801,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
-            env = Env.LOCAL_PROD
-        )
-
-        val res = sut.getMetaData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.META_DATA.apiPostfix)
     }
 
     @Test

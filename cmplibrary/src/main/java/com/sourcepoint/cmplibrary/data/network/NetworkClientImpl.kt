@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
@@ -23,6 +22,9 @@ import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.network.SourcepointClient
+import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -30,17 +32,31 @@ import okhttp3.Request
 import okhttp3.RequestBody
 
 internal fun createNetworkClient(
+    accountId: Int,
+    propertyId: Int,
+    propertyName: String,
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
     logger: Logger,
     responseManager: ResponseManager
-): NetworkClient = NetworkClientImpl(httpClient, urlManager, logger, responseManager)
+): NetworkClient = NetworkClientImpl(
+    httpClient,
+    urlManager,
+    logger,
+    responseManager,
+    coreClient = SourcepointClient(
+        accountId = accountId,
+        propertyId = propertyId,
+        propertyName = propertyName
+    )
+)
 
 private class NetworkClientImpl(
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val urlManager: HttpUrlManager = HttpUrlManagerSingleton,
     private val logger: Logger,
     private val responseManager: ResponseManager = ResponseManager.create(JsonConverter.create(), logger),
+    private val coreClient: SourcepointClient
 ) : NetworkClient {
 
     override fun sendCustomConsent(
@@ -95,24 +111,8 @@ private class NetworkClientImpl(
         responseManager.parseCustomConsentRes(response)
     }
 
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> = check(ApiRequestPostfix.META_DATA) {
-        val url = urlManager.getMetaDataUrl(param)
-
-        logger.req(
-            tag = "getMetaData",
-            url = url.toString(),
-            body = param.stringify(),
-            type = "GET"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseMetaDataRes(response)
+    override fun getMetaData(campaigns: MetaDataRequest.Campaigns) = runBlocking {
+        coreClient.getMetaData(campaigns)
     }
 
     override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {

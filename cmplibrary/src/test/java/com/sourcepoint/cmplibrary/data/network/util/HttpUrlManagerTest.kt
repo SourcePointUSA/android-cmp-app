@@ -16,7 +16,6 @@ import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.file2String
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
@@ -321,18 +320,6 @@ class HttpUrlManagerTest {
         )
         val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messageType = LEGACY_OTT,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&is_ccpa=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env getMetaData RETURN the prod link`() {
-        val param = MetaDataParamReq(
-            accountId = 22,
-            env = Env.PROD,
-            metadata = JSONObject("""{"gdpr": {}, "ccpa": {}}""").toString(),
-            propertyId = 17801
-        )
-        val sut = HttpUrlManagerSingleton.getMetaDataUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/meta-data?env=prod&accountId=22&propertyId=17801&metadata={%22gdpr%22:{},%22ccpa%22:{}}&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
     }
 
     @Test

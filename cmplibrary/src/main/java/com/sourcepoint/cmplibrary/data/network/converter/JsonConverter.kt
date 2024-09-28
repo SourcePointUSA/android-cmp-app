@@ -27,9 +27,6 @@ internal interface JsonConverter {
 
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
-    // Optimized
-    fun toMetaDataRespResp(body: String): Either<MetaDataResp>
-
     fun toConsentStatusResp(body: String): Either<ConsentStatusResp>
 
     fun toChoiceResp(body: String): Either<ChoiceResp>

@@ -2,10 +2,13 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import kotlinx.serialization.json.encodeToJsonElement
 
 data class SpConfig(
     @JvmField val accountId: Int,
@@ -49,6 +52,13 @@ data class SpCampaign(
 }
 
 data class TargetingParam(val key: String, val value: String)
+
+fun List<TargetingParam>.toJsonElement() = JsonConverter.converter.encodeToJsonElement(
+    fold(mutableMapOf<String, String>()) { params, targetingParam ->
+        params[targetingParam.key] = targetingParam.value
+        return@fold params
+    }
+)
 
 fun Pair<String, String>.toTParam() = TargetingParam(this.first, this.second)
 

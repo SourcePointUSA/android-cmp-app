@@ -49,30 +49,6 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parseMetaDataRes(r: Response): MetaDataResp {
-        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
-        val status = r.code
-        val mess = r.message
-        logger.res(
-            tag = "MetaDataResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
-        return if (r.isSuccessful) {
-            when (val either: Either<MetaDataResp> = jsonConverter.toMetaDataRespResp(body)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
-            }
-        } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.META_DATA.apiPostfix,
-                httpStatusCode = "_$status",
-            )
-        }
-    }
-
     override fun parseConsentStatusResp(r: Response): ConsentStatusResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code

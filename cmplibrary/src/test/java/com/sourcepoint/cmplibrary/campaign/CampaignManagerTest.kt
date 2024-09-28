@@ -5,15 +5,14 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 import org.junit.Before
@@ -313,30 +312,30 @@ class CampaignManagerTest {
 
     @Test
     fun `GIVEN a different applicableSections compared with the stored one RETURN true`() {
-
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 
-        val response = createMetaDataResp(""" [ 8 ] """)
-        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
-        sut.hasUsnatApplicableSectionsChanged(response).assertTrue()
+        CampaignManager
+            .create(dataStorage, spConfigWithUsnat)
+            .hasUsnatApplicableSectionsChanged(createMetaDataResp(sections = listOf(8)).usnat)
+            .assertTrue()
     }
 
     @Test
     fun `GIVEN an applicableSections without changes compared with the stored one RETURN false`() {
-
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}} 
             """.trimIndent()
         )
 
-        val response = createMetaDataResp(""" [ 8 ] """)
-        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
-        sut.hasUsnatApplicableSectionsChanged(response).assertTrue()
+        CampaignManager
+            .create(dataStorage, spConfigWithUsnat)
+            .hasUsnatApplicableSectionsChanged(createMetaDataResp(sections = listOf(7)).usnat)
+            .assertFalse()
     }
 
     @Test
@@ -344,7 +343,7 @@ class CampaignManagerTest {
 
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 
@@ -355,36 +354,35 @@ class CampaignManagerTest {
 
     @Test
     fun `GIVEN metaDataResp obj null RETURN false`() {
-
         every { dataStorage.metaDataResp }.returns(null)
 
-        val response = null
-        val sut = CampaignManager.create(dataStorage, spConfigWithUsnat)
-        sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
+        CampaignManager
+            .create(dataStorage, spConfigWithUsnat)
+            .hasUsnatApplicableSectionsChanged(null)
+            .assertFalse()
     }
 
     @Test
     fun `GIVEN an applicableSections without usnat configured RETURN false`() {
-
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7]}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
             """.trimIndent()
         )
 
-        val response = createMetaDataResp(""" [ 7 ] """)
-
-        val sut = CampaignManager.create(dataStorage, spConfigWithoutUsnat)
-        sut.hasUsnatApplicableSectionsChanged(response).assertFalse()
+        CampaignManager
+            .create(dataStorage, spConfigWithUsnat)
+            .hasUsnatApplicableSectionsChanged(createMetaDataResp(sections = listOf(7)).usnat)
+            .assertFalse()
     }
 
-    private fun createMetaDataResp(json: String) = MetaDataResp(
-        usNat = MetaDataResp.USNat(
-            vendorListId = null,
+    private fun createMetaDataResp(sections: List<Int>) = MetaDataResponse(
+        usnat = MetaDataResponse.MetaDataResponseUSNat(
+            vendorListId = "",
             applies = true,
-            sampleRate = null,
-            additionsChangeDate = null,
-            applicableSections = Json.parseToJsonElement(json),
+            sampleRate = 1.0f,
+            additionsChangeDate = "",
+            applicableSections = sections,
         ),
         ccpa = null,
         gdpr = null

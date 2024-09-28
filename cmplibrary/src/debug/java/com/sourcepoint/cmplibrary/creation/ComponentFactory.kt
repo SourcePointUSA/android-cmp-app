@@ -8,13 +8,13 @@ import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.MetaDataResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import okhttp3.OkHttpClient
 
 internal fun getConnectionManager(appCtx: Context): ConnectionManager {
@@ -38,13 +38,24 @@ internal fun getConnectionManager(appCtx: Context): ConnectionManager {
     return mockObject ?: ConnectionManager.create(appCtx)
 }
 
-internal fun networkClient(appCtx: Context, netClient: OkHttpClient, responseManage: ResponseManager, logger: Logger): NetworkClient {
+internal fun networkClient(
+    accountId: Int,
+    propertyId: Int,
+    propertyName: String,
+    appCtx: Context,
+    netClient: OkHttpClient,
+    responseManage: ResponseManager,
+    logger: Logger
+): NetworkClient {
 
     val nc = createNetworkClient(
         httpClient = netClient,
         responseManager = responseManage,
         urlManager = HttpUrlManagerSingleton,
-        logger = logger
+        logger = logger,
+        accountId = accountId,
+        propertyId = propertyId,
+        propertyName = propertyName
     )
 
     val mockObject: NetworkClient? = com.sourcepoint.cmplibrary.util.check {
@@ -66,18 +77,14 @@ internal fun networkClient(appCtx: Context, netClient: OkHttpClient, responseMan
 }
 
 internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient by nc {
-    override fun getMetaData(param: MetaDataParamReq): Either<MetaDataResp> {
-        return Either.Right(
-            MetaDataResp(
-                gdpr = null,
-                ccpa = MetaDataResp.Ccpa(
-                    sampleRate = 1.0,
-                    applies = applies
-                ),
-                usNat = null
-            )
-        )
-    }
+    override fun getMetaData(campaigns: MetaDataRequest.Campaigns) = MetaDataResponse(
+        gdpr = null,
+        ccpa = MetaDataResponse.MetaDataResponseCCPA(
+            applies = applies,
+            sampleRate = 1.0f
+        ),
+        usnat = null
+    )
 }
 
 internal class NCMockStoreChoiceException(nc: NetworkClient) : NetworkClient by nc {
