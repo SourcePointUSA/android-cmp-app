@@ -54,9 +54,9 @@ data class SpCampaign(
 data class TargetingParam(val key: String, val value: String)
 
 fun List<TargetingParam>.toJsonElement() = JsonConverter.converter.encodeToJsonElement(
-    fold(mutableMapOf<String, String>()) { acc, targetingParam ->
-        acc[targetingParam.key] = targetingParam.value
-        return@fold acc
+    fold(mutableMapOf<String, String>()) { params, targetingParam ->
+        params[targetingParam.key] = targetingParam.value
+        return@fold params
     }
 )
 

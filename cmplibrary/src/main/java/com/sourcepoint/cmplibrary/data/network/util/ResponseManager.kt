@@ -6,14 +6,9 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceType
 import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 
-/**
- * Component used to parse an OkHttp [Response] and extract a DTO
- */
 internal interface ResponseManager {
-
     fun parseCustomConsentRes(r: Response): CustomConsentResp
 
-    // Optimized
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp
     fun parsePostGdprChoiceResp(r: Response): GdprCS
