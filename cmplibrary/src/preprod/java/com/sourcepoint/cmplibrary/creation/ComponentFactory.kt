@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient

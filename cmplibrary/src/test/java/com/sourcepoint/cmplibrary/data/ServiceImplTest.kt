@@ -209,18 +209,22 @@ class ServiceImplTest {
     fun `GIVEN a custom consent THROWS an exception`() {
         every { cm.gdprConsentStatus } answers { null }
 
-        (Service
-            .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-            .sendCustomConsentServ(mockk(), Env.STAGE) as? Left).assertNotNull()
+        (
+            Service
+                .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+                .sendCustomConsentServ(mockk(), Env.STAGE) as? Left
+            ).assertNotNull()
     }
 
     @Test
     fun `GIVEN a deleted custom consent THROWS an exception`() {
         every { cm.gdprConsentStatus } answers { null }
 
-        (Service
-            .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-            .deleteCustomConsentToServ(mockk(), Env.STAGE) as? Left).assertNotNull()
+        (
+            Service
+                .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
+                .deleteCustomConsentToServ(mockk(), Env.STAGE) as? Left
+            ).assertNotNull()
     }
 
     @Test
