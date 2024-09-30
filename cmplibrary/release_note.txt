@@ -1,2 +1,4 @@
-* [DIA-3942](https://sourcepoint.atlassian.net/browse/DIA-3942) Update all dependencies and Kotlin from 1.6 to 1.9.24. [#830](https://github.com/SourcePointUSA/android-cmp-app/pull/830)
-* Updated sample apps dependencies and project Kotlin version to 1.9.25 [#831](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
+* [DIA-4092](https://sourcepoint.atlassian.net/browse/DIA-4092) Fixed an issue preventing the cancel button on USNat messages from dismissing the consent layer. [#833](https://github.com/SourcePointUSA/android-cmp-app/pull/833)
+* [DIA-4456](https://sourcepoint.atlassian.net/browse/DIA-4456) Refactored network client to use [mobile-core](https://github.com/SourcePointUSA/mobile-core/) `/meta-data` implementation. [#835](https://github.com/SourcePointUSA/android-cmp-app/pull/835)
+* Updated project dependencies and plugins [#831](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
+* Fixed an issue preventing the MetaApp from launching
