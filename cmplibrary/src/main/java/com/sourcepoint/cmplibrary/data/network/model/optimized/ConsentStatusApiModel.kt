@@ -10,6 +10,9 @@ import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.ConsentableImpl
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.consents.CCPAConsent
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent
+import com.sourcepoint.mobile_core.models.consents.USNatConsent
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -36,24 +39,10 @@ enum class GranularState {
 
 enum class GCMStatus(val status: String) {
     GRANTED("granted"),
-    DENIED("denied"),
-}
+    DENIED("denied");
 
-@Serializable
-data class ConsentStatusResp(
-    @SerialName("consentStatusData") val consentStatusData: ConsentStatusData?,
-    @SerialName("localState") val localState: JsonElement?
-) {
-    @Serializable
-    data class ConsentStatusData(
-        @SerialName("ccpa") val ccpa: CcpaCS?,
-        @SerialName("gdpr") val gdpr: GdprCS?,
-        @SerialName("usnat") val usnat: USNatConsentData?,
-    )
-
-    override fun toString(): String {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-            ?: super.toString()
+    companion object {
+        fun firstWithStatusOrNull(status: String?) = entries.firstOrNull { it.status == status }
     }
 }
 
@@ -74,7 +63,24 @@ data class CcpaCS(
     @SerialName("uuid") var uuid: String?,
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String?,
-)
+) {
+    fun copyingFrom(core: CCPAConsent?, applies: Boolean?): CcpaCS {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            rejectedVendors = core.rejectedVendors,
+            rejectedCategories = core.rejectedCategories,
+            signedLspa = core.signedLspa,
+            status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status.name.lowercase() },
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            uuid = core.uuid,
+            webConsentPayload = JsonObject(emptyMap()),// TODO: either change this from json to string or parse it JsonConverterImpl.converter.decodeFromString(core.webConsentPayload),
+            gppData = core.gppData
+        )
+    }
+}
 
 @Serializable
 data class USNatConsentData(
@@ -92,6 +98,42 @@ data class USNatConsentData(
     @SerialName("expirationDate") override val expirationDate: String? = null,
     val userConsents: UserConsents? = null
 ) : CampaignMessage {
+    fun copyingFrom(core: USNatConsent?, applies: Boolean?): USNatConsentData {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            uuid = core.uuid,
+            webConsentPayload = JsonObject(emptyMap()),// TODO: either change this from json to string or parse it JsonConverterImpl.converter.decodeFromString(core.webConsentPayload),
+            gppData = core.gppData,
+            consentStrings = core.consentStrings.map {
+                ConsentString(
+                    sectionId = it.sectionId,
+                    sectionName = it.sectionName,
+                    consentString = it.consentString
+                )
+            },
+            consentStatus = USNatConsentStatus(
+                rejectedAny = core.consentStatus.rejectedAny,
+                consentedToAll = core.consentStatus.consentedToAll,
+                consentedToAny = core.consentStatus.consentedToAny,
+                vendorListAdditions = core.consentStatus.vendorListAdditions,
+                hasConsentData = core.consentStatus.hasConsentData,
+                granularStatus = USNatConsentStatus.USNatGranularStatus(
+                    sellStatus = core.consentStatus.granularStatus?.sellStatus,
+                    shareStatus = core.consentStatus.granularStatus?.shareStatus,
+                    sensitiveDataStatus = core.consentStatus.granularStatus?.sensitiveDataStatus,
+                    defaultConsent = core.consentStatus.granularStatus?.defaultConsent,
+                    gpcStatus = core.consentStatus.granularStatus?.gpcStatus,
+                    previousOptInAll = core.consentStatus.granularStatus?.previousOptInAll,
+                    purposeConsent = core.consentStatus.granularStatus?.purposeConsent
+                )
+            )
+        )
+    }
+
     @Serializable
     data class ConsentString(
         @SerialName("sectionId") val sectionId: Int?,
@@ -138,6 +180,38 @@ data class GdprCS(
     @SerialName("expirationDate") var expirationDate: String?,
     @SerialName("gcmStatus") var googleConsentMode: GoogleConsentMode?,
 ) {
+    fun copyingFrom(core: GDPRConsent?, applies: Boolean?): GdprCS {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            categories = core.categories,
+            legIntCategories = core.legIntCategories,
+            legIntVendors = core.legIntVendors,
+            specialFeatures = core.specialFeatures,
+            vendors = core.vendors,
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            euconsent = core.euconsent,
+            uuid = core.uuid,
+            webConsentPayload = JsonObject(emptyMap()),// TODO: either change this from json to string or parse it JsonConverterImpl.converter.decodeFromString(core.webConsentPayload),
+            googleConsentMode = core.gcmStatus?.let { gcm ->
+                GoogleConsentMode(
+                    adStorage = GCMStatus.firstWithStatusOrNull(gcm.adStorage),
+                    analyticsStorage = GCMStatus.firstWithStatusOrNull(gcm.analyticsStorage),
+                    adUserData = GCMStatus.firstWithStatusOrNull(gcm.adUserData),
+                    adPersonalization = GCMStatus.firstWithStatusOrNull(gcm.adPersonalization),
+                )
+            },
+            grants = core.grants.mapValues {
+                GDPRPurposeGrants(
+                    granted = it.value.vendorGrant,
+                    purposeGrants = it.value.purposeGrants
+                )
+            },
+            TCData = core.tcData
+        )
+    }
 
     @Serializable
     data class PostPayload(

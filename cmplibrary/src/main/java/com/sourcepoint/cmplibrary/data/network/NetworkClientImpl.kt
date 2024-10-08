@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
@@ -23,6 +22,7 @@ import com.sourcepoint.cmplibrary.model.toBodyRequest
 import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.mobile_core.network.SourcepointClient
+import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
@@ -115,24 +115,8 @@ private class NetworkClientImpl(
         coreClient.getMetaData(campaigns)
     }
 
-    override fun getConsentStatus(param: ConsentStatusParamReq): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
-        val url = urlManager.getConsentStatusUrl(param)
-
-        logger.req(
-            tag = "getConsentStatus",
-            url = url.toString(),
-            body = check { JsonConverter.converter.encodeToString(param) }.getOrNull() ?: "",
-            type = "GET"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseConsentStatusResp(response)
+    override fun getConsentStatus(authId: String?, metadata: ConsentStatusRequest.MetaData) = runBlocking {
+        coreClient.getConsentStatus(authId = authId, metadata = metadata)
     }
 
     override fun getMessages(param: MessagesParamReq): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {

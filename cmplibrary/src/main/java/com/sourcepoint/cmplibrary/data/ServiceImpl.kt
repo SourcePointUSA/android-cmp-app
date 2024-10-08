@@ -32,7 +32,9 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
+import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
@@ -174,18 +176,18 @@ internal class ServiceImpl(
                 return@executeOnWorkerThread
             }
 
-            campaignManager.consentStatusLog(messageReq.authId)
             if (campaignManager.shouldCallConsentStatus(messageReq.authId)) {
-                triggerConsentStatus(
-                    messageReq = messageReq,
-                    gdprApplies = metadataResponse.gdpr?.applies,
-                    ccpaApplies = metadataResponse.ccpa?.applies,
-                    usNatApplies = metadataResponse.usnat?.applies,
-                )
-                    .executeOnLeft { consentStatusError ->
-                        onFailure(consentStatusError, true)
-                        return@executeOnWorkerThread
-                    }
+                try {
+                    triggerConsentStatus(
+                        messageReq = messageReq,
+                        gdprApplies = metadataResponse.gdpr?.applies,
+                        ccpaApplies = metadataResponse.ccpa?.applies,
+                        usNatApplies = metadataResponse.usnat?.applies,
+                    )
+                } catch (error: Throwable) {
+                    onFailure(error, true)
+                    return@executeOnWorkerThread
+                }
             }
 
             campaignManager.reConsentGdpr(
@@ -720,30 +722,33 @@ internal class ServiceImpl(
         gdprApplies: Boolean?,
         ccpaApplies: Boolean?,
         usNatApplies: Boolean?,
-    ): Either<ConsentStatusResp> = getConsentStatus(messageReq.toConsentStatusParamReq(campaignManager))
-        .executeOnRight {
-            campaignManager.apply {
-                campaignManager.handleOldLocalData()
-                messagesOptimizedLocalState = it.localState
-                it.consentStatusData?.let { csd ->
-                    if (spConfig.isIncluded(GDPR)) {
-                        gdprConsentStatus = csd.gdpr?.copy(applies = gdprApplies)
-                        gdprUuid = csd.gdpr?.uuid
-                        gdprDateCreated = csd.gdpr?.dateCreated
-                        csd.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
-                    }
+    ) {
+        val response = getConsentStatus(authId = messageReq.authId, metadata = ConsentStatusRequest.MetaData(
+            gdpr = null,
+            usnat = null,
+            ccpa = null
+        ))
+        campaignManager.handleOldLocalData()
+        messagesOptimizedLocalState = response.localState
+        response.consentStatusData.let {
+            if (spConfig.isIncluded(GDPR)) {
+                // TODO: check if gdprConsentStatus should be initialised in case of it being null
+                gdprConsentStatus = gdprConsentStatus?.copyingFrom(core = it.gdpr, applies = gdprApplies)
+                gdprUuid = it.gdpr?.uuid
+                gdprDateCreated = it.gdpr?.dateCreated
+                it.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
+            }
 
-                    if (spConfig.isIncluded(CCPA)) {
-                        ccpaConsentStatus = csd.ccpa?.copy(applies = ccpaApplies)
-                        ccpaUuid = csd.ccpa?.uuid
-                        ccpaDateCreated = csd.ccpa?.dateCreated
-                        csd.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
-                    }
+            if (spConfig.isIncluded(CCPA)) {
+                ccpaConsentStatus = ccpaConsentStatus?.copyingFrom(core = it.ccpa, applies = ccpaApplies)
+                ccpaUuid = it.ccpa?.uuid
+                ccpaDateCreated = it.ccpa?.dateCreated
+                it.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+            }
 
-                    if (spConfig.isIncluded(USNAT)) {
-                        usNatConsentData = csd.usnat?.copy(applies = usNatApplies)
-                    }
-                }
+            if (spConfig.isIncluded(USNAT)) {
+                usNatConsentData = usNatConsentData?.copyingFrom(core = it.usnat, applies = usNatApplies)
             }
         }
+    }
 }
