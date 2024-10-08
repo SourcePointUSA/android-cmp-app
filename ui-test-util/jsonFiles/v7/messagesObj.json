@@ -919,22 +919,7 @@
     }
   },
   "errors": [],
-  "localState": {
-    "gdpr": {
-      "mmsCookies": [
-        "_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbLKK83J0YlRSkVil4AlqmtrlXTgyqKRGXkghkFtLC59OCWUYgEO1mB4eQAAAA%3D%3D"
-      ],
-      "propertyId": 17801,
-      "messageId": 521357
-    },
-    "ccpa": {
-      "mmsCookies": [
-        "_sp_v1_ss=1:H4sIAAAAAAAAAItWqo5RKimOUbKKBjLyQAyD2lidGKVUEDOvNCcHyC4BK6iurVWKBQAW54XRMAAAAA%3D%3D"
-      ],
-      "propertyId": 17801,
-      "messageId": 704632
-    }
-  },
+  "localState": "",
   "nonKeyedLocalState": {
     "gdpr": {
       "_sp_v1_uid": "1:588:87135bf5-ec9b-483e-9a27-682430b4c010",

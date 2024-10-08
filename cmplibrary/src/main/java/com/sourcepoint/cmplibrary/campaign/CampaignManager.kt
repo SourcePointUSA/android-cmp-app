@@ -78,7 +78,7 @@ internal interface CampaignManager {
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
     var usNatConsentData: USNatConsentData?
-    var messagesOptimizedLocalState: JsonElement?
+    var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
@@ -472,7 +472,7 @@ private class CampaignManagerImpl(
 
     val isNewUser: Boolean
         get() {
-            val localStateSize = messagesOptimizedLocalState?.jsonObject?.size ?: 0
+            val localStateSize = messagesOptimizedLocalState?.length ?: 0
             return messagesOptimizedLocalState == null ||
                 localStateSize == 0 ||
                 (gdprUuid == null && usNatConsentData?.uuid == null && (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true))
@@ -507,7 +507,7 @@ private class CampaignManagerImpl(
         val isGdprUuidPresent = dataStorage.gdprConsentUuid != null
         val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
         val isUsNatUuidPresent = usNatConsentData?.uuid != null
-        val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
+        val isLocalStateEmpty = messagesOptimizedLocalState == null
         val isV630LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
         val isV690LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
         val ccpa2usnat = (
@@ -640,17 +640,10 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var messagesOptimizedLocalState: JsonElement?
-        get() {
-            return dataStorage.messagesOptimizedLocalState?.let {
-                JsonConverter.converter.decodeFromString<JsonElement>(
-                    it
-                )
-            }
-        }
+    override var messagesOptimizedLocalState: String?
+        get() = dataStorage.messagesOptimizedLocalState
         set(value) {
-            val serialised = value?.let { JsonConverter.converter.encodeToString(value) }
-            dataStorage.messagesOptimizedLocalState = serialised
+            dataStorage.messagesOptimizedLocalState = value
         }
 
     override var nonKeyedLocalState: JsonElement?

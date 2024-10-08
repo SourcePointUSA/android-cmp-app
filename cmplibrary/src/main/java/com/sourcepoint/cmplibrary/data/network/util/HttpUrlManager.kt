@@ -297,7 +297,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments("wrapper/v2/messages")
             .addQueryParameter("env", param.env.queryParam)
             .addQueryParameter("nonKeyedLocalState", param.nonKeyedLocalState.toString())
-            .addQueryParameter("localState", param.localState.toString())
+            .addQueryParameter("localState", param.localState)
             .addEncodedQueryParameter("body", param.body)
             .addEncodedQueryParameter("metadata", metaData)
             .addQueryParameter("scriptType", scriptType)

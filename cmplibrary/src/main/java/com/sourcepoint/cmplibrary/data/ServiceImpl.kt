@@ -261,7 +261,7 @@ internal class ServiceImpl(
                         },
                     ),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
-                    localState = campaignManager.messagesOptimizedLocalState?.jsonObject,
+                    localState = campaignManager.messagesOptimizedLocalState,
                 )
 
                 getMessages(messagesParamReq)

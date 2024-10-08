@@ -430,7 +430,7 @@ class HttpUrlManagerTest {
             accountId = 1212,
             propertyId = 12,
             nonKeyedLocalState = JsonObject(mapOf("_sp_v1_data" to JsonPrimitive(585620))),
-            localState = JsonObject(mapOf("_sp_v1_p" to JsonPrimitive(993))),
+            localState = null,
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param)
@@ -441,7 +441,7 @@ class HttpUrlManagerTest {
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
-            queryParameter("localState").assertEquals("""{"_sp_v1_p":993}""")
+            queryParameter("localState").assertNull()
             queryParameter("scriptType").assertEquals("android")
             queryParameter("body").assertEquals(body.toString())
         }
