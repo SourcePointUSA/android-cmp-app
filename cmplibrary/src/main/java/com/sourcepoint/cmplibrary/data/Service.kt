@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
-import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 
 /**
@@ -25,13 +24,19 @@ internal interface Service : NetworkClient, CampaignManager {
     ): Either<ChoiceResp>
 
     fun sendCustomConsentServ(
-        customConsentReq: CustomConsentReq,
-        env: Env
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
     ): Either<GdprCS>
 
     fun deleteCustomConsentToServ(
-        customConsentReq: CustomConsentReq,
-        env: Env
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
     ): Either<GdprCS>
 
     fun getMessages(
