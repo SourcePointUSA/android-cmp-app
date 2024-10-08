@@ -9,7 +9,6 @@ import okhttp3.Response
 internal interface ResponseManager {
     fun parseCustomConsentRes(r: Response): CustomConsentResp
 
-    fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp
     fun parsePostGdprChoiceResp(r: Response): GdprCS
     fun parsePostCcpaChoiceResp(r: Response): CcpaCS

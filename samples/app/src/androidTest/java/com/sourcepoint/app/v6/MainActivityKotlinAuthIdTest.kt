@@ -55,7 +55,7 @@ class MainActivityKotlinAuthIdTest {
     }
 
     @Test
-    fun GIVEN_an_authId_VERIFY_onError_is_NOT_called() = runBlocking<Unit> {
+    fun GIVEN_an_authId_VERIFY_onError_is_NOT_called() = runBlocking {
 
         val spClient = mockk<SpClient>(relaxed = true)
 
@@ -86,7 +86,7 @@ class MainActivityKotlinAuthIdTest {
     }
 
     @Test
-    fun GIVEN_a_usnat_authId_VERIFY_onError_is_NOT_called() = runBlocking<Unit> {
+    fun GIVEN_a_usnat_authId_VERIFY_onError_is_NOT_called() = runBlocking {
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(

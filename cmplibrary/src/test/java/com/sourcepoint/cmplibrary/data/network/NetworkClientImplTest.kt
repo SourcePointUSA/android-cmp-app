@@ -183,26 +183,6 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `EXECUTE getConsentStatus THROWS an InterruptedIOException and the result is a LEFT obj`() {
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
-
-        val param = ConsentStatusParamReq(
-            accountId = 22,
-            propertyId = 17801,
-            metadata = JSONObject().toString(),
-            env = Env.LOCAL_PROD,
-            authId = null,
-            localState = null,
-            includeData = buildIncludeData(),
-        )
-
-        val res = sut.getConsentStatus(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.CONSENT_STATUS.apiPostfix)
-    }
-
-    @Test
     fun `EXECUTE getMessages THROWS an InterruptedIOException and the result is a LEFT obj`() {
         val mockCall = mockk<Call>()
 

@@ -49,30 +49,6 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parseConsentStatusResp(r: Response): ConsentStatusResp {
-        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
-        val status = r.code
-        val mess = r.message
-        logger.res(
-            tag = "ConsentStatusResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
-        return if (r.isSuccessful) {
-            when (val either: Either<ConsentStatusResp> = jsonConverter.toConsentStatusResp(body)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
-            }
-        } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.CONSENT_STATUS.apiPostfix,
-                httpStatusCode = "_$status",
-            )
-        }
-    }
-
     override fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code

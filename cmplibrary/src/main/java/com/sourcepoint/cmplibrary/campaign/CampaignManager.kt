@@ -115,7 +115,6 @@ internal interface CampaignManager {
     fun reConsentGdpr(additionsChangeDate: String?, legalBasisChangeDate: String?): ConsentStatus?
     fun reConsentUsnat(additionsChangeDate: String?): USNatConsentStatus?
     fun hasUsnatApplicableSectionsChanged(usnatMetaData: MetaDataResponse.MetaDataResponseUSNat?): Boolean
-    fun consentStatusLog(authId: String?)
 
     companion object {
         const val SIMPLE_DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
@@ -525,56 +524,6 @@ private class CampaignManagerImpl(
             usnatApplicableSectionChanged ||
             ccpa2usnat ||
             authId != null
-    }
-
-    override fun consentStatusLog(authId: String?) {
-        if (logger == null) return
-        val isGdprUuidPresent = dataStorage.gdprConsentUuid != null
-        val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-        val isUsNatUuidPresent = usNatConsentData?.uuid != null
-        val isLocalStateEmpty = messagesOptimizedLocalState?.jsonObject?.isEmpty() == true
-        val isV630LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
-        val isV690LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
-        val ccpa2usnat = (
-            ccpaConsentStatus != null &&
-                usNatConsentData == null &&
-                spConfig.isIncluded(USNAT)
-            )
-        val storedCcpaWithoutGPP = ccpaConsentStatus?.let { it.gppData.isNullOrEmpty() } ?: false
-
-        val shouldCallConsentStatus =
-            ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty) ||
-                isV630LocalStatePresent ||
-                isV690LocalStatePresent ||
-                usnatApplicableSectionChanged ||
-                ccpa2usnat ||
-                authId != null ||
-                storedCcpaWithoutGPP
-
-        logger.computation(
-            tag = "shouldCallConsentStatus",
-            msg = """ shouldCallConsentStatus[$shouldCallConsentStatus]
-            """.trimIndent(),
-            json = JSONObject().apply {
-                put(
-                    "consentsStoredDetails",
-                    JSONObject().also {
-                        it.put("(GdprUuid ", isGdprUuidPresent)
-                        it.put("OR  CcpaUuid", isCcpaUuidPresent)
-                        it.put("OR  UsnatUuid)", isUsNatUuidPresent)
-                        it.put("AND isLocalStateEmpty", isLocalStateEmpty)
-                    }
-                )
-                put(" consentsStored", ((isGdprUuidPresent || isCcpaUuidPresent || isUsNatUuidPresent) && isLocalStateEmpty))
-                put(" OR isV630LocalStatePresent", isV630LocalStatePresent)
-                put(" OR isV690LocalStatePresent", isV690LocalStatePresent)
-                put(" OR usnatApplicableSectionChanged", usnatApplicableSectionChanged)
-                put(" OR storedCcpaWithoutGPP", storedCcpaWithoutGPP)
-                put(" OR transitionCcpa2Usnat", ccpa2usnat)
-                put(" OR authId", authId != null)
-                put("return shouldCallConsentStatus", shouldCallConsentStatus)
-            }
-        )
     }
 
     override var gdprMessageMetaData: MessageMetaData?
