@@ -3,11 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.util
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
-import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 
 internal interface ResponseManager {
-    fun parseCustomConsentRes(r: Response): CustomConsentResp
 
     fun parseConsentStatusResp(r: Response): ConsentStatusResp
     fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp

@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
@@ -12,12 +11,9 @@ import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
-import com.sourcepoint.cmplibrary.model.CustomConsentReq
-import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
-import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.mobile_core.models.SPNetworkError
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
@@ -62,44 +58,30 @@ class NetworkClientImplTest {
 
     @Test
     fun `EXECUTE deleteCustomConsentTo THROWS an exception with okHttp`() {
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
         assertThrows(
             SPNetworkError::class.java
         ) {
             sut.deleteCustomConsentTo(
-                req.consentUUID,
-                req.propertyId,
-                req.vendors,
-                req.categories,
-                req.legIntCategories
+                "uuid",
+                1,
+                listOf("a"),
+                listOf("b"),
+                listOf()
             )
         }
     }
 
     @Test
     fun `EXECUTE sendCustomConsent THROWS an exception with okHttp`() {
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
         assertThrows(
             SPNetworkError::class.java
         ) {
             sut.sendCustomConsent(
-                req.consentUUID,
-                req.propertyId,
-                req.vendors,
-                req.categories,
-                req.legIntCategories
+                "uuid",
+                1,
+                listOf("a"),
+                listOf("b"),
+                listOf()
             )
         }
     }

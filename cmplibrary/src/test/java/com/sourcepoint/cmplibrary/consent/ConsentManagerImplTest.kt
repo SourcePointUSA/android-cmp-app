@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
-import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
@@ -19,12 +18,6 @@ import org.junit.Before
 import org.junit.Test
 
 class ConsentManagerImplTest {
-
-    @MockK
-    private lateinit var sPSuccessMock: ((SPConsents) -> Unit)
-
-    @MockK
-    private lateinit var sPErrorMock: ((Throwable) -> Unit)
 
     @MockK
     private lateinit var clientEventManager: ClientEventManager
@@ -40,23 +33,6 @@ class ConsentManagerImplTest {
 
     @MockK
     private lateinit var dataStorage: DataStorage
-
-    private val consentResp = ConsentResp(
-        uuid = "uuid_test",
-        localState = "localState_test",
-        campaignType = CampaignType.GDPR,
-        userConsent = "{}",
-        content = JSONObject()
-    )
-
-    private val consentAction = ConsentActionImpl(
-        requestFromPm = false,
-        campaignType = CampaignType.GDPR,
-        actionType = ActionType.ACCEPT_ALL,
-        choiceId = "123",
-        privacyManagerId = "100",
-        pmTab = "default"
-    )
 
     private val consentManager by lazy {
         ConsentManager.create(

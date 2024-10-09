@@ -33,7 +33,6 @@ import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.json.jsonObject
-import org.json.JSONArray
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -65,14 +64,6 @@ internal class ServiceImpl(
     private val execManager: ExecutorManager,
     private val connectionManager: ConnectionManager,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
-
-    private fun JSONArray.toArrayList(): ArrayList<String> {
-        val list = arrayListOf<String>()
-        for (i in 0 until this.length()) {
-            list.add(this.getString(i))
-        }
-        return list
-    }
 
     override fun sendCustomConsentServ(
         consentUUID: String,
