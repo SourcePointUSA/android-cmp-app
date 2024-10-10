@@ -74,27 +74,31 @@ internal class ServiceImpl(
     ): Either<GdprCS> = check {
         if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
-        val response = networkClient.sendCustomConsent(
-            consentUUID = consentUUID,
-            propertyId = propertyId,
-            vendors = vendors,
-            categories = categories,
-            legIntCategories = legIntCategories
-        )
-        if (campaignManager.gdprConsentStatus == null) {
-            genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+        try {
+            val response = networkClient.sendCustomConsent(
+                consentUUID = consentUUID,
+                propertyId = propertyId,
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            if (campaignManager.gdprConsentStatus == null) {
+                genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+            }
+            val grants = response.grants.map {
+                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+            }.toMap()
+            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                grants = grants,
+                categories = response.categories,
+                vendors = response.vendors,
+                legIntCategories = response.legIntCategories,
+                specialFeatures = response.specialFeatures
+            )
+            campaignManager.gdprConsentStatus!!
+        } catch (error: Throwable) {
+            throw error
         }
-        val grants = response.grants.map {
-            e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
-        }.toMap()
-        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-            grants = grants,
-            categories = response.categories,
-            vendors = response.vendors,
-            legIntCategories = response.legIntCategories,
-            specialFeatures = response.specialFeatures
-        )
-        campaignManager.gdprConsentStatus!!
     }
 
     override fun deleteCustomConsentToServ(
@@ -106,27 +110,31 @@ internal class ServiceImpl(
     ): Either<GdprCS> = check {
         if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
-        val response = networkClient.deleteCustomConsentTo(
-            consentUUID = consentUUID,
-            propertyId = propertyId,
-            vendors = vendors,
-            categories = categories,
-            legIntCategories = legIntCategories
-        )
-        if (campaignManager.gdprConsentStatus == null) {
-            genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+        try {
+            val response = networkClient.deleteCustomConsentTo(
+                consentUUID = consentUUID,
+                propertyId = propertyId,
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            if (campaignManager.gdprConsentStatus == null) {
+                genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+            }
+            val grants = response.grants.map {
+                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+            }.toMap()
+            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                grants = grants,
+                categories = response.categories,
+                vendors = response.vendors,
+                legIntCategories = response.legIntCategories,
+                specialFeatures = response.specialFeatures
+            )
+            campaignManager.gdprConsentStatus!!
+        } catch (error: Throwable) {
+            throw error
         }
-        val grants = response.grants.map {
-                e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
-        }.toMap()
-        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-            grants = grants,
-            categories = response.categories,
-            vendors = response.vendors,
-            legIntCategories = response.legIntCategories,
-            specialFeatures = response.specialFeatures
-        )
-        campaignManager.gdprConsentStatus!!
     }
 
     override fun getMessages(

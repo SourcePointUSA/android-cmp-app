@@ -253,6 +253,14 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
+                            if (ccResp.t.cause != null) {
+                                spClient.onError(ccResp.t.cause!!)
+                                pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "${ccResp.t.message}",
+                                    content = "${ccResp.t.cause!!}"
+                                )
+                            }
                         }
                     }
                 }
@@ -285,6 +293,14 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
+                            if (ccResp.t.cause != null) {
+                                spClient.onError(ccResp.t.cause!!)
+                                pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "${ccResp.t.message}",
+                                    content = "${ccResp.t.cause!!}"
+                                )
+                            }
                         }
                     }
                 }
