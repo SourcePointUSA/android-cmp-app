@@ -234,16 +234,15 @@ internal class SpConsentLibImpl(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit,
     ) {
-        val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
-            propertyId = campaignManager.spConfig.propertyId,
-            categories = categories,
-            legIntCategories = legIntCategories,
-            vendors = vendors
-        )
         executor.run {
             executeOnWorkerThread {
-                val ccResp = service.sendCustomConsentServ(customConsentReq, env)
+                val ccResp = service.sendCustomConsentServ(
+                    consentUUID = campaignManager.gdprUuid ?: "",
+                    propertyId = campaignManager.spConfig.propertyId,
+                    vendors = vendors,
+                    categories = categories,
+                    legIntCategories = legIntCategories
+                )
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(userConsents(context))
@@ -254,6 +253,14 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
+                            if (ccResp.t.cause != null) {
+                                spClient.onError(ccResp.t.cause!!)
+                                pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "${ccResp.t.message}",
+                                    content = "${ccResp.t.cause!!}"
+                                )
+                            }
                         }
                     }
                 }
@@ -267,16 +274,15 @@ internal class SpConsentLibImpl(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
     ) {
-        val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
-            propertyId = campaignManager.spConfig.propertyId,
-            categories = categories,
-            legIntCategories = legIntCategories,
-            vendors = vendors
-        )
         executor.run {
             executeOnWorkerThread {
-                val ccResp = service.deleteCustomConsentToServ(customConsentReq, env)
+                val ccResp = service.deleteCustomConsentToServ(
+                    consentUUID = campaignManager.gdprUuid ?: "",
+                    propertyId = campaignManager.spConfig.propertyId,
+                    vendors = vendors,
+                    categories = categories,
+                    legIntCategories = legIntCategories
+                )
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(userConsents(context))
@@ -287,6 +293,14 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
+                            if (ccResp.t.cause != null) {
+                                spClient.onError(ccResp.t.cause!!)
+                                pLogger.clientEvent(
+                                    event = "onError",
+                                    msg = "${ccResp.t.message}",
+                                    content = "${ccResp.t.cause!!}"
+                                )
+                            }
                         }
                     }
                 }

@@ -4,9 +4,7 @@ import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
-import com.sourcepoint.cmplibrary.model.ConsentResp
 
 /**
  * Component used to convert the response body of the message call to its DTO
@@ -17,11 +15,7 @@ internal interface JsonConverter {
      * @return [Either] object contain either a DTO or an [Throwable]
      */
 
-    fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp>
-
     fun toConsentAction(body: String): Either<ConsentActionImpl>
-
-    fun toCustomConsentResp(body: String): Either<CustomConsentResp>
 
     fun toNativeMessageDto(body: String): Either<NativeMessageDto>
 

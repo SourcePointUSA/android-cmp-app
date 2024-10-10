@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.assertEquals
-import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
@@ -12,12 +11,10 @@ import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
-import com.sourcepoint.cmplibrary.model.CustomConsentReq
-import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
-import com.sourcepoint.cmplibrary.util.file2String
+import com.sourcepoint.mobile_core.models.SPNetworkError
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.serialization.json.* // ktlint-disable
@@ -26,6 +23,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import java.io.InterruptedIOException
@@ -59,127 +57,33 @@ class NetworkClientImplTest {
     }
 
     @Test
-    fun `EXECUTE sendCustomConsent and VERIFY that the result is a RIGHT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseCustomConsentRes(any()) }.returns(CustomConsentResp(respConsent))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.sendCustomConsent(req, Env.STAGE) as? Either.Right
-        res.assertNotNull()
+    fun `EXECUTE deleteCustomConsentTo THROWS an exception with okHttp`() {
+        assertThrows(
+            SPNetworkError::class.java
+        ) {
+            sut.deleteCustomConsentTo(
+                "uuid",
+                1,
+                listOf("a"),
+                listOf("b"),
+                listOf()
+            )
+        }
     }
 
     @Test
-    fun `EXECUTE deleteCustomConsentTo and VERIFY that the result is a RIGHT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseCustomConsentRes(any()) }.returns(CustomConsentResp(respConsent))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Right
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE sendCustomConsent parseCustomConsentRes THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseCustomConsentRes(any()) }.throws(RuntimeException("exception"))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.sendCustomConsent(req, Env.STAGE) as? Either.Left
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE deleteCustomConsentTo parseCustomConsentRes THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockResp = mockResponse("https://mock.com", respConsent.toString())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.returns(mockResp)
-        every { responseManager.parseCustomConsentRes(any()) }.throws(RuntimeException("exception"))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Left
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE sendCustomConsent okHttp THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(RuntimeException("exception"))
-        every { responseManager.parseCustomConsentRes(any()) }.returns(CustomConsentResp(respConsent))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.sendCustomConsent(req, Env.STAGE) as? Either.Left
-        res.assertNotNull()
-    }
-
-    @Test
-    fun `EXECUTE deleteCustomConsentTo okHttp THROWS an exception and the result is a LEFT obj`() {
-        val respConsent = JSONObject("custom_consent/custom_consent_res.json".file2String())
-        val mockCall = mockk<Call>()
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(RuntimeException("exception"))
-        every { responseManager.parseCustomConsentRes(any()) }.returns(CustomConsentResp(respConsent))
-
-        val req = CustomConsentReq(
-            consentUUID = "uuid",
-            legIntCategories = listOf("a"),
-            categories = listOf("b"),
-            vendors = listOf(),
-            propertyId = 1
-        )
-
-        val res = sut.deleteCustomConsentTo(req, Env.STAGE) as? Either.Left
-        res.assertNotNull()
+    fun `EXECUTE sendCustomConsent THROWS an exception with okHttp`() {
+        assertThrows(
+            SPNetworkError::class.java
+        ) {
+            sut.sendCustomConsent(
+                "uuid",
+                1,
+                listOf("a"),
+                listOf("b"),
+                listOf()
+            )
+        }
     }
 
     @Test

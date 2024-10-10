@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusPara
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.model.CustomConsentReq
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
@@ -20,8 +19,6 @@ import okhttp3.HttpUrl
  */
 internal interface HttpUrlManager {
     fun inAppMessageUrl(env: Env): HttpUrl
-    fun sendCustomConsentUrl(env: Env): HttpUrl
-    fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl
     fun pmUrl(
         env: Env,
         campaignType: CampaignType,
@@ -65,31 +62,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
             CampaignType.USNAT -> urlPmUsNat(pmConfig, env, messageType)
         }
-    }
-
-    override fun sendCustomConsentUrl(env: Env): HttpUrl {
-        // https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?inApp=true&env=stage
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(env.host)
-            .addPathSegments("wrapper/tcfv2/v1/gdpr/custom-consent")
-            .addQueryParameter("env", env.queryParam)
-            .addQueryParameter("inApp", "true")
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    override fun deleteCustomConsentToUrl(host: String, params: CustomConsentReq): HttpUrl {
-        // https://cdn.privacy-mgmt.com/consent/tcfv2/consent/v3/custom/:propertyId?consentUUID={GDPR_UUID}
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(host)
-            .addPathSegments("consent/tcfv2/consent/v3/custom/${params.propertyId}")
-            .addQueryParameter("consentUUID", params.consentUUID)
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
     }
 
     private fun urlPmGdpr(pmConf: PmUrlConfig, env: Env, messageType: MessageType): HttpUrl {

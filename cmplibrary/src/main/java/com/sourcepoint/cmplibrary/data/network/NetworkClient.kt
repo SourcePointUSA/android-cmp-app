@@ -6,8 +6,8 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusPara
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 
@@ -19,14 +19,20 @@ const val DEFAULT_TIMEOUT = 10000L
 internal interface NetworkClient {
 
     fun sendCustomConsent(
-        customConsentReq: CustomConsentReq,
-        env: Env
-    ): Either<CustomConsentResp>
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): GDPRConsent
 
     fun deleteCustomConsentTo(
-        customConsentReq: CustomConsentReq,
-        env: Env
-    ): Either<CustomConsentResp>
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): GDPRConsent
 
     fun getMetaData(campaigns: MetaDataRequest.Campaigns): MetaDataResponse
 
