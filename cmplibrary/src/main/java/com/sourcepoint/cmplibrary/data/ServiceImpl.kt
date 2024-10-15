@@ -83,7 +83,7 @@ internal class ServiceImpl(
                 legIntCategories = legIntCategories
             )
             if (campaignManager.gdprConsentStatus == null) {
-                genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+                throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
                     e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
@@ -95,7 +95,7 @@ internal class ServiceImpl(
                 legIntCategories = response.legIntCategories,
                 specialFeatures = response.specialFeatures
             )
-            campaignManager.gdprConsentStatus!!
+            return@check campaignManager.gdprConsentStatus!!
         } catch (error: Throwable) {
             throw error
         }
@@ -119,7 +119,7 @@ internal class ServiceImpl(
                 legIntCategories = legIntCategories
             )
             if (campaignManager.gdprConsentStatus == null) {
-                genericFail("CustomConsent cannot be executed. Consent is missing!!!")
+                throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
                     e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
@@ -131,7 +131,7 @@ internal class ServiceImpl(
                 legIntCategories = response.legIntCategories,
                 specialFeatures = response.specialFeatures
             )
-            campaignManager.gdprConsentStatus!!
+            return@check campaignManager.gdprConsentStatus!!
         } catch (error: Throwable) {
             throw error
         }

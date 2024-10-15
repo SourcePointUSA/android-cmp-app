@@ -236,8 +236,12 @@ internal class SpConsentLibImpl(
     ) {
         executor.run {
             executeOnWorkerThread {
+                if (campaignManager.gdprUuid.isNullOrEmpty()) {
+                    spClient.onError(IllegalStateException("gdprUuid cannot be nil or empty!"))
+                    return@executeOnWorkerThread
+                }
                 val ccResp = service.sendCustomConsentServ(
-                    consentUUID = campaignManager.gdprUuid ?: "",
+                    consentUUID = campaignManager.gdprUuid!!,
                     propertyId = campaignManager.spConfig.propertyId,
                     vendors = vendors,
                     categories = categories,
@@ -253,14 +257,6 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
-                            if (ccResp.t.cause != null) {
-                                spClient.onError(ccResp.t.cause!!)
-                                pLogger.clientEvent(
-                                    event = "onError",
-                                    msg = "${ccResp.t.message}",
-                                    content = "${ccResp.t.cause!!}"
-                                )
-                            }
                         }
                     }
                 }
@@ -276,8 +272,11 @@ internal class SpConsentLibImpl(
     ) {
         executor.run {
             executeOnWorkerThread {
+                if (campaignManager.gdprUuid.isNullOrEmpty()) {
+                    spClient.onError(IllegalStateException("gdprUuid cannot be nil or empty!"))
+                }
                 val ccResp = service.deleteCustomConsentToServ(
-                    consentUUID = campaignManager.gdprUuid ?: "",
+                    consentUUID = campaignManager.gdprUuid!!,
                     propertyId = campaignManager.spConfig.propertyId,
                     vendors = vendors,
                     categories = categories,
@@ -293,14 +292,6 @@ internal class SpConsentLibImpl(
                                 msg = "${ccResp.t.message}",
                                 content = "${ccResp.t}"
                             )
-                            if (ccResp.t.cause != null) {
-                                spClient.onError(ccResp.t.cause!!)
-                                pLogger.clientEvent(
-                                    event = "onError",
-                                    msg = "${ccResp.t.message}",
-                                    content = "${ccResp.t.cause!!}"
-                                )
-                            }
                         }
                     }
                 }
