@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentResp
+import kotlinx.serialization.json.JsonObject
 
 /**
  * Component used to convert the response body of the message call to its DTO
@@ -38,6 +39,8 @@ internal interface JsonConverter {
     fun toPvDataResp(body: String): Either<PvDataResp>
 
     fun toMessagesResp(body: String): Either<MessagesResp>
+
+    fun toJsonObject(body: String): JsonObject
 
     companion object
 }
