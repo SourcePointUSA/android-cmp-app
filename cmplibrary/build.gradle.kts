@@ -92,7 +92,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.0.5")
+    implementation("com.sourcepoint:core:0.0.6")
 
     // kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
