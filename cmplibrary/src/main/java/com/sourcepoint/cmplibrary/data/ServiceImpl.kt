@@ -71,6 +71,13 @@ internal class ServiceImpl(
     private val connectionManager: ConnectionManager,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
+    private val transitionCCPAAuth: Boolean get() = spConfig.hasTransitionCCPAAuth() && campaignManager.authId != null
+    private val transitionCCPAOptedOut: Boolean get() = ccpaConsentStatus != null &&
+        campaignManager.usNatConsentData == null &&
+        (ccpaConsentStatus?.status == rejectedSome || ccpaConsentStatus?.status == rejectedAll)
+    private val transitionCCPAUSnatDateCreated: String? get() =
+        if (transitionCCPAOptedOut) ccpaConsentStatus?.dateCreated else usNatConsentData?.dateCreated
+
     private fun JSONArray.toArrayList(): ArrayList<String> {
         val list = arrayListOf<String>()
         for (i in 0 until this.length()) {
@@ -232,24 +239,15 @@ internal class ServiceImpl(
                             )
                         },
                         usNat = metadataResponse.usnat?.let { usnat ->
-                            var optedOut = false
-                            var dateCreated = usNatConsentData?.dateCreated
-                            if (ccpaConsentStatus != null &&
-                                campaignManager.usNatConsentData == null &&
-                                (ccpaConsentStatus?.status == rejectedSome || ccpaConsentStatus?.status == rejectedAll)
-                            ) {
-                                optedOut = true
-                                dateCreated = ccpaConsentStatus?.dateCreated
-                            }
                             MetaDataArg.UsNatArg(
                                 applies = usnat.applies,
                                 hasLocalData = usNatConsentData?.uuid != null,
                                 groupPmId = getGroupId(USNAT),
                                 targetingParams = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.targetingParams?.toJsonElement(),
                                 uuid = usNatConsentData?.uuid,
-                                transitionCCPAAuth = spConfig.hasTransitionCCPAAuth() && campaignManager.authId != null,
-                                optedOut = optedOut,
-                                dateCreated = dateCreated
+                                transitionCCPAAuth = transitionCCPAAuth,
+                                optedOut = transitionCCPAOptedOut,
+                                dateCreated = transitionCCPAUSnatDateCreated
                             )
                         },
                         ccpa = metadataResponse.ccpa?.let { ccpa ->
