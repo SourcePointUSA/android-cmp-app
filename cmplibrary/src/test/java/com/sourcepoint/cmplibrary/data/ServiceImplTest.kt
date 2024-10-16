@@ -56,7 +56,7 @@ class ServiceImplTest {
 
     private val mockConsentStatusResp: ConsentStatusResponse get() {
         val mock = mockk<ConsentStatusResponse>(relaxed = true)
-        every { mock.localState } returns "{}"
+        every { mock.localState } returns "\"\""
         return mock
     }
 
@@ -348,7 +348,7 @@ class ServiceImplTest {
         every { cm.shouldCallMessages } returns true
         every { cm.shouldCallConsentStatus(any()) } returns true
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
-        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
+        every { cm.messagesOptimizedLocalState } returns null
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
         every { ds.ccpaSampled } returns null
         every { ds.gdprSampled } returns null
