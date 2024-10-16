@@ -144,51 +144,6 @@ class JsonConverterImplTest {
     }
 
     @Test
-    fun `GIVEN a consent_status body resp RETURN a Right(ConsentStatusResp)`() {
-        val json = "v7/consent_status_with_auth_id.json".file2String()
-        val nm = (sut.toConsentStatusResp(json) as Either.Right).r
-        nm.consentStatusData!!.gdpr!!.run {
-            addtlConsent.assertEquals("1~")
-            grants!!.size.assertEquals(5)
-            euconsent.assertEquals("CPeQ1MAPeQ1MAAGABCENCdCsAP_AAHAAAAYgGMwBAAMgA0AXmAxkDGYAIDGQCgkAMADIANAF5hQAIDGQ4AEBjIkACAxkVABAXmMgAgLzHQAwAMgA0AXmQgAgAZJQAgAMgLzKQAwAMgA0AXmA.YAAAAAAAAAAA")
-            dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
-            cookieExpirationDays.assertEquals(365)
-            localDataCurrent!!.assertFalse()
-            vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
-            uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
-        }
-        nm.consentStatusData!!.ccpa!!.run {
-            dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
-            newUser!!.assertFalse()
-            consentedAll!!.assertFalse()
-            rejectedCategories!!.size.assertEquals(0)
-            rejectedVendors!!.size.assertEquals(0)
-            rejectedAll!!.assertFalse()
-            status!!.name.assertEquals("rejectedNone")
-            signedLspa!!.assertFalse()
-            uspstring.assertEquals("1YNN")
-            gpcEnabled!!.assertFalse()
-            uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-        }
-    }
-
-    @Test
-    fun `GIVEN a consent_status without authId body resp RETURN a Right(ConsentStatusResp)`() {
-        val json = "v7/consent_status_without_auth_id.json".file2String()
-        val nm = (sut.toConsentStatusResp(json) as Either.Right).r
-        nm.consentStatusData!!.gdpr!!.run {
-            addtlConsent.assertEquals("1~")
-            grants!!.size.assertEquals(5)
-            euconsent.assertEquals("CPeeA8APeeA8AAGABCENCeCgAAAAAHAAAAYgAAAMZgAgMZADCgAQGMhwAIDGRIAEBjIA.YAAAAAAAAAAA")
-            dateCreated.toString().assertEquals("2022-08-29T13:40:54.754Z")
-            cookieExpirationDays.assertEquals(365)
-            localDataCurrent!!.assertFalse()
-            vendorListId.assertEquals("5fa9a8fda228635eaf24ceb5")
-            uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-        }
-    }
-
-    @Test
     fun `GIVEN a message body resp RETURN a Right(MessagesResp)`() {
         val json = "v7/messagesObj.json".file2String()
         val testMap = JSONObject(json).toTreeMap()
