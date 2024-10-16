@@ -397,10 +397,6 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getMessages RETURN the prod link`() {
-
-        val json = "v7/message_body_cs.json".file2String()
-        val cs = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
-
         val list = listOf(
             CampaignReqImpl(
                 targetingParams = emptyList(),
@@ -412,7 +408,7 @@ class HttpUrlManagerTest {
 
         val body = getMessageBody(
             accountId = 22,
-            gdprConsentStatus = cs.consentStatusData?.gdpr?.consentStatus,
+            gdprConsentStatus = null,
             propertyHref = "tests.unified-script.com",
             campaigns = list,
             ccpaConsentStatus = null,
@@ -430,18 +426,18 @@ class HttpUrlManagerTest {
             accountId = 1212,
             propertyId = 12,
             nonKeyedLocalState = JsonObject(mapOf("_sp_v1_data" to JsonPrimitive(585620))),
-            localState = null,
+            localState = JsonObject(mapOf("_sp_v1_p" to JsonPrimitive(993))),
             propertyHref = "asdfasdfasd"
         )
         val sut = HttpUrlManagerSingleton.getMessagesUrl(param)
         sut.run {
             toString().contains("cdn.privacy-mgmt.com").assertTrue()
             queryParameter("env").assertEquals("prod")
-            queryParameter("nonKeyedLocalState").assertEquals("""{"_sp_v1_data":585620}""")
+            queryParameter("nonKeyedLocalState")?.replace("\n","")?.replace(" ","").assertEquals("""{"_sp_v1_data":585620}""")
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()
-            queryParameter("localState").assertNull()
+            queryParameter("localState").assertEquals("{\n  \"_sp_v1_p\": 993\n}")
             queryParameter("scriptType").assertEquals("android")
             queryParameter("body").assertEquals(body.toString())
         }

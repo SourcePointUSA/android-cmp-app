@@ -9,6 +9,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptCcpaOnWebView
+import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
@@ -22,6 +24,7 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
+import java.util.UUID
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinAuthIdTest {
@@ -35,50 +38,38 @@ class MainActivityKotlinAuthIdTest {
 
     private fun getSharedPrefs(activity: Activity) = PreferenceManager.getDefaultSharedPreferences(activity)
 
-    private val spConf = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.GDPR)
-        +(CampaignType.CCPA)
-    }
-
-    private val spConfUSNAT = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
-        messLanguage = MessageLanguage.ENGLISH
-        messageTimeout = 5000
-        +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
-    }
-
     @Test
     fun GIVEN_an_authId_VERIFY_onError_is_NOT_called() = runBlocking {
-
         val spClient = mockk<SpClient>(relaxed = true)
 
         loadKoinModules(
             mockModule(
-                spConfig = spConf,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
+                spConfig = config {
+                    accountId = 22
+                    propertyId = 16893
+                    propertyName = "mobile.multicampaign.demo"
+                    messLanguage = MessageLanguage.ENGLISH
+                    messageTimeout = 5000
+                    +(CampaignType.GDPR)
+                    +(CampaignType.CCPA)
+                },
                 spClientObserver = listOf(spClient),
-                pAuthId = "ee7ea3b8-9609-4ba4-be07-0986d32cdd1e"
+                pAuthId = UUID.randomUUID().toString()
             )
         )
 
         scenario = launchActivity()
 
         wr { scenario.onResumeOrThrow() }
+        wr { tapAcceptOnWebView() }
+        wr { tapAcceptOnWebView() }
         wr { clickOnRefreshBtnActivity() }
         wr { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 3) { spClient.onSpFinished(any()) } }
-        wr { verify(exactly = 3) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 4) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
     }
 
     private fun ActivityScenario<MainActivityKotlin>.onResumeOrThrow(){
@@ -91,22 +82,29 @@ class MainActivityKotlinAuthIdTest {
 
         loadKoinModules(
             mockModule(
-                spConfig = spConfUSNAT,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
+                spConfig = config {
+                    accountId = 22
+                    propertyId = 16893
+                    propertyName = "mobile.multicampaign.demo"
+                    messLanguage = MessageLanguage.ENGLISH
+                    messageTimeout = 5000
+                    +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+                },
                 spClientObserver = listOf(spClient),
-                pAuthId = "ee7ea3b8-USNAT"
+                pAuthId = UUID.randomUUID().toString()
             )
         )
 
         scenario = launchActivity()
 
         wr { scenario.onResumeOrThrow() }
+        wr { tapAcceptOnWebView() }
+        wr { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
+        wr { verify(exactly = 2) { spClient.onConsentReady(any()) } }
+        wr { verify(exactly = 1) { spClient.onUIReady(any()) } }
+        wr { verify(exactly = 2) { spClient.onSpFinished( withArg {
             it.usNat!!.consent.run {
                 scenario.onActivity { activity ->
                     getSharedPrefs(activity).getString("IABUSPrivacy_String", null).assertEquals("1YNN")

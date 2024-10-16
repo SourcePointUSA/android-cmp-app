@@ -54,8 +54,11 @@ class ServiceImplTest {
     @MockK
     private lateinit var mockMetaDataResp: MetaDataResponse
 
-    @MockK
-    private lateinit var mockConsentStatusResp: ConsentStatusResponse
+    private val mockConsentStatusResp: ConsentStatusResponse get() {
+        val mock = mockk<ConsentStatusResponse>(relaxed = true)
+        every { mock.localState } returns "{}"
+        return mock
+    }
 
     @MockK
     private lateinit var mockMessagesResp: MessagesResp
@@ -345,7 +348,7 @@ class ServiceImplTest {
         every { cm.shouldCallMessages } returns true
         every { cm.shouldCallConsentStatus(any()) } returns true
         every { cm.spConfig } returns spConfig.copy(campaigns = mockCampaignsList)
-        every { cm.messagesOptimizedLocalState } returns null
+        every { cm.messagesOptimizedLocalState } returns JsonObject(emptyMap())
         every { cm.nonKeyedLocalState } returns JsonObject(emptyMap())
         every { ds.ccpaSampled } returns null
         every { ds.gdprSampled } returns null
