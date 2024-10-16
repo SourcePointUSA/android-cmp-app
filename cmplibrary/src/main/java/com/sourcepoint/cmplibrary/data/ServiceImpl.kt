@@ -34,8 +34,8 @@ import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
-import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONArray
 import org.json.JSONObject
@@ -261,7 +261,9 @@ internal class ServiceImpl(
                         },
                     ),
                     nonKeyedLocalState = campaignManager.nonKeyedLocalState?.jsonObject,
-                    localState = campaignManager.messagesOptimizedLocalState,
+                    localState = campaignManager.messagesOptimizedLocalState?.let {
+                        JsonConverter.converter.decodeFromString(it)
+                    }
                 )
 
                 getMessages(messagesParamReq)
@@ -284,7 +286,7 @@ internal class ServiceImpl(
                                 } ?: kotlin.run { campaignManager.usNatConsentData = usNat }
                         }
                         campaignManager.also { _ ->
-                            messagesOptimizedLocalState = it.localState
+                            messagesOptimizedLocalState = JsonConverter.converter.encodeToString(it.localState)
                             nonKeyedLocalState = it.nonKeyedLocalState
                             gdprMessageMetaData = it.campaigns?.gdpr?.messageMetaData
                             ccpaMessageMetaData = it.campaigns?.ccpa?.messageMetaData
@@ -721,32 +723,50 @@ internal class ServiceImpl(
         ccpaApplies: Boolean?,
         usNatApplies: Boolean?,
     ) {
-        val response = getConsentStatus(authId = messageReq.authId, metadata = ConsentStatusRequest.MetaData(
-            gdpr = null,
-            usnat = null,
-            ccpa = null
-        ))
+        val statusMetadata = ConsentStatusRequest.MetaData(
+            gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let { ConsentStatusRequest.MetaData.Campaign(
+                applies = gdprApplies ?: false,
+                dateCreated = gdprConsentStatus?.dateCreated,
+                uuid = gdprConsentStatus?.uuid,
+                hasLocalData = false // gdprConsentStatus != null && gdprConsentStatus?.uuid != null
+            ) },
+            usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let { ConsentStatusRequest.MetaData.USNatCampaign(
+                applies = usNatApplies ?: false,
+                dateCreated = transitionCCPAUSnatDateCreated,
+                uuid = usNatConsentData?.uuid,
+                hasLocalData = false, // usNatConsentData != null && usNatConsentData?.uuid != null,
+                transitionCCPAAuth = transitionCCPAAuth,
+                optedOut = transitionCCPAOptedOut
+            ) },
+            ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let { ConsentStatusRequest.MetaData.Campaign(
+                applies = ccpaApplies ?: false,
+                dateCreated = ccpaConsentStatus?.dateCreated,
+                uuid = ccpaConsentStatus?.uuid,
+                hasLocalData = false, // ccpaConsentStatus != null && ccpaConsentStatus?.uuid != null
+            ) }
+        )
+        val response = getConsentStatus(
+            authId = messageReq.authId,
+            metadata = statusMetadata
+        )
         campaignManager.handleOldLocalData()
         messagesOptimizedLocalState = response.localState
-        response.consentStatusData.let {
-            if (spConfig.isIncluded(GDPR)) {
-                // TODO: check if gdprConsentStatus should be initialised in case of it being null
-                gdprConsentStatus = gdprConsentStatus?.copyingFrom(core = it.gdpr, applies = gdprApplies)
-                gdprUuid = it.gdpr?.uuid
-                gdprDateCreated = it.gdpr?.dateCreated
-                it.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
-            }
+        if (spConfig.isIncluded(GDPR)) {
+            gdprConsentStatus = (gdprConsentStatus ?: GdprCS()).copyingFrom(core = response.consentStatusData.gdpr, applies = gdprApplies)
+            gdprUuid = response.consentStatusData.gdpr?.uuid
+            gdprDateCreated = response.consentStatusData.gdpr?.dateCreated
+            response.consentStatusData.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
+        }
 
-            if (spConfig.isIncluded(CCPA)) {
-                ccpaConsentStatus = ccpaConsentStatus?.copyingFrom(core = it.ccpa, applies = ccpaApplies)
-                ccpaUuid = it.ccpa?.uuid
-                ccpaDateCreated = it.ccpa?.dateCreated
-                it.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
-            }
+        if (spConfig.isIncluded(CCPA)) {
+            ccpaConsentStatus = (ccpaConsentStatus ?: CcpaCS()).copyingFrom(core = response.consentStatusData.ccpa, applies = ccpaApplies)
+            ccpaUuid = response.consentStatusData.ccpa?.uuid
+            ccpaDateCreated = response.consentStatusData.ccpa?.dateCreated
+            response.consentStatusData.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+        }
 
-            if (spConfig.isIncluded(USNAT)) {
-                usNatConsentData = usNatConsentData?.copyingFrom(core = it.usnat, applies = usNatApplies)
-            }
+        if (spConfig.isIncluded(USNAT)) {
+            usNatConsentData = (usNatConsentData ?: USNatConsentData()).copyingFrom(core = response.consentStatusData.usnat, applies = usNatApplies)
         }
     }
 }
