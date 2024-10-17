@@ -92,18 +92,17 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.0.6")
+    implementation("com.sourcepoint:core:0.0.7")
 
     // kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    // kotlinx-serialization-json > 1.6.3 requires kotlin 2.0.x
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     testImplementation("io.mockk:mockk:1.13.12")
 }

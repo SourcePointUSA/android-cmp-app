@@ -27,7 +27,7 @@ plugins {
     id 'io.github.dryrum.replace-in-file' version '0.6.4'
     id 'io.github.dryrum.git-utils' version '0.6.4'
     id 'io.github.dryrum.bump-version-code' version '0.6.4'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
 }
 
 apply plugin: 'io.codearte.nexus-staging'
