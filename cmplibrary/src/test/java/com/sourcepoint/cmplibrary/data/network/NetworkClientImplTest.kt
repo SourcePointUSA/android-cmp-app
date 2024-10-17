@@ -15,6 +15,8 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
 import com.sourcepoint.mobile_core.models.SPNetworkError
+import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.serialization.json.* // ktlint-disable
@@ -125,23 +127,6 @@ class NetworkClientImplTest {
 
         val res = sut.getMessages(param) as? Either.Left
         (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.MESSAGES.apiPostfix)
-    }
-
-    @Test
-    fun `EXECUTE savePvData THROWS an InterruptedIOException and the result is a LEFT obj`() {
-        val mockCall = mockk<Call>()
-
-        every { okHttp.newCall(any()) }.returns(mockCall)
-        every { mockCall.execute() }.throws(InterruptedIOException("exception"))
-
-        val param = PvDataParamReq(
-            env = Env.LOCAL_PROD,
-            body = buildJsonObject { },
-            campaignType = CampaignType.GDPR
-        )
-
-        val res = sut.postPvData(param) as? Either.Left
-        (res!!.t as ConnectionTimeoutException).code.errorCode.assertEquals(CodeList.CONNECTION_TIMEOUT.errorCode + ApiRequestPostfix.PV_DATA.apiPostfix)
     }
 
     @Test

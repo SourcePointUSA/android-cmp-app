@@ -149,45 +149,6 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePvDataResp(r: Response): PvDataResp {
-        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
-        val status = r.code
-        val mess = r.message
-        return if (r.isSuccessful) {
-            when (val either: Either<PvDataResp> = jsonConverter.toPvDataResp(body)) {
-                is Either.Right -> {
-                    val campaign = either.getOrNull()?.let {
-                        it.gdpr?.let { "GDPR" }
-                            ?: it.ccpa?.let { "CCPA" }
-                            ?: it.usnat?.let { "USNAT" }
-                    }
-                    logger.res(
-                        tag = "PvDataResp - $campaign",
-                        msg = mess,
-                        body = body,
-                        status = status.toString()
-                    )
-                    either.r
-                }
-                is Either.Left -> {
-                    logger.res(
-                        tag = "PvDataResp",
-                        msg = mess,
-                        body = body,
-                        status = status.toString()
-                    )
-                    throw either.t
-                }
-            }
-        } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.PV_DATA.apiPostfix,
-                httpStatusCode = "_$status",
-            )
-        }
-    }
-
     override fun parseMessagesResp(r: Response): MessagesResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
