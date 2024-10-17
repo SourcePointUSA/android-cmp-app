@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import okhttp3.Response
 
 /**
@@ -27,31 +26,6 @@ private class ResponseManagerImpl(
     val jsonConverter: JsonConverter,
     val logger: Logger
 ) : ResponseManager {
-
-    override fun parseConsentStatusResp(r: Response): ConsentStatusResp {
-        val body = r.body?.byteStream()?.reader()?.readText() ?: ""
-        val status = r.code
-        val mess = r.message
-        logger.res(
-            tag = "ConsentStatusResp",
-            msg = mess,
-            body = body,
-            status = status.toString()
-        )
-        return if (r.isSuccessful) {
-            when (val either: Either<ConsentStatusResp> = jsonConverter.toConsentStatusResp(body)) {
-                is Either.Right -> either.r
-                is Either.Left -> throw either.t
-            }
-        } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.CONSENT_STATUS.apiPostfix,
-                httpStatusCode = "_$status",
-            )
-        }
-    }
-
     override fun parseGetChoiceResp(r: Response, choice: ChoiceTypeParam): ChoiceResp {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code

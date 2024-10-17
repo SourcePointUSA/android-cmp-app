@@ -27,6 +27,7 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
+import java.util.UUID
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityNativeMessTest {
@@ -190,17 +191,19 @@ class MainActivityNativeMessTest {
                 spConfig = spConfGdpr,
                 gdprPmId = "594218",
                 ccpaPmId = "594219",
-                pAuthId = "test",
+                pAuthId = UUID.randomUUID().toString(),
                 pResetAll = false,
                 spClientObserver = listOf(spClient)
             )
         )
 
         scenario = launchActivity()
+        wr { tapNmAcceptAll() }
+        wr(delay = 1000) { clickOnRefreshBtnActivity() }
 
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        verify(exactly = 1) { spClient.onConsentReady(any()) }
-        verify(exactly = 0) { spClient.onUIReady(any()) }
+        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
+        verify(exactly = 2) { spClient.onConsentReady(any()) }
+        verify(exactly = 1) { spClient.onNativeMessageReady(any(), any()) }
         verify(exactly = 0) { spClient.onError(any()) }
         verify(exactly = 0) { spClient.onUIFinished(any()) }
     }

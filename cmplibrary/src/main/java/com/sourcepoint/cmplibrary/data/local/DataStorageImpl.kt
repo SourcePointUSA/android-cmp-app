@@ -69,15 +69,6 @@ private class DataStorageImpl(
                 .apply()
         }
 
-    override var consentStatusResponse: String?
-        get() = preference.getString(CONSENT_STATUS_RESPONSE, null)
-        set(value) {
-            preference
-                .edit()
-                .putString(CONSENT_STATUS_RESPONSE, value)
-                .apply()
-        }
-
     override var gdprConsentStatus: String?
         get() = preference.getString(GDPR_CONSENT_STATUS, null)
         set(value) {
