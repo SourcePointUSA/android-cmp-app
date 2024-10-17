@@ -35,7 +35,6 @@ internal interface DataStorage : DataStorageGdpr, DataStorageCcpa, DataStorageUS
     var choiceResp: String?
     var dataRecordedConsent: String?
 
-    var consentStatusResponse: String?
     var gdprConsentStatus: String?
     val gdprApplies: Boolean
     val ccpaApplies: Boolean

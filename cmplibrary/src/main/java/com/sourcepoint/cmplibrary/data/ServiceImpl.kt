@@ -7,7 +7,8 @@ import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.converter.genericFail
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
@@ -73,14 +74,6 @@ internal class ServiceImpl(
         (ccpaConsentStatus?.status == rejectedSome || ccpaConsentStatus?.status == rejectedAll)
     private val transitionCCPAUSnatDateCreated: String? get() =
         if (transitionCCPAOptedOut) ccpaConsentStatus?.dateCreated else usNatConsentData?.dateCreated
-
-    private fun JSONArray.toArrayList(): ArrayList<String> {
-        val list = arrayListOf<String>()
-        for (i in 0 until this.length()) {
-            list.add(this.getString(i))
-        }
-        return list
-    }
 
     override fun sendCustomConsentServ(
         consentUUID: String,
