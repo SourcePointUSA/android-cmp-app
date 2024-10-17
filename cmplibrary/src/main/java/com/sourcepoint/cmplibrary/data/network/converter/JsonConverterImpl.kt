@@ -7,14 +7,11 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
-import com.sourcepoint.cmplibrary.model.ConsentResp
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
@@ -53,26 +50,6 @@ internal class JsonConverterImpl : JsonConverter {
         val map: Map<String, Any?> = JSONObject(body).toTreeMap()
         val bean: NativeMessageDto = map.getMap("msgJSON")!!.toNativeMessageDto()
         NativeMessageRespK(msg = bean)
-    }
-
-    override fun toConsentResp(body: String, campaignType: CampaignType): Either<ConsentResp> = check {
-        val obj = JSONObject(body)
-        val map: Map<String, Any?> = JSONObject(body).toTreeMap()
-        val localState = map.getMap("localState")?.toJSONObj() ?: JSONObject()
-        val uuid = map.getFieldValue<String>("uuid") ?: "invalid"
-        obj.get("userConsent")
-        ConsentResp(
-            content = JSONObject(body),
-            localState = localState.toString(),
-            uuid = uuid,
-            userConsent = obj["userConsent"].toString(),
-            campaignType = campaignType
-        )
-    }
-
-    override fun toCustomConsentResp(body: String): Either<CustomConsentResp> = check {
-        val obj = JSONObject(body)
-        CustomConsentResp(obj)
     }
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {

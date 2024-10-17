@@ -100,31 +100,53 @@ class ServiceImplTest {
     @Test
     fun `sendCustomConsentServ - WHEN called with no Internet THEN should not proceed with the flow`() {
         // GIVEN
-        val mockCustomConsentReq: CustomConsentReq = mockk()
-        val mockEnv = Env.PROD
         every { connectionManager.isConnected } returns false
 
         // WHEN
         val service = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        service.sendCustomConsentServ(mockCustomConsentReq, mockEnv)
+        service.sendCustomConsentServ(
+            "uuid",
+            123,
+            mockk(),
+            mockk(),
+            mockk()
+        )
 
         // THEN
-        verify(exactly = 0) { ncMock.sendCustomConsent(any(), any()) }
+        verify(exactly = 0) {
+            ncMock.sendCustomConsent(
+                any(),
+                any(),
+                any(),
+                any(),
+                any())
+        }
     }
 
     @Test
     fun `deleteCustomConsentToServ - WHEN called with no Internet THEN should not proceed with the flow`() {
         // GIVEN
-        val mockCustomConsentReq: CustomConsentReq = mockk()
-        val mockEnv = Env.PROD
         every { connectionManager.isConnected } returns false
 
         // WHEN
         val service = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        service.deleteCustomConsentToServ(mockCustomConsentReq, mockEnv)
+        service.deleteCustomConsentToServ(
+            "uuid",
+            123,
+            mockk(),
+            mockk(),
+            mockk()
+        )
 
         // THEN
-        verify(exactly = 0) { ncMock.deleteCustomConsentTo(any(), any()) }
+        verify(exactly = 0) {
+            ncMock.deleteCustomConsentTo(
+                any(),
+                any(),
+                any(),
+                any(),
+                any())
+        }
     }
 
     @Test
@@ -150,73 +172,13 @@ class ServiceImplTest {
     }
 
     @Test
-    fun `GIVEN a custom consent UPDATE the stored consent`() {
-        val storedConsent = "custom_consent/stored_consent.json".file2String()
-        val newConsent = "custom_consent/new_consent.json".file2String()
-
-        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { ds.getGdprConsentResp() }.returns(storedConsent)
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        val res = sut.sendCustomConsent(mockk(), Env.STAGE).getOrNull()!!
-        res.content.getJSONObject("grants").toTreeMap()
-            .assertEquals(JSONObject(newConsent).getJSONObject("grants").toTreeMap())
-    }
-
-    @Test
-    fun `GIVEN a custom consent VERIFY that the data storage is called`() {
-        val storedConsentString = "custom_consent/consent_status_optimized.json".file2String()
-        val storedConsent = JsonConverter.converter.decodeFromString<GdprCS>(storedConsentString)
-        val newConsent = "custom_consent/new_consent.json".file2String()
-
-        // The Grants in stored consent are ALL true because an action of Accept All
-        storedConsent.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertTrue()
-
-        every { ncMock.sendCustomConsent(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { cm.gdprConsentStatus } answers { storedConsent }
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        sut.sendCustomConsentServ(mockk(), Env.STAGE).getOrNull()!!
-
-        verify(exactly = 1) {
-            cm.gdprConsentStatus = withArg {
-                // The Grants in stored consent are NOT ALL true because the custom consent edited the values
-                it.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertFalse()
-            }
-        }
-    }
-
-    @Test
-    fun `GIVEN a deleted custom consent VERIFY that the data storage is called`() {
-        val storedConsentString = "custom_consent/consent_status_optimized.json".file2String()
-        val storedConsent = JsonConverter.converter.decodeFromString<GdprCS>(storedConsentString)
-        val newConsent = "custom_consent/new_consent.json".file2String()
-
-        // The Grants in stored consent are ALL true because an action of Accept All
-        storedConsent.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertTrue()
-
-        every { ncMock.deleteCustomConsentTo(any(), any()) }.returns(Right(CustomConsentResp(JSONObject(newConsent))))
-        every { cm.gdprConsentStatus } answers { storedConsent }
-
-        val sut = Service.create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-        sut.deleteCustomConsentToServ(mockk(), Env.STAGE).getOrNull()!!
-
-        verify(exactly = 1) {
-            cm.gdprConsentStatus = withArg {
-                // The Grants in stored consent are NOT ALL true because the custom consent edited the values
-                it.grants!!.toList().flatMap { i -> i.second.purposeGrants.values }.all { e -> e }.assertFalse()
-            }
-        }
-    }
-
-    @Test
     fun `GIVEN a custom consent THROWS an exception`() {
         every { cm.gdprConsentStatus } answers { null }
 
         (
             Service
                 .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-                .sendCustomConsentServ(mockk(), Env.STAGE) as? Left
+                .sendCustomConsentServ("uuid", 123, mockk(), mockk(), mockk()) as? Left
             ).assertNotNull()
     }
 
@@ -227,7 +189,7 @@ class ServiceImplTest {
         (
             Service
                 .create(ncMock, cm, cmu, ds, logger, execManager, connectionManager)
-                .deleteCustomConsentToServ(mockk(), Env.STAGE) as? Left
+                .deleteCustomConsentToServ("uuid", 123, mockk(), mockk(), mockk()) as? Left
             ).assertNotNull()
     }
 

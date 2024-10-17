@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
 import com.sourcepoint.cmplibrary.exception.InvalidRequestException
-import com.sourcepoint.cmplibrary.model.CustomConsentResp
 import okhttp3.Response
 
 /**

@@ -16,11 +16,8 @@ import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
-import com.sourcepoint.cmplibrary.model.CustomConsentReq
-import com.sourcepoint.cmplibrary.model.CustomConsentResp
-import com.sourcepoint.cmplibrary.model.toBodyRequest
-import com.sourcepoint.cmplibrary.model.toBodyRequestDeleteCustomConsentTo
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
@@ -60,55 +57,35 @@ private class NetworkClientImpl(
 ) : NetworkClient {
 
     override fun sendCustomConsent(
-        customConsentReq: CustomConsentReq,
-        env: Env
-    ): Either<CustomConsentResp> = check {
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = customConsentReq.toBodyRequest()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-        val url = urlManager.sendCustomConsentUrl(env)
-
-        logger.req(
-            tag = "CustomConsentReq",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): GDPRConsent = runBlocking {
+        coreClient.customConsentGDPR(
+            consentUUID = consentUUID,
+            propertyId = propertyId,
+            vendors = vendors,
+            categories = categories,
+            legIntCategories = legIntCategories
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseCustomConsentRes(response)
     }
 
     override fun deleteCustomConsentTo(
-        customConsentReq: CustomConsentReq,
-        env: Env
-    ): Either<CustomConsentResp> = check {
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = customConsentReq.toBodyRequestDeleteCustomConsentTo()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-        val url = urlManager.deleteCustomConsentToUrl(env.host, customConsentReq)
-
-        logger.req(
-            tag = "DeleteCustomConsentReq",
-            url = url.toString(),
-            body = jsonBody,
-            type = "DELETE"
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): GDPRConsent = runBlocking {
+        coreClient.deleteCustomConsentGDPR(
+            consentUUID = consentUUID,
+            propertyId = propertyId,
+            vendors = vendors,
+            categories = categories,
+            legIntCategories = legIntCategories
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .delete(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseCustomConsentRes(response)
     }
 
     override fun getMetaData(campaigns: MetaDataRequest.Campaigns) = runBlocking {
