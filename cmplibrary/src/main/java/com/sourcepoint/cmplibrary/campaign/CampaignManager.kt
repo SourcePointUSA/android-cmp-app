@@ -941,7 +941,7 @@ private class CampaignManagerImpl(
 
     override fun getGdprPvDataBody(messageReq: MessagesParamReq): PvDataRequest.GDPR {
         return PvDataRequest.GDPR(
-            applies = metaDataResp?.gdpr ?.applies ?: false,
+            applies = metaDataResp?.gdpr?.applies ?: false,
             uuid = gdprConsentStatus?.uuid,
             accountId = messageReq.accountId.toInt(),
             siteId = messageReq.propertyId.toInt(),
@@ -963,7 +963,7 @@ private class CampaignManagerImpl(
                 ),
             ),
             pubData = messageReq.pubData,
-            sampleRate = metaDataResp?.usnat?.sampleRate,
+            sampleRate = metaDataResp?.gdpr?.sampleRate,
             euconsent = gdprConsentStatus?.euconsent,
             msgId = gdprMessageMetaData?.messageId,
             categoryId = gdprMessageMetaData?.categoryId?.code,
@@ -974,7 +974,7 @@ private class CampaignManagerImpl(
 
     override fun getCcpaPvDataBody(messageReq: MessagesParamReq): PvDataRequest.CCPA {
         return PvDataRequest.CCPA(
-            applies = metaDataResp?.ccpa ?.applies ?: false,
+            applies = metaDataResp?.ccpa?.applies ?: false,
             uuid = ccpaConsentStatus?.uuid,
             accountId = messageReq.accountId.toInt(),
             siteId = messageReq.propertyId.toInt(),
@@ -992,7 +992,7 @@ private class CampaignManagerImpl(
 
     override fun getUsNatPvDataBody(messageReq: MessagesParamReq): PvDataRequest.USNat {
         return PvDataRequest.USNat(
-            applies = metaDataResp?.usnat ?.applies ?: false,
+            applies = metaDataResp?.usnat?.applies ?: false,
             uuid = usNatConsentData?.uuid,
             accountId = messageReq.accountId.toInt(),
             siteId = messageReq.propertyId.toInt(),

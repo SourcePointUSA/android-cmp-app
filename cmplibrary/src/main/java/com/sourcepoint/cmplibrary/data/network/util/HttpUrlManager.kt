@@ -32,7 +32,6 @@ internal interface HttpUrlManager {
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl
-    fun getPvDataUrl(env: Env): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
@@ -240,18 +239,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         .addQueryParameter("scriptType", scriptType)
         .addQueryParameter("scriptVersion", scriptVersion)
         .build()
-
-    override fun getPvDataUrl(env: Env): HttpUrl {
-        // http://localhost:3000/wrapper/v2/pv-data?env=localProd
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(env.host)
-            .addPathSegments("wrapper/v2/pv-data")
-            .addQueryParameter("env", env.queryParam)
-            .addQueryParameter("scriptType", "android")
-            .addQueryParameter("scriptVersion", BuildConfig.VERSION_NAME)
-            .build()
-    }
 
     override fun getMessagesUrl(param: MessagesParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/messages?
