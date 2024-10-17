@@ -22,7 +22,6 @@ android {
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -78,7 +77,7 @@ android {
         abortOnError = false
     }
     tasks {
-        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        compileOptions {
             kotlinOptions.jvmTarget = "11"
         }
     }
