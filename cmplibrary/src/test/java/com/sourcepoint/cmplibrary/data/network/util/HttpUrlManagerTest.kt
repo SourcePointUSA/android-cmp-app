@@ -233,18 +233,6 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN a STAGE env sendCustomConsentUrl RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.STAGE).toString()
-        sut.assertEquals("https://cdn.sp-stage.net/wrapper/tcfv2/v1/gdpr/custom-consent?env=stage&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env sendCustomConsentUrl RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.sendCustomConsentUrl(Env.PROD).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/custom-consent?env=prod&inApp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
     fun `GIVEN a GDPR OTT property RETURN the ott link`() {
         val config = PmUrlConfig(
             pmTab = null,

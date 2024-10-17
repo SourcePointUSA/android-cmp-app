@@ -7,8 +7,6 @@ import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
@@ -35,8 +33,6 @@ import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.json.jsonObject
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Factory method to create an instance of a [Service] using its implementation
@@ -69,67 +65,76 @@ internal class ServiceImpl(
     private val connectionManager: ConnectionManager,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
-    private fun JSONArray.toArrayList(): ArrayList<String> {
-        val list = arrayListOf<String>()
-        for (i in 0 until this.length()) {
-            list.add(this.getString(i))
+    override fun sendCustomConsentServ(
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): Either<GdprCS> = check {
+        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
+
+        try {
+            val response = networkClient.sendCustomConsent(
+                consentUUID = consentUUID,
+                propertyId = propertyId,
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            if (campaignManager.gdprConsentStatus == null) {
+                throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
+            }
+            val grants = response.grants.map {
+                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+            }.toMap()
+            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                grants = grants,
+                categories = response.categories,
+                vendors = response.vendors,
+                legIntCategories = response.legIntCategories,
+                specialFeatures = response.specialFeatures
+            )
+            return@check campaignManager.gdprConsentStatus!!
+        } catch (error: Throwable) {
+            throw error
         }
-        return list
     }
 
-    override fun sendCustomConsentServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
+    override fun deleteCustomConsentToServ(
+        consentUUID: String,
+        propertyId: Int,
+        vendors: List<String>,
+        categories: List<String>,
+        legIntCategories: List<String>
+    ): Either<GdprCS> = check {
         if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
 
-        networkClient.sendCustomConsent(customConsentReq, env)
-            .map {
-                if (campaignManager.gdprConsentStatus == null) {
-                    genericFail("CustomConsent cannot be executed. Consent is missing!!!")
-                }
-
-                val categories: List<String> = (it.content.get("categories") as JSONArray).toArrayList()
-                val vendors: List<String> = (it.content.get("vendors") as JSONArray).toArrayList()
-                val legIntCategories: List<String> = (it.content.get("legIntCategories") as JSONArray).toArrayList()
-                val specialFeatures: List<String> = (it.content.get("specialFeatures") as JSONArray).toArrayList()
-
-                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
-                val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                val updatedGrants = campaignManager.gdprConsentStatus?.copy(
-                    grants = grants,
-                    categories = categories,
-                    vendors = vendors,
-                    legIntCategories = legIntCategories,
-                    specialFeatures = specialFeatures
-                )
-                campaignManager.gdprConsentStatus = updatedGrants
+        try {
+            val response = networkClient.deleteCustomConsentTo(
+                consentUUID = consentUUID,
+                propertyId = propertyId,
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            if (campaignManager.gdprConsentStatus == null) {
+                throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
-        campaignManager.gdprConsentStatus!!
-    }
-
-    override fun deleteCustomConsentToServ(customConsentReq: CustomConsentReq, env: Env): Either<GdprCS> = check {
-        if (connectionManager.isConnected.not()) throw NoInternetConnectionException()
-
-        networkClient.deleteCustomConsentTo(customConsentReq, env)
-            .map {
-                if (campaignManager.gdprConsentStatus == null) {
-                    genericFail("CustomConsent cannot be executed. Consent is missing!!!")
-                }
-
-                val categories: List<String> = (it.content.get("categories") as JSONArray).toArrayList()
-                val vendors: List<String> = (it.content.get("vendors") as JSONArray).toArrayList()
-                val legIntCategories: List<String> = (it.content.get("legIntCategories") as JSONArray).toArrayList()
-                val specialFeatures: List<String> = (it.content.get("specialFeatures") as JSONArray).toArrayList()
-
-                val grantsString: String = (it.content.get("grants") as JSONObject).toString()
-                val grants = JsonConverter.converter.decodeFromString<Map<String, GDPRPurposeGrants>>(grantsString)
-                campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
-                    grants = grants,
-                    categories = categories,
-                    vendors = vendors,
-                    legIntCategories = legIntCategories,
-                    specialFeatures = specialFeatures
-                )
-            }
-        campaignManager.gdprConsentStatus!!
+            val grants = response.grants.map {
+                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+            }.toMap()
+            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
+                grants = grants,
+                categories = response.categories,
+                vendors = response.vendors,
+                legIntCategories = response.legIntCategories,
+                specialFeatures = response.specialFeatures
+            )
+            return@check campaignManager.gdprConsentStatus!!
+        } catch (error: Throwable) {
+            throw error
+        }
     }
 
     override fun getMessages(

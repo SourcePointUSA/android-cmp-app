@@ -234,16 +234,19 @@ internal class SpConsentLibImpl(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit,
     ) {
-        val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
-            propertyId = campaignManager.spConfig.propertyId,
-            categories = categories,
-            legIntCategories = legIntCategories,
-            vendors = vendors
-        )
         executor.run {
             executeOnWorkerThread {
-                val ccResp = service.sendCustomConsentServ(customConsentReq, env)
+                if (campaignManager.gdprUuid.isNullOrEmpty()) {
+                    spClient.onError(IllegalStateException("gdprUuid cannot be nil or empty!"))
+                    return@executeOnWorkerThread
+                }
+                val ccResp = service.sendCustomConsentServ(
+                    consentUUID = campaignManager.gdprUuid!!,
+                    propertyId = campaignManager.spConfig.propertyId,
+                    vendors = vendors,
+                    categories = categories,
+                    legIntCategories = legIntCategories
+                )
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(userConsents(context))
@@ -267,16 +270,18 @@ internal class SpConsentLibImpl(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
     ) {
-        val customConsentReq = CustomConsentReq(
-            consentUUID = campaignManager.gdprUuid ?: "",
-            propertyId = campaignManager.spConfig.propertyId,
-            categories = categories,
-            legIntCategories = legIntCategories,
-            vendors = vendors
-        )
         executor.run {
             executeOnWorkerThread {
-                val ccResp = service.deleteCustomConsentToServ(customConsentReq, env)
+                if (campaignManager.gdprUuid.isNullOrEmpty()) {
+                    spClient.onError(IllegalStateException("gdprUuid cannot be nil or empty!"))
+                }
+                val ccResp = service.deleteCustomConsentToServ(
+                    consentUUID = campaignManager.gdprUuid!!,
+                    propertyId = campaignManager.spConfig.propertyId,
+                    vendors = vendors,
+                    categories = categories,
+                    legIntCategories = legIntCategories
+                )
                 executeOnMain {
                     when (ccResp) {
                         is Either.Right -> success(userConsents(context))
