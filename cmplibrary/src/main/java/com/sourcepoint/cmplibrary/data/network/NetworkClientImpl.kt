@@ -21,6 +21,8 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
@@ -132,27 +134,8 @@ private class NetworkClientImpl(
         responseManager.parseMessagesResp(response)
     }
 
-    override fun postPvData(param: PvDataParamReq): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
-        val url = urlManager.getPvDataUrl(param.env)
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = param.body.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-
-        logger.req(
-            tag = "PvDataRequest - ${param.campaignType.name}",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
-        )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parsePvDataResp(response)
+    override fun postPvData(request: PvDataRequest): PvDataResponse = runBlocking {
+        coreClient.getPvData(request)
     }
 
     override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
