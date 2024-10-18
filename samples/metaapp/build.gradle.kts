@@ -20,7 +20,7 @@ android {
     namespace = "com.sourcepointmeta.metaapp"
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"

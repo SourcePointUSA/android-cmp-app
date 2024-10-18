@@ -21,7 +21,7 @@ android {
     namespace = "com.sourcepoint.cmplibrary"
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
-        minSdk = 21
+        minSdk = 23
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
