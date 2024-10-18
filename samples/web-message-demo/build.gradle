@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android'
 apply from: rootDir.path + '/gradleutils/test_config.gradle'
 
 android {
-    compileSdk 34
+    compileSdk 35
     namespace "com.sourcepoint.app.v6"
     defaultConfig {
         applicationId "com.sourcepoint.demo"
-        minSdk 21
-        targetSdk 33
+        minSdk 23
+        targetSdk 35
         versionCode 2
         versionName "1.0.0"
         multiDexEnabled true
@@ -77,5 +77,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.10.2'
+    implementation 'com.sourcepoint.cmplibrary:cmplibrary:7.11.0-rc2-rc1'
 }

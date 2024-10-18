@@ -1,4 +1,4 @@
-* [DIA-4092](https://sourcepoint.atlassian.net/browse/DIA-4092) Fixed an issue preventing the cancel button on USNat messages from dismissing the consent layer. [#833](https://github.com/SourcePointUSA/android-cmp-app/pull/833)
-* [DIA-4456](https://sourcepoint.atlassian.net/browse/DIA-4456) Refactored network client to use [mobile-core](https://github.com/SourcePointUSA/mobile-core/) `/meta-data` implementation. [#835](https://github.com/SourcePointUSA/android-cmp-app/pull/835)
-* Updated project dependencies and plugins [#831](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
-* Fixed an issue preventing the MetaApp from launching
+* [DIA-4611](https://sourcepoint.atlassian.net/browse/DIA-4611) Refactor `customConsentGDPR` and `deleteCustomConsentTo` to use `mobile-core`'s implementation. [#836](https://github.com/SourcePointUSA/android-cmp-app/pull/836)
+* Updated project dependencies and bump `minSdk` support from 21 to 23 due to [Android's new Security policy](https://developer.android.com/about/versions/14/behavior-changes-all#security) [#840](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
+* Bump `compileSdk` and `targetSdk` to 35
+* Fixed an issue preventing the MetaApp from being released at Google Play
