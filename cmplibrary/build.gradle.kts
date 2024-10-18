@@ -17,7 +17,7 @@ group = "com.sourcepoint.cmplibrary"
 version = versionLib
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.sourcepoint.cmplibrary"
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
