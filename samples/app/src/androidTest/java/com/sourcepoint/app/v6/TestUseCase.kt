@@ -416,7 +416,7 @@ class TestUseCase {
             spClientObserver: List<SpClient> = emptyList(),
             diagnostic: List<Pair<String, Any?>> = emptyList(),
         ): Module {
-            return module(override = true) {
+            return module {
                 single<List<SpClient?>> { spClientObserver }
                 single<DataProvider> {
                     object : DataProvider {

@@ -97,7 +97,7 @@ internal class ServiceImpl(
                 throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
-                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+                it.key to GDPRPurposeGrants(it.value.vendorGrant, it.value.purposeGrants)
             }.toMap()
             campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                 grants = grants,
@@ -133,7 +133,7 @@ internal class ServiceImpl(
                 throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
-                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+                it.key to GDPRPurposeGrants(it.value.vendorGrant, it.value.purposeGrants)
             }.toMap()
             campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                 grants = grants,

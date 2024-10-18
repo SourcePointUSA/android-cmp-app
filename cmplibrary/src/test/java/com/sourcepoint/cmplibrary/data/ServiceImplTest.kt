@@ -113,7 +113,8 @@ class ServiceImplTest {
                 any(),
                 any(),
                 any(),
-                any())
+                any()
+            )
         }
     }
 
@@ -139,7 +140,8 @@ class ServiceImplTest {
                 any(),
                 any(),
                 any(),
-                any())
+                any()
+            )
         }
     }
 
