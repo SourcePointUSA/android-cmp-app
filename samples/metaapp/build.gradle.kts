@@ -16,12 +16,12 @@ val versionCodeMeta = (project.property("VERSION_CODE") as String).toInt()
 
 @Suppress("UnstableApiUsage")
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.sourcepointmeta.metaapp"
     defaultConfig {
         applicationId = "com.sourcepointmeta.metaapp"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 35
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
         multiDexEnabled = true
@@ -30,6 +30,25 @@ android {
 
     buildFeatures {
         viewBinding = true
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        resources {
+            excludes.add("META-INF/LICENSE.md")
+            excludes.add("META-INF/LICENSE-notice.md")
+            excludes.add("META-INF/DEPENDENCIES")
+            excludes.add("META-INF/LICENSE")
+            excludes.add("META-INF/LICENSE.txt")
+            excludes.add("META-INF/license.txt")
+            excludes.add("META-INF/NOTICE")
+            excludes.add("META-INF/NOTICE.txt")
+            excludes.add("META-INF/notice.txt")
+            excludes.add("META-INF/ASL2.0")
+            excludes.add("META-INF/INDEX.LIST")
+        }
     }
 
     buildTypes {
@@ -98,7 +117,7 @@ dependencies {
 
     // kotlin
     implementation(Libs.kotlinxCoroutinesCore)
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
 
     implementation(project(":cmplibrary"))
 
@@ -112,7 +131,7 @@ dependencies {
     implementation(Libs.vectorDrawable)
     implementation(Libs.androidxLifLivedata)
     implementation(Libs.androidxLifViewModel)
-    implementation("androidx.fragment:fragment-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
     implementation("androidx.core:core-ktx:1.13.1") // ext drawable
     implementation("io.github.g00fy2:versioncompare:1.4.1")
 
@@ -133,9 +152,9 @@ dependencies {
     implementation(Libs.leanback_pref)
 
     // unit-test
-    testImplementation("io.mockk:mockk:1.12.3")
-    androidTestImplementation("io.insert-koin:koin-test:2.2.3")
-    androidTestImplementation("io.mockk:mockk-android:1.12.3")
+    testImplementation("io.mockk:mockk:1.13.13")
+    androidTestImplementation("io.insert-koin:koin-test:4.0.0")
+    androidTestImplementation("io.mockk:mockk-android:1.13.13")
 }
 
 versionCodePropPath {
