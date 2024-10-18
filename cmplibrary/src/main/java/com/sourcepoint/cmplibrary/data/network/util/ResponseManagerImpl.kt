@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disab
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
-import com.sourcepoint.cmplibrary.exception.InvalidRequestException
 import okhttp3.Response
 
 /**

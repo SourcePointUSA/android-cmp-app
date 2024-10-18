@@ -7,7 +7,6 @@ import com.sourcepoint.cmplibrary.core.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
@@ -86,7 +85,7 @@ internal class ServiceImpl(
                 throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
-                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+                it.key to GDPRPurposeGrants(it.value.vendorGrant, it.value.purposeGrants)
             }.toMap()
             campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                 grants = grants,
@@ -122,7 +121,7 @@ internal class ServiceImpl(
                 throw IllegalStateException("CustomConsent cannot be executed. Consent is missing!!!")
             }
             val grants = response.grants.map {
-                    e -> e.key to GDPRPurposeGrants(e.value.vendorGrant,e.value.purposeGrants)
+                it.key to GDPRPurposeGrants(it.value.vendorGrant, it.value.purposeGrants)
             }.toMap()
             campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copy(
                 grants = grants,

@@ -6,14 +6,10 @@ import com.sourcepoint.cmplibrary.consent.ConsentManagerUtils
 import com.sourcepoint.cmplibrary.core.Either.Left
 import com.sourcepoint.cmplibrary.core.Either.Right
 import com.sourcepoint.cmplibrary.core.ExecutorManager
-import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.messagesParamReq
@@ -21,7 +17,6 @@ import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
-import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -29,7 +24,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.serialization.json.JsonObject
-import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
@@ -115,7 +109,8 @@ class ServiceImplTest {
                 any(),
                 any(),
                 any(),
-                any())
+                any()
+            )
         }
     }
 
@@ -141,7 +136,8 @@ class ServiceImplTest {
                 any(),
                 any(),
                 any(),
-                any())
+                any()
+            )
         }
     }
 
