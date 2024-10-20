@@ -13,6 +13,8 @@ import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 
 /**
@@ -38,7 +40,7 @@ internal val JsonConverter.Companion.converter: Json by lazy {
 /**
  * Implementation of the [JsonConverter] interface
  */
-private class JsonConverterImpl : JsonConverter {
+internal class JsonConverterImpl : JsonConverter {
 
     override fun toConsentAction(body: String): Either<ConsentActionImpl> = check {
         body.toConsentAction()
@@ -52,10 +54,6 @@ private class JsonConverterImpl : JsonConverter {
 
     override fun toNativeMessageDto(body: String): Either<NativeMessageDto> = check {
         JSONObject(body).toTreeMap().toNativeMessageDto()
-    }
-
-    override fun toConsentStatusResp(body: String): Either<ConsentStatusResp> = check(ApiRequestPostfix.CONSENT_STATUS) {
-        JsonConverter.converter.decodeFromString(body)
     }
 
     override fun toChoiceResp(body: String): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
@@ -81,4 +79,6 @@ private class JsonConverterImpl : JsonConverter {
     override fun toMessagesResp(body: String): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
     }
+
+    override fun toJsonObject(body: String) = JsonConverter.converter.parseToJsonElement(body).jsonObject
 }

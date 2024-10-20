@@ -853,7 +853,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
-            CampaignType.USNAT -> { /* TODO(Not implemented) */ }
+            CampaignType.USNAT -> { /* TODO(Not implemented, not in the roadmap) */ }
         }
     }
 

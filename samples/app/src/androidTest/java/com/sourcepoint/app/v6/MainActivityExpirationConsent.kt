@@ -59,30 +59,4 @@ class MainActivityExpirationConsent {
         wr { verify(exactly = 2) { spClient.onUIReady(any()) } }
         wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
     }
-
-    @Test
-    fun given_an_expired_GDPR_consent_assert_GDPR_message_shows_again() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-        loadModulesWithState(JSONObject(TestData.expiredGdprStoredConsentV743), spClient)
-
-        scenario = launchActivity()
-
-        wr { tapAcceptOnWebView() }
-
-        wr { verify(exactly = 1) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-    }
-
-    @Test
-    fun given_an_expired_CCPA_consent_assert_CCPA_message_shows_again() = runBlocking<Unit> {
-        val spClient = mockk<SpClient>(relaxed = true)
-        loadModulesWithState(JSONObject(TestData.expiredCcpaStoredConsentV743), spClient)
-
-        scenario = launchActivity()
-
-        wr { tapAcceptCcpaOnWebView() }
-
-        wr { verify(exactly = 1) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-    }
 }

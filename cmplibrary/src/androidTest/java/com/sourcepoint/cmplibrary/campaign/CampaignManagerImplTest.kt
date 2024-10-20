@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -147,33 +146,6 @@ class CampaignManagerImplTest {
             .getOrNull()!!
             .messageId
             .assertEquals("44") // it is 44 because the feature is not yet implemented on ccpa
-    }
-
-    @Test
-    fun given_a_v7_consent_status_STORE_it_into_the_local_data_storage() {
-        val json = "v7/consent_status_with_auth_id.json".file2String()
-        val obj = JsonConverter.converter.decodeFromString<ConsentStatusResp>(json)
-
-        campaignManager.gdprConsentStatus = obj.consentStatusData!!.gdpr
-        campaignManager.ccpaConsentStatus = obj.consentStatusData!!.ccpa
-        campaignManager.messagesOptimizedLocalState = obj.localState
-
-        campaignManager.gdprConsentStatus!!.also {
-            it.uuid.assertEquals("69b29ebc-c358-4d7f-9220-38ca2f00125b_1_2_3_4_5_6_7_8_9_10")
-            it.dateCreated.toString().assertEquals("2022-08-25T20:56:38.551Z")
-            it.TCData!!.size.assertEquals(27)
-        }
-        campaignManager.ccpaConsentStatus!!.also {
-            it.uuid.assertEquals("e47e539d-41dd-442b-bb08-5cf52b1e33d4")
-            it.dateCreated.toString().assertEquals("2022-08-25T20:56:39.010Z")
-        }
-
-        campaignManager.gdprConsentStatus = null
-        campaignManager.ccpaConsentStatus = null
-
-        campaignManager.gdprConsentStatus.assertNull()
-        campaignManager.ccpaConsentStatus.assertNull()
-        campaignManager.messagesOptimizedLocalState.assertNotNull()
     }
 
     @Test

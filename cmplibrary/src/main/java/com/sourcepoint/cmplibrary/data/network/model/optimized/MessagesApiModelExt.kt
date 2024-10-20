@@ -88,31 +88,6 @@ internal fun List<CampaignReq>.toMetadataArgs(): MetaDataArg {
     return JsonConverter.converter.decodeFromJsonElement<MetaDataArg>(json)
 }
 
-internal fun MessagesParamReq.toConsentStatusParamReq(
-    campaignManager: CampaignManager
-): ConsentStatusParamReq {
-
-    val gdprUuid = campaignManager.gdprUuid
-    val ccpaUuid = campaignManager.ccpaUuid ?: campaignManager.ccpaConsentStatus?.uuid
-    val localState = campaignManager.messagesOptimizedLocalState
-
-    val mdArg = metadataArg?.copy(
-        gdpr = metadataArg.gdpr?.copy(uuid = gdprUuid),
-        ccpa = metadataArg.ccpa?.copy(uuid = ccpaUuid),
-        usNat = metadataArg.usNat?.createMetadataArg(campaignManager),
-    )
-
-    return ConsentStatusParamReq(
-        env = env,
-        accountId = accountId,
-        propertyId = propertyId,
-        metadata = mdArg?.let { JsonConverter.converter.encodeToString(it) } ?: "{}",
-        authId = authId,
-        localState = localState,
-        includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
-    )
-}
-
 internal fun CCPA.toCcpaCS(applies: Boolean?) = CcpaCS(
     applies = applies,
     consentedAll = consentedAll,

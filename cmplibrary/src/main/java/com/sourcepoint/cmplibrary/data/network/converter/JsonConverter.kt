@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import kotlinx.serialization.json.JsonObject
 
 /**
  * Component used to convert the response body of the message call to its DTO
@@ -21,8 +22,6 @@ internal interface JsonConverter {
 
     fun toNativeMessageRespK(body: String): Either<NativeMessageRespK>
 
-    fun toConsentStatusResp(body: String): Either<ConsentStatusResp>
-
     fun toChoiceResp(body: String): Either<ChoiceResp>
 
     fun toGdprPostChoiceResp(body: String): Either<GdprCS>
@@ -34,6 +33,8 @@ internal interface JsonConverter {
     fun toPvDataResp(body: String): Either<PvDataResp>
 
     fun toMessagesResp(body: String): Either<MessagesResp>
+
+    fun toJsonObject(body: String): JsonObject
 
     companion object
 }
