@@ -212,7 +212,6 @@ private class DataStorageImpl(
     companion object
 }
 
-// TODO: test these
 fun SharedPreferences.getBoolean(key: String): Boolean? {
     return if (contains(key)) { getBoolean(key, false) } else null
 }

@@ -735,13 +735,13 @@ internal class ServiceImpl(
                 applies = gdprApplies ?: false,
                 dateCreated = gdprConsentStatus?.dateCreated,
                 uuid = gdprConsentStatus?.uuid,
-                hasLocalData = false // gdprConsentStatus != null && gdprConsentStatus?.uuid != null
+                hasLocalData = false
             ) },
             usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let { ConsentStatusRequest.MetaData.USNatCampaign(
                 applies = usNatApplies ?: false,
                 dateCreated = transitionCCPAUSnatDateCreated,
                 uuid = usNatConsentData?.uuid,
-                hasLocalData = false, // usNatConsentData != null && usNatConsentData?.uuid != null,
+                hasLocalData = false,
                 transitionCCPAAuth = transitionCCPAAuth,
                 optedOut = transitionCCPAOptedOut
             ) },
@@ -749,7 +749,7 @@ internal class ServiceImpl(
                 applies = ccpaApplies ?: false,
                 dateCreated = ccpaConsentStatus?.dateCreated,
                 uuid = ccpaConsentStatus?.uuid,
-                hasLocalData = false, // ccpaConsentStatus != null && ccpaConsentStatus?.uuid != null
+                hasLocalData = false,
             ) }
         )
         val response = getConsentStatus(
