@@ -22,15 +22,10 @@ internal data class IncludeDataGppParam(
 internal fun IncludeDataGppParam.encodeToString() = JsonConverter.converter.encodeToString(this)
 
 internal fun buildIncludeData(gppDataValue: JsonElement? = null) = buildJsonObject {
-    putJsonObject("TCData") {
-        put("type", "RecordString")
-    }
-    putJsonObject("campaigns") {
-        put("type", "RecordString")
-    }
-    putJsonObject("webConsentPayload") {
-        put("type", "RecordString")
-    }
+    putJsonObject("localState") { put("type", "RecordString") }
+    putJsonObject("TCData") { put("type", "RecordString") }
+    putJsonObject("campaigns") { put("type", "RecordString") }
+    putJsonObject("webConsentPayload") { put("type", "RecordString") }
     put("GPPData", gppDataValue ?: JsonPrimitive(true))
     put("categories", true)
 }

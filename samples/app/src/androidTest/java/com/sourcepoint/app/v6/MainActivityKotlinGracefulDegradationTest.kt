@@ -211,7 +211,6 @@ class MainActivityKotlinGracefulDegradationTest {
             wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
             wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
             wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-            // TODO We have to change the behaviour of the graceful degradation, onSpFinished must be always called
             wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
         }
 

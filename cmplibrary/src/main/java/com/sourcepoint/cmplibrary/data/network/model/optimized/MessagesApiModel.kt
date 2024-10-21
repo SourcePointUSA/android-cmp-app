@@ -32,8 +32,8 @@ internal data class MessagesParamReq(
 @Serializable
 data class MessagesResp(
     @SerialName("campaigns") val campaigns: Campaigns?,
-    @SerialName("localState") val localState: JsonElement?,
-    @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonElement?,
+    @SerialName("localState") val localState: JsonObject?,
+    @SerialName("nonKeyedLocalState") val nonKeyedLocalState: JsonObject?,
     @SerialName("priority") val priority: List<Int>,
     @SerialName("propertyId") val propertyId: Int?
 ) {
