@@ -1,3 +1,10 @@
+## 7.11.0 (October, 22, 2024)
+* [DIA-4611](https://sourcepoint.atlassian.net/browse/DIA-4611) Refactor `customConsentGDPR` and `deleteCustomConsentTo` to use `mobile-core`'s implementation. [#836](https://github.com/SourcePointUSA/android-cmp-app/pull/836)
+* Updated project dependencies and bump `minSdk` support from 21 to 23 due to [Android's new Security policy](https://developer.android.com/about/versions/14/behavior-changes-all#security) [#840](https://github.com/SourcePointUSA/android-cmp-app/pull/840)
+* Fixed an issue preventing the SDK from integrating with projects using KTor 3 [#840](https://github.com/SourcePointUSA/android-cmp-app/pull/840)
+* Bump `compileSdk` and `targetSdk` to 35
+* Fixed an issue preventing the MetaApp from being released at Google Play
+
 ## 7.11.0-rc2 (October, 18, 2024)
 * [DIA-4611](https://sourcepoint.atlassian.net/browse/DIA-4611) Refactor `customConsentGDPR` and `deleteCustomConsentTo` to use `mobile-core`'s implementation. [#836](https://github.com/SourcePointUSA/android-cmp-app/pull/836)
 * Updated project dependencies and bump `minSdk` support from 21 to 23 due to [Android's new Security policy](https://developer.android.com/about/versions/14/behavior-changes-all#security) [#840](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
