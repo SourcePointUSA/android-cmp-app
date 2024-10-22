@@ -119,7 +119,7 @@ private class NetworkClientImpl(
     }
 
     override fun postPvData(request: PvDataRequest): PvDataResponse = runBlocking {
-        return@runBlocking coreClient.getPvData(request)
+        return@runBlocking coreClient.postPvData(request)
     }
 
     override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
