@@ -30,7 +30,6 @@ import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.Instant

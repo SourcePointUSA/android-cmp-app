@@ -731,26 +731,32 @@ internal class ServiceImpl(
         usNatApplies: Boolean?,
     ) {
         val statusMetadata = ConsentStatusRequest.MetaData(
-            gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let { ConsentStatusRequest.MetaData.Campaign(
-                applies = gdprApplies ?: false,
-                dateCreated = gdprConsentStatus?.dateCreated,
-                uuid = gdprConsentStatus?.uuid,
-                hasLocalData = false
-            ) },
-            usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let { ConsentStatusRequest.MetaData.USNatCampaign(
-                applies = usNatApplies ?: false,
-                dateCreated = transitionCCPAUSnatDateCreated,
-                uuid = usNatConsentData?.uuid,
-                hasLocalData = false,
-                transitionCCPAAuth = transitionCCPAAuth,
-                optedOut = transitionCCPAOptedOut
-            ) },
-            ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let { ConsentStatusRequest.MetaData.Campaign(
-                applies = ccpaApplies ?: false,
-                dateCreated = ccpaConsentStatus?.dateCreated,
-                uuid = ccpaConsentStatus?.uuid,
-                hasLocalData = false,
-            ) }
+            gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let {
+                ConsentStatusRequest.MetaData.Campaign(
+                    applies = gdprApplies ?: false,
+                    dateCreated = gdprConsentStatus?.dateCreated,
+                    uuid = gdprConsentStatus?.uuid,
+                    hasLocalData = false
+                )
+            },
+            usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let {
+                ConsentStatusRequest.MetaData.USNatCampaign(
+                    applies = usNatApplies ?: false,
+                    dateCreated = transitionCCPAUSnatDateCreated,
+                    uuid = usNatConsentData?.uuid,
+                    hasLocalData = false,
+                    transitionCCPAAuth = transitionCCPAAuth,
+                    optedOut = transitionCCPAOptedOut
+                )
+            },
+            ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let {
+                ConsentStatusRequest.MetaData.Campaign(
+                    applies = ccpaApplies ?: false,
+                    dateCreated = ccpaConsentStatus?.dateCreated,
+                    uuid = ccpaConsentStatus?.uuid,
+                    hasLocalData = false,
+                )
+            }
         )
         val response = getConsentStatus(
             authId = messageReq.authId,

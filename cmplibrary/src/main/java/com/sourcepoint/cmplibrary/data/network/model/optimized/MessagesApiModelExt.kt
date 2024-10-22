@@ -1,15 +1,11 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
-import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.messages.OperatingSystemInfoParam
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReq
-import com.sourcepoint.cmplibrary.util.extensions.getGppCustomOption
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.* // ktlint-disable
 
 internal fun getMessageBody(
