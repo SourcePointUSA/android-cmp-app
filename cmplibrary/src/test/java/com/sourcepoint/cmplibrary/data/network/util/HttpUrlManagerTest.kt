@@ -15,7 +15,6 @@ import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.PmUrlConfig
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.* // ktlint-disable
-import com.sourcepoint.cmplibrary.util.file2String
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
@@ -415,7 +414,7 @@ class HttpUrlManagerTest {
         sut.run {
             toString().contains("cdn.privacy-mgmt.com").assertTrue()
             queryParameter("env").assertEquals("prod")
-            queryParameter("nonKeyedLocalState")?.replace("\n","")?.replace(" ","").assertEquals("""{"_sp_v1_data":585620}""")
+            queryParameter("nonKeyedLocalState")?.replace("\n", "")?.replace(" ", "").assertEquals("""{"_sp_v1_data":585620}""")
             queryParameter("metadata").assertEquals("""{  "ccpa": {    "applies": true  },  "gdpr": {    "applies": true  }}""")
             queryParameter("scriptVersion").assertEquals(BuildConfig.VERSION_NAME)
             queryParameter("pubData").assertNull()

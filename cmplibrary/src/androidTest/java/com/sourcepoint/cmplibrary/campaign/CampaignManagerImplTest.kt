@@ -7,8 +7,6 @@ import com.sourcepoint.cmplibrary.Utils.Companion.spEntries
 import com.sourcepoint.cmplibrary.Utils.Companion.storeTestDataObj
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.local.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
 import com.sourcepoint.cmplibrary.exception.CampaignType
