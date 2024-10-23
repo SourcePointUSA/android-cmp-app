@@ -31,7 +31,6 @@ import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -886,7 +885,7 @@ private class CampaignManagerImpl(
             applies = metaDataResp?.gdpr?.applies ?: false,
             uuid = gdprConsentStatus?.uuid,
             accountId = messageReq.accountId.toInt(),
-            siteId = messageReq.propertyId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
             consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
                 rejectedAny = gdprConsentStatus?.consentStatus?.rejectedAny,
                 rejectedLI = gdprConsentStatus?.consentStatus?.rejectedLI,
@@ -919,7 +918,7 @@ private class CampaignManagerImpl(
             applies = metaDataResp?.ccpa?.applies ?: false,
             uuid = ccpaConsentStatus?.uuid,
             accountId = messageReq.accountId.toInt(),
-            siteId = messageReq.propertyId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
             consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
                 rejectedAll = ccpaConsentStatus?.rejectedAll,
                 consentedAll = ccpaConsentStatus?.consentedAll,
@@ -928,7 +927,7 @@ private class CampaignManagerImpl(
             ),
             pubData = messageReq.pubData,
             messageId = ccpaMessageMetaData?.messageId,
-            sampleRateval = metaDataResp?.ccpa?.sampleRate
+            sampleRate = metaDataResp?.ccpa?.sampleRate
         )
     }
 
@@ -937,7 +936,7 @@ private class CampaignManagerImpl(
             applies = metaDataResp?.usnat?.applies ?: false,
             uuid = usNatConsentData?.uuid,
             accountId = messageReq.accountId.toInt(),
-            siteId = messageReq.propertyId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
             consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
                 rejectedAny = usNatConsentData?.consentStatus?.rejectedAny,
                 consentedToAll = usNatConsentData?.consentStatus?.consentedToAll,
@@ -957,9 +956,9 @@ private class CampaignManagerImpl(
             pubData = messageReq.pubData,
             sampleRate = metaDataResp?.usnat?.sampleRate,
             msgId = usNatConsentData?.messageMetaData?.messageId,
-            categoryId = null,
-            subCategoryId = null,
-            prtnUUIDval = null
+            categoryId = usNatConsentData?.messageMetaData?.categoryId?.code,
+            subCategoryId = usNatConsentData?.messageMetaData?.subCategoryId?.code,
+            prtnUUID = usNatConsentData?.messageMetaData?.prtnUUID
         )
     }
 
