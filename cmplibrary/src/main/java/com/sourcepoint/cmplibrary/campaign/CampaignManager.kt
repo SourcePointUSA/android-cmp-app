@@ -26,6 +26,7 @@ import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.updateCcpaUspString
+import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
@@ -105,9 +106,9 @@ internal interface CampaignManager {
     fun handleAuthIdOrPropertyIdChange(newAuthId: String?, newPropertyId: Int)
     fun handleMetaDataResponse(response: MetaDataResponse?)
     fun handleOldLocalData()
-    fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject
-    fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject
-    fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject
+    fun getGdprPvDataBody(messageReq: MessagesParamReq): PvDataRequest.GDPR
+    fun getCcpaPvDataBody(messageReq: MessagesParamReq): PvDataRequest.CCPA
+    fun getUsNatPvDataBody(messageReq: MessagesParamReq): PvDataRequest.USNat
     fun deleteExpiredConsents()
     fun hasGdprVendorListIdChanged(gdprVendorListId: String?): Boolean
     fun hasUsNatVendorListIdChanged(usNatVendorListId: String?): Boolean
@@ -879,45 +880,85 @@ private class CampaignManagerImpl(
             dataStorage.dataRecordedConsent = value?.toString()
         }
 
-    override fun getGdprPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody(
-            accountId = messageReq.accountId,
-            propertyId = messageReq.propertyId,
+    override fun getGdprPvDataBody(messageReq: MessagesParamReq): PvDataRequest.GDPR {
+        return PvDataRequest.GDPR(
+            applies = metaDataResp?.gdpr?.applies ?: false,
+            uuid = gdprConsentStatus?.uuid,
+            accountId = messageReq.accountId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
+            consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
+                rejectedAny = gdprConsentStatus?.consentStatus?.rejectedAny,
+                rejectedLI = gdprConsentStatus?.consentStatus?.rejectedLI,
+                consentedAll = gdprConsentStatus?.consentStatus?.consentedAll,
+                consentedToAny = gdprConsentStatus?.consentStatus?.consentedToAny,
+                hasConsentData = gdprConsentStatus?.consentStatus?.hasConsentData,
+                legalBasisChanges = gdprConsentStatus?.consentStatus?.legalBasisChanges,
+                vendorListAdditions = gdprConsentStatus?.consentStatus?.vendorListAdditions,
+                granularStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus(
+                    defaultConsent = gdprConsentStatus?.consentStatus?.granularStatus?.defaultConsent,
+                    previousOptInAll = gdprConsentStatus?.consentStatus?.granularStatus?.previousOptInAll,
+                    purposeConsent = gdprConsentStatus?.consentStatus?.granularStatus?.purposeConsent.toString(),
+                    purposeLegInt = gdprConsentStatus?.consentStatus?.granularStatus?.purposeLegInt.toString(),
+                    vendorConsent = gdprConsentStatus?.consentStatus?.granularStatus?.vendorConsent.toString(),
+                    vendorLegInt = gdprConsentStatus?.consentStatus?.granularStatus?.vendorLegInt.toString(),
+                ),
+            ),
             pubData = messageReq.pubData,
-            metaDataResp = metaDataResp,
-            gdprMessageMetaData = gdprMessageMetaData,
-            gdprCs = gdprConsentStatus,
-            ccpaMessageMetaData = null,
-            ccpaCS = null,
-            usNatCS = null,
+            sampleRate = metaDataResp?.gdpr?.sampleRate,
+            euconsent = gdprConsentStatus?.euconsent,
+            msgId = gdprMessageMetaData?.messageId,
+            categoryId = gdprMessageMetaData?.categoryId?.code,
+            subCategoryId = gdprMessageMetaData?.subCategoryId?.code,
+            prtnUUID = gdprMessageMetaData?.prtnUUID
         )
     }
 
-    override fun getCcpaPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody(
-            accountId = messageReq.accountId,
-            propertyId = messageReq.propertyId,
+    override fun getCcpaPvDataBody(messageReq: MessagesParamReq): PvDataRequest.CCPA {
+        return PvDataRequest.CCPA(
+            applies = metaDataResp?.ccpa?.applies ?: false,
+            uuid = ccpaConsentStatus?.uuid,
+            accountId = messageReq.accountId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
+            consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
+                rejectedAll = ccpaConsentStatus?.rejectedAll,
+                consentedAll = ccpaConsentStatus?.consentedAll,
+                rejectedVendors = ccpaConsentStatus?.rejectedVendors,
+                rejectedCategories = ccpaConsentStatus?.rejectedCategories
+            ),
             pubData = messageReq.pubData,
-            metaDataResp = metaDataResp,
-            ccpaMessageMetaData = ccpaMessageMetaData,
-            ccpaCS = ccpaConsentStatus,
-            usNatCS = null,
-            gdprMessageMetaData = null,
-            gdprCs = null,
+            messageId = ccpaMessageMetaData?.messageId,
+            sampleRate = metaDataResp?.ccpa?.sampleRate
         )
     }
 
-    override fun getUsNatPvDataBody(messageReq: MessagesParamReq): JsonObject {
-        return toPvDataBody(
-            accountId = messageReq.accountId,
-            propertyId = messageReq.propertyId,
+    override fun getUsNatPvDataBody(messageReq: MessagesParamReq): PvDataRequest.USNat {
+        return PvDataRequest.USNat(
+            applies = metaDataResp?.usnat?.applies ?: false,
+            uuid = usNatConsentData?.uuid,
+            accountId = messageReq.accountId.toInt(),
+            propertyId = messageReq.propertyId.toInt(),
+            consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
+                rejectedAny = usNatConsentData?.consentStatus?.rejectedAny,
+                consentedToAll = usNatConsentData?.consentStatus?.consentedToAll,
+                consentedToAny = usNatConsentData?.consentStatus?.consentedToAny,
+                granularStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus(
+                    sellStatus = usNatConsentData?.consentStatus?.granularStatus?.sellStatus,
+                    shareStatus = usNatConsentData?.consentStatus?.granularStatus?.shareStatus,
+                    sensitiveDataStatus = usNatConsentData?.consentStatus?.granularStatus?.sensitiveDataStatus,
+                    gpcStatus = usNatConsentData?.consentStatus?.granularStatus?.gpcStatus,
+                    defaultConsent = usNatConsentData?.consentStatus?.granularStatus?.defaultConsent,
+                    previousOptInAll = usNatConsentData?.consentStatus?.granularStatus?.previousOptInAll,
+                    purposeConsent = usNatConsentData?.consentStatus?.granularStatus?.purposeConsent
+                ),
+                hasConsentData = usNatConsentData?.consentStatus?.hasConsentData,
+                vendorListAdditions = usNatConsentData?.consentStatus?.vendorListAdditions,
+            ),
             pubData = messageReq.pubData,
-            metaDataResp = metaDataResp,
-            usNatCS = usNatConsentData,
-            ccpaMessageMetaData = null,
-            gdprMessageMetaData = null,
-            ccpaCS = null,
-            gdprCs = null,
+            sampleRate = metaDataResp?.usnat?.sampleRate,
+            msgId = usNatConsentData?.messageMetaData?.messageId,
+            categoryId = usNatConsentData?.messageMetaData?.categoryId?.code,
+            subCategoryId = usNatConsentData?.messageMetaData?.subCategoryId?.code,
+            prtnUUID = usNatConsentData?.messageMetaData?.prtnUUID
         )
     }
 

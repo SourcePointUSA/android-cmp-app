@@ -30,8 +30,6 @@ internal interface JsonConverter {
 
     fun toUsNatPostChoiceResp(body: String): Either<USNatConsentData>
 
-    fun toPvDataResp(body: String): Either<PvDataResp>
-
     fun toMessagesResp(body: String): Either<MessagesResp>
 
     fun toJsonObject(body: String): JsonObject

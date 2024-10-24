@@ -71,10 +71,6 @@ internal class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toPvDataResp(body: String): Either<PvDataResp> = check(ApiRequestPostfix.PV_DATA) {
-        JsonConverter.converter.decodeFromString(body)
-    }
-
     override fun toMessagesResp(body: String): Either<MessagesResp> = check(ApiRequestPostfix.MESSAGES) {
         JsonConverter.converter.decodeFromString(body)
     }

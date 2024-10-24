@@ -377,12 +377,6 @@ class HttpUrlManagerTest {
     }
 
     @Test
-    fun `GIVEN a PROD env getPvData RETURN the prod link`() {
-        val sut = HttpUrlManagerSingleton.getPvDataUrl(Env.PROD).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/pv-data?env=prod&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
     fun `GIVEN a PROD env getMessages RETURN the prod link`() {
         val list = listOf(
             CampaignReqImpl(

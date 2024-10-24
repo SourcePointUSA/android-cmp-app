@@ -33,6 +33,7 @@ import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
@@ -341,10 +342,10 @@ internal class ServiceImpl(
             dataStorage.gdprSampled = sampleAndPvData(
                 wasSampled = dataStorage.gdprSampled,
                 rate = dataStorage.gdprSampleRate,
-                pvDataParams = PvDataParamReq(
-                    env = messageReq.env,
-                    body = campaignManager.getGdprPvDataBody(messageReq),
-                    campaignType = GDPR
+                pvDataRequest = PvDataRequest(
+                    gdpr = campaignManager.getGdprPvDataBody(messageReq),
+                    ccpa = null,
+                    usnat = null
                 ),
                 onFailure = onFailure
             )
@@ -354,10 +355,10 @@ internal class ServiceImpl(
             dataStorage.ccpaSampled = sampleAndPvData(
                 wasSampled = dataStorage.ccpaSampled,
                 rate = dataStorage.ccpaSampleRate,
-                pvDataParams = PvDataParamReq(
-                    env = messageReq.env,
-                    body = campaignManager.getCcpaPvDataBody(messageReq),
-                    campaignType = CCPA
+                pvDataRequest = PvDataRequest(
+                    gdpr = null,
+                    ccpa = campaignManager.getCcpaPvDataBody(messageReq),
+                    usnat = null
                 ),
                 onFailure = onFailure
             )
@@ -367,10 +368,10 @@ internal class ServiceImpl(
             dataStorage.usnatSampled = sampleAndPvData(
                 wasSampled = dataStorage.usnatSampled,
                 rate = dataStorage.usnatSampleRate,
-                pvDataParams = PvDataParamReq(
-                    env = messageReq.env,
-                    body = campaignManager.getUsNatPvDataBody(messageReq),
-                    campaignType = USNAT
+                pvDataRequest = PvDataRequest(
+                    gdpr = null,
+                    ccpa = null,
+                    usnat = campaignManager.getUsNatPvDataBody(messageReq)
                 ),
                 onFailure = onFailure
             )
@@ -380,26 +381,28 @@ internal class ServiceImpl(
     private fun sampleAndPvData(
         wasSampled: Boolean?,
         rate: Double,
-        pvDataParams: PvDataParamReq,
+        pvDataRequest: PvDataRequest,
         onFailure: (Throwable, Boolean) -> Unit
     ): Boolean {
         if (wasSampled == false) return false
 
         val sampled = wasSampled == true || consentManagerUtils.sample(rate)
         if (sampled) {
-            postPvData(pvDataParams)
-                .executeOnLeft { onFailure(it, false) }
-                .executeOnRight { response ->
-                    response.usnat?.let {
-                        usNatConsentData = usNatConsentData?.copy(uuid = it.uuid)
-                    }
-                    response.gdpr?.let {
-                        gdprConsentStatus = gdprConsentStatus?.copy(uuid = it.uuid)
-                    }
-                    response.ccpa?.let {
-                        ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = it.uuid)
-                    }
+            try {
+                val response = postPvData(pvDataRequest)
+                response.usnat?.let {
+                    usNatConsentData = usNatConsentData?.copy(uuid = it.uuid)
                 }
+                response.gdpr?.let {
+                    gdprConsentStatus = gdprConsentStatus?.copy(uuid = it.uuid)
+                }
+                response.ccpa?.let {
+                    ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = it.uuid)
+                }
+            }
+            catch (error: Throwable) {
+                onFailure(error, false)
+            }
         }
         return sampled
     }
