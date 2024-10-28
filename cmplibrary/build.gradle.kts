@@ -91,7 +91,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.0.7")
+    implementation("com.sourcepoint:core:0.0.9")
 
     // kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")

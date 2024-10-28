@@ -11,7 +11,6 @@ internal interface ResponseManager {
     fun parsePostGdprChoiceResp(r: Response): GdprCS
     fun parsePostCcpaChoiceResp(r: Response): CcpaCS
     fun parsePostUsNatChoiceResp(r: Response): USNatConsentData
-    fun parsePvDataResp(r: Response): PvDataResp
     fun parseMessagesResp(r: Response): MessagesResp
 
     companion object

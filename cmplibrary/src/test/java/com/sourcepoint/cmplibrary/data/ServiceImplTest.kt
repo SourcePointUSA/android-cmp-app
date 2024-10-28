@@ -19,6 +19,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.stub.MockExecutorManager
 import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -56,9 +57,6 @@ class ServiceImplTest {
 
     @MockK
     private lateinit var mockMessagesResp: MessagesResp
-
-    @MockK
-    private lateinit var mockPvDataResp: PvDataResp
 
     @MockK
     private lateinit var execManager: ExecutorManager
@@ -314,7 +312,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns mockMetaDataResp
         every { ncMock.getConsentStatus(any(), any()) } returns mockConsentStatusResp
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null,ccpa = null,usnat = null)
 
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
@@ -352,7 +350,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns mockMetaDataResp
         every { ncMock.getConsentStatus(any(), any()) } returns mockConsentStatusResp
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns Right(mockPvDataResp)
+        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null,ccpa = PvDataResponse.Campaign("1"),usnat = null)
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
             messageReq = mockMessagesParamReq,

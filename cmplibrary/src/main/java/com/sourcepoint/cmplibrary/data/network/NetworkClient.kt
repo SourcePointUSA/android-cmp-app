@@ -9,8 +9,10 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 
 const val DEFAULT_TIMEOUT = 10000L
 
@@ -44,8 +46,8 @@ internal interface NetworkClient {
     ): Either<MessagesResp>
 
     fun postPvData(
-        param: PvDataParamReq
-    ): Either<PvDataResp>
+        request: PvDataRequest
+    ): PvDataResponse
 
     fun getChoice(
         param: GetChoiceParamReq
