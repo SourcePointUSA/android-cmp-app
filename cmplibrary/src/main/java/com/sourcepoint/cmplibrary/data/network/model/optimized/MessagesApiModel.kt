@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS.PostPayload
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -208,6 +209,18 @@ data class USNatConsentStatus(
     @SerialName("hasConsentData") val hasConsentData: Boolean?,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null,
 ) {
+    companion object {
+        fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus): USNatConsentStatus {
+            return USNatConsentStatus(
+                rejectedAny = core.rejectedAny,
+                consentedToAll = core.consentedToAll,
+                consentedToAny = core.consentedToAny,
+                vendorListAdditions = core.vendorListAdditions,
+                hasConsentData = core.hasConsentData,
+                granularStatus = USNatGranularStatus.initFrom(core.granularStatus)
+            )
+        }
+    }
     @Serializable
     data class USNatGranularStatus(
         @SerialName("sellStatus") val sellStatus: Boolean?,
@@ -217,5 +230,19 @@ data class USNatConsentStatus(
         @SerialName("defaultConsent") val defaultConsent: Boolean?,
         @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
         @SerialName("purposeConsent") var purposeConsent: String?,
-    )
+    ) {
+        companion object {
+            fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus?): USNatGranularStatus {
+                return USNatGranularStatus(
+                    sellStatus = core?.sellStatus,
+                    shareStatus = core?.shareStatus,
+                    sensitiveDataStatus = core?.sensitiveDataStatus,
+                    defaultConsent = core?.defaultConsent,
+                    gpcStatus = core?.gpcStatus,
+                    previousOptInAll = core?.previousOptInAll,
+                    purposeConsent = core?.purposeConsent
+                )
+            }
+        }
+    }
 }

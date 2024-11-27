@@ -115,22 +115,7 @@ data class USNatConsentData(
                     consentString = it.consentString
                 )
             },
-            consentStatus = USNatConsentStatus(
-                rejectedAny = core.consentStatus.rejectedAny,
-                consentedToAll = core.consentStatus.consentedToAll,
-                consentedToAny = core.consentStatus.consentedToAny,
-                vendorListAdditions = core.consentStatus.vendorListAdditions,
-                hasConsentData = core.consentStatus.hasConsentData,
-                granularStatus = USNatConsentStatus.USNatGranularStatus(
-                    sellStatus = core.consentStatus.granularStatus?.sellStatus,
-                    shareStatus = core.consentStatus.granularStatus?.shareStatus,
-                    sensitiveDataStatus = core.consentStatus.granularStatus?.sensitiveDataStatus,
-                    defaultConsent = core.consentStatus.granularStatus?.defaultConsent,
-                    gpcStatus = core.consentStatus.granularStatus?.gpcStatus,
-                    previousOptInAll = core.consentStatus.granularStatus?.previousOptInAll,
-                    purposeConsent = core.consentStatus.granularStatus?.purposeConsent
-                )
-            )
+            consentStatus = USNatConsentStatus.initFrom(core.consentStatus)
         )
     }
 
@@ -180,7 +165,7 @@ data class GdprCS(
     @SerialName("expirationDate") var expirationDate: String? = null,
     @SerialName("gcmStatus") var googleConsentMode: GoogleConsentMode? = null,
 ) {
-    fun initFrom(core: GDPRConsent?, applies: Boolean?): GdprCS {
+    fun copyingFrom(core: GDPRConsent?, applies: Boolean?): GdprCS {
         if (core == null) { return this }
 
         return copy(
@@ -206,7 +191,7 @@ data class GdprCS(
         )
     }
 
-    fun initFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
+    fun copyingFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
         if (core == null) { return this }
 
         return copy(
