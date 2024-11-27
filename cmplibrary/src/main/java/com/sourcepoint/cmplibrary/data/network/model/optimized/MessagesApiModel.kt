@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS.PostPayload
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -9,6 +10,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -134,7 +136,18 @@ data class GoogleConsentMode(
     @SerialName("analytics_storage") @Serializable(with = SpConsentStatusSerializer::class) val analyticsStorage: GCMStatus?,
     @SerialName("ad_user_data") @Serializable(with = SpConsentStatusSerializer::class) val adUserData: GCMStatus?,
     @SerialName("ad_personalization") @Serializable(with = SpConsentStatusSerializer::class) val adPersonalization: GCMStatus?,
-)
+) {
+    companion object {
+        fun initFrom(core: com.sourcepoint.mobile_core.models.consents.GDPRConsent.GCMStatus): GoogleConsentMode {
+            return GoogleConsentMode(
+                adStorage = GCMStatus.firstWithStatusOrNull(core.adStorage),
+                analyticsStorage = GCMStatus.firstWithStatusOrNull(core.analyticsStorage),
+                adUserData = GCMStatus.firstWithStatusOrNull(core.adUserData),
+                adPersonalization = GCMStatus.firstWithStatusOrNull(core.adPersonalization),
+            )
+        }
+    }
+}
 
 @Serializable
 data class ConsentStatus(
@@ -147,6 +160,21 @@ data class ConsentStatus(
     @SerialName("legalBasisChanges") var legalBasisChanges: Boolean? = null,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null
 ) {
+    companion object {
+        fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus): ConsentStatus {
+            return ConsentStatus(
+                consentedAll = core.consentedAll,
+                consentedToAny = core.consentedToAny,
+                hasConsentData = core.hasConsentData,
+                rejectedAny = core.rejectedAny,
+                rejectedLI = core.rejectedLI,
+                legalBasisChanges = core.legalBasisChanges,
+                vendorListAdditions = core.vendorListAdditions,
+                granularStatus = GranularStatus.initFrom(core.granularStatus)
+            )
+        }
+    }
+
     @Serializable
     data class GranularStatus(
         @SerialName("defaultConsent") val defaultConsent: Boolean?,
@@ -155,7 +183,20 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
-    )
+    ) {
+        companion object {
+            fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus?): GranularStatus {
+                return GranularStatus(
+                    defaultConsent = core?.defaultConsent,
+                    previousOptInAll = core?.previousOptInAll,
+                    purposeConsent = GranularState.firstWithStateOrNONE(core?.purposeConsent),
+                    purposeLegInt = GranularState.firstWithStateOrNONE(core?.purposeLegInt),
+                    vendorConsent = GranularState.firstWithStateOrNONE(core?.vendorConsent),
+                    vendorLegInt = GranularState.firstWithStateOrNONE(core?.vendorLegInt)
+                )
+            }
+        }
+    }
 }
 
 @Serializable

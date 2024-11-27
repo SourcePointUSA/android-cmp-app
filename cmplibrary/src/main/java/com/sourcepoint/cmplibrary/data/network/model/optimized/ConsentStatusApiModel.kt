@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -9,6 +10,7 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -29,7 +31,11 @@ enum class GranularState {
     ALL,
     SOME,
     NONE,
-    EMPTY_VL,
+    EMPTY_VL;
+
+    companion object {
+        fun firstWithStateOrNONE(state: String?) = (entries.firstOrNull { it.name == state })?: NONE
+    }
 }
 
 enum class GCMStatus(val status: String) {
@@ -208,12 +214,51 @@ data class GdprCS(
         )
     }
 
+    fun copyingFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            addtlConsent = core.addtlConsent,
+            euconsent = core.euconsent,
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            TCData = core.tcData,
+            consentStatus = ConsentStatus.initFrom(core.consentStatus),
+            postPayload = PostPayload.initFrom(core.postPayload),
+            categories = core.acceptedCategories,
+            legIntCategories = core.acceptedLegIntCategories,
+            legIntVendors = core.acceptedLegIntVendors,
+            specialFeatures = core.acceptedSpecialFeatures,
+            vendors = core.acceptedVendors,
+            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
+            googleConsentMode = core.gcmStatus?.let { gcm -> GoogleConsentMode.initFrom(gcm) },
+            grants = core.grants.mapValues {
+                GDPRPurposeGrants(
+                    granted = it.value.vendorGrant,
+                    purposeGrants = it.value.purposeGrants
+                )
+            },
+
+        )
+    }
+
     @Serializable
     data class PostPayload(
         @SerialName("consentAllRef") val consentAllRef: String?,
         @SerialName("granularStatus") val granularStatus: ConsentStatus.GranularStatus,
         @SerialName("vendorListId") val vendorListId: String?
-    )
+    ) {
+        companion object {
+            fun initFrom(core: com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse.GDPR.PostPayload?): PostPayload {
+                return PostPayload(
+                    consentAllRef = core?.consentAllRef,
+                    granularStatus = ConsentStatus.GranularStatus.initFrom(core?.granularStatus),
+                    vendorListId = core?.vendorListId
+                )
+            }
+        }
+    }
 
     @Serializable
     data class CustomVendorsResponse(
