@@ -3,13 +3,16 @@ package com.sourcepoint.cmplibrary.data.network
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
+import com.sourcepoint.mobile_core.models.SPActionType
+import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import com.sourcepoint.mobile_core.network.responses.PvDataResponse
@@ -50,8 +53,13 @@ internal interface NetworkClient {
     ): PvDataResponse
 
     fun getChoice(
-        param: GetChoiceParamReq
-    ): Either<ChoiceResp>
+        actionType: SPActionType,
+        accountId: Int,
+        propertyId: Int,
+        idfaStatus: SPIDFAStatus,
+        metadata: ChoiceAllMetaDataRequest,
+        includeData: IncludeData
+    ): ChoiceAllResponse
 
     fun storeGdprChoice(
         param: PostChoiceParamReq

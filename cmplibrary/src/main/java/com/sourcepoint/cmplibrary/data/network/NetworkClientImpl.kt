@@ -1,14 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.create
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
@@ -17,14 +13,18 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.SPActionType
+import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -122,24 +122,22 @@ private class NetworkClientImpl(
         coreClient.postPvData(request)
     }
 
-    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = check(ApiRequestPostfix.GET_CHOICE) {
-        val url = urlManager.getChoiceUrl(param)
-
-        logger.req(
-            tag = "getChoiceUrl",
-            url = url.toString(),
-            body = check { JsonConverter.converter.encodeToString(param) }.getOrNull() ?: "",
-            type = "GET"
+    override fun getChoice(
+        actionType: SPActionType,
+        accountId: Int,
+        propertyId: Int,
+        idfaStatus: SPIDFAStatus,
+        metadata: ChoiceAllMetaDataRequest,
+        includeData: IncludeData
+    ): ChoiceAllResponse = runBlocking {
+        coreClient.getChoiceAll(
+            actionType = actionType,
+            accountId = accountId,
+            propertyId = propertyId,
+            idfaStatus = idfaStatus,
+            metadata = metadata,
+            includeData = includeData
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parseGetChoiceResp(response, param.choiceType)
     }
 
     override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
