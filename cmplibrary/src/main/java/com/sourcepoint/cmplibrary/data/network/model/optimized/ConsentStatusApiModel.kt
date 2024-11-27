@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -181,7 +180,7 @@ data class GdprCS(
     @SerialName("expirationDate") var expirationDate: String? = null,
     @SerialName("gcmStatus") var googleConsentMode: GoogleConsentMode? = null,
 ) {
-    fun copyingFrom(core: GDPRConsent?, applies: Boolean?): GdprCS {
+    fun initFrom(core: GDPRConsent?, applies: Boolean?): GdprCS {
         if (core == null) { return this }
 
         return copy(
@@ -196,14 +195,7 @@ data class GdprCS(
             euconsent = core.euconsent,
             uuid = core.uuid,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            googleConsentMode = core.gcmStatus?.let { gcm ->
-                GoogleConsentMode(
-                    adStorage = GCMStatus.firstWithStatusOrNull(gcm.adStorage),
-                    analyticsStorage = GCMStatus.firstWithStatusOrNull(gcm.analyticsStorage),
-                    adUserData = GCMStatus.firstWithStatusOrNull(gcm.adUserData),
-                    adPersonalization = GCMStatus.firstWithStatusOrNull(gcm.adPersonalization),
-                )
-            },
+            googleConsentMode = core.gcmStatus?.let { gcm -> GoogleConsentMode.initFrom(gcm) },
             grants = core.grants.mapValues {
                 GDPRPurposeGrants(
                     granted = it.value.vendorGrant,
@@ -214,7 +206,7 @@ data class GdprCS(
         )
     }
 
-    fun copyingFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
+    fun initFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
         if (core == null) { return this }
 
         return copy(
