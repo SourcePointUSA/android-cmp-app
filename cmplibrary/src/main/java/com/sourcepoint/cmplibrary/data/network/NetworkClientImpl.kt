@@ -17,13 +17,19 @@ import com.sourcepoint.mobile_core.models.SPActionType
 import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
+import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
+import com.sourcepoint.mobile_core.network.requests.GDPRChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.requests.USNatChoiceRequest
+import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
+import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.PvDataResponse
+import com.sourcepoint.mobile_core.network.responses.USNatChoiceResponse
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -140,75 +146,24 @@ private class NetworkClientImpl(
         )
     }
 
-    override fun storeGdprChoice(param: PostChoiceParamReq): Either<GdprCS> = check(ApiRequestPostfix.POST_CHOICE_GDPR) {
-        val url = urlManager.getGdprChoiceUrl(param)
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = param.body.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-
-        logger.req(
-            tag = "storeGdprChoice",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
+    override fun storeGdprChoice(actionType: SPActionType,request: GDPRChoiceRequest): GDPRChoiceResponse = runBlocking {
+        coreClient.postChoiceGDPRAction(
+            actionType = actionType,
+            request = request
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parsePostGdprChoiceResp(response)
     }
 
-    override fun storeCcpaChoice(param: PostChoiceParamReq): Either<CcpaCS> = check(ApiRequestPostfix.POST_CHOICE_CCPA) {
-        val url = urlManager.getCcpaChoiceUrl(param)
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = param.body.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-
-        logger.req(
-            tag = "storeCcpaChoice",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
+    override fun storeCcpaChoice(actionType: SPActionType,request: CCPAChoiceRequest): CCPAChoiceResponse = runBlocking {
+        coreClient.postChoiceCCPAAction(
+            actionType = actionType,
+            request = request
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parsePostCcpaChoiceResp(response)
     }
 
-    override fun storeUsNatChoice(
-        param: PostChoiceParamReq,
-    ): Either<USNatConsentData> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
-
-        val url = urlManager.postUsNatChoiceUrl(param)
-        val mediaType = "application/json".toMediaType()
-        val jsonBody = param.body.toString()
-        val body: RequestBody = RequestBody.create(mediaType, jsonBody)
-
-        logger.req(
-            tag = "storeUsNatChoice",
-            url = url.toString(),
-            body = jsonBody,
-            type = "POST"
+    override fun storeUsNatChoice(actionType: SPActionType,request: USNatChoiceRequest): USNatChoiceResponse = runBlocking {
+        coreClient.postChoiceUSNatAction(
+            actionType = actionType,
+            request = request
         )
-
-        val request: Request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-
-        val response = httpClient.newCall(request).execute()
-
-        responseManager.parsePostUsNatChoiceResp(response)
     }
 }

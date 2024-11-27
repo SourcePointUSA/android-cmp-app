@@ -7,15 +7,21 @@ import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import com.sourcepoint.mobile_core.models.SPActionType
 import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
+import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
+import com.sourcepoint.mobile_core.network.requests.GDPRChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.requests.USNatChoiceRequest
+import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.ConsentStatusResponse
+import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import com.sourcepoint.mobile_core.network.responses.PvDataResponse
+import com.sourcepoint.mobile_core.network.responses.USNatChoiceResponse
 
 const val DEFAULT_TIMEOUT = 10000L
 
@@ -62,14 +68,17 @@ internal interface NetworkClient {
     ): ChoiceAllResponse
 
     fun storeGdprChoice(
-        param: PostChoiceParamReq
-    ): Either<GdprCS>
+        actionType: SPActionType,
+        request: GDPRChoiceRequest
+    ): GDPRChoiceResponse
 
     fun storeCcpaChoice(
-        param: PostChoiceParamReq
-    ): Either<CcpaCS>
+        actionType: SPActionType,
+        request: CCPAChoiceRequest
+    ): CCPAChoiceResponse
 
     fun storeUsNatChoice(
-        param: PostChoiceParamReq,
-    ): Either<USNatConsentData>
+        actionType: SPActionType,
+        request: USNatChoiceRequest
+    ): USNatChoiceResponse
 }

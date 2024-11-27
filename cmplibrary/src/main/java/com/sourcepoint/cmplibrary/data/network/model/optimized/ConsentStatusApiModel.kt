@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS.PostPayload
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -80,6 +81,25 @@ data class CcpaCS(
             gppData = core.gppData
         )
     }
+
+    fun copyingFrom(core: ChoiceAllResponse.CCPA?, applies: Boolean?): CcpaCS {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            consentedAll = core.consentedAll,
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            rejectedAll = core.rejectedAll,
+            status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status.name.lowercase() },
+            uspstring = core.uspstring,
+            rejectedVendors = core.rejectedVendors,
+            rejectedCategories = core.rejectedCategories,
+            gpcEnabled = core.gpcEnabled,
+            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
+            gppData = core.gppData
+        )
+    }
 }
 
 @Serializable
@@ -116,6 +136,40 @@ data class USNatConsentData(
                 )
             },
             consentStatus = USNatConsentStatus.initFrom(core.consentStatus)
+        )
+    }
+
+    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatConsentData {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            consentStatus = USNatConsentStatus.initFrom(core.consentStatus),
+            consentStrings = core.consentStrings.map {
+                ConsentString(
+                    sectionId = it.sectionId,
+                    sectionName = it.sectionName,
+                    consentString = it.consentString
+                )
+            },
+            userConsents = UserConsents(
+                vendors = core.userConsents.vendors.map {
+                    ConsentableImpl(
+                        id = it.id,
+                        consented = it.consented
+                    )
+                },
+                categories = core.userConsents.categories.map {
+                    ConsentableImpl(
+                        id = it.id,
+                        consented = it.consented
+                    )
+                },
+            ),
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
+            gppData = core.gppData,
         )
     }
 
@@ -227,7 +281,7 @@ data class GdprCS(
         @SerialName("vendorListId") val vendorListId: String?
     ) {
         companion object {
-            fun initFrom(core: com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse.GDPR.PostPayload?): PostPayload {
+            fun initFrom(core: ChoiceAllResponse.GDPR.PostPayload?): PostPayload {
                 return PostPayload(
                     consentAllRef = core?.consentAllRef,
                     granularStatus = ConsentStatus.GranularStatus.initFrom(core?.granularStatus),
