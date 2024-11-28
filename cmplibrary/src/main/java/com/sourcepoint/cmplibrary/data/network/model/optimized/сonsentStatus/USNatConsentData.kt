@@ -72,7 +72,7 @@ data class USNatConsentData(
         )
     }
 
-    fun copyingFrom(core: USNatChoiceResponse?, applies: Boolean?): USNatConsentData {
+    fun copyingFrom(core: USNatChoiceResponse?): USNatConsentData {
         if (core == null) { return this }
 
         return copy(

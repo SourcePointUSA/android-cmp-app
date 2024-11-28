@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverterImpl
 import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
+import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -56,6 +57,21 @@ data class CcpaCS(
             expirationDate = core.expirationDate,
             rejectedAll = core.rejectedAll,
             status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status.name.lowercase() },
+            uspstring = core.uspstring,
+            rejectedVendors = core.rejectedVendors,
+            rejectedCategories = core.rejectedCategories,
+            gpcEnabled = core.gpcEnabled,
+            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
+            gppData = core.gppData
+        )
+    }
+
+    fun copyingFrom(core: CCPAChoiceResponse): CcpaCS {
+        return copy(
+            consentedAll = core.consentedAll,
+            dateCreated = core.dateCreated,
+            rejectedAll = core.rejectedAll,
+            status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status?.name?.lowercase() },
             uspstring = core.uspstring,
             rejectedVendors = core.rejectedVendors,
             rejectedCategories = core.rejectedCategories,
