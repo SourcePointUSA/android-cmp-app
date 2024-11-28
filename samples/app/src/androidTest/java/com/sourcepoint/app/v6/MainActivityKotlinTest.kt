@@ -47,7 +47,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.creation.to
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus

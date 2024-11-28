@@ -3,6 +3,9 @@ package com.sourcepoint.cmplibrary.data.network.converter
 import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import kotlinx.serialization.json.JsonObject

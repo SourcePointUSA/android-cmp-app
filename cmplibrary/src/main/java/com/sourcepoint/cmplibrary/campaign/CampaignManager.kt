@@ -15,6 +15,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable

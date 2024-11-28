@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.choice
 
-import com.sourcepoint.cmplibrary.data.network.model.optimized.CcpaCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

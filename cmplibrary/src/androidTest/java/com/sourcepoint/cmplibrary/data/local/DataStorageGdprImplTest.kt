@@ -6,8 +6,7 @@ import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS
-import kotlinx.serialization.decodeFromString
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import org.junit.Test
 import org.junit.runner.RunWith
 

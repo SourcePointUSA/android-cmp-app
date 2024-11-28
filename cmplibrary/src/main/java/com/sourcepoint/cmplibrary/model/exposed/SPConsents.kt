@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GoogleConsentMode
-import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.cmplibrary.model.toConsentJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant

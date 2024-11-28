@@ -2,8 +2,10 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus.GranularStatus
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GdprCS.PostPayload
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GCMStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GranularState
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -11,7 +13,6 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString

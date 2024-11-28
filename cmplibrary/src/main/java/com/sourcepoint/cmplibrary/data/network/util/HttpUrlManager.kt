@@ -4,7 +4,7 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType

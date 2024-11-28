@@ -1,4 +1,4 @@
-package com.sourcepoint.cmplibrary.data.network.model.optimized
+package com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus
 
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
