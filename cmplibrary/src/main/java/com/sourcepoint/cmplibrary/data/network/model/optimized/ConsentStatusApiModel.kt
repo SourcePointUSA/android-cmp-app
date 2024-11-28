@@ -139,7 +139,7 @@ data class USNatConsentData(
         )
     }
 
-    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatConsentData {
+    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?, coreUserConsents: USNatConsent.USNatUserConsents? = null): USNatConsentData {
         if (core == null) { return this }
 
         return copy(
@@ -153,13 +153,13 @@ data class USNatConsentData(
                 )
             },
             userConsents = UserConsents(
-                vendors = core.userConsents.vendors.map {
+                vendors = coreUserConsents?.vendors?.map {
                     ConsentableImpl(
                         id = it.id,
                         consented = it.consented
                     )
                 },
-                categories = core.userConsents.categories.map {
+                categories = coreUserConsents?.categories?.map {
                     ConsentableImpl(
                         id = it.id,
                         consented = it.consented

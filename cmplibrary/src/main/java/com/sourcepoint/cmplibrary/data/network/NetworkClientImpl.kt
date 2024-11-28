@@ -147,23 +147,14 @@ private class NetworkClientImpl(
     }
 
     override fun storeGdprChoice(actionType: SPActionType,request: GDPRChoiceRequest): GDPRChoiceResponse = runBlocking {
-        coreClient.postChoiceGDPRAction(
-            actionType = actionType,
-            request = request
-        )
+        coreClient.postChoiceGDPRAction(actionType = actionType, request = request)
     }
 
     override fun storeCcpaChoice(actionType: SPActionType,request: CCPAChoiceRequest): CCPAChoiceResponse = runBlocking {
-        coreClient.postChoiceCCPAAction(
-            actionType = actionType,
-            request = request
-        )
+        coreClient.postChoiceCCPAAction(actionType = actionType, request = request)
     }
 
     override fun storeUsNatChoice(actionType: SPActionType,request: USNatChoiceRequest): USNatChoiceResponse = runBlocking {
-        coreClient.postChoiceUSNatAction(
-            actionType = actionType,
-            request = request
-        )
+        coreClient.postChoiceUSNatAction(actionType = actionType, request = request)
     }
 }
