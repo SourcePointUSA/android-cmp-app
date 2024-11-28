@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toUsNatConsentInternal
@@ -66,7 +66,7 @@ internal interface ConsentManager {
         }
 
         internal fun responseConsentHandler(
-            usNat: USNatConsentData?,
+            usNat: USNatCS?,
             consentManagerUtils: ConsentManagerUtils,
         ): SPConsents {
             val gdprCached = consentManagerUtils.gdprConsentOptimized.getOrNull()

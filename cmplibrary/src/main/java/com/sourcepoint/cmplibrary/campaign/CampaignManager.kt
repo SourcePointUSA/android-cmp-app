@@ -17,7 +17,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.fail
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
@@ -80,7 +80,7 @@ internal interface CampaignManager {
     // Consent Status
     var gdprConsentStatus: GdprCS?
     var ccpaConsentStatus: CcpaCS?
-    var usNatConsentData: USNatConsentData?
+    var usNatCS: USNatCS?
     var messagesOptimizedLocalState: String?
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
@@ -391,7 +391,7 @@ private class CampaignManagerImpl(
 
         PmUrlConfig(
             consentLanguage = spConfig.messageLanguage.value,
-            uuid = usNatConsentData?.uuid,
+            uuid = usNatCS?.uuid,
             siteId = spConfig.propertyId.toString(),
             messageId = pmId
         )
@@ -477,7 +477,7 @@ private class CampaignManagerImpl(
             val localStateSize = messagesOptimizedLocalState?.length ?: 0
             return messagesOptimizedLocalState == null ||
                 localStateSize == 0 ||
-                (gdprUuid == null && usNatConsentData?.uuid == null && (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true))
+                (gdprUuid == null && usNatCS?.uuid == null && (ccpaConsentStatus?.newUser == null || ccpaConsentStatus?.newUser == true))
         }
 
     override val shouldCallMessages: Boolean
@@ -508,13 +508,13 @@ private class CampaignManagerImpl(
     override fun shouldCallConsentStatus(authId: String?): Boolean {
         val isGdprUuidPresent = dataStorage.gdprConsentUuid != null
         val isCcpaUuidPresent = dataStorage.ccpaConsentUuid != null
-        val isUsNatUuidPresent = usNatConsentData?.uuid != null
+        val isUsNatUuidPresent = usNatCS?.uuid != null
         val isLocalStateEmpty = messagesOptimizedLocalState == null
         val isV630LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE)
         val isV690LocalStatePresent = dataStorage.preference.all.containsKey(LOCAL_STATE_OLD)
         val ccpa2usnat = (
             ccpaConsentStatus != null &&
-                usNatConsentData == null &&
+                usNatCS == null &&
                 spConfig.isIncluded(USNAT)
             )
 
@@ -578,10 +578,10 @@ private class CampaignManagerImpl(
             }
         }
 
-    override var usNatConsentData: USNatConsentData?
+    override var usNatCS: USNatCS?
         get() {
             return dataStorage.usNatConsentData
-                ?.let { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }
+                ?.let { JsonConverter.converter.decodeFromString<USNatCS>(it) }
                 ?.copy(applies = metaDataResp?.usnat?.applies)
         }
         set(value) {
@@ -705,7 +705,7 @@ private class CampaignManagerImpl(
         }
 
         response.usnat?.let { usnat ->
-            usNatConsentData = usNatConsentData?.copy(applies = usnat.applies)
+            usNatCS = usNatCS?.copy(applies = usnat.applies)
             usnat.sampleRate.let { newRate ->
                 if (!newRate.toDouble().almostSameAs(dataStorage.usnatSampleRate)) {
                     dataStorage.usnatSampleRate = newRate.toDouble()
@@ -790,9 +790,9 @@ private class CampaignManagerImpl(
         additionsChangeDate: String?
     ): USNatConsentStatus? {
 
-        val dataRecordedConsent = usNatConsentData?.dateCreated
+        val dataRecordedConsent = usNatCS?.dateCreated
 
-        val updatedUSNatConsentStatus = usNatConsentData?.consentStatus
+        val updatedUSNatConsentStatus = usNatCS?.consentStatus
 
         return if (dataRecordedConsent != null &&
             updatedUSNatConsentStatus != null &&
@@ -937,31 +937,31 @@ private class CampaignManagerImpl(
     override fun getUsNatPvDataBody(messageReq: MessagesParamReq): PvDataRequest.USNat {
         return PvDataRequest.USNat(
             applies = metaDataResp?.usnat?.applies ?: false,
-            uuid = usNatConsentData?.uuid,
+            uuid = usNatCS?.uuid,
             accountId = messageReq.accountId.toInt(),
             propertyId = messageReq.propertyId.toInt(),
             consentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus(
-                rejectedAny = usNatConsentData?.consentStatus?.rejectedAny,
-                consentedToAll = usNatConsentData?.consentStatus?.consentedToAll,
-                consentedToAny = usNatConsentData?.consentStatus?.consentedToAny,
+                rejectedAny = usNatCS?.consentStatus?.rejectedAny,
+                consentedToAll = usNatCS?.consentStatus?.consentedToAll,
+                consentedToAny = usNatCS?.consentStatus?.consentedToAny,
                 granularStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus(
-                    sellStatus = usNatConsentData?.consentStatus?.granularStatus?.sellStatus,
-                    shareStatus = usNatConsentData?.consentStatus?.granularStatus?.shareStatus,
-                    sensitiveDataStatus = usNatConsentData?.consentStatus?.granularStatus?.sensitiveDataStatus,
-                    gpcStatus = usNatConsentData?.consentStatus?.granularStatus?.gpcStatus,
-                    defaultConsent = usNatConsentData?.consentStatus?.granularStatus?.defaultConsent,
-                    previousOptInAll = usNatConsentData?.consentStatus?.granularStatus?.previousOptInAll,
-                    purposeConsent = usNatConsentData?.consentStatus?.granularStatus?.purposeConsent
+                    sellStatus = usNatCS?.consentStatus?.granularStatus?.sellStatus,
+                    shareStatus = usNatCS?.consentStatus?.granularStatus?.shareStatus,
+                    sensitiveDataStatus = usNatCS?.consentStatus?.granularStatus?.sensitiveDataStatus,
+                    gpcStatus = usNatCS?.consentStatus?.granularStatus?.gpcStatus,
+                    defaultConsent = usNatCS?.consentStatus?.granularStatus?.defaultConsent,
+                    previousOptInAll = usNatCS?.consentStatus?.granularStatus?.previousOptInAll,
+                    purposeConsent = usNatCS?.consentStatus?.granularStatus?.purposeConsent
                 ),
-                hasConsentData = usNatConsentData?.consentStatus?.hasConsentData,
-                vendorListAdditions = usNatConsentData?.consentStatus?.vendorListAdditions,
+                hasConsentData = usNatCS?.consentStatus?.hasConsentData,
+                vendorListAdditions = usNatCS?.consentStatus?.vendorListAdditions,
             ),
             pubData = messageReq.pubData,
             sampleRate = metaDataResp?.usnat?.sampleRate,
-            msgId = usNatConsentData?.messageMetaData?.messageId,
-            categoryId = usNatConsentData?.messageMetaData?.categoryId?.code,
-            subCategoryId = usNatConsentData?.messageMetaData?.subCategoryId?.code,
-            prtnUUID = usNatConsentData?.messageMetaData?.prtnUUID
+            msgId = usNatCS?.messageMetaData?.messageId,
+            categoryId = usNatCS?.messageMetaData?.categoryId?.code,
+            subCategoryId = usNatCS?.messageMetaData?.subCategoryId?.code,
+            prtnUUID = usNatCS?.messageMetaData?.prtnUUID
         )
     }
 
@@ -981,7 +981,7 @@ private class CampaignManagerImpl(
 
     override val isUsnatExpired: Boolean
         get() {
-            val usnatExpirationDate = usNatConsentData?.expirationDate?.let { formatter.parse(it) } ?: return false
+            val usnatExpirationDate = usNatCS?.expirationDate?.let { formatter.parse(it) } ?: return false
             val currentDate = Date()
             return currentDate.after(usnatExpirationDate)
         }
@@ -990,7 +990,7 @@ private class CampaignManagerImpl(
         get() = ChoiceResp(
             ccpa = ccpaConsentStatus,
             gdpr = gdprConsentStatus,
-            usNat = usNatConsentData
+            usNat = usNatCS
         )
 
     override fun deleteExpiredConsents() {

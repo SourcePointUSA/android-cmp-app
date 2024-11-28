@@ -47,7 +47,7 @@ private class ConsentManagerUtilsImpl(
         )
     }
     override val usNatConsent: Either<UsNatConsentInternal> get() = check {
-        cm.usNatConsentData?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
+        cm.usNatCS?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
             cause = null,
             "The UsNat consent is null!!!"
         )

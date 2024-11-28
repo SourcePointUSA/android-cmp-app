@@ -6,7 +6,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.toNativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.toConsentAction
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
@@ -70,7 +70,7 @@ internal class JsonConverterImpl : JsonConverter {
         JsonConverter.converter.decodeFromString(body)
     }
 
-    override fun toUsNatPostChoiceResp(body: String): Either<USNatConsentData> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
+    override fun toUsNatPostChoiceResp(body: String): Either<USNatCS> = check(ApiRequestPostfix.POST_CHOICE_USNAT) {
         JsonConverter.converter.decodeFromString(body)
     }
 

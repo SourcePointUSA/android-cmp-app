@@ -16,7 +16,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
-data class USNatConsentData(
+data class USNatCS(
     val applies: Boolean? = null,
     @SerialName("consentStatus") val consentStatus: USNatConsentStatus? = null,
     @SerialName("consentStrings") val consentStrings: List<ConsentString>? = null,
@@ -31,7 +31,12 @@ data class USNatConsentData(
     @SerialName("expirationDate") override val expirationDate: String? = null,
     val userConsents: UserConsents? = null
 ) : CampaignMessage {
-    fun copyingFrom(core: USNatConsent?, applies: Boolean?): USNatConsentData {
+    val vendors: List<ConsentableImpl>
+        get() { return userConsents?.vendors ?: emptyList() }
+    val categories: List<ConsentableImpl>
+        get() { return userConsents?.categories ?: emptyList() }
+
+    fun copyingFrom(core: USNatConsent?, applies: Boolean?): USNatCS {
         if (core == null) { return this }
 
         return copy(
@@ -52,7 +57,7 @@ data class USNatConsentData(
         )
     }
 
-    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatConsentData {
+    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatCS {
         if (core == null) { return this }
 
         return copy(
@@ -72,7 +77,7 @@ data class USNatConsentData(
         )
     }
 
-    fun copyingFrom(core: USNatChoiceResponse?): USNatConsentData {
+    fun copyingFrom(core: USNatChoiceResponse?): USNatCS {
         if (core == null) { return this }
 
         return copy(
@@ -118,9 +123,4 @@ data class USNatConsentData(
         val vendors: List<ConsentableImpl>? = emptyList(),
         val categories: List<ConsentableImpl>? = emptyList()
     )
-
-    val vendors: List<ConsentableImpl>
-        get() { return userConsents?.vendors ?: emptyList() }
-    val categories: List<ConsentableImpl>
-        get() { return userConsents?.categories ?: emptyList() }
 }

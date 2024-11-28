@@ -44,7 +44,7 @@ internal fun CcpaCS.toCCPAConsentInternal(): CCPAConsentInternal {
     )
 }
 
-internal fun USNatConsentData.toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
+internal fun USNatCS.toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
     applies = applies ?: false,
     gppData = gppData?.toMapOfAny() ?: emptyMap(),
     consentStatus = consentStatus,
@@ -57,6 +57,6 @@ internal fun USNatConsentData.toUsNatConsentInternal(): UsNatConsentInternal = U
     url = url,
 )
 
-internal fun USNatConsentData.stringify(): String? {
+internal fun USNatCS.stringify(): String? {
     return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
 }

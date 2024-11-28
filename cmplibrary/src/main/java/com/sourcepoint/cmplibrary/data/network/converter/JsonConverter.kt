@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.core.layout.model.NativeMessageDto
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.model.* // ktlint-disable
 import kotlinx.serialization.json.JsonObject
@@ -31,7 +31,7 @@ internal interface JsonConverter {
 
     fun toCcpaPostChoiceResp(body: String): Either<CcpaCS>
 
-    fun toUsNatPostChoiceResp(body: String): Either<USNatConsentData>
+    fun toUsNatPostChoiceResp(body: String): Either<USNatCS>
 
     fun toMessagesResp(body: String): Either<MessagesResp>
 

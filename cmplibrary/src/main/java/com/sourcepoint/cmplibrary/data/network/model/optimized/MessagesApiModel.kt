@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GCMStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GranularState
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -89,7 +89,7 @@ data class MessageMetaData(
 data class Campaigns(
     @SerialName("CCPA") val ccpa: CCPA?,
     @SerialName("GDPR") val gdpr: GDPR?,
-    @SerialName("usnat") val usNat: USNatConsentData?,
+    @SerialName("usnat") val usNat: USNatCS?,
 )
 
 @Serializable
@@ -163,16 +163,16 @@ data class ConsentStatus(
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null
 ) {
     companion object {
-        fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus): ConsentStatus {
+        fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus?): ConsentStatus {
             return ConsentStatus(
-                consentedAll = core.consentedAll,
-                consentedToAny = core.consentedToAny,
-                hasConsentData = core.hasConsentData,
-                rejectedAny = core.rejectedAny,
-                rejectedLI = core.rejectedLI,
-                legalBasisChanges = core.legalBasisChanges,
-                vendorListAdditions = core.vendorListAdditions,
-                granularStatus = GranularStatus.initFrom(core.granularStatus)
+                consentedAll = core?.consentedAll,
+                consentedToAny = core?.consentedToAny,
+                hasConsentData = core?.hasConsentData,
+                rejectedAny = core?.rejectedAny,
+                rejectedLI = core?.rejectedLI,
+                legalBasisChanges = core?.legalBasisChanges,
+                vendorListAdditions = core?.vendorListAdditions,
+                granularStatus = GranularStatus.initFrom(core?.granularStatus)
             )
         }
     }
@@ -186,6 +186,16 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
     ) {
+        fun toCoreConsentStatusGranularStatus(): com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus {
+            return com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus(
+                defaultConsent = this.defaultConsent,
+                previousOptInAll = this.previousOptInAll,
+                purposeConsent = this.purposeConsent?.name,
+                purposeLegInt = this.purposeLegInt?.name,
+                vendorConsent = this.vendorConsent?.name,
+                vendorLegInt = this.vendorLegInt?.name
+            )
+        }
         companion object {
             fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus?): GranularStatus {
                 return GranularStatus(

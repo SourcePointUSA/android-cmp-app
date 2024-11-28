@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized.choice
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,5 +13,5 @@ internal data class ChoiceResp(
     @SerialName("gdpr")
     val gdpr: GdprCS? = null,
     @SerialName("usnat")
-    val usNat: USNatConsentData? = null,
+    val usNat: USNatCS? = null,
 )

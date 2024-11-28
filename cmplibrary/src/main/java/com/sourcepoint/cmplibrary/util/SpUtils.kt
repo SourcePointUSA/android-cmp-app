@@ -12,10 +12,9 @@ import com.sourcepoint.cmplibrary.data.local.DataStorageUSNat
 import com.sourcepoint.cmplibrary.data.local.create
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toUsNatConsentInternal
@@ -119,7 +118,7 @@ internal fun userConsents(
                 )
             },
         usNat = dataStorage.usNatConsentData
-            ?.let { check { JsonConverter.converter.decodeFromString<USNatConsentData>(it) }.getOrNull() }
+            ?.let { check { JsonConverter.converter.decodeFromString<USNatCS>(it) }.getOrNull() }
             ?.copy(applies = dataStorage.usNatApplies)
             ?.toUsNatConsentInternal()
             ?.let {

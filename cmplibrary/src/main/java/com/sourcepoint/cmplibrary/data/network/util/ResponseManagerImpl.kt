@@ -5,7 +5,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.* // ktlint-disable
@@ -101,7 +101,7 @@ private class ResponseManagerImpl(
         }
     }
 
-    override fun parsePostUsNatChoiceResp(r: Response): USNatConsentData {
+    override fun parsePostUsNatChoiceResp(r: Response): USNatCS {
         val body = r.body?.byteStream()?.reader()?.readText() ?: ""
         val status = r.code
         val mess = r.message
@@ -112,7 +112,7 @@ private class ResponseManagerImpl(
             status = status.toString()
         )
         return if (r.isSuccessful) {
-            when (val either: Either<USNatConsentData> = jsonConverter.toUsNatPostChoiceResp(body)) {
+            when (val either: Either<USNatCS> = jsonConverter.toUsNatPostChoiceResp(body)) {
                 is Either.Right -> either.r
                 is Either.Left -> throw either.t
             }

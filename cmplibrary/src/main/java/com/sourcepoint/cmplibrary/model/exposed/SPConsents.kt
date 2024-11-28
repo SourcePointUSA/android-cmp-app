@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GoogleConsentMode
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.cmplibrary.model.toConsentJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
@@ -156,7 +156,7 @@ interface UsNatConsent {
     @Deprecated("`consentStatus` is deprecated and will be renamed to `statuses` in the next release.", ReplaceWith("statuses"))
     val consentStatus: USNatConsentStatus?
     val statuses: UsNatStatuses
-    val consentStrings: List<USNatConsentData.ConsentString>?
+    val consentStrings: List<USNatCS.ConsentString>?
     val dateCreated: String?
     val vendors: List<Consentable>?
     val categories: List<Consentable>?
@@ -167,7 +167,7 @@ interface UsNatConsent {
 internal data class UsNatConsentInternal(
     override var gppData: Map<String, Any?> = emptyMap(),
     override val applies: Boolean = false,
-    override val consentStrings: List<USNatConsentData.ConsentString> = emptyList(),
+    override val consentStrings: List<USNatCS.ConsentString> = emptyList(),
     override val dateCreated: String? = null,
     override val vendors: List<ConsentableImpl> = listOf(),
     override val categories: List<ConsentableImpl> = listOf(),
@@ -304,7 +304,7 @@ internal fun SPConsents.toJsonObject(): JSONObject {
     }
 }
 
-internal fun List<USNatConsentData.ConsentString>.toJsonObjectList(): List<JSONObject> {
+internal fun List<USNatCS.ConsentString>.toJsonObjectList(): List<JSONObject> {
     return this.map { consentString ->
         JSONObject().apply {
             put("sectionId", consentString.sectionId)

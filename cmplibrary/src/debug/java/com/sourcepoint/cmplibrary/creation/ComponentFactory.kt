@@ -13,7 +13,12 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceP
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.mobile_core.models.SPActionType
+import com.sourcepoint.mobile_core.models.SPIDFAStatus
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import okhttp3.OkHttpClient
 
@@ -88,5 +93,12 @@ internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient b
 }
 
 internal class NCMockStoreChoiceException(nc: NetworkClient) : NetworkClient by nc {
-    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = Either.Left(RuntimeException())
+    override fun getChoice(
+        actionType: SPActionType,
+        accountId: Int,
+        propertyId: Int,
+        idfaStatus: SPIDFAStatus,
+        metadata: ChoiceAllMetaDataRequest,
+        includeData: IncludeData
+    ): ChoiceAllResponse = ChoiceAllResponse(null,null,null)
 }
