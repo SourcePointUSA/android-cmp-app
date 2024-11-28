@@ -232,6 +232,18 @@ data class USNatConsentStatus(
         @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
         @SerialName("purposeConsent") var purposeConsent: String?,
     ) {
+        fun toCoreConsentStatusGranularStatus(): com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus {
+            return com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus(
+                sellStatus = this.sellStatus,
+                shareStatus = this.shareStatus,
+                sensitiveDataStatus = this.sensitiveDataStatus,
+                gpcStatus = this.gpcStatus,
+                defaultConsent = this.defaultConsent,
+                previousOptInAll = this.previousOptInAll,
+                purposeConsent = this.purposeConsent
+            )
+        }
+
         companion object {
             fun initFrom(core: com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus?): USNatGranularStatus {
                 return USNatGranularStatus(

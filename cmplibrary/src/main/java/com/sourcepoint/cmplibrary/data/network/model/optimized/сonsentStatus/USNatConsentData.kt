@@ -9,6 +9,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ConsentableImpl
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
+import com.sourcepoint.mobile_core.network.responses.USNatChoiceResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -51,7 +52,27 @@ data class USNatConsentData(
         )
     }
 
-    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?, coreUserConsents: USNatConsent.USNatUserConsents? = null): USNatConsentData {
+    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatConsentData {
+        if (core == null) { return this }
+
+        return copy(
+            applies = applies,
+            consentStatus = USNatConsentStatus.initFrom(core.consentStatus),
+            consentStrings = core.consentStrings.map {
+                ConsentString(
+                    sectionId = it.sectionId,
+                    sectionName = it.sectionName,
+                    consentString = it.consentString
+                )
+            },
+            dateCreated = core.dateCreated,
+            expirationDate = core.expirationDate,
+            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
+            gppData = core.gppData,
+        )
+    }
+
+    fun copyingFrom(core: USNatChoiceResponse?, applies: Boolean?): USNatConsentData {
         if (core == null) { return this }
 
         return copy(
@@ -65,13 +86,13 @@ data class USNatConsentData(
                 )
             },
             userConsents = UserConsents(
-                vendors = coreUserConsents?.vendors?.map {
+                vendors = core.userConsents.vendors.map {
                     ConsentableImpl(
                         id = it.id,
                         consented = it.consented
                     )
                 },
-                categories = coreUserConsents?.categories?.map {
+                categories = core.userConsents.categories.map {
                     ConsentableImpl(
                         id = it.id,
                         consented = it.consented

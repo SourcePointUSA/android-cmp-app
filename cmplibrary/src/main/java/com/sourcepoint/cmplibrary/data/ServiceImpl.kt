@@ -10,8 +10,10 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
@@ -31,9 +33,15 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
+import com.sourcepoint.mobile_core.models.SPActionType
+import com.sourcepoint.mobile_core.models.SPIDFAStatus
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
+import com.sourcepoint.mobile_core.network.requests.USNatChoiceRequest
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
@@ -641,74 +649,85 @@ internal class ServiceImpl(
         consentAction: ConsentActionImpl,
         onSpConsentSuccess: ((SPConsents) -> Unit)?,
     ): Either<USNatConsentData> = check {
-        var getResp: ChoiceResp? = null
+        var getResp: ChoiceAllResponse? = null
         if (consentAction.actionType.isAcceptOrRejectAll()) {
-            getResp = networkClient.getChoice(
-                GetChoiceParamReq(
-                    choiceType = consentAction.actionType.toChoiceTypeParam(),
-                    accountId = spConfig.accountId.toLong(),
-                    propertyId = spConfig.propertyId.toLong(),
-                    env = env,
-                    metadataArg = GetChoiceParamReq.MetaData(
-                        usnat = GetChoiceParamReq.MetaData.Campaign(
-                            applies = metaDataResp?.usnat?.applies ?: false
-                        )
+            try {
+                getResp = networkClient.getChoice(
+                    actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
+                    accountId = spConfig.accountId,
+                    propertyId = spConfig.propertyId,
+                    idfaStatus = SPIDFAStatus.Unknown,
+                    metadata = ChoiceAllMetaDataRequest(
+                        gdpr = ChoiceAllMetaDataRequest.Campaign(false),
+                        ccpa = ChoiceAllMetaDataRequest.Campaign(false),
+                        usnat = ChoiceAllMetaDataRequest.Campaign(metaDataResp?.usnat?.applies ?: false)
                     ),
-                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption())
-                )
-            )
-                .executeOnRight { response ->
-                    response.usNat?.let { usnatResponse ->
-                        campaignManager.usNatConsentData = usnatResponse.copy(uuid = campaignManager.usNatConsentData?.uuid)
-                        onSpConsentSuccess?.invoke(
-                            ConsentManager.responseConsentHandler(
-                                usNat = usnatResponse.copy(
-                                    uuid = campaignManager.usNatConsentData?.uuid,
-                                    applies = dataStorage.usNatApplies,
-                                ),
-                                consentManagerUtils = consentManagerUtils,
-                            )
+                    includeData = IncludeData(
+                        gppData = IncludeData.GPPConfig(
+                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
+                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
+                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
+                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
                         )
-                    }
-                }
-                .executeOnLeft { error ->
-                    (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    )
+                )
+
+                getResp.usnat?.let { usnatResponse ->
+                    campaignManager.usNatConsentData = USNatConsentData()
+                        .copyingFrom(usnatResponse,metaDataResp?.usnat?.applies ?: false)
+                        .copy(uuid = campaignManager.usNatConsentData?.uuid)
                     val spConsents = ConsentManager.responseConsentHandler(
-                        usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
+                        usNat = USNatConsentData()
+                            .copyingFrom(usnatResponse, dataStorage.usNatApplies)
+                            .copy(uuid = campaignManager.usNatConsentData?.uuid),
                         consentManagerUtils = consentManagerUtils,
                     )
                     onSpConsentSuccess?.invoke(spConsents)
                 }
-                .getOrNull()
+            }
+            catch (error: Throwable) {
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                val spConsents = ConsentManager.responseConsentHandler(
+                    usNat = campaignManager.usNatConsentData?.copy(applies = dataStorage.usNatApplies),
+                    consentManagerUtils = consentManagerUtils,
+                )
+                onSpConsentSuccess?.invoke(spConsents)
+            }
         }
 
-        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.usNat == null
+        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.usnat == null
 
-        networkClient.storeUsNatChoice(
-            PostChoiceParamReq(
-                env = env,
-                actionType = consentAction.actionType,
-                body = postChoiceUsNatBody(
-                    granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus,
-                    messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId?.toLong(),
-                    saveAndExitVariables = consentAction.saveAndExitVariablesOptimized,
-                    propertyId = spConfig.propertyId.toLong(),
-                    pubData = consentAction.pubData.toJsonObject(),
-                    sendPvData = dataStorage.usnatSampled,
-                    sampleRate = dataStorage.usnatSampleRate,
+        try {
+            val postChoiceUsNatResponse = networkClient.storeUsNatChoice(
+                actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
+                request = USNatChoiceRequest(
+                    authId = campaignManager.authId,
                     uuid = campaignManager.usNatConsentData?.uuid,
+                    messageId = campaignManager.usNatConsentData?.messageMetaData?.messageId.toString(),
                     vendorListId = campaignManager.metaDataResp?.usnat?.vendorListId,
-                    includeData = buildIncludeData(gppDataValue = campaignManager.spConfig.getGppCustomOption()),
-                    authId = campaignManager.authId
-                ),
+                    pubData = consentAction.pubData.toJsonObject(),
+                    pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),
+                    sendPVData = dataStorage.usnatSampled ?: false,
+                    propertyId = spConfig.propertyId,
+                    sampleRate = dataStorage.usnatSampleRate.toFloat(),
+                    idfaStatus = SPIDFAStatus.Unknown,
+                    granularStatus = campaignManager.usNatConsentData?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
+                    includeData = IncludeData(
+                        gppData = IncludeData.GPPConfig(
+                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
+                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
+                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.first { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
+                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
+                        )
+                    )
+                )
             )
-        )
-            .executeOnRight { postChoiceUsNatResponse ->
-                campaignManager.usNatConsentData = postChoiceUsNatResponse
-            }
-            .executeOnLeft { error ->
-                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-            }
+
+            campaignManager.usNatConsentData = USNatConsentData().copyingFrom(postChoiceUsNatResponse, metaDataResp?.usnat?.applies ?: false)
+        }
+        catch (error: Throwable) {
+            (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+        }
 
         // don't overwrite usNat consents if the action is accept all or reject all
         // because the response from those endpoints does not contain a full consent
