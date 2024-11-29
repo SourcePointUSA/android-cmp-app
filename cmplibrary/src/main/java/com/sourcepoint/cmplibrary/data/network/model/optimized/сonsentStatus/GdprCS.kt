@@ -100,6 +100,7 @@ data class GdprCS(
 
     fun copyingFrom(core: GDPRChoiceResponse): GdprCS {
         return copy(
+            uuid = core.uuid,
             euconsent = core.euconsent,
             dateCreated = core.dateCreated,
             expirationDate = core.expirationDate,

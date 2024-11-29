@@ -935,6 +935,7 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr { tapAcceptAllOnWebView() }
+        delay(300)
         wr { clickOnGdprReviewConsent() }
         wr { tapCancelOnWebView() }
 

@@ -68,6 +68,7 @@ data class CcpaCS(
 
     fun copyingFrom(core: CCPAChoiceResponse): CcpaCS {
         return copy(
+            uuid = core.uuid,
             consentedAll = core.consentedAll,
             dateCreated = core.dateCreated,
             rejectedAll = core.rejectedAll,

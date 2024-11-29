@@ -511,7 +511,7 @@ internal class ServiceImpl(
                 request = GDPRChoiceRequest(
                     authId = authId,
                     uuid = campaignManager.gdprConsentStatus?.uuid,
-                    messageId = campaignManager.gdprMessageMetaData?.messageId.toString(),
+                    messageId = campaignManager.gdprMessageMetaData?.messageId?.toString(),
                     consentAllRef = getResp?.gdpr?.postPayload?.consentAllRef,
                     vendorListId = getResp?.gdpr?.postPayload?.vendorListId,
                     pubData = consentAction.pubData.toJsonObject(),
@@ -619,7 +619,7 @@ internal class ServiceImpl(
                 request = CCPAChoiceRequest(
                     authId = authId,
                     uuid = campaignManager.ccpaConsentStatus?.uuid,
-                    messageId = campaignManager.ccpaMessageMetaData?.messageId.toString(),
+                    messageId = campaignManager.ccpaMessageMetaData?.messageId?.toString(),
                     pubData = consentAction.pubData.toJsonObject(),
                     pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),
                     sendPVData = dataStorage.ccpaSampled ?: false,
@@ -725,7 +725,7 @@ internal class ServiceImpl(
                 request = USNatChoiceRequest(
                     authId = campaignManager.authId,
                     uuid = campaignManager.usNatCS?.uuid,
-                    messageId = campaignManager.usNatCS?.messageMetaData?.messageId.toString(),
+                    messageId = campaignManager.usNatCS?.messageMetaData?.messageId?.toString(),
                     vendorListId = campaignManager.metaDataResp?.usnat?.vendorListId,
                     pubData = consentAction.pubData.toJsonObject(),
                     pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),

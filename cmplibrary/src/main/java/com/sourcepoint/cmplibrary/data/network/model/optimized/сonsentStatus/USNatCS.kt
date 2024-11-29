@@ -82,6 +82,7 @@ data class USNatCS(
 
         return copy(
             applies = applies,
+            uuid = core.uuid,
             consentStatus = USNatConsentStatus.initFrom(core.consentStatus),
             consentStrings = core.consentStrings.map {
                 ConsentString(
