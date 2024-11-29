@@ -7,6 +7,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -41,3 +42,12 @@ internal fun SpConfig.getGppCustomOption(): JsonElement? = when {
         hasSupportForLegacyUSPString()?.let { Json.encodeToJsonElement(it) }
     else -> null
 }
+
+
+internal fun SpConfig.gppCustomOptionToCore(): IncludeData.GPPConfig =
+    IncludeData.GPPConfig(
+        MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == this.spGppConfig?.coveredTransaction?.type },
+        MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == this.spGppConfig?.optOutOptionMode?.type },
+        MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == this.spGppConfig?.serviceProviderMode?.type },
+        uspString = this.hasSupportForLegacyUSPString()?.uspString
+    )

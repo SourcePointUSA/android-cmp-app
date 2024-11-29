@@ -366,6 +366,7 @@ class MainActivityKotlinTest {
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+        wr(backup = { clickOnCcpaReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
         wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 

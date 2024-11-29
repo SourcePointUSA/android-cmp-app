@@ -470,14 +470,7 @@ internal class ServiceImpl(
                         ccpa = ChoiceAllMetaDataRequest.Campaign(false),
                         usnat = ChoiceAllMetaDataRequest.Campaign(false)
                     ),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
 
                 getResp.gdpr?.let { responseGdpr ->
@@ -521,14 +514,7 @@ internal class ServiceImpl(
                     sampleRate = dataStorage.gdprSampleRate.toFloat(),
                     idfaStatus = SPIDFAStatus.Unknown,
                     granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
             )
 
@@ -578,14 +564,7 @@ internal class ServiceImpl(
                         ccpa = ChoiceAllMetaDataRequest.Campaign(metaDataResp?.ccpa?.applies ?: false),
                         usnat = ChoiceAllMetaDataRequest.Campaign(false)
                     ),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
 
                 getResp.ccpa?.let { ccpaResponse ->
@@ -625,14 +604,7 @@ internal class ServiceImpl(
                     sendPVData = dataStorage.ccpaSampled ?: false,
                     propertyId = spConfig.propertyId,
                     sampleRate = dataStorage.ccpaSampleRate.toFloat(),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
             )
 
@@ -684,14 +656,7 @@ internal class ServiceImpl(
                         ccpa = ChoiceAllMetaDataRequest.Campaign(false),
                         usnat = ChoiceAllMetaDataRequest.Campaign(metaDataResp?.usnat?.applies ?: false)
                     ),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
 
                 getResp.usnat?.let { usnatResponse ->
@@ -734,14 +699,7 @@ internal class ServiceImpl(
                     sampleRate = dataStorage.usnatSampleRate.toFloat(),
                     idfaStatus = SPIDFAStatus.Unknown,
                     granularStatus = campaignManager.usNatCS?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
-                    includeData = IncludeData(
-                        gppData = IncludeData.GPPConfig(
-                            MspaCoveredTransaction = IncludeData.MspaBinaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.coveredTransaction?.type },
-                            MspaOptOutOptionMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.optOutOptionMode?.type },
-                            MspaServiceProviderMode = IncludeData.MspaTernaryFlag.entries.firstOrNull { it.value == campaignManager.spConfig.spGppConfig?.serviceProviderMode?.type },
-                            uspString = campaignManager.spConfig.hasSupportForLegacyUSPString()?.uspString
-                        )
-                    )
+                    includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
                 )
             )
 
