@@ -366,13 +366,13 @@ class MainActivityKotlinTest {
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
-        wr(backup = { clickOnCcpaReviewConsent() }) { tapAcceptAllOnWebView() }
+        wr(delay = 5000, backup = { clickOnCcpaReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
         wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
-        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+        wr(delay = 5000, backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
         wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
