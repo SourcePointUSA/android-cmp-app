@@ -5,7 +5,9 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonConverterImpl
 import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
 import com.sourcepoint.cmplibrary.data.network.model.optimized.ConsentStatus
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GoogleConsentMode
+import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
+import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
@@ -13,6 +15,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import org.json.JSONObject
 
 @Serializable
 data class GdprCS(
@@ -123,6 +126,22 @@ data class GdprCS(
             },
 
             )
+    }
+
+    internal fun toGDPRUserConsent(): GDPRConsentInternal {
+        return GDPRConsentInternal(
+            uuid = uuid,
+            applies = applies ?: false,
+            tcData = TCData?.toMapOfAny() ?: emptyMap(),
+            grants = grants ?: emptyMap(),
+            euconsent = euconsent ?: "",
+            acceptedCategories = categories,
+            consentStatus = consentStatus,
+            childPmId = null,
+            thisContent = JSONObject(),
+            webConsentPayload = webConsentPayload,
+            googleConsentMode = googleConsentMode
+        )
     }
 
     @Serializable

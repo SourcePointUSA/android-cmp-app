@@ -1,12 +1,16 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus
 
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverterImpl
 import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.CampaignMessage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessageMetaData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ConsentableImpl
+import com.sourcepoint.cmplibrary.model.exposed.UsNatConsentInternal
+import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.USNatChoiceResponse
@@ -14,6 +18,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import com.sourcepoint.cmplibrary.core.getOrNull
+import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.encodeToString
+
 
 @Serializable
 data class USNatCS(
@@ -110,6 +118,23 @@ data class USNatCS(
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             gppData = core.gppData,
         )
+    }
+
+    internal fun toUsNatConsentInternal(): UsNatConsentInternal = UsNatConsentInternal(
+        applies = applies ?: false,
+        gppData = gppData?.toMapOfAny() ?: emptyMap(),
+        consentStatus = consentStatus,
+        vendors = vendors,
+        categories = categories,
+        consentStrings = consentStrings ?: emptyList(),
+        dateCreated = dateCreated,
+        uuid = uuid,
+        webConsentPayload = webConsentPayload,
+        url = url,
+    )
+
+    internal fun stringify(): String? {
+        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
     }
 
     @Serializable

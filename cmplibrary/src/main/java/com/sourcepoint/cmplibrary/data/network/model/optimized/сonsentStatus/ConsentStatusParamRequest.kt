@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
-internal data class ConsentStatusParamReq(
+internal data class ConsentStatusParamRequest(
     @SerialName("env") val env: Env,
     @SerialName("metadata") val metadata: String,
     @SerialName("propertyId") val propertyId: Long,

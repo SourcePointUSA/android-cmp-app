@@ -4,7 +4,7 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamRequest
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -27,7 +27,7 @@ internal interface HttpUrlManager {
     ): HttpUrl
 
     // Optimized
-    fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl
+    fun getConsentStatusUrl(param: ConsentStatusParamRequest): HttpUrl
     fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
     fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
@@ -139,7 +139,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .build()
     }
 
-    override fun getConsentStatusUrl(param: ConsentStatusParamReq): HttpUrl {
+    override fun getConsentStatusUrl(param: ConsentStatusParamRequest): HttpUrl {
         // http://localhost:3000/wrapper/v2/consent-status?env=localProd
         // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}
         // &hasCsp=true

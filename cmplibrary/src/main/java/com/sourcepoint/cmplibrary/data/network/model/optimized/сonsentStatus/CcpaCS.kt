@@ -3,7 +3,10 @@ package com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus
 import com.sourcepoint.cmplibrary.data.network.converter.CcpaStatusSerializer
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverterImpl
 import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent.Companion.DEFAULT_USPSTRING
+import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
 import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
@@ -11,6 +14,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import org.json.JSONObject
 
 @Serializable
 data class CcpaCS(
@@ -79,6 +83,22 @@ data class CcpaCS(
             gpcEnabled = core.gpcEnabled,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             gppData = core.gppData
+        )
+    }
+
+    internal fun toCCPAConsentInternal(): CCPAConsentInternal {
+        return CCPAConsentInternal(
+            uuid = uuid,
+            applies = applies ?: false,
+            gppData = gppData?.toMapOfAny() ?: emptyMap(),
+            status = status,
+            childPmId = null,
+            rejectedVendors = rejectedVendors ?: emptyList(),
+            rejectedCategories = rejectedCategories ?: emptyList(),
+            thisContent = JSONObject(),
+            signedLspa = signedLspa,
+            webConsentPayload = webConsentPayload,
+            uspstring = this.uspstring ?: DEFAULT_USPSTRING
         )
     }
 }

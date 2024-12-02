@@ -8,7 +8,7 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamReq
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamRequest
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
@@ -312,7 +312,7 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
-        val param = ConsentStatusParamReq(
+        val param = ConsentStatusParamRequest(
             accountId = 22,
             env = Env.PROD,
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
@@ -356,7 +356,7 @@ class HttpUrlManagerTest {
 
     @Test
     fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
-        val param = ConsentStatusParamReq(
+        val param = ConsentStatusParamRequest(
             accountId = 22,
             env = Env.PROD,
             metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
