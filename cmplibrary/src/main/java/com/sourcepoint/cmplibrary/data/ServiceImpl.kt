@@ -36,7 +36,7 @@ import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.SPActionType
 import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
-import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.GDPRChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.IncludeData
@@ -419,7 +419,7 @@ internal class ServiceImpl(
         return sampled
     }
 
-    private fun buildChoiceAllMetaDataParam(consentAction: ConsentActionImpl): ChoiceAllMetaDataRequest{
+    private fun buildChoiceAllCampaigns(consentAction: ConsentActionImpl): ChoiceAllRequest.ChoiceAllCampaigns{
         var gdprApplies: Boolean? = null
         var ccpaApplies: Boolean? = null
         var usnatApplies: Boolean? = null
@@ -428,10 +428,10 @@ internal class ServiceImpl(
             CCPA -> { ccpaApplies = metaDataResp?.ccpa?.applies }
             USNAT -> { usnatApplies = metaDataResp?.usnat?.applies }
         }
-        return ChoiceAllMetaDataRequest(
-            gdpr = ChoiceAllMetaDataRequest.Campaign(gdprApplies ?: false),
-            ccpa = ChoiceAllMetaDataRequest.Campaign(ccpaApplies ?: false),
-            usnat = ChoiceAllMetaDataRequest.Campaign(usnatApplies ?: false)
+        return ChoiceAllRequest.ChoiceAllCampaigns(
+            gdpr = ChoiceAllRequest.ChoiceAllCampaigns.Campaign(gdprApplies ?: false),
+            ccpa = ChoiceAllRequest.ChoiceAllCampaigns.Campaign(ccpaApplies ?: false),
+            usnat = ChoiceAllRequest.ChoiceAllCampaigns.Campaign(usnatApplies ?: false)
         )
     }
 
@@ -471,14 +471,10 @@ internal class ServiceImpl(
         }
     }
 
-    private fun getChoiceAllResponse(consentAction: ConsentActionImpl, metadata: ChoiceAllMetaDataRequest) =
+    private fun getChoiceAllResponse(consentAction: ConsentActionImpl, campaigns: ChoiceAllRequest.ChoiceAllCampaigns) =
         networkClient.getChoice(
             actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
-            accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId,
-            idfaStatus = SPIDFAStatus.Unknown,
-            metadata = metadata,
-            includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
+            campaigns = campaigns
         )
 
     private fun postGdprChoice(
@@ -497,7 +493,6 @@ internal class ServiceImpl(
             sendPVData = dataStorage.gdprSampled ?: false,
             propertyId = propertyId,
             sampleRate = dataStorage.gdprSampleRate.toFloat(),
-            idfaStatus = SPIDFAStatus.Unknown,
             granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
             includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
         )
@@ -510,8 +505,8 @@ internal class ServiceImpl(
         var getResp: ChoiceAllResponse? = null
         if (consentAction.actionType.isAcceptOrRejectAll()) {
             try {
-                val metadataParam = buildChoiceAllMetaDataParam(consentAction)
-                getResp = getChoiceAllResponse(consentAction, metadataParam)
+                val campaigns = buildChoiceAllCampaigns(consentAction)
+                getResp = getChoiceAllResponse(consentAction, campaigns)
 
                 getResp.gdpr?.let { responseGdpr ->
                     campaignManager.gdprConsentStatus = GdprCS()
@@ -592,12 +587,8 @@ internal class ServiceImpl(
         var getResp: ChoiceAllResponse? = null
         if (consentAction.actionType.isAcceptOrRejectAll()) {
             try {
-                val metadataParam = ChoiceAllMetaDataRequest(
-                    gdpr = ChoiceAllMetaDataRequest.Campaign(false),
-                    ccpa = ChoiceAllMetaDataRequest.Campaign(metaDataResp?.ccpa?.applies ?: false),
-                    usnat = ChoiceAllMetaDataRequest.Campaign(false)
-                )
-                getResp = getChoiceAllResponse(consentAction, metadataParam)
+                val campaigns = buildChoiceAllCampaigns(consentAction)
+                getResp = getChoiceAllResponse(consentAction, campaigns)
 
                 getResp.ccpa?.let { ccpaResponse ->
                     campaignManager.ccpaConsentStatus = CcpaCS()
@@ -671,7 +662,6 @@ internal class ServiceImpl(
                 sendPVData = dataStorage.usnatSampled ?: false,
                 propertyId = spConfig.propertyId,
                 sampleRate = dataStorage.usnatSampleRate.toFloat(),
-                idfaStatus = SPIDFAStatus.Unknown,
                 granularStatus = campaignManager.usNatCS?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
                 includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
             )
@@ -684,8 +674,8 @@ internal class ServiceImpl(
         var getResp: ChoiceAllResponse? = null
         if (consentAction.actionType.isAcceptOrRejectAll()) {
             try {
-                val metadataParam = buildChoiceAllMetaDataParam(consentAction)
-                getResp = getChoiceAllResponse(consentAction, metadataParam)
+                val campaigns = buildChoiceAllCampaigns(consentAction)
+                getResp = getChoiceAllResponse(consentAction, campaigns)
 
                 getResp.usnat?.let { usnatResponse ->
                     campaignManager.usNatCS = USNatCS()

@@ -14,14 +14,12 @@ import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.mobile_core.models.SPActionType
-import com.sourcepoint.mobile_core.models.SPIDFAStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
-import com.sourcepoint.mobile_core.network.requests.ChoiceAllMetaDataRequest
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.GDPRChoiceRequest
-import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.requests.USNatChoiceRequest
@@ -130,19 +128,11 @@ private class NetworkClientImpl(
 
     override fun getChoice(
         actionType: SPActionType,
-        accountId: Int,
-        propertyId: Int,
-        idfaStatus: SPIDFAStatus,
-        metadata: ChoiceAllMetaDataRequest,
-        includeData: IncludeData
+        campaigns: ChoiceAllRequest.ChoiceAllCampaigns
     ): ChoiceAllResponse = runBlocking {
         coreClient.getChoiceAll(
             actionType = actionType,
-            accountId = accountId,
-            propertyId = propertyId,
-            idfaStatus = idfaStatus,
-            metadata = metadata,
-            includeData = includeData
+            campaigns = campaigns
         )
     }
 
