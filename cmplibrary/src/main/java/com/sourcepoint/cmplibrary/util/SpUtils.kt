@@ -15,9 +15,6 @@ import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toCCPAConsentInternal
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toUsNatConsentInternal
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable

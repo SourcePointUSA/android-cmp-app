@@ -3,9 +3,6 @@ package com.sourcepoint.cmplibrary.consent
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toCCPAConsentInternal
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toGDPRUserConsent
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.toUsNatConsentInternal
 import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
