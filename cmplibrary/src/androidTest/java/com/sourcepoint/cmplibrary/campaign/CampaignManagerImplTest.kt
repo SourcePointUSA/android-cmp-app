@@ -166,8 +166,8 @@ class CampaignManagerImplTest {
     fun given_an_expired_GDPR_isGdprExpired_RETURN_true() {
 
         dataStorage.gdprExpirationDate = "2022-10-27T17:15:57.006Z"
-        dataStorage.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
-        campaignManager.usNatCS = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+        dataStorage.ccpaExpirationDate = "2025-10-27T17:15:57.006Z"
+        campaignManager.usNatCS = usnatMock.copy(expirationDate = "2025-10-27T17:15:57.006Z")
 
         campaignManager.isGdprExpired.assertTrue()
         campaignManager.isCcpaExpired.assertFalse()
@@ -177,9 +177,9 @@ class CampaignManagerImplTest {
     @Test
     fun given_an_expired_CCPA_isCcpaExpired_RETURN_true() {
 
-        dataStorage.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
+        dataStorage.gdprExpirationDate = "2025-10-27T17:15:57.006Z"
         dataStorage.ccpaExpirationDate = "2022-10-27T17:15:57.006Z"
-        campaignManager.usNatCS = usnatMock.copy(expirationDate = "2024-10-27T17:15:57.006Z")
+        campaignManager.usNatCS = usnatMock.copy(expirationDate = "2025-10-27T17:15:57.006Z")
 
         campaignManager.isGdprExpired.assertFalse()
         campaignManager.isCcpaExpired.assertTrue()
@@ -189,8 +189,8 @@ class CampaignManagerImplTest {
     @Test
     fun given_an_expired_USNAT_isUsnatExpired_RETURN_true() {
 
-        dataStorage.gdprExpirationDate = "2024-10-27T17:15:57.006Z"
-        dataStorage.ccpaExpirationDate = "2024-10-27T17:15:57.006Z"
+        dataStorage.gdprExpirationDate = "2025-10-27T17:15:57.006Z"
+        dataStorage.ccpaExpirationDate = "2025-10-27T17:15:57.006Z"
         campaignManager.usNatCS = usnatMock.copy(expirationDate = "2022-10-27T17:15:57.006Z")
 
         campaignManager.isGdprExpired.assertFalse()
