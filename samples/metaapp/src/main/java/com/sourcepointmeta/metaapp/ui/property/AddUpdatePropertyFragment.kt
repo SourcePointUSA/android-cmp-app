@@ -85,7 +85,7 @@ class AddUpdatePropertyFragment : Fragment() {
             val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
-                .setView(R.layout.add_targeting_parameter)
+                .setView(dialogBinding.root)
                 .setPositiveButton("Create") { _, _ ->
                     val key = dialogBinding.tpKeyEd.text
                     val value = dialogBinding.tpValueEt.text
@@ -99,7 +99,7 @@ class AddUpdatePropertyFragment : Fragment() {
             val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
-                .setView(R.layout.add_targeting_parameter)
+                .setView(dialogBinding.root)
                 .setPositiveButton("Create") { _, _ ->
                     val key = dialogBinding.tpKeyEd.text
                     val value = dialogBinding.tpValueEt.text
@@ -113,7 +113,7 @@ class AddUpdatePropertyFragment : Fragment() {
             val dialogBinding = AddTargetingParameterBinding.inflate(layoutInflater)
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Add new targeting parameter")
-                .setView(R.layout.add_targeting_parameter)
+                .setView(dialogBinding.root)
                 .setPositiveButton("Create") { _, _ ->
                     val key = dialogBinding.tpKeyEd.text
                     val value = dialogBinding.tpValueEt.text
