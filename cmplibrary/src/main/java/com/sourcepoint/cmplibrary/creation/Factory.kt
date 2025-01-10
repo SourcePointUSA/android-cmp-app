@@ -31,6 +31,7 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
+import com.sourcepoint.mobile_core.Coordinator
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -75,6 +76,11 @@ fun makeConsentLib(
     val execManager = ExecutorManager.create(appCtx)
     val urlManager: HttpUrlManager = HttpUrlManagerSingleton
     val consentManagerUtils: ConsentManagerUtils = ConsentManagerUtils.create(campaignManager, dataStorage)
+    val coreCoordinator = Coordinator(
+        accountId = spConfig.accountId,
+        propertyId = spConfig.propertyId,
+        propertyName = spConfig.propertyName
+    )
     val service: Service = Service.create(
         networkClient,
         campaignManager,
@@ -83,6 +89,7 @@ fun makeConsentLib(
         logger,
         execManager,
         connManager,
+        coreCoordinator
     )
     val clientEventManager: ClientEventManager = ClientEventManager.create(
         logger = logger,

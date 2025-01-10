@@ -33,8 +33,11 @@ import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
+import com.sourcepoint.mobile_core.Coordinator
 import com.sourcepoint.mobile_core.models.SPActionType
 import com.sourcepoint.mobile_core.models.SPIDFAStatus
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent
+import com.sourcepoint.mobile_core.models.consents.State
 import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.ChoiceAllRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
@@ -47,6 +50,7 @@ import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
 
@@ -66,7 +70,17 @@ internal fun Service.Companion.create(
     logger: Logger,
     execManager: ExecutorManager,
     connectionManager: ConnectionManager,
-): Service = ServiceImpl(nc, campaignManager, consentManagerUtils, dataStorage, logger, execManager, connectionManager)
+    coreCoordinator: Coordinator
+): Service = ServiceImpl(
+        nc,
+        campaignManager,
+        consentManagerUtils,
+        dataStorage,
+        logger,
+        execManager,
+        connectionManager,
+        coreCoordinator
+    )
 
 /**
  * Implementation os the [Service] interface
@@ -79,6 +93,7 @@ internal class ServiceImpl(
     private val logger: Logger,
     private val execManager: ExecutorManager,
     private val connectionManager: ConnectionManager,
+    private val coreCoordinator: Coordinator,
 ) : Service, NetworkClient by networkClient, CampaignManager by campaignManager {
 
     private val transitionCCPAAuth: Boolean get() = spConfig.hasTransitionCCPAAuth() && campaignManager.authId != null
@@ -435,12 +450,46 @@ internal class ServiceImpl(
         )
     }
 
+    private fun updateConsentStatusFromCore() {
+        campaignManager.gdprConsentStatus?.copyingFrom(coreCoordinator.state.gdpr, metaDataResp?.gdpr?.applies)
+        campaignManager.ccpaConsentStatus?.copyingFrom(coreCoordinator.state.ccpa, metaDataResp?.ccpa?.applies)
+        campaignManager.usNatCS?.copyingFrom(coreCoordinator.state.usNat, metaDataResp?.usnat?.applies)
+    }
+
     override fun sendConsent(
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?,
     ): Either<ChoiceResp> {
         return if (connectionManager.isConnected) {
+            coreCoordinator.authId = authId
+            coreCoordinator.idfaStatus = null
+            coreCoordinator.includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
+            coreCoordinator.state = State(
+                gdpr = campaignManager.gdprConsentStatus?.toCoreGDPRConsent(),
+                ccpa = campaignManager.ccpaConsentStatus?.toCoreCCPAConsent(),
+                usNat = campaignManager.usNatCS?.toCoreUSNatConsent(),
+                gdprMetaData = State.GDPRMetaData(
+                    additionsChangeDate = "",
+                    legalBasisChangeDate = null,
+                    sampleRate = dataStorage.gdprSampleRate.toFloat(),
+                    wasSampled = dataStorage.gdprSampled,
+                    wasSampledAt = null
+                ),
+                ccpaMetaData = State.CCPAMetaData(
+                    sampleRate = dataStorage.ccpaSampleRate.toFloat(),
+                    wasSampled = dataStorage.ccpaSampled,
+                    wasSampledAt = null
+                ),
+                usNatMetaData = State.UsNatMetaData(
+                    additionsChangeDate = "",
+                    sampleRate = dataStorage.usnatSampleRate.toFloat(),
+                    wasSampled = dataStorage.usnatSampled,
+                    wasSampledAt = null,
+                    vendorListId = "",
+                    applicableSections = emptyList()
+                )
+            )
             when (consentAction.campaignType) {
                 GDPR -> {
                     sendConsentGdpr(
@@ -471,17 +520,15 @@ internal class ServiceImpl(
         }
     }
 
-    private fun getChoiceAllResponse(consentAction: ConsentActionImpl, campaigns: ChoiceAllRequest.ChoiceAllCampaigns) =
-        networkClient.getChoice(
-            actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
-            campaigns = campaigns
-        )
+    private fun getChoiceAllResponse(consentAction: ConsentActionImpl, campaigns: ChoiceAllRequest.ChoiceAllCampaigns) = runBlocking {
+        coreCoordinator.getChoiceAll(action = consentAction.toSPAction(), campaigns = campaigns)
+    }
 
     private fun postGdprChoice(
         consentAction: ConsentActionImpl,
         getResp: ChoiceAllResponse?
     ): GDPRChoiceResponse = networkClient.storeGdprChoice(
-        actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
+        actionType = consentAction.actionType.toSPActionType(),
         request = GDPRChoiceRequest(
             authId = authId,
             uuid = campaignManager.gdprConsentStatus?.uuid,
@@ -508,7 +555,7 @@ internal class ServiceImpl(
                 val campaigns = buildChoiceAllCampaigns(consentAction)
                 getResp = getChoiceAllResponse(consentAction, campaigns)
 
-                getResp.gdpr?.let { responseGdpr ->
+                getResp?.gdpr?.let { responseGdpr ->
                     campaignManager.gdprConsentStatus = GdprCS()
                         .copyingFrom(responseGdpr,metaDataResp?.gdpr?.applies ?: false)
                         .copy(uuid = campaignManager.gdprConsentStatus?.uuid)
@@ -566,7 +613,7 @@ internal class ServiceImpl(
     }
 
     private fun postCcpaChoice(consentAction: ConsentActionImpl): CCPAChoiceResponse = networkClient.storeCcpaChoice(
-            SPActionType.entries.first { it.type == consentAction.actionType.code },
+            consentAction.actionType.toSPActionType(),
             request = CCPAChoiceRequest(
                 authId = authId,
                 uuid = campaignManager.ccpaConsentStatus?.uuid,
@@ -590,7 +637,7 @@ internal class ServiceImpl(
                 val campaigns = buildChoiceAllCampaigns(consentAction)
                 getResp = getChoiceAllResponse(consentAction, campaigns)
 
-                getResp.ccpa?.let { ccpaResponse ->
+                getResp?.ccpa?.let { ccpaResponse ->
                     campaignManager.ccpaConsentStatus = CcpaCS()
                         .copyingFrom(ccpaResponse,metaDataResp?.ccpa?.applies ?: false)
                         .copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
@@ -651,7 +698,7 @@ internal class ServiceImpl(
 
     private fun postUsNatChoice(consentAction: ConsentActionImpl) =
         networkClient.storeUsNatChoice(
-            actionType = SPActionType.entries.first { it.type == consentAction.actionType.code },
+            actionType = consentAction.actionType.toSPActionType(),
             request = USNatChoiceRequest(
                 authId = campaignManager.authId,
                 uuid = campaignManager.usNatCS?.uuid,
@@ -677,7 +724,7 @@ internal class ServiceImpl(
                 val campaigns = buildChoiceAllCampaigns(consentAction)
                 getResp = getChoiceAllResponse(consentAction, campaigns)
 
-                getResp.usnat?.let { usnatResponse ->
+                getResp?.usnat?.let { usnatResponse ->
                     campaignManager.usNatCS = USNatCS()
                         .copyingFrom(usnatResponse,metaDataResp?.usnat?.applies ?: false)
                         .copy(uuid = campaignManager.usNatCS?.uuid)
