@@ -46,7 +46,7 @@ internal fun ConsentActionImpl.privacyManagerTab(): PMTab {
         ?: PMTab.DEFAULT
 }
 
-internal fun ConsentActionImpl.toSPAction(): SPAction {
+internal fun ConsentActionImpl.toCoreSPAction(): SPAction {
     return SPAction(
         type = actionType.toSPActionType(),
         campaignType = campaignType.toSPCampaignType(),

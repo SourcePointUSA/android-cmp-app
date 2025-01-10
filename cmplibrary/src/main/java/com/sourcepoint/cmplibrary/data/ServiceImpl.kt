@@ -34,14 +34,9 @@ import com.sourcepoint.cmplibrary.util.extensions.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.Coordinator
-import com.sourcepoint.mobile_core.models.SPActionType
-import com.sourcepoint.mobile_core.models.SPIDFAStatus
-import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.models.consents.State
-import com.sourcepoint.mobile_core.network.requests.CCPAChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.ChoiceAllRequest
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
-import com.sourcepoint.mobile_core.network.requests.GDPRChoiceRequest
 import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
@@ -521,29 +516,13 @@ internal class ServiceImpl(
     }
 
     private fun getChoiceAllResponse(consentAction: ConsentActionImpl, campaigns: ChoiceAllRequest.ChoiceAllCampaigns) = runBlocking {
-        coreCoordinator.getChoiceAll(action = consentAction.toSPAction(), campaigns = campaigns)
+        coreCoordinator.getChoiceAll(action = consentAction.toCoreSPAction(), campaigns = campaigns)
     }
 
     private fun postGdprChoice(
         consentAction: ConsentActionImpl,
         getResp: ChoiceAllResponse?
-    ): GDPRChoiceResponse = networkClient.storeGdprChoice(
-        actionType = consentAction.actionType.toSPActionType(),
-        request = GDPRChoiceRequest(
-            authId = authId,
-            uuid = campaignManager.gdprConsentStatus?.uuid,
-            messageId = campaignManager.gdprMessageMetaData?.messageId?.toString(),
-            consentAllRef = getResp?.gdpr?.postPayload?.consentAllRef,
-            vendorListId = getResp?.gdpr?.postPayload?.vendorListId,
-            pubData = consentAction.pubData.toJsonObject(),
-            pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),
-            sendPVData = dataStorage.gdprSampled ?: false,
-            propertyId = propertyId,
-            sampleRate = dataStorage.gdprSampleRate.toFloat(),
-            granularStatus = campaignManager.gdprConsentStatus?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
-            includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
-        )
-    )
+    ): GDPRChoiceResponse = runBlocking { coreCoordinator.postChoiceGDPR(consentAction.toCoreSPAction(), getResp?.gdpr?.postPayload) }
 
     private fun sendConsentGdpr(
         consentAction: ConsentActionImpl,
@@ -612,20 +591,9 @@ internal class ServiceImpl(
         )
     }
 
-    private fun postCcpaChoice(consentAction: ConsentActionImpl): CCPAChoiceResponse = networkClient.storeCcpaChoice(
-            consentAction.actionType.toSPActionType(),
-            request = CCPAChoiceRequest(
-                authId = authId,
-                uuid = campaignManager.ccpaConsentStatus?.uuid,
-                messageId = campaignManager.ccpaMessageMetaData?.messageId?.toString(),
-                pubData = consentAction.pubData.toJsonObject(),
-                pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),
-                sendPVData = dataStorage.ccpaSampled ?: false,
-                propertyId = spConfig.propertyId,
-                sampleRate = dataStorage.ccpaSampleRate.toFloat(),
-                includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
-            )
-        )
+    private fun postCcpaChoice(consentAction: ConsentActionImpl): CCPAChoiceResponse = runBlocking {
+        coreCoordinator.postChoiceCCPA(consentAction.toCoreSPAction())
+    }
 
     private fun sendConsentCcpa(
         consentAction: ConsentActionImpl,
@@ -696,23 +664,9 @@ internal class ServiceImpl(
         )
     }
 
-    private fun postUsNatChoice(consentAction: ConsentActionImpl) =
-        networkClient.storeUsNatChoice(
-            actionType = consentAction.actionType.toSPActionType(),
-            request = USNatChoiceRequest(
-                authId = campaignManager.authId,
-                uuid = campaignManager.usNatCS?.uuid,
-                messageId = campaignManager.usNatCS?.messageMetaData?.messageId?.toString(),
-                vendorListId = campaignManager.metaDataResp?.usnat?.vendorListId,
-                pubData = consentAction.pubData.toJsonObject(),
-                pmSaveAndExitVariables = consentAction.saveAndExitVariablesOptimized.toString(),
-                sendPVData = dataStorage.usnatSampled ?: false,
-                propertyId = spConfig.propertyId,
-                sampleRate = dataStorage.usnatSampleRate.toFloat(),
-                granularStatus = campaignManager.usNatCS?.consentStatus?.granularStatus?.toCoreConsentStatusGranularStatus(),
-                includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
-            )
-        )
+    private fun postUsNatChoice(consentAction: ConsentActionImpl) = runBlocking {
+        coreCoordinator.postChoiceUSNat(consentAction.toCoreSPAction())
+    }
 
     private fun sendConsentUsNat(
         consentAction: ConsentActionImpl,
