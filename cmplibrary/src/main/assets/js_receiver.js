@@ -39,6 +39,7 @@ function actionFromPM(payload) {
         choiceId: null,
         requestFromPm: true,
         pmId: getQueryParam("message_id", payload.iframe_url),
+        messageId: payload.messageId,
         pmTab: null,
         saveAndExitVariables: payload.payload,
         consentLanguage: payload.consentLanguage,

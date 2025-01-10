@@ -33,6 +33,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
     val legislation = map.getFieldValue<String>("legislation") ?: "CCPA"
     val privacyManagerId = (map["pmId"] as? String) ?: (map["localPmId"] as? String)
     val pmTab = (map["pmTab"] as? String)
+    val messageId = (map["messageId"] as? String)
     val requestFromPm = map.getFieldValue<Boolean>("requestFromPm") ?: false
     val saveAndExitVariables = map.getMap("saveAndExitVariables")?.let { JSONObject(it) } ?: JSONObject()
     val saveAndExitVariables2 = map.getMap("saveAndExitVariables")

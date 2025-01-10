@@ -23,6 +23,7 @@ interface ConsentAction {
     val requestFromPm: Boolean
     val saveAndExitVariables: JSONObject
     val consentLanguage: String?
+    val messageId: String?
 }
 
 internal data class ConsentActionImpl(
@@ -31,6 +32,7 @@ internal data class ConsentActionImpl(
     override val pubData2: JsonObject = JsonObject(mapOf()),
     override val actionType: ActionType,
     override val customActionId: String? = null,
+    override val messageId: String? = null,
     override val privacyManagerId: String? = null,
     override val choiceId: String? = null,
     override val requestFromPm: Boolean,
@@ -50,7 +52,7 @@ internal fun ConsentActionImpl.toCoreSPAction(): SPAction {
     return SPAction(
         type = actionType.toSPActionType(),
         campaignType = campaignType.toSPCampaignType(),
-        messageId = "TODO()",
+        messageId = messageId,
         pmPayload = saveAndExitVariablesOptimized.toString(),
         encodablePubData = pubData.toJsonObject()
     )
