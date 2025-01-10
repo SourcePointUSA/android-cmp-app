@@ -108,6 +108,16 @@ enum class CcpaStatus {
     unknown
 }
 
+internal fun CcpaStatus.toCoreCCPAConsentStatus(): com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus? =
+    when (this) {
+        CcpaStatus.rejectedAll -> com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus.RejectedAll
+        CcpaStatus.rejectedSome -> com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus.RejectedSome
+        CcpaStatus.rejectedNone -> com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus.RejectedNone
+        CcpaStatus.consentedAll -> com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus.ConsentedAll
+        CcpaStatus.linkedNoAction -> com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus.LinkedNoAction
+        CcpaStatus.unknown -> null
+    }
+
 interface Consentable {
     val id: String
     val consented: Boolean

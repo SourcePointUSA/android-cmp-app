@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.exception
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.mobile_core.models.SPCampaignType
 
 /**
  * Class in charge of building an error message
@@ -22,6 +23,13 @@ enum class CampaignType {
     CCPA,
     USNAT,
 }
+
+internal fun CampaignType.toSPCampaignType(): SPCampaignType =
+    when (this) {
+        CampaignType.GDPR -> SPCampaignType.Gdpr
+        CampaignType.CCPA -> SPCampaignType.Ccpa
+        CampaignType.USNAT -> SPCampaignType.UsNat
+    }
 
 /**
  * Class used to group the client information

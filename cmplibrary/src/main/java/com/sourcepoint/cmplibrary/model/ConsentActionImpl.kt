@@ -3,8 +3,12 @@ package com.sourcepoint.cmplibrary.model
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.toSPCampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
+import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
+import com.sourcepoint.mobile_core.models.SPAction
+import com.sourcepoint.mobile_core.models.SPActionType
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONObject
 
@@ -42,6 +46,16 @@ internal fun ConsentActionImpl.privacyManagerTab(): PMTab {
         ?: PMTab.DEFAULT
 }
 
+internal fun ConsentActionImpl.toSPAction(): SPAction {
+    return SPAction(
+        type = actionType.toSPActionType(),
+        campaignType = campaignType.toSPCampaignType(),
+        messageId = "TODO()",
+        pmPayload = saveAndExitVariablesOptimized.toString(),
+        encodablePubData = pubData.toJsonObject()
+    )
+}
+
 data class NativeConsentAction(
     val actionType: NativeMessageActionType,
     val campaignType: CampaignType,
@@ -59,3 +73,5 @@ internal fun ActionType.toChoiceTypeParam(): ChoiceTypeParam = when (this) {
     ActionType.REJECT_ALL -> ChoiceTypeParam.REJECT_ALL
     else -> throw RuntimeException("ChoiceTypeParam doesn't match the ActionType")
 }
+
+internal fun ActionType.toSPActionType(): SPActionType = SPActionType.entries.first { it.type == this.code }

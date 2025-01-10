@@ -15,6 +15,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonPrimitive
 import org.json.JSONObject
 
 @Serializable
@@ -141,6 +143,32 @@ data class GdprCS(
             thisContent = JSONObject(),
             webConsentPayload = webConsentPayload,
             googleConsentMode = googleConsentMode
+        )
+    }
+
+    fun toCoreGDPRConsent(): GDPRConsent {
+        return GDPRConsent(
+            applies = applies ?: false,
+            dateCreated = dateCreated,
+            expirationDate = expirationDate,
+            uuid = uuid,
+            childPmId = "",
+            euconsent = euconsent,
+            legIntCategories = legIntCategories?: emptyList(),
+            legIntVendors = legIntVendors?: emptyList(),
+            vendors = vendors?: emptyList(),
+            categories = categories?: emptyList(),
+            specialFeatures = specialFeatures?: emptyList(),
+            grants = grants?.mapValues {
+                GDPRConsent.VendorGrantsValue(
+                    vendorGrant = it.value.granted,
+                    purposeGrants = it.value.purposeGrants
+                )
+            }?: emptyMap(),
+            gcmStatus = googleConsentMode?.toCoreGCMStatus(),
+            webConsentPayload = webConsentPayload.toString(),
+            consentStatus = consentStatus?.toCoreConsentStatus() ?: com.sourcepoint.mobile_core.models.consents.ConsentStatus(),
+            tcData = TCData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
         )
     }
 

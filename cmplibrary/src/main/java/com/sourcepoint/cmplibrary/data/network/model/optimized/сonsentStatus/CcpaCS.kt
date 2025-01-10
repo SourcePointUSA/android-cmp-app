@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsent.Companion.DEFAULT_USPSTRING
 import com.sourcepoint.cmplibrary.model.exposed.CCPAConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
+import com.sourcepoint.cmplibrary.model.exposed.toCoreCCPAConsentStatus
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
 import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
@@ -14,6 +15,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.json.JSONObject
 
 @Serializable
@@ -34,6 +36,21 @@ data class CcpaCS(
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String? = null,
 ) {
+    fun toCoreCCPAConsent(): CCPAConsent {
+        return CCPAConsent(
+            applies = applies?: false,
+            uuid = uuid,
+            dateCreated = dateCreated,
+            expirationDate = expirationDate,
+            signedLspa = signedLspa,
+            uspstring = uspstring,
+            rejectedVendors = rejectedVendors?: emptyList(),
+            rejectedCategories = rejectedCategories?: emptyList(),
+            status = status?.toCoreCCPAConsentStatus(),
+            webConsentPayload = webConsentPayload.toString(),
+            gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
+        )
+    }
     fun copyingFrom(core: CCPAConsent?, applies: Boolean?): CcpaCS {
         if (core == null) { return this }
 

@@ -20,7 +20,10 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.consents.ConsentStatus
+import com.sourcepoint.mobile_core.models.consents.USNatConsent.USNatUserConsents
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.jsonPrimitive
 
 
 @Serializable
@@ -43,6 +46,28 @@ data class USNatCS(
         get() { return userConsents?.vendors ?: emptyList() }
     val categories: List<ConsentableImpl>
         get() { return userConsents?.categories ?: emptyList() }
+
+    fun toCoreUSNatConsent(): USNatConsent {
+        return USNatConsent(
+            applies = applies?: false,
+            dateCreated = dateCreated,
+            expirationDate = expirationDate,
+            uuid = uuid,
+            webConsentPayload = webConsentPayload.toString(),
+            consentStatus = consentStatus?.toCoreConsentStatus() ?: ConsentStatus(),
+            consentStrings = consentStrings?.filter {
+                it.consentString != null && it.sectionName != null && it.sectionId != null
+            }?.map {
+                USNatConsent.USNatConsentSection(
+                    sectionId = it.sectionId!!,
+                    sectionName = it.sectionName!!,
+                    consentString = it.consentString!!
+                )
+            } ?: emptyList(),
+            userConsents = userConsents?.toCoreUSNatUserConsents() ?: USNatUserConsents(),
+            gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
+        )
+    }
 
     fun copyingFrom(core: USNatConsent?, applies: Boolean?): USNatCS {
         if (core == null) { return this }
@@ -148,5 +173,12 @@ data class USNatCS(
     data class UserConsents(
         val vendors: List<ConsentableImpl>? = emptyList(),
         val categories: List<ConsentableImpl>? = emptyList()
-    )
+    ) {
+        fun toCoreUSNatUserConsents(): USNatUserConsents {
+            return USNatUserConsents(
+                vendors = vendors?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList(),
+                categories = categories?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList()
+            )
+        }
+    }
 }
