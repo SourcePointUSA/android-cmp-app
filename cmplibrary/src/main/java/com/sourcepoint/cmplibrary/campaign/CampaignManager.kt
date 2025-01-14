@@ -85,6 +85,7 @@ internal interface CampaignManager {
     var nonKeyedLocalState: JsonElement?
     var gdprUuid: String?
     var ccpaUuid: String?
+    var usnatUuid: String?
     val hasLocalData: Boolean
     val isGdprExpired: Boolean
     val isCcpaExpired: Boolean
@@ -625,6 +626,14 @@ private class CampaignManagerImpl(
         }
         set(value) {
             dataStorage.ccpaConsentUuid = value
+        }
+
+    override var usnatUuid: String?
+        get() {
+            return dataStorage.usnatConsentUuid
+        }
+        set(value) {
+            dataStorage.usnatConsentUuid = value
         }
 
     override val hasLocalData: Boolean
