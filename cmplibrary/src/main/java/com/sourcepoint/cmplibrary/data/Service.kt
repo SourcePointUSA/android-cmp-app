@@ -21,7 +21,7 @@ internal interface Service : NetworkClient, CampaignManager {
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?,
-    ): Either<ChoiceResp>
+    )
 
     fun sendCustomConsentServ(
         consentUUID: String,

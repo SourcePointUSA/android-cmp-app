@@ -445,66 +445,126 @@ internal class ServiceImpl(
         )
     }
 
+    private fun updateCoreConsentStatus() {
+        coreCoordinator.authId = authId
+        coreCoordinator.idfaStatus = null
+        coreCoordinator.includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
+        coreCoordinator.state = State(
+            gdpr = campaignManager.gdprConsentStatus?.toCoreGDPRConsent(),
+            ccpa = campaignManager.ccpaConsentStatus?.toCoreCCPAConsent(),
+            usNat = campaignManager.usNatCS?.toCoreUSNatConsent(),
+            gdprMetaData = State.GDPRMetaData(
+                additionsChangeDate = "",
+                legalBasisChangeDate = null,
+                sampleRate = dataStorage.gdprSampleRate.toFloat(),
+                wasSampled = dataStorage.gdprSampled,
+                wasSampledAt = null
+            ),
+            ccpaMetaData = State.CCPAMetaData(
+                sampleRate = dataStorage.ccpaSampleRate.toFloat(),
+                wasSampled = dataStorage.ccpaSampled,
+                wasSampledAt = null
+            ),
+            usNatMetaData = State.UsNatMetaData(
+                additionsChangeDate = "",
+                sampleRate = dataStorage.usnatSampleRate.toFloat(),
+                wasSampled = dataStorage.usnatSampled,
+                wasSampledAt = null,
+                vendorListId = "",
+                applicableSections = emptyList()
+            )
+        )
+    }
+
     private fun updateConsentStatusFromCore() {
-        campaignManager.gdprConsentStatus?.copyingFrom(coreCoordinator.state.gdpr, metaDataResp?.gdpr?.applies)
-        campaignManager.ccpaConsentStatus?.copyingFrom(coreCoordinator.state.ccpa, metaDataResp?.ccpa?.applies)
-        campaignManager.usNatCS?.copyingFrom(coreCoordinator.state.usNat, metaDataResp?.usnat?.applies)
+        campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus?.copyingFrom(coreCoordinator.state.gdpr, metaDataResp?.gdpr?.applies)
+        campaignManager.ccpaConsentStatus = campaignManager.ccpaConsentStatus?.copyingFrom(coreCoordinator.state.ccpa, metaDataResp?.ccpa?.applies)
+        campaignManager.usNatCS = campaignManager.usNatCS?.copyingFrom(coreCoordinator.state.usNat, metaDataResp?.usnat?.applies)
+        campaignManager.gdprUuid = coreCoordinator.state.gdpr?.uuid
+        campaignManager.ccpaUuid = coreCoordinator.state.ccpa?.uuid
+        campaignManager.usnatUuid = coreCoordinator.state.usNat?.uuid
     }
 
     override fun sendConsent(
         env: Env,
         consentAction: ConsentActionImpl,
         onSpConsentsSuccess: ((SPConsents) -> Unit)?,
-    ): Either<ChoiceResp> {
-        return if (connectionManager.isConnected) {
-            coreCoordinator.authId = authId
-            coreCoordinator.idfaStatus = null
-            coreCoordinator.includeData = IncludeData(gppData = campaignManager.spConfig.gppCustomOptionToCore())
-            coreCoordinator.state = State(
-                gdpr = campaignManager.gdprConsentStatus?.toCoreGDPRConsent(),
-                ccpa = campaignManager.ccpaConsentStatus?.toCoreCCPAConsent(),
-                usNat = campaignManager.usNatCS?.toCoreUSNatConsent(),
-                gdprMetaData = State.GDPRMetaData(
-                    additionsChangeDate = "",
-                    legalBasisChangeDate = null,
-                    sampleRate = dataStorage.gdprSampleRate.toFloat(),
-                    wasSampled = dataStorage.gdprSampled,
-                    wasSampledAt = null
-                ),
-                ccpaMetaData = State.CCPAMetaData(
-                    sampleRate = dataStorage.ccpaSampleRate.toFloat(),
-                    wasSampled = dataStorage.ccpaSampled,
-                    wasSampledAt = null
-                ),
-                usNatMetaData = State.UsNatMetaData(
-                    additionsChangeDate = "",
-                    sampleRate = dataStorage.usnatSampleRate.toFloat(),
-                    wasSampled = dataStorage.usnatSampled,
-                    wasSampledAt = null,
-                    vendorListId = "",
-                    applicableSections = emptyList()
+    ) {
+        if (connectionManager.isConnected) {
+            updateCoreConsentStatus()
+            var getResp: ChoiceAllResponse? = null
+            val saveAndExitAction = consentAction.actionType.isAcceptOrRejectAll().not()
+            try {
+                getResp = runBlocking { coreCoordinator.getChoiceAll(consentAction.toCoreSPAction(), buildChoiceAllCampaigns(consentAction)) }
+                if (consentAction.actionType == ActionType.ACCEPT_ALL || consentAction.actionType == ActionType.REJECT_ALL) {
+                    val spConsents = ConsentManager.responseConsentHandler(
+                        consentAction,
+                        dataStorage,
+                        campaignManager,
+                        getResp,
+                        consentManagerUtils
+                    )
+                    onSpConsentsSuccess?.invoke(spConsents)
+                }
+            }
+            catch (error: Throwable) {
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                val spConsents = ConsentManager.responseConsentHandler(
+                    consentManagerUtils = consentManagerUtils
                 )
-            )
+                onSpConsentsSuccess?.invoke(spConsents)
+            }
             when (consentAction.campaignType) {
                 GDPR -> {
-                    sendConsentGdpr(
-                        consentAction = consentAction,
-                        onSpConsentsSuccess = onSpConsentsSuccess,
-                    ).map { gdpr -> ChoiceResp(gdpr = gdpr) }
+                    try {
+                        runBlocking { coreCoordinator.reportGDPRAction(consentAction.toCoreSPAction(), getResp) }
+                    }
+                    catch (error: Throwable) {
+                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    }
+                    updateConsentStatusFromCore()
+                    if (saveAndExitAction || getResp?.gdpr == null) {
+                        onSpConsentsSuccess?.invoke(
+                            ConsentManager.responseConsentHandler(
+                                gdpr = campaignManager.gdprConsentStatus,
+                                consentManagerUtils = consentManagerUtils,
+                            )
+                        )
+                    }
                 }
 
                 CCPA -> {
-                    sendConsentCcpa(
-                        consentAction = consentAction,
-                        onSpConsentsSuccess = onSpConsentsSuccess,
-                    ).map { ccpa -> ChoiceResp(ccpa = ccpa) }
+                    try {
+                        runBlocking { coreCoordinator.reportCCPAAction(consentAction.toCoreSPAction(), getResp) }
+                    }
+                    catch (error: Throwable) {
+                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    }
+                    updateConsentStatusFromCore()
+                    if (saveAndExitAction || getResp?.ccpa == null) {
+                        onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                            ccpa = campaignManager.ccpaConsentStatus,
+                            consentManagerUtils = consentManagerUtils,
+                        ))
+                    }
                 }
 
                 USNAT -> {
-                    sendConsentUsNat(
-                        consentAction = consentAction,
-                        onSpConsentSuccess = onSpConsentsSuccess,
-                    ).map { usNat -> ChoiceResp(usNat = usNat) }
+                    try {
+                        runBlocking { coreCoordinator.reportUSNatAction(consentAction.toCoreSPAction(), getResp) }
+                    }
+                    catch (error: Throwable) {
+                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                    }
+                    updateConsentStatusFromCore()
+                    if (saveAndExitAction || getResp?.usnat == null) {
+                        onSpConsentsSuccess?.invoke(
+                            ConsentManager.responseConsentHandler(
+                                usNat = campaignManager.usNatCS,
+                                consentManagerUtils = consentManagerUtils,
+                            )
+                        )
+                    }
                 }
             }
         } else {
