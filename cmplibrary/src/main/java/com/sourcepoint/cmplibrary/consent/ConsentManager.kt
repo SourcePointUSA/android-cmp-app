@@ -1,8 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
 import com.sourcepoint.cmplibrary.core.ExecutorManager
-import com.sourcepoint.cmplibrary.core.executeOnLeft
-import com.sourcepoint.cmplibrary.core.executeOnRight
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
 import com.sourcepoint.cmplibrary.data.local.DataStorage
@@ -10,6 +8,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.Cc
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.NativeConsentAction
@@ -135,14 +134,17 @@ private class ConsentManagerImpl(
 
     override fun sendConsent(actionImpl: ConsentActionImpl) {
         executorManager.executeOnSingleThread {
-            service.sendConsent(
-                env = env,
-                consentAction = actionImpl,
-                onSpConsentsSuccess = sPConsentsSuccess,
-            ).executeOnRight {
+            try {
+                service.sendConsent(
+                    env = env,
+                    consentAction = actionImpl,
+                    onSpConsentsSuccess = sPConsentsSuccess,
+                )
                 clientEventManager.registerConsentResponse()
-            }.executeOnLeft { exception ->
-                sPConsentsError?.invoke(exception)
+            }
+            catch (error: Throwable) {
+                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
+                sPConsentsError?.invoke(error)
             }
         }
     }
