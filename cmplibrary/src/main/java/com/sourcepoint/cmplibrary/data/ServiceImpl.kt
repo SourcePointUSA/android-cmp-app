@@ -493,26 +493,11 @@ internal class ServiceImpl(
         if (connectionManager.isConnected) {
             updateCoreConsentStatus()
             var getResp: ChoiceAllResponse? = null
-            val saveAndExitAction = consentAction.actionType.isAcceptOrRejectAll().not()
             try {
                 getResp = runBlocking { coreCoordinator.getChoiceAll(consentAction.toCoreSPAction(), buildChoiceAllCampaigns(consentAction)) }
-                if (consentAction.actionType == ActionType.ACCEPT_ALL || consentAction.actionType == ActionType.REJECT_ALL) {
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        consentAction,
-                        dataStorage,
-                        campaignManager,
-                        getResp,
-                        consentManagerUtils
-                    )
-                    onSpConsentsSuccess?.invoke(spConsents)
-                }
             }
             catch (error: Throwable) {
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                val spConsents = ConsentManager.responseConsentHandler(
-                    consentManagerUtils = consentManagerUtils
-                )
-                onSpConsentsSuccess?.invoke(spConsents)
             }
             when (consentAction.campaignType) {
                 GDPR -> {
@@ -523,14 +508,10 @@ internal class ServiceImpl(
                         (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                     }
                     updateConsentStatusFromCore()
-                    if (saveAndExitAction || getResp?.gdpr == null) {
-                        onSpConsentsSuccess?.invoke(
-                            ConsentManager.responseConsentHandler(
-                                gdpr = campaignManager.gdprConsentStatus,
-                                consentManagerUtils = consentManagerUtils,
-                            )
-                        )
-                    }
+                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                            gdpr = campaignManager.gdprConsentStatus,
+                            consentManagerUtils = consentManagerUtils
+                    ))
                 }
 
                 CCPA -> {
@@ -541,12 +522,10 @@ internal class ServiceImpl(
                         (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                     }
                     updateConsentStatusFromCore()
-                    if (saveAndExitAction || getResp?.ccpa == null) {
-                        onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
                             ccpa = campaignManager.ccpaConsentStatus,
-                            consentManagerUtils = consentManagerUtils,
-                        ))
-                    }
+                            consentManagerUtils = consentManagerUtils
+                    ))
                 }
 
                 USNAT -> {
@@ -557,21 +536,16 @@ internal class ServiceImpl(
                         (error as? ConsentLibExceptionK)?.let { logger.error(error) }
                     }
                     updateConsentStatusFromCore()
-                    if (saveAndExitAction || getResp?.usnat == null) {
-                        onSpConsentsSuccess?.invoke(
-                            ConsentManager.responseConsentHandler(
-                                usNat = campaignManager.usNatCS,
-                                consentManagerUtils = consentManagerUtils,
-                            )
-                        )
-                    }
+                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                            usNat = campaignManager.usNatCS,
+                            consentManagerUtils = consentManagerUtils
+                    ))
                 }
             }
         } else {
             consentManagerUtils
                 .spStoredConsent
                 .executeOnRight { onSpConsentsSuccess?.invoke(it) }
-                .map { campaignManager.storeChoiceResp }
         }
     }
 
