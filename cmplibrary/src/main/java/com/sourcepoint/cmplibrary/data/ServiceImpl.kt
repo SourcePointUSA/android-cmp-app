@@ -13,7 +13,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.CcpaCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
@@ -21,7 +20,6 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus.rejectedAll
@@ -40,10 +38,7 @@ import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
-import com.sourcepoint.mobile_core.network.requests.USNatChoiceRequest
-import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
-import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
@@ -547,219 +542,6 @@ internal class ServiceImpl(
                 .spStoredConsent
                 .executeOnRight { onSpConsentsSuccess?.invoke(it) }
         }
-    }
-
-    private fun getChoiceAllResponse(consentAction: ConsentActionImpl, campaigns: ChoiceAllRequest.ChoiceAllCampaigns) = runBlocking {
-        coreCoordinator.getChoiceAll(action = consentAction.toCoreSPAction(), campaigns = campaigns)
-    }
-
-    private fun postGdprChoice(
-        consentAction: ConsentActionImpl,
-        getResp: ChoiceAllResponse?
-    ): GDPRChoiceResponse = runBlocking { coreCoordinator.postChoiceGDPR(consentAction.toCoreSPAction(), getResp?.gdpr?.postPayload) }
-
-    private fun sendConsentGdpr(
-        consentAction: ConsentActionImpl,
-        onSpConsentsSuccess: ((SPConsents) -> Unit)?
-    ): Either<GdprCS> = check {
-        var getResp: ChoiceAllResponse? = null
-        if (consentAction.actionType.isAcceptOrRejectAll()) {
-            try {
-                val campaigns = buildChoiceAllCampaigns(consentAction)
-                getResp = getChoiceAllResponse(consentAction, campaigns)
-
-                getResp?.gdpr?.let { responseGdpr ->
-                    campaignManager.gdprConsentStatus = GdprCS()
-                        .copyingFrom(responseGdpr,metaDataResp?.gdpr?.applies ?: false)
-                        .copy(uuid = campaignManager.gdprConsentStatus?.uuid)
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        gdpr = GdprCS()
-                            .copyingFrom(responseGdpr, dataStorage.gdprApplies)
-                            .copy(uuid = campaignManager.gdprConsentStatus?.uuid),
-                        consentManagerUtils = consentManagerUtils,
-                    )
-                    onSpConsentsSuccess?.invoke(spConsents)
-                }
-            }
-            catch (error: Throwable) {
-                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                val spConsents = ConsentManager.responseConsentHandler(
-                    gdpr = campaignManager.gdprConsentStatus?.copy(applies = dataStorage.gdprApplies),
-                    consentManagerUtils = consentManagerUtils,
-                )
-                onSpConsentsSuccess?.invoke(spConsents)
-            }
-        }
-
-        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.gdpr == null
-
-        try {
-            val postConsentResponse = postGdprChoice(consentAction, getResp)
-
-            campaignManager.gdprUuid = postConsentResponse.uuid
-            campaignManager.gdprConsentStatus = campaignManager.gdprConsentStatus
-                ?.copy(uuid = postConsentResponse.uuid)
-
-            // only overwrite the consent object on Save & Exit.
-            // since the consent object was already saved on the response of the GET choice
-            // when accepting / rejecting all
-            if (shouldWaitForPost) {
-                campaignManager.gdprConsentStatus = GdprCS().copyingFrom(postConsentResponse)
-            }
-        }
-        catch (error: Throwable) {
-            (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-        }
-
-        if (shouldWaitForPost) {
-            val spConsents = ConsentManager.responseConsentHandler(
-                gdpr = campaignManager.gdprConsentStatus?.copy(applies = dataStorage.gdprApplies),
-                consentManagerUtils = consentManagerUtils,
-            )
-            onSpConsentsSuccess?.invoke(spConsents)
-        }
-
-        campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The GDPR consent object cannot be null!!!",
-        )
-    }
-
-    private fun postCcpaChoice(consentAction: ConsentActionImpl): CCPAChoiceResponse = runBlocking {
-        coreCoordinator.postChoiceCCPA(consentAction.toCoreSPAction())
-    }
-
-    private fun sendConsentCcpa(
-        consentAction: ConsentActionImpl,
-        onSpConsentsSuccess: ((SPConsents) -> Unit)?
-    ): Either<CcpaCS> = check {
-        var getResp: ChoiceAllResponse? = null
-        if (consentAction.actionType.isAcceptOrRejectAll()) {
-            try {
-                val campaigns = buildChoiceAllCampaigns(consentAction)
-                getResp = getChoiceAllResponse(consentAction, campaigns)
-
-                getResp?.ccpa?.let { ccpaResponse ->
-                    campaignManager.ccpaConsentStatus = CcpaCS()
-                        .copyingFrom(ccpaResponse,metaDataResp?.ccpa?.applies ?: false)
-                        .copy(uuid = campaignManager.ccpaConsentStatus?.uuid)
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        ccpa = CcpaCS()
-                            .copyingFrom(ccpaResponse, dataStorage.ccpaApplies)
-                            .copy(uuid = campaignManager.ccpaConsentStatus?.uuid),
-                        consentManagerUtils = consentManagerUtils,
-                    )
-                    onSpConsentsSuccess?.invoke(spConsents)
-                }
-            }
-            catch (error: Throwable) {
-                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                val spConsents = ConsentManager.responseConsentHandler(
-                    ccpa = campaignManager.ccpaConsentStatus?.copy(applies = dataStorage.ccpaApplies),
-                    consentManagerUtils = consentManagerUtils,
-                )
-                onSpConsentsSuccess?.invoke(spConsents)
-            }
-        }
-
-        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.ccpa == null
-
-        try {
-            val postConsentResponse = postCcpaChoice(consentAction)
-
-            campaignManager.ccpaUuid = postConsentResponse.uuid
-            campaignManager.ccpaConsentStatus =
-                if (postConsentResponse.webConsentPayload != null) {
-                    CcpaCS().copyingFrom(postConsentResponse)
-                } else {
-                    CcpaCS().copyingFrom(postConsentResponse).copy(
-                        webConsentPayload = campaignManager.ccpaConsentStatus?.webConsentPayload
-                    )
-                }
-        }
-        catch (error: Throwable) {
-            (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-        }
-
-        // don't overwrite ccpa consents if the action is accept all or reject all
-        // because the response from those endpoints does not contain a full consent
-        // object.
-        if (shouldWaitForPost) {
-            val spConsents = ConsentManager.responseConsentHandler(
-                ccpa = campaignManager.ccpaConsentStatus?.copy(applies = dataStorage.ccpaApplies),
-                consentManagerUtils = consentManagerUtils,
-            )
-            onSpConsentsSuccess?.invoke(spConsents)
-        }
-
-        campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The CCPA consent object cannot be null!!!",
-        )
-    }
-
-    private fun postUsNatChoice(consentAction: ConsentActionImpl) = runBlocking {
-        coreCoordinator.postChoiceUSNat(consentAction.toCoreSPAction())
-    }
-
-    private fun sendConsentUsNat(
-        consentAction: ConsentActionImpl,
-        onSpConsentSuccess: ((SPConsents) -> Unit)?,
-    ): Either<USNatCS> = check {
-        var getResp: ChoiceAllResponse? = null
-        if (consentAction.actionType.isAcceptOrRejectAll()) {
-            try {
-                val campaigns = buildChoiceAllCampaigns(consentAction)
-                getResp = getChoiceAllResponse(consentAction, campaigns)
-
-                getResp?.usnat?.let { usnatResponse ->
-                    campaignManager.usNatCS = USNatCS()
-                        .copyingFrom(usnatResponse,metaDataResp?.usnat?.applies ?: false)
-                        .copy(uuid = campaignManager.usNatCS?.uuid)
-                    val spConsents = ConsentManager.responseConsentHandler(
-                        usNat = USNatCS()
-                            .copyingFrom(usnatResponse, dataStorage.usNatApplies)
-                            .copy(uuid = campaignManager.usNatCS?.uuid),
-                        consentManagerUtils = consentManagerUtils,
-                    )
-                    onSpConsentSuccess?.invoke(spConsents)
-                }
-            }
-            catch (error: Throwable) {
-                (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                val spConsents = ConsentManager.responseConsentHandler(
-                    usNat = campaignManager.usNatCS?.copy(applies = dataStorage.usNatApplies),
-                    consentManagerUtils = consentManagerUtils,
-                )
-                onSpConsentSuccess?.invoke(spConsents)
-            }
-        }
-
-        val shouldWaitForPost = consentAction.actionType.isAcceptOrRejectAll().not() || getResp?.usnat == null
-
-        try {
-            val postChoiceUsNatResponse = postUsNatChoice(consentAction)
-            campaignManager.usNatCS = USNatCS().copyingFrom(postChoiceUsNatResponse)
-        }
-        catch (error: Throwable) {
-            (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-        }
-
-        // don't overwrite usNat consents if the action is accept all or reject all
-        // because the response from those endpoints does not contain a full consent
-        // object.
-        if (shouldWaitForPost) {
-            val spConsents = ConsentManager.responseConsentHandler(
-                usNat = campaignManager.usNatCS?.copy(applies = dataStorage.usNatApplies),
-                consentManagerUtils = consentManagerUtils,
-            )
-            onSpConsentSuccess?.invoke(spConsents)
-        }
-
-        campaignManager.usNatCS ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The UsNat consent data cannot be null!!!",
-        )
     }
 
     private fun triggerConsentStatus(
