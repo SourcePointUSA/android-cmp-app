@@ -64,7 +64,8 @@ data class CcpaCS(
             expirationDate = core.expirationDate,
             uuid = core.uuid,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            gppData = core.gppData
+            gppData = core.gppData,
+            uspstring = core.uspstring
         )
     }
 
@@ -115,7 +116,7 @@ data class CcpaCS(
             thisContent = JSONObject(),
             signedLspa = signedLspa,
             webConsentPayload = webConsentPayload,
-            uspstring = this.uspstring ?: DEFAULT_USPSTRING
+            uspstring = uspstring ?: DEFAULT_USPSTRING
         )
     }
 }

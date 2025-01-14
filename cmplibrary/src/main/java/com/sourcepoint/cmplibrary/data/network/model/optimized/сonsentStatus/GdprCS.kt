@@ -60,6 +60,7 @@ data class GdprCS(
             expirationDate = core.expirationDate,
             euconsent = core.euconsent,
             uuid = core.uuid,
+            consentStatus = ConsentStatus.initFrom(core.consentStatus),
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             googleConsentMode = core.gcmStatus?.let { gcm -> GoogleConsentMode.initFrom(gcm) },
             grants = core.grants.mapValues {
