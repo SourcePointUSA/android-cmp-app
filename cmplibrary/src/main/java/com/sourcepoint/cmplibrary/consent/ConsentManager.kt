@@ -1,5 +1,6 @@
 package com.sourcepoint.cmplibrary.consent
 
+import com.sourcepoint.cmplibrary.campaign.CampaignManager
 import com.sourcepoint.cmplibrary.core.ExecutorManager
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.Service
@@ -8,6 +9,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.Cc
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GdprCS
 import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.USNatCS
 import com.sourcepoint.cmplibrary.data.network.util.Env
+import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.model.ConsentActionImpl
@@ -73,6 +75,28 @@ internal interface ConsentManager {
                 usNat = usNat?.let { SpUsNatConsent(it.toUsNatConsentInternal()) },
             )
         }
+
+        fun responseConsentHandler(
+            consentAction: ConsentActionImpl,
+            campaignManager: CampaignManager,
+            consentManagerUtils: ConsentManagerUtils
+        ): SPConsents =
+            when (consentAction.campaignType) {
+                CampaignType.GDPR -> responseConsentHandler(
+                    gdpr = campaignManager.gdprConsentStatus,
+                    consentManagerUtils
+                )
+
+                CampaignType.CCPA -> responseConsentHandler(
+                    ccpa = campaignManager.ccpaConsentStatus,
+                    consentManagerUtils
+                )
+
+                CampaignType.USNAT -> responseConsentHandler(
+                    usNat = campaignManager.usNatCS,
+                    consentManagerUtils
+                )
+            }
     }
 }
 

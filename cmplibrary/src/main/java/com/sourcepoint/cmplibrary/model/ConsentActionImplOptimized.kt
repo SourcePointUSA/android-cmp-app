@@ -18,6 +18,7 @@ data class ConsentActionImplOptimized(
     @Serializable(with = CampaignTypeSerializer::class) val legislation: CampaignType,
     @SerialName("localPmId") val localPmId: String?,
     @SerialName("name") val name: String?,
+    @SerialName("messageId") override val messageId: String? = null,
     @SerialName("pmId") val pmId: String?,
     @SerialName("pmTab") val pmTab: String? = null,
     @SerialName("requestFromPm") override val requestFromPm: Boolean,

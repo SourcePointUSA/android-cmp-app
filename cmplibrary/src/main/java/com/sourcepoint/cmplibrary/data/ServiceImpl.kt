@@ -453,7 +453,8 @@ internal class ServiceImpl(
                 legalBasisChangeDate = null,
                 sampleRate = dataStorage.gdprSampleRate.toFloat(),
                 wasSampled = dataStorage.gdprSampled,
-                wasSampledAt = null
+                wasSampledAt = null,
+                vendorListId = campaignManager.gdprConsentStatus?.vendorListId
             ),
             ccpaMetaData = State.CCPAMetaData(
                 sampleRate = dataStorage.ccpaSampleRate.toFloat(),
@@ -487,56 +488,18 @@ internal class ServiceImpl(
     ) {
         if (connectionManager.isConnected) {
             updateCoreConsentStatus()
-            var getResp: ChoiceAllResponse? = null
             try {
-                getResp = runBlocking { coreCoordinator.getChoiceAll(consentAction.toCoreSPAction(), buildChoiceAllCampaigns(consentAction)) }
+                runBlocking { coreCoordinator.reportAction(consentAction.toCoreSPAction(), buildChoiceAllCampaigns(consentAction)) }
             }
             catch (error: Throwable) {
                 (error as? ConsentLibExceptionK)?.let { logger.error(error) }
             }
-            when (consentAction.campaignType) {
-                GDPR -> {
-                    try {
-                        runBlocking { coreCoordinator.reportGDPRAction(consentAction.toCoreSPAction(), getResp) }
-                    }
-                    catch (error: Throwable) {
-                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                    }
-                    updateConsentStatusFromCore()
-                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
-                            gdpr = campaignManager.gdprConsentStatus,
-                            consentManagerUtils = consentManagerUtils
-                    ))
-                }
-
-                CCPA -> {
-                    try {
-                        runBlocking { coreCoordinator.reportCCPAAction(consentAction.toCoreSPAction(), getResp) }
-                    }
-                    catch (error: Throwable) {
-                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                    }
-                    updateConsentStatusFromCore()
-                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
-                            ccpa = campaignManager.ccpaConsentStatus,
-                            consentManagerUtils = consentManagerUtils
-                    ))
-                }
-
-                USNAT -> {
-                    try {
-                        runBlocking { coreCoordinator.reportUSNatAction(consentAction.toCoreSPAction(), getResp) }
-                    }
-                    catch (error: Throwable) {
-                        (error as? ConsentLibExceptionK)?.let { logger.error(error) }
-                    }
-                    updateConsentStatusFromCore()
-                    onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
-                            usNat = campaignManager.usNatCS,
-                            consentManagerUtils = consentManagerUtils
-                    ))
-                }
-            }
+            updateConsentStatusFromCore()
+            onSpConsentsSuccess?.invoke(ConsentManager.responseConsentHandler(
+                consentAction = consentAction,
+                campaignManager = campaignManager,
+                consentManagerUtils = consentManagerUtils
+            ))
         } else {
             consentManagerUtils
                 .spStoredConsent
