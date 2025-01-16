@@ -566,9 +566,9 @@ class MainActivityKotlinTest {
 
         wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
-        clickOnRefreshBtnActivity()
-        clickOnRefreshBtnActivity()
-        clickOnRefreshBtnActivity()
+        wr(delay = 300) { clickOnRefreshBtnActivity() }
+        wr(delay = 300) { clickOnRefreshBtnActivity() }
+        wr(delay = 300) { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(atLeast = 3) { spClient.onSpFinished(any()) } }

@@ -62,9 +62,9 @@ class MainActivityKotlinAuthIdTest {
 
         wr { scenario.onResumeOrThrow() }
         wr { tapAcceptOnWebView() }
-        wr { tapAcceptOnWebView() }
-        wr { clickOnRefreshBtnActivity() }
-        wr { clickOnRefreshBtnActivity() }
+        wr(delay = 300) { tapAcceptOnWebView() }
+        wr(delay = 300) { clickOnRefreshBtnActivity() }
+        wr(delay = 300) { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 3) { spClient.onSpFinished(any()) } }
