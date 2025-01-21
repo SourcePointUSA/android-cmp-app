@@ -68,14 +68,8 @@ internal fun networkClient(
             ?.let { NCMock(nc, it) }
     }.getOrNull()
 
-    val mockObjectGDPRChoiceEx: NetworkClient? = com.sourcepoint.cmplibrary.util.check {
-        PreferenceManager.getDefaultSharedPreferences(appCtx).all
-            .toList()
-            .find { it.first == "gdpr_choice_exception" }
-            ?.let { NCMockStoreChoiceException(nc) }
-    }.getOrNull()
 
-    return mockObject ?: mockObjectGDPRChoiceEx ?: nc
+    return mockObject ?: nc
 }
 
 internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient by nc {
@@ -87,11 +81,4 @@ internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient b
         ),
         usnat = null
     )
-}
-
-internal class NCMockStoreChoiceException(nc: NetworkClient) : NetworkClient by nc {
-    override fun getChoice(
-        actionType: SPActionType,
-        campaigns: ChoiceAllRequest.ChoiceAllCampaigns
-    ): ChoiceAllResponse = ChoiceAllResponse(null,null,null)
 }

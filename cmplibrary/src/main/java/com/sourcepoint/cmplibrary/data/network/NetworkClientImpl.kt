@@ -125,26 +125,4 @@ private class NetworkClientImpl(
     override fun postPvData(request: PvDataRequest): PvDataResponse = runBlocking {
         coreClient.postPvData(request)
     }
-
-    override fun getChoice(
-        actionType: SPActionType,
-        campaigns: ChoiceAllRequest.ChoiceAllCampaigns
-    ): ChoiceAllResponse = runBlocking {
-        coreClient.getChoiceAll(
-            actionType = actionType,
-            campaigns = campaigns
-        )
-    }
-
-    override fun storeGdprChoice(actionType: SPActionType,request: GDPRChoiceRequest): GDPRChoiceResponse = runBlocking {
-        coreClient.postChoiceGDPRAction(actionType = actionType, request = request)
-    }
-
-    override fun storeCcpaChoice(actionType: SPActionType,request: CCPAChoiceRequest): CCPAChoiceResponse = runBlocking {
-        coreClient.postChoiceCCPAAction(actionType = actionType, request = request)
-    }
-
-    override fun storeUsNatChoice(actionType: SPActionType,request: USNatChoiceRequest): USNatChoiceResponse = runBlocking {
-        coreClient.postChoiceUSNatAction(actionType = actionType, request = request)
-    }
 }

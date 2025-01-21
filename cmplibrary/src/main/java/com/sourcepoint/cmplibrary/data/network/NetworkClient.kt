@@ -55,24 +55,4 @@ internal interface NetworkClient {
     fun postPvData(
         request: PvDataRequest
     ): PvDataResponse
-
-    fun getChoice(
-        actionType: SPActionType,
-        campaigns: ChoiceAllRequest.ChoiceAllCampaigns
-    ): ChoiceAllResponse
-
-    fun storeGdprChoice(
-        actionType: SPActionType,
-        request: GDPRChoiceRequest
-    ): GDPRChoiceResponse
-
-    fun storeCcpaChoice(
-        actionType: SPActionType,
-        request: CCPAChoiceRequest
-    ): CCPAChoiceResponse
-
-    fun storeUsNatChoice(
-        actionType: SPActionType,
-        request: USNatChoiceRequest
-    ): USNatChoiceResponse
 }
