@@ -41,31 +41,29 @@ data class USNatCS(
     val userConsents: UserConsents? = null
 ) : CampaignMessage {
     val vendors: List<ConsentableImpl>
-        get() { return userConsents?.vendors ?: emptyList() }
+        get() = userConsents?.vendors ?: emptyList()
     val categories: List<ConsentableImpl>
-        get() { return userConsents?.categories ?: emptyList() }
+        get() = userConsents?.categories ?: emptyList()
 
-    fun toCoreUSNatConsent(): USNatConsent {
-        return USNatConsent(
-            applies = applies?: false,
-            dateCreated = dateCreated,
-            expirationDate = expirationDate,
-            uuid = uuid,
-            webConsentPayload = webConsentPayload.toString(),
-            consentStatus = consentStatus?.toCoreConsentStatus() ?: ConsentStatus(),
-            consentStrings = consentStrings?.filter {
-                it.consentString != null && it.sectionName != null && it.sectionId != null
-            }?.map {
-                USNatConsent.USNatConsentSection(
-                    sectionId = it.sectionId!!,
-                    sectionName = it.sectionName!!,
-                    consentString = it.consentString!!
-                )
-            } ?: emptyList(),
-            userConsents = userConsents?.toCoreUSNatUserConsents() ?: USNatUserConsents(),
-            gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
-        )
-    }
+    fun toCoreUSNatConsent(): USNatConsent = USNatConsent(
+        applies = applies?: false,
+        dateCreated = dateCreated,
+        expirationDate = expirationDate,
+        uuid = uuid,
+        webConsentPayload = webConsentPayload.toString(),
+        consentStatus = consentStatus?.toCoreConsentStatus() ?: ConsentStatus(),
+        consentStrings = consentStrings?.filter {
+            it.consentString != null && it.sectionName != null && it.sectionId != null
+        }?.map {
+            USNatConsent.USNatConsentSection(
+                sectionId = it.sectionId!!,
+                sectionName = it.sectionName!!,
+                consentString = it.consentString!!
+            )
+        } ?: emptyList(),
+        userConsents = userConsents?.toCoreUSNatUserConsents() ?: USNatUserConsents(),
+        gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
+    )
 
     fun copyingFrom(core: USNatConsent?, applies: Boolean?): USNatCS {
         if (core == null) { return this }
@@ -101,9 +99,8 @@ data class USNatCS(
         url = url,
     )
 
-    internal fun stringify(): String? {
-        return check { JsonConverter.converter.encodeToString(this) }.getOrNull()
-    }
+    internal fun stringify(): String? =
+        check { JsonConverter.converter.encodeToString(this) }.getOrNull()
 
     @Serializable
     data class ConsentString(
@@ -117,11 +114,9 @@ data class USNatCS(
         val vendors: List<ConsentableImpl>? = emptyList(),
         val categories: List<ConsentableImpl>? = emptyList()
     ) {
-        fun toCoreUSNatUserConsents(): USNatUserConsents {
-            return USNatUserConsents(
-                vendors = vendors?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList(),
-                categories = categories?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList()
-            )
-        }
+        fun toCoreUSNatUserConsents(): USNatUserConsents = USNatUserConsents(
+            vendors = vendors?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList(),
+            categories = categories?.map { USNatConsent.USNatConsentable(it.id, it.consented) } ?: emptyList()
+        )
     }
 }

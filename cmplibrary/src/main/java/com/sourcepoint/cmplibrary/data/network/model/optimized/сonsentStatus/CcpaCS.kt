@@ -34,21 +34,20 @@ data class CcpaCS(
     @SerialName("webConsentPayload") val webConsentPayload: JsonObject? = null,
     @SerialName("expirationDate") var expirationDate: String? = null,
 ) {
-    fun toCoreCCPAConsent(): CCPAConsent {
-        return CCPAConsent(
-            applies = applies?: false,
-            uuid = uuid,
-            dateCreated = dateCreated,
-            expirationDate = expirationDate,
-            signedLspa = signedLspa,
-            uspstring = uspstring,
-            rejectedVendors = rejectedVendors?: emptyList(),
-            rejectedCategories = rejectedCategories?: emptyList(),
-            status = status?.toCoreCCPAConsentStatus(),
-            webConsentPayload = webConsentPayload.toString(),
-            gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
-        )
-    }
+    fun toCoreCCPAConsent(): CCPAConsent = CCPAConsent(
+        applies = applies?: false,
+        uuid = uuid,
+        dateCreated = dateCreated,
+        expirationDate = expirationDate,
+        signedLspa = signedLspa,
+        uspstring = uspstring,
+        rejectedVendors = rejectedVendors?: emptyList(),
+        rejectedCategories = rejectedCategories?: emptyList(),
+        status = status?.toCoreCCPAConsentStatus(),
+        webConsentPayload = webConsentPayload.toString(),
+        gppData = gppData?.mapValues { it.value.jsonPrimitive } ?: emptyMap()
+    )
+
     fun copyingFrom(core: CCPAConsent?, applies: Boolean?): CcpaCS {
         if (core == null) { return this }
 
@@ -67,19 +66,17 @@ data class CcpaCS(
         )
     }
 
-    internal fun toCCPAConsentInternal(): CCPAConsentInternal {
-        return CCPAConsentInternal(
-            uuid = uuid,
-            applies = applies ?: false,
-            gppData = gppData?.toMapOfAny() ?: emptyMap(),
-            status = status,
-            childPmId = null,
-            rejectedVendors = rejectedVendors ?: emptyList(),
-            rejectedCategories = rejectedCategories ?: emptyList(),
-            thisContent = JSONObject(),
-            signedLspa = signedLspa,
-            webConsentPayload = webConsentPayload,
-            uspstring = uspstring ?: DEFAULT_USPSTRING
-        )
-    }
+    internal fun toCCPAConsentInternal(): CCPAConsentInternal = CCPAConsentInternal(
+        uuid = uuid,
+        applies = applies ?: false,
+        gppData = gppData?.toMapOfAny() ?: emptyMap(),
+        status = status,
+        childPmId = null,
+        rejectedVendors = rejectedVendors ?: emptyList(),
+        rejectedCategories = rejectedCategories ?: emptyList(),
+        thisContent = JSONObject(),
+        signedLspa = signedLspa,
+        webConsentPayload = webConsentPayload,
+        uspstring = uspstring ?: DEFAULT_USPSTRING
+    )
 }
