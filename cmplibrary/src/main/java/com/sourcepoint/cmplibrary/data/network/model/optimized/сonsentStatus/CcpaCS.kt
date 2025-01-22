@@ -9,8 +9,6 @@ import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.cmplibrary.model.exposed.toCoreCCPAConsentStatus
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
-import com.sourcepoint.mobile_core.network.responses.CCPAChoiceResponse
-import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -66,41 +64,6 @@ data class CcpaCS(
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             gppData = core.gppData,
             uspstring = core.uspstring
-        )
-    }
-
-    fun copyingFrom(core: ChoiceAllResponse.CCPA?, applies: Boolean?): CcpaCS {
-        if (core == null) { return this }
-
-        return copy(
-            applies = applies,
-            consentedAll = core.consentedAll,
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
-            rejectedAll = core.rejectedAll,
-            status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status.name.lowercase() },
-            uspstring = core.uspstring,
-            rejectedVendors = core.rejectedVendors,
-            rejectedCategories = core.rejectedCategories,
-            gpcEnabled = core.gpcEnabled,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            gppData = core.gppData
-        )
-    }
-
-    fun copyingFrom(core: CCPAChoiceResponse): CcpaCS {
-        return copy(
-            uuid = core.uuid,
-            consentedAll = core.consentedAll,
-            dateCreated = core.dateCreated,
-            rejectedAll = core.rejectedAll,
-            status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status?.name?.lowercase() },
-            uspstring = core.uspstring,
-            rejectedVendors = core.rejectedVendors,
-            rejectedCategories = core.rejectedCategories,
-            gpcEnabled = core.gpcEnabled,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            gppData = core.gppData
         )
     }
 

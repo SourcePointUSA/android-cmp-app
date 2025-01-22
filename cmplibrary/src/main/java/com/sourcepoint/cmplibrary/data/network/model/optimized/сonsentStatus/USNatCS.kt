@@ -12,8 +12,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ConsentableImpl
 import com.sourcepoint.cmplibrary.model.exposed.UsNatConsentInternal
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
-import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
-import com.sourcepoint.mobile_core.network.responses.USNatChoiceResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -87,61 +85,6 @@ data class USNatCS(
                 )
             },
             consentStatus = USNatConsentStatus.initFrom(core.consentStatus)
-        )
-    }
-
-    fun copyingFrom(core: ChoiceAllResponse.USNAT?, applies: Boolean?): USNatCS {
-        if (core == null) { return this }
-
-        return copy(
-            applies = applies,
-            consentStatus = USNatConsentStatus.initFrom(core.consentStatus),
-            consentStrings = core.consentStrings.map {
-                ConsentString(
-                    sectionId = it.sectionId,
-                    sectionName = it.sectionName,
-                    consentString = it.consentString
-                )
-            },
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            gppData = core.gppData,
-        )
-    }
-
-    fun copyingFrom(core: USNatChoiceResponse?): USNatCS {
-        if (core == null) { return this }
-
-        return copy(
-            applies = applies,
-            uuid = core.uuid,
-            consentStatus = USNatConsentStatus.initFrom(core.consentStatus),
-            consentStrings = core.consentStrings.map {
-                ConsentString(
-                    sectionId = it.sectionId,
-                    sectionName = it.sectionName,
-                    consentString = it.consentString
-                )
-            },
-            userConsents = UserConsents(
-                vendors = core.userConsents.vendors.map {
-                    ConsentableImpl(
-                        id = it.id,
-                        consented = it.consented
-                    )
-                },
-                categories = core.userConsents.categories.map {
-                    ConsentableImpl(
-                        id = it.id,
-                        consented = it.consented
-                    )
-                },
-            ),
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            gppData = core.gppData,
         )
     }
 

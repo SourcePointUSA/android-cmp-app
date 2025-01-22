@@ -9,13 +9,10 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.util.extensions.toMapOfAny
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
-import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
-import com.sourcepoint.mobile_core.network.responses.GDPRChoiceResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
 import org.json.JSONObject
 
@@ -73,64 +70,6 @@ data class GdprCS(
         )
     }
 
-    fun copyingFrom(core: ChoiceAllResponse.GDPR?, applies: Boolean?): GdprCS {
-        if (core == null) { return this }
-
-        return copy(
-            applies = applies,
-            addtlConsent = core.addtlConsent,
-            euconsent = core.euconsent,
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
-            TCData = core.tcData,
-            consentStatus = ConsentStatus.initFrom(
-                core.consentStatus
-            ),
-            postPayload = PostPayload.initFrom(core.postPayload),
-            categories = core.acceptedCategories,
-            legIntCategories = core.acceptedLegIntCategories,
-            legIntVendors = core.acceptedLegIntVendors,
-            specialFeatures = core.acceptedSpecialFeatures,
-            vendors = core.acceptedVendors,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            googleConsentMode = core.gcmStatus?.let { gcm -> GoogleConsentMode.initFrom(gcm) },
-            grants = core.grants.mapValues {
-                GDPRPurposeGrants(
-                    granted = it.value.vendorGrant,
-                    purposeGrants = it.value.purposeGrants
-                )
-            },
-
-        )
-    }
-
-    fun copyingFrom(core: GDPRChoiceResponse): GdprCS {
-        return copy(
-            uuid = core.uuid,
-            euconsent = core.euconsent,
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
-            TCData = core.tcData,
-            consentStatus = ConsentStatus.initFrom(
-                core.consentStatus
-            ),
-            categories = core.acceptedCategories,
-            legIntCategories = core.acceptedLegIntCategories,
-            legIntVendors = core.acceptedLegIntVendors,
-            specialFeatures = core.acceptedSpecialFeatures,
-            vendors = core.acceptedVendors,
-            webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
-            googleConsentMode = core.gcmStatus?.let { gcm -> GoogleConsentMode.initFrom(gcm) },
-            grants = core.grants?.mapValues {
-                GDPRPurposeGrants(
-                    granted = it.value.vendorGrant,
-                    purposeGrants = it.value.purposeGrants
-                )
-            },
-
-            )
-    }
-
     internal fun toGDPRUserConsent(): GDPRConsentInternal {
         return GDPRConsentInternal(
             uuid = uuid,
@@ -178,17 +117,7 @@ data class GdprCS(
         @SerialName("consentAllRef") val consentAllRef: String?,
         @SerialName("granularStatus") val granularStatus: ConsentStatus.GranularStatus,
         @SerialName("vendorListId") val vendorListId: String?
-    ) {
-        companion object {
-            fun initFrom(core: ChoiceAllResponse.GDPR.PostPayload?): PostPayload {
-                return PostPayload(
-                    consentAllRef = core?.consentAllRef,
-                    granularStatus = ConsentStatus.GranularStatus.initFrom(core?.granularStatus),
-                    vendorListId = core?.vendorListId
-                )
-            }
-        }
-    }
+    )
 
     @Serializable
     data class CustomVendorsResponse(
