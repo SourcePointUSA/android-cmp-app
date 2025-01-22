@@ -3,6 +3,8 @@ package com.sourcepoint.cmplibrary.creation
 import android.app.Activity
 import android.content.Context
 import com.example.cmplibrary.BuildConfig
+import com.russhwolf.settings.MapSettings
+import com.russhwolf.settings.Settings
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
@@ -32,6 +34,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import com.sourcepoint.mobile_core.Coordinator
+import com.sourcepoint.mobile_core.storage.Repository
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -41,7 +44,25 @@ fun makeConsentLib(
     activity: Activity,
     spClient: SpClient
 ): SpConsentLib {
+    return makeConsentLib(spConfig, activity, spClient, coreSettings = Settings())
+}
 
+@JvmSynthetic
+internal fun makeConsentLibForTest(
+    spConfig: SpConfig,
+    activity: Activity,
+    spClient: SpClient
+): SpConsentLib {
+    return makeConsentLib(spConfig, activity, spClient, coreSettings = MapSettings())
+}
+
+@JvmSynthetic
+internal fun makeConsentLib(
+    spConfig: SpConfig,
+    activity: Activity,
+    spClient: SpClient,
+    coreSettings: Settings
+): SpConsentLibImpl {
     val env = Env.values().find { it.name == BuildConfig.SDK_ENV } ?: Env.PROD
     val okHttpClient = spConfig.messageTimeout.let {
         OkHttpClient.Builder()
@@ -79,7 +100,8 @@ fun makeConsentLib(
     val coreCoordinator = Coordinator(
         accountId = spConfig.accountId,
         propertyId = spConfig.propertyId,
-        propertyName = spConfig.propertyName
+        propertyName = spConfig.propertyName,
+        repository = Repository(coreSettings)
     )
     val service: Service = Service.create(
         networkClient,

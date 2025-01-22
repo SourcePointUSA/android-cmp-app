@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.creation
 import android.app.Activity
 import android.content.Context
 import com.example.cmplibrary.BuildConfig
+import com.russhwolf.settings.Settings
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibImpl
@@ -35,6 +36,7 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.create
 import com.sourcepoint.mobile_core.Coordinator
+import com.sourcepoint.mobile_core.storage.Repository
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -44,6 +46,7 @@ class Builder {
     private var spConfig: SpConfig? = null
     private var weakReference: WeakReference<Activity>? = null
     private var spClient: SpClient? = null
+    private var coreSettings: Settings? = null
 
     fun setSpClient(spClient: SpClient) = apply {
         this.spClient = spClient
@@ -55,6 +58,10 @@ class Builder {
 
     fun setContext(context: Activity) = apply {
         this.weakReference = WeakReference(context)
+    }
+
+    fun setCoreCoordinatorSettings(settings: Settings) = apply {
+        coreSettings = settings
     }
 
     fun build(): SpConsentLib {
@@ -99,7 +106,8 @@ class Builder {
         val coreCoordinator = Coordinator(
             accountId = spc.accountId,
             propertyId = spc.propertyId,
-            propertyName = spc.propertyName
+            propertyName = spc.propertyName,
+            repository = Repository(coreSettings?: failParam("coreSettings"))
         )
         val service: Service = Service.create(
             networkClient,

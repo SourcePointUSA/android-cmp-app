@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import com.russhwolf.settings.MapSettings
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
@@ -52,6 +53,7 @@ class SpCmpBuilderTest {
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
             }
+            coreSettings = MapSettings()
         }
         sut.assertNotNull()
     }

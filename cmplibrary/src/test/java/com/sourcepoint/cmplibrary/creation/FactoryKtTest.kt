@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import com.russhwolf.settings.MapSettings
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -22,7 +23,7 @@ class FactoryKtTest {
 
     @Test
     fun `CREATE a new instance of ConsentLib`() {
-        makeConsentLib(
+        makeConsentLibForTest(
             spConfig = SpConfig(
                 22,
                 "asfa",

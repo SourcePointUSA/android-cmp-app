@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import com.russhwolf.settings.MapSettings
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -51,6 +52,7 @@ class BuilderTest {
         Builder()
             .setSpConfig(spConfig)
             .setContext(context)
+            .setCoreCoordinatorSettings(MapSettings())
             .build()
     }
 
@@ -60,6 +62,7 @@ class BuilderTest {
             .setSpConfig(spConfig)
             .setSpClient(spClient)
             .setContext(context)
+            .setCoreCoordinatorSettings(MapSettings())
             .build()
     }
 }
