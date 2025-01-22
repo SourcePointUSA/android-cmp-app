@@ -4,7 +4,6 @@ import com.example.cmplibrary.BuildConfig
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamRequest
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.exception.CampaignType
@@ -27,11 +26,6 @@ internal interface HttpUrlManager {
     ): HttpUrl
 
     // Optimized
-    fun getConsentStatusUrl(param: ConsentStatusParamRequest): HttpUrl
-    fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl
-    fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl
-    fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl
-    fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl
     fun getMessagesUrl(param: MessagesParamReq): HttpUrl
 }
 
@@ -138,107 +132,6 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addQueryParameter("scriptVersion", scriptVersion)
             .build()
     }
-
-    override fun getConsentStatusUrl(param: ConsentStatusParamRequest): HttpUrl {
-        // http://localhost:3000/wrapper/v2/consent-status?env=localProd
-        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}
-        // &hasCsp=true
-        // &withSiteActions=true
-        // &includeData={"TCData": {"type": "RecordString"}}
-        // &propertyId=17801
-
-        // https://cdn.privacy-mgmt.com/wrapper/v2/consent-status?env=localProd
-        // &authId=user_auth_id
-        // &metadata={"ccpa":{"applies":true},"gdpr":{"applies":true}}
-        // &hasCsp=true
-        // &propertyId=17801
-        // &localState=
-        // &includeData={"TCData": {"type": "RecordString"}}
-        // &withSiteActions=true
-
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(param.env.host)
-            .addPathSegments("wrapper/v2/consent-status")
-            .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("accountId", param.accountId.toString())
-            .addQueryParameter("propertyId", param.propertyId.toString())
-            .addQueryParameter("hasCsp", true.toString())
-            .addQueryParameter("withSiteActions", false.toString())
-            .addQueryParameter("includeData", param.includeData.toString())
-            .apply { param.authId?.let { p -> addQueryParameter("authId", p) } }
-            .addEncodedQueryParameter("metadata", param.metadata)
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    override fun getChoiceUrl(param: GetChoiceParamReq): HttpUrl {
-        // http://localhost:3000/wrapper/v2/choice
-        // /consent-all
-        // ?env=localProd
-        // &accountId=22
-        // &hasCsp=true
-        // &propertyId=17801
-        // &withSiteActions=false
-        // &includeCustomVendorsRes=false
-        // &metadata={"ccpa":{"applies":true}, "gdpr":{"applies":true}}
-
-        val metaData: String? = param.metadataArg?.let { JsonConverter.converter.encodeToString(it) }
-        val includeData = JsonConverter.converter.encodeToString(param.includeData)
-
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(param.env.host)
-            .addPathSegments("wrapper/v2/choice")
-            .addPathSegments(param.choiceType.type)
-            .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("accountId", param.accountId.toString())
-            .addQueryParameter("propertyId", param.propertyId.toString())
-            .addQueryParameter("hasCsp", param.hasCsp.toString())
-            .addQueryParameter("withSiteActions", param.withSiteActions.toString())
-            .addQueryParameter("includeCustomVendorsRes", param.includeCustomVendorsRes.toString())
-            .addEncodedQueryParameter("metadata", metaData)
-            .addQueryParameter("includeData", includeData)
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    override fun getGdprChoiceUrl(param: PostChoiceParamReq): HttpUrl {
-        // http://localhost:3000/wrapper/v2/choice/gdpr/11?env=localProd&hasCsp=true
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(param.env.host)
-            .addPathSegments("wrapper/v2/choice/gdpr/${param.actionType.code}")
-            .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("hasCsp", true.toString())
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-    override fun getCcpaChoiceUrl(param: PostChoiceParamReq): HttpUrl {
-        // http://localhost:3000/wrapper/v2/choice/ccpa/11?env=localProd&hasCsp=true
-        return HttpUrl.Builder()
-            .scheme("https")
-            .host(param.env.host)
-            .addPathSegments("wrapper/v2/choice/ccpa/${param.actionType.code}")
-            .addQueryParameter("env", param.env.queryParam)
-            .addQueryParameter("hasCsp", true.toString())
-            .addQueryParameter("scriptType", scriptType)
-            .addQueryParameter("scriptVersion", scriptVersion)
-            .build()
-    }
-
-    override fun postUsNatChoiceUrl(param: PostChoiceParamReq): HttpUrl = HttpUrl.Builder()
-        .scheme("https")
-        .host(param.env.host)
-        .addPathSegments("wrapper/v2/choice/usnat/${param.actionType.code}")
-        .addQueryParameter("env", param.env.queryParam)
-        .addQueryParameter("hasCsp", true.toString())
-        .addQueryParameter("scriptType", scriptType)
-        .addQueryParameter("scriptVersion", scriptVersion)
-        .build()
 
     override fun getMessagesUrl(param: MessagesParamReq): HttpUrl {
         // http://localhost:3000/wrapper/v2/messages?

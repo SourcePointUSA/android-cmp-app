@@ -8,7 +8,6 @@ import com.sourcepoint.cmplibrary.assertTrue
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
-import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.ConsentStatusParamRequest
 import com.sourcepoint.cmplibrary.data.network.model.optimized.includeData.buildIncludeData
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignReqImpl
@@ -308,73 +307,6 @@ class HttpUrlManagerTest {
         )
         val sut = HttpUrlManagerSingleton.pmUrl(Env.PROD, CampaignType.CCPA, config, messageType = LEGACY_OTT,).toString()
         sut.assertEquals("https://cdn.privacy-mgmt.com/ccpa_ott/index.html?site_id&preload_consent=true&is_ccpa=true&ccpaUUID=uuid&message_id=111&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env getConsentStatus RETURN the prod link`() {
-        val param = ConsentStatusParamRequest(
-            accountId = 22,
-            env = Env.PROD,
-            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
-            propertyId = 17801,
-            authId = "user_auth_id",
-            localState = null,
-            includeData = buildIncludeData(),
-        )
-        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
-        sut.run {
-            toString().contains("cdn.privacy-mgmt.com").assertTrue()
-            queryParameter("accountId").assertEquals("22")
-            queryParameter("authId").assertEquals("user_auth_id")
-            queryParameter("withSiteActions").assertEquals("false")
-            queryParameter("hasCsp").assertEquals("true")
-            queryParameter("propertyId").assertEquals("17801")
-            queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
-            queryParameter("includeData").assertEquals(buildIncludeData().toString())
-        }
-    }
-
-    @Test
-    fun `GIVEN a PROD env getGdprChoiceUrl RETURN the prod link`() {
-        val param = PostChoiceParamReq(
-            env = Env.PROD,
-            actionType = ActionType.ACCEPT_ALL
-        )
-        val sut = HttpUrlManagerSingleton.getGdprChoiceUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/gdpr/11?env=prod&hasCsp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env getCcpaChoiceUrl RETURN the prod link`() {
-        val param = PostChoiceParamReq(
-            env = Env.PROD,
-            actionType = ActionType.ACCEPT_ALL
-        )
-        val sut = HttpUrlManagerSingleton.getCcpaChoiceUrl(param).toString()
-        sut.assertEquals("https://cdn.privacy-mgmt.com/wrapper/v2/choice/ccpa/11?env=prod&hasCsp=true&scriptType=android&scriptVersion=${BuildConfig.VERSION_NAME}")
-    }
-
-    @Test
-    fun `GIVEN a PROD env getConsentStatus with authId NULL RETURN the prod link`() {
-        val param = ConsentStatusParamRequest(
-            accountId = 22,
-            env = Env.PROD,
-            metadata = JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString(),
-            propertyId = 17801,
-            authId = null,
-            localState = null,
-            includeData = buildIncludeData(),
-        )
-        val sut = HttpUrlManagerSingleton.getConsentStatusUrl(param)
-        sut.run {
-            toString().contains("cdn.privacy-mgmt.com").assertTrue()
-            queryParameter("accountId").assertEquals("22")
-            queryParameter("withSiteActions").assertEquals("false")
-            queryParameter("hasCsp").assertEquals("true")
-            queryParameter("propertyId").assertEquals("17801")
-            queryParameter("metadata").assertEquals(JSONObject("""{"ccpa":{"applies":true}, "gdpr":{"applies":true, "uuid": "e47e539d-41dd-442b-bb08-5cf52b1e33d4", "hasLocalData": false}}""").toString())
-            queryParameter("includeData").assertEquals(buildIncludeData().toString())
-        }
     }
 
     @Test
