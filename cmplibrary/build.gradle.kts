@@ -96,7 +96,7 @@ dependencies {
     // kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
-    implementation("com.russhwolf:multiplatform-settings-test-android-debug:1.2.0")
+    implementation("com.russhwolf:multiplatform-settings-test:1.2.0")
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
