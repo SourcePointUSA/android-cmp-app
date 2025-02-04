@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.failParam
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceTypeParam
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.toSPCampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
@@ -69,11 +68,5 @@ internal fun NativeConsentAction.toConsentAction() = ConsentActionImpl(
     campaignType = campaignType,
     requestFromPm = false
 )
-
-internal fun ActionType.toChoiceTypeParam(): ChoiceTypeParam = when (this) {
-    ActionType.ACCEPT_ALL -> ChoiceTypeParam.CONSENT_ALL
-    ActionType.REJECT_ALL -> ChoiceTypeParam.REJECT_ALL
-    else -> throw RuntimeException("ChoiceTypeParam doesn't match the ActionType")
-}
 
 internal fun ActionType.toSPActionType(): SPActionType = SPActionType.entries.first { it.type == this.code }
