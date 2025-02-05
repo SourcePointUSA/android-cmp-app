@@ -72,6 +72,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .addPathSegments(pathSegment)
             .addQueryParameter("pmTab", pmConf.pmTab?.key)
             .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", true.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("consentUUID", it) }
@@ -96,6 +97,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.pmHostCcpa)
             .addPathSegments(pathSegment)
             .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", true.toString())
             .addQueryParameter("is_ccpa", true.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
@@ -120,6 +122,7 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
             .host(env.pmHostUSNat)
             .addPathSegments(pathSegment)
             .addQueryParameter("site_id", pmConf.siteId)
+            .addQueryParameter("preload_consent", true.toString())
             .apply {
                 pmConf.consentLanguage?.let { addQueryParameter("consentLanguage", it) }
                 pmConf.uuid?.let { addQueryParameter("uuid", it) }
