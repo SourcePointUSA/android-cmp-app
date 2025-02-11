@@ -1,3 +1,8 @@
+## 7.11.1 (February, 11, 2025)
+* [DIA-5149](https://sourcepoint.atlassian.net/browse/DIA-5149) Fix an issue causing google consent mode attributes to be `null`. [#845](https://github.com/SourcePointUSA/android-cmp-app/pull/845)
+* [DIA-3500](https://sourcepoint.atlassian.net/browse/DIA-3500) Replace native call to `pv-data` with `mobile-core`'s implementation. This should be transparent to clients. [#841](https://github.com/SourcePointUSA/android-cmp-app/pull/841)
+* [DIA-4713](https://sourcepoint.atlassian.net/browse/DIA-4713) Fix an issue preventing the meta-app from launching. This does not affect client implementation. [#838](https://github.com/SourcePointUSA/android-cmp-app/pull/838)
+
 ## 7.11.0 (October, 22, 2024)
 * [DIA-4611](https://sourcepoint.atlassian.net/browse/DIA-4611) Refactor `customConsentGDPR` and `deleteCustomConsentTo` to use `mobile-core`'s implementation. [#836](https://github.com/SourcePointUSA/android-cmp-app/pull/836)
 * Updated project dependencies and bump `minSdk` support from 21 to 23 due to [Android's new Security policy](https://developer.android.com/about/versions/14/behavior-changes-all#security) [#840](https://github.com/SourcePointUSA/android-cmp-app/pull/840)
