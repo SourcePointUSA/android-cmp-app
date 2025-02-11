@@ -91,13 +91,13 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.0.9")
+    implementation("com.sourcepoint:core:0.0.10")
 
     // kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
