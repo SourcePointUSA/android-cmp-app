@@ -399,8 +399,7 @@ internal class ServiceImpl(
                 response.ccpa?.let {
                     ccpaConsentStatus = ccpaConsentStatus?.copy(uuid = it.uuid)
                 }
-            }
-            catch (error: Throwable) {
+            } catch (error: Throwable) {
                 onFailure(error, false)
             }
         }

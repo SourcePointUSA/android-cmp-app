@@ -7,15 +7,12 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
-import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.exception.CodeList
 import com.sourcepoint.cmplibrary.exception.ConnectionTimeoutException
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.readText
 import com.sourcepoint.cmplibrary.stub.MockLogger
 import com.sourcepoint.mobile_core.models.SPNetworkError
-import com.sourcepoint.mobile_core.network.requests.PvDataRequest
-import com.sourcepoint.mobile_core.network.responses.PvDataResponse
 import io.mockk.* // ktlint-disable
 import io.mockk.impl.annotations.MockK
 import kotlinx.serialization.json.* // ktlint-disable

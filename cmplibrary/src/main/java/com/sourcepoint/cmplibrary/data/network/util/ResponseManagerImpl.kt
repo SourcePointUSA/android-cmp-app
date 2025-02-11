@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.util
 
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.model.optimized.* // ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp

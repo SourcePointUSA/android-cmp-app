@@ -312,7 +312,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns mockMetaDataResp
         every { ncMock.getConsentStatus(any(), any()) } returns mockConsentStatusResp
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null,ccpa = null,usnat = null)
+        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null, ccpa = null, usnat = null)
 
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
@@ -350,7 +350,7 @@ class ServiceImplTest {
         every { ncMock.getMetaData(any()) } returns mockMetaDataResp
         every { ncMock.getConsentStatus(any(), any()) } returns mockConsentStatusResp
         every { ncMock.getMessages(any()) } returns Right(mockMessagesResp)
-        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null,ccpa = PvDataResponse.Campaign("1"),usnat = null)
+        every { ncMock.postPvData(any()) } returns PvDataResponse(gdpr = null, ccpa = PvDataResponse.Campaign("1"), usnat = null)
         val service = Service.create(ncMock, cm, cmu, ds, logger, MockExecutorManager(), connectionManager)
         service.getMessages(
             messageReq = mockMessagesParamReq,
