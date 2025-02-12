@@ -12,7 +12,7 @@ internal fun UsNatArg.createMetadataArg(campaignManager: CampaignManager): UsNat
     var transitionCCPAAuth = this.transitionCCPAAuth
     var optedOut = this.optedOut
     var dateCreated = this.dateCreated
-    var usnatUuid = campaignManager.usNatConsentData?.uuid
+    var usnatUuid = campaignManager.usNatCS?.uuid
     val ccpaCS = campaignManager.ccpaConsentStatus
 
     if (campaignManager.spConfig.isIncluded(CampaignType.USNAT)) {
@@ -21,7 +21,7 @@ internal fun UsNatArg.createMetadataArg(campaignManager: CampaignManager): UsNat
         ) {
             transitionCCPAAuth = true
         } else if (ccpaCS != null &&
-            campaignManager.usNatConsentData == null &&
+            campaignManager.usNatCS == null &&
             (ccpaCS.status == rejectedSome || ccpaCS.status == rejectedAll)
         ) {
             optedOut = true

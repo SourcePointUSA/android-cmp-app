@@ -47,7 +47,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.creation.to
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -366,12 +366,13 @@ class MainActivityKotlinTest {
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
         wr(backup = { clickOnCcpaReviewConsent() }) { checkAllCcpaConsentsOn() }
+        wr(delay = 5000, backup = { clickOnCcpaReviewConsent() }) { tapAcceptAllOnWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.consentedAll) }
         wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
         // check consentedAll
         wr { clickOnCcpaReviewConsent() }
-        wr(backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
+        wr(delay = 5000, backup = { clickOnCcpaReviewConsent() }) { tapRejectAllWebView() }
         wr { spClient.consentList.last().ccpa!!.consent.status.assertEquals(CcpaStatus.rejectedAll) }
         wr { spClient.consentList.last().ccpa!!.consent.applies.assertTrue() }
 
@@ -935,6 +936,7 @@ class MainActivityKotlinTest {
         scenario = launchActivity()
 
         wr { tapAcceptAllOnWebView() }
+        delay(300)
         wr { clickOnGdprReviewConsent() }
         wr { tapCancelOnWebView() }
 

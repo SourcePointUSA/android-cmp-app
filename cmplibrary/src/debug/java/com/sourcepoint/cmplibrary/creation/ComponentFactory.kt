@@ -2,18 +2,20 @@ package com.sourcepoint.cmplibrary.creation
 
 import android.content.Context
 import android.preference.PreferenceManager
-import com.sourcepoint.cmplibrary.core.Either
 import com.sourcepoint.cmplibrary.core.getOrNull
 import com.sourcepoint.cmplibrary.data.network.NetworkClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.create
 import com.sourcepoint.cmplibrary.data.network.createNetworkClient
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
-import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
 import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.mobile_core.models.SPActionType
+import com.sourcepoint.mobile_core.models.SPIDFAStatus
+import com.sourcepoint.mobile_core.network.requests.ChoiceAllRequest
+import com.sourcepoint.mobile_core.network.requests.IncludeData
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
+import com.sourcepoint.mobile_core.network.responses.ChoiceAllResponse
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import okhttp3.OkHttpClient
 
@@ -88,5 +90,8 @@ internal class NCMock(nc: NetworkClient, val applies: Boolean) : NetworkClient b
 }
 
 internal class NCMockStoreChoiceException(nc: NetworkClient) : NetworkClient by nc {
-    override fun getChoice(param: GetChoiceParamReq): Either<ChoiceResp> = Either.Left(RuntimeException())
+    override fun getChoice(
+        actionType: SPActionType,
+        campaigns: ChoiceAllRequest.ChoiceAllCampaigns
+    ): ChoiceAllResponse = ChoiceAllResponse(null,null,null)
 }

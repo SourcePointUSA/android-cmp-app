@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GranularState
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GranularState
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary.data.network.converter
 
 import com.sourcepoint.cmplibrary.* //ktlint-disable
 import com.sourcepoint.cmplibrary.core.Either
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.сonsentStatus.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
