@@ -48,8 +48,10 @@ class SpConsentLibMobileCore(
     private val coordinator: Coordinator,
     private val spClient: SpClient,
 ): SpConsentLib, SPMessageUIClient {
-    private var messagesToDisplay: List<MessageToDisplay> = emptyList()
-    private lateinit var currentMessage: SPMessageUI
+    private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
+    private val currentMessage: SPMessageUI by lazy {
+        SPConsentWebView(context = context, messageUIClient = this)
+    }
     private val mainView: ViewGroup?
         get() = activity.get()?.findViewById(content)
 
@@ -71,20 +73,17 @@ class SpConsentLibMobileCore(
 
     override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
         launch {
-            messagesToDisplay = coordinator.loadMessages(authId = authId, pubData = pubData?.toJsonObject())
-            if(messagesToDisplay.isEmpty()) {
-                spClient.onSpFinished(SPConsents()) // TODO: convert coordinator.userData to SPConsents
-            } else {
-                Handler(Looper.getMainLooper()).post {
-                    currentMessage = SPConsentWebView(
-                        context = context,
-                        messageUIClient = this
-                    )
-                    currentMessage.load(
-                        message = messagesToDisplay.first(),
-                        consents = SPConsents()
-                    )
-                }
+            messagesToDisplay = ArrayDeque(coordinator.loadMessages(authId = authId, pubData = pubData?.toJsonObject()))
+            renderNextMessageIfAny()
+        }
+    }
+
+    private fun renderNextMessageIfAny() {
+        if(messagesToDisplay.isEmpty()) {
+            spClient.onSpFinished(SPConsents()) // TODO: convert coordinator.userData to SPConsents
+        } else {
+            runOnMain {
+                currentMessage.load(message = messagesToDisplay.removeFirst(), consents = SPConsents())
             }
         }
     }
@@ -245,9 +244,8 @@ class SpConsentLibMobileCore(
     }
 
     override fun onAction(view: View, action: ConsentAction) {
-        spClient.onAction(view, action)
         launch {
-            coordinator.reportAction((action as ConsentActionImplOptimized).toCore())
+            coordinator.reportAction((spClient.onAction(view, action) as ConsentActionImplOptimized).toCore())
         }
     }
 
@@ -255,8 +253,8 @@ class SpConsentLibMobileCore(
         spClient.onError(Exception())
     }
 
-    override fun finished() {
-        // TODO: finish
-        spClient.onSpFinished(SPConsents())
+    override fun finished(view: View) {
+        spClient.onUIFinished(view)
+        renderNextMessageIfAny()
     }
 }

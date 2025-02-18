@@ -31,7 +31,7 @@ interface SPMessageUIClient {
     fun loaded(view: View)
     fun onAction(view: View, action: ConsentAction)
     fun onError()
-    fun finished()
+    fun finished(view: View)
 }
 
 interface SPMessageUI {
@@ -102,22 +102,23 @@ class SPConsentWebView(
     }
 
     override fun onAction(view: View, action: ConsentAction) {
-        runOnMain { messageUIClient.onAction(view, action) }
+        runOnMain {
+            messageUIClient.onAction(view, action)
+            finished(view)
+        }
     }
 
     override fun loaded(view: View) {
         runOnMain { messageUIClient.loaded(view) }
     }
 
-    override fun finished() {
-        runOnMain { messageUIClient.finished() }
+    override fun finished(view: View) {
+        runOnMain { messageUIClient.finished(view) }
     }
 
     @JavascriptInterface
     override fun onAction(actionData: String) {
-        println("actionData: $actionData")
-        val thing = JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(actionData)
-        onAction(this, thing)
+        onAction(this, JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(actionData))
     }
 
     @JavascriptInterface
@@ -149,7 +150,6 @@ class SPConsentWebView(
     @JavascriptInterface
     override fun onError(error: String) {
         messageUIClient.onError()
-//        error(error) // TODO: remove this
     }
 
     @JavascriptInterface
