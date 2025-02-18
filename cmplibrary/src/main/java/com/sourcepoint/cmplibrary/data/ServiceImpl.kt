@@ -436,6 +436,8 @@ internal class ServiceImpl(
                         onSpConsentSuccess = onSpConsentsSuccess,
                     ).map { usNat -> ChoiceResp(usNat = usNat) }
                 }
+
+                UNKNOWN -> {Either.Right(ChoiceResp())}
             }
         } else {
             consentManagerUtils

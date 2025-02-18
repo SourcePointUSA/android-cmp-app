@@ -56,7 +56,6 @@ fun makeConsentLib(
     activity: Activity,
     spClient: SpClient
 ): SpConsentLib {
-//    val appCtx: Context = activity.applicationContext
 //    val campaignManager: CampaignManager = CampaignManager.create(dataStorage, spConfig)
 //    val errorManager = errorMessageManager(campaignManager, client)
 //    val connManager = getConnectionManager(appCtx)
@@ -86,10 +85,12 @@ fun makeConsentLib(
 //                accountId = spConfig.accountId,
 //                propertyName = spConfig.propertyName,
 //                propertyId = spConfig.propertyId,
-//                requestTimeoutInSeconds = spConfig.messageTimeout.toInt() / 1000
+//                requestTimeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // TODO: pass timeout directly to Coordinator
 //            )
         ),
-        spClient = spClient
+        spClient = spClient,
+        context = activity.applicationContext,
+        activity = WeakReference(activity)
     )
 }
 

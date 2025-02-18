@@ -486,6 +486,7 @@ internal class SpConsentLibImpl(
                     CampaignType.GDPR -> dataStorage.gdprConsentStatus
                     CampaignType.CCPA -> dataStorage.ccpaConsentStatus
                     CampaignType.USNAT -> campaignManager.usNatConsentData?.stringify()
+                    CampaignType.UNKNOWN -> ""
                 }
 
                 webView?.loadConsentUIFromUrlPreloadingOption(
@@ -793,6 +794,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
+            CampaignType.UNKNOWN -> {}
         }
     }
 
@@ -854,6 +856,7 @@ internal class SpConsentLibImpl(
                     .executeOnLeft { spClient.onError(it) }
             }
             CampaignType.USNAT -> { /* TODO(Not implemented, not in the roadmap) */ }
+            CampaignType.UNKNOWN -> { }
         }
     }
 
@@ -861,7 +864,8 @@ internal class SpConsentLibImpl(
         val nca = NativeConsentAction(
             campaignType = campaignType,
             actionType = NativeMessageActionType.SHOW_OPTIONS,
-            privacyManagerId = pmId
+            privacyManagerId = pmId,
+            messageId = ""
         )
 
         viewManager
@@ -890,7 +894,8 @@ internal class SpConsentLibImpl(
 
         val nca = NativeConsentAction(
             campaignType = campaignType,
-            actionType = action
+            actionType = action,
+            messageId = ""
         )
 
         when (nca.actionType) {

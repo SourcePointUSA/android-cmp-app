@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
+import com.sourcepoint.cmplibrary.exception.CampaignType.UNKNOWN
 import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
@@ -190,6 +191,8 @@ private class CampaignManagerImpl(
                             )
                         )
                     }
+
+                    UNKNOWN -> {}
                 }
             }
         }
@@ -251,6 +254,7 @@ private class CampaignManagerImpl(
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CCPA -> getCcpaPmConfig(pmId)
             USNAT -> getUsNatPmConfig(pmId, groupPmId)
+            UNKNOWN -> Either.Left(Exception())
         }
     }
 
@@ -263,6 +267,7 @@ private class CampaignManagerImpl(
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CCPA -> getCcpaPmConfig(pmId)
             USNAT -> getUsNatPmConfig(pmId)
+            UNKNOWN -> Either.Left(Exception())
         }
     }
 

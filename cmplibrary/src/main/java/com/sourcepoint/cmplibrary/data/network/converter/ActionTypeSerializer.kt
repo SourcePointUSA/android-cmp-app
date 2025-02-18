@@ -9,14 +9,11 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object ActionTypeSerializer : KSerializer<ActionType> {
-
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ActionType", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ActionType", PrimitiveKind.INT)
 
     override fun deserialize(decoder: Decoder): ActionType {
         val code = decoder.decodeInt()
-        return ActionType.values()
-            .find { m -> m.code == code }
-            ?: ActionType.UNKNOWN
+        return ActionType.values()?.find { m -> m.code == code } ?: ActionType.UNKNOWN
     }
 
     override fun serialize(encoder: Encoder, value: ActionType) {

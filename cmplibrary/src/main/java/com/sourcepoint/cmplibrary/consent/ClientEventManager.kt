@@ -57,9 +57,9 @@ private class ClientEventManagerImpl(
                     }
                     isFirstLayerMessage = true
                 }
-                ActionType.GET_MSG_ERROR, ActionType.GET_MSG_NOT_CALLED -> {
-                    campaignsToProcess = 0
-                }
+//                ActionType.GET_MSG_ERROR, ActionType.GET_MSG_NOT_CALLED -> {
+//                    campaignsToProcess = 0
+//                }
                 else -> {
                     // do nothing
                 }

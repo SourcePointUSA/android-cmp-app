@@ -19,6 +19,7 @@ interface ConsentAction {
     val requestFromPm: Boolean
     val saveAndExitVariables: JSONObject
     val consentLanguage: String?
+    val messageId: String
 }
 
 internal data class ConsentActionImpl(
@@ -34,7 +35,8 @@ internal data class ConsentActionImpl(
     override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
     val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
     val pmTab: String? = null,
-    val thisContent: JSONObject = JSONObject()
+    val thisContent: JSONObject = JSONObject(),
+    override val messageId: String,
 ) : ConsentAction
 
 internal fun ConsentActionImpl.privacyManagerTab(): PMTab {
@@ -45,13 +47,15 @@ internal fun ConsentActionImpl.privacyManagerTab(): PMTab {
 data class NativeConsentAction(
     val actionType: NativeMessageActionType,
     val campaignType: CampaignType,
-    val privacyManagerId: String? = null
+    val privacyManagerId: String? = null,
+    val messageId: String,
 )
 
 internal fun NativeConsentAction.toConsentAction() = ConsentActionImpl(
     actionType = ActionType.values().find { it.code == this.actionType.code } ?: failParam("toConsentAction"),
     campaignType = campaignType,
-    requestFromPm = false
+    requestFromPm = false,
+    messageId = messageId
 )
 
 internal fun ActionType.toChoiceTypeParam(): ChoiceTypeParam = when (this) {

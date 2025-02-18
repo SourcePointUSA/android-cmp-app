@@ -54,12 +54,12 @@ internal object HttpUrlManagerSingleton : HttpUrlManager {
         campaignType: CampaignType,
         pmConfig: PmUrlConfig,
         messageType: MessageType
-
     ): HttpUrl {
         return when (campaignType) {
             CampaignType.GDPR -> urlPmGdpr(pmConfig, env, messageType)
             CampaignType.CCPA -> urlPmCcpa(pmConfig, env, messageType)
             CampaignType.USNAT -> urlPmUsNat(pmConfig, env, messageType)
+            CampaignType.UNKNOWN -> urlPmGdpr(pmConfig, env, messageType)
         }
     }
 

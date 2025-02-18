@@ -1,9 +1,10 @@
 package com.sourcepoint.cmplibrary.model
 
 import com.sourcepoint.cmplibrary.data.network.converter.ActionTypeSerializer
-import com.sourcepoint.cmplibrary.data.network.converter.CampaignTypeSerializer
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
+import com.sourcepoint.mobile_core.models.SPAction
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -11,19 +12,20 @@ import org.json.JSONObject
 
 @Serializable
 data class ConsentActionImplOptimized(
-    @Serializable(with = ActionTypeSerializer::class) override val actionType: ActionType,
-    @SerialName("choiceId") override val choiceId: String? = null,
-    @SerialName("consentLanguage") override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
-    @SerialName("customActionId") override val customActionId: String? = null,
-    @Serializable(with = CampaignTypeSerializer::class) val legislation: CampaignType,
-    @SerialName("localPmId") val localPmId: String?,
-    @SerialName("name") val name: String?,
-    @SerialName("pmId") val pmId: String?,
-    @SerialName("pmTab") val pmTab: String? = null,
-    @SerialName("requestFromPm") override val requestFromPm: Boolean,
+    override val actionType: ActionType,
+    override val choiceId: String? = null,
+    override val consentLanguage: String? = MessageLanguage.ENGLISH.value,
+    override val customActionId: String? = null,
+    val legislation: CampaignType,
+    val localPmId: String?,
+    val name: String?,
+    val pmId: String?,
+    val pmTab: String? = null,
+    override val requestFromPm: Boolean,
     @SerialName("saveAndExitVariables") val saveAndExitVariablesOptimized: JsonObject = JsonObject(mapOf()),
     @SerialName("pubData") override val pubData2: JsonObject = JsonObject(mapOf()),
-    @SerialName("privacyManagerId") override val privacyManagerId: String? = null,
+    override val privacyManagerId: String? = null,
+    override val messageId: String,
 ) : ConsentAction {
     override val pubData: JSONObject
         get() = JSONObject(pubData2)
@@ -33,4 +35,12 @@ data class ConsentActionImplOptimized(
 
     override val saveAndExitVariables: JSONObject
         get() = JSONObject(saveAndExitVariablesOptimized)
+
+    fun toCore(): SPAction = SPAction(
+        type = actionType.toCore(),
+        campaignType = campaignType.toCore(),
+        messageId = messageId.toString(),
+        pmPayload = saveAndExitVariables.toJsonObject(),
+        encodablePubData = pubData2,
+    )
 }
