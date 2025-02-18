@@ -17,6 +17,7 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.SPPropertyName
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
@@ -46,7 +47,7 @@ internal fun createNetworkClient(
     coreClient = SourcepointClient(
         accountId = accountId,
         propertyId = propertyId,
-        propertyName = propertyName
+        propertyName = SPPropertyName.create(propertyName)
     )
 )
 

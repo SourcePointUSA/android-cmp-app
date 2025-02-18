@@ -20,6 +20,7 @@ import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
+import com.sourcepoint.cmplibrary.exception.CampaignType.UNKNOWN
 import com.sourcepoint.cmplibrary.exception.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
@@ -190,6 +191,8 @@ private class CampaignManagerImpl(
                             )
                         )
                     }
+
+                    UNKNOWN -> {}
                 }
             }
         }
@@ -251,6 +254,7 @@ private class CampaignManagerImpl(
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, useGroupPmIfAvailable, groupPmId)
             CCPA -> getCcpaPmConfig(pmId)
             USNAT -> getUsNatPmConfig(pmId, groupPmId)
+            UNKNOWN -> Either.Left(Exception())
         }
     }
 
@@ -263,6 +267,7 @@ private class CampaignManagerImpl(
             GDPR -> getGdprPmConfig(pmId, pmTab ?: PMTab.PURPOSES, false, null)
             CCPA -> getCcpaPmConfig(pmId)
             USNAT -> getUsNatPmConfig(pmId)
+            UNKNOWN -> Either.Left(Exception())
         }
     }
 
@@ -628,13 +633,13 @@ private class CampaignManagerImpl(
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
 
     override val gdprAdditionsChangeDate: String?
-        get() = metaDataResp?.gdpr?.additionsChangeDate
+        get() = null//metaDataResp?.gdpr?.additionsChangeDate.toString()
 
     override val gdprLegalBasisChangeDate: String?
-        get() = metaDataResp?.gdpr?.legalBasisChangeDate
+        get() = null//metaDataResp?.gdpr?.legalBasisChangeDate.toString()
 
     override val usnatAdditionsChangeDate: String?
-        get() = metaDataResp?.usnat?.additionsChangeDate
+        get() = null//metaDataResp?.usnat?.additionsChangeDate.toString()
 
     override fun handleAuthIdOrPropertyIdChange(
         newAuthId: String?,

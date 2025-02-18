@@ -1,6 +1,9 @@
 package com.sourcepoint.cmplibrary.exception
 
 import com.sourcepoint.cmplibrary.campaign.CampaignManager
+import com.sourcepoint.cmplibrary.data.network.converter.CampaignTypeSerializer
+import com.sourcepoint.mobile_core.models.SPCampaignType
+import kotlinx.serialization.Serializable
 
 /**
  * Class in charge of building an error message
@@ -17,10 +20,28 @@ internal interface ErrorMessageManager {
 /**
  * Type of configurable campaigns
  */
+@Serializable(with = CampaignTypeSerializer::class)
 enum class CampaignType {
     GDPR,
     CCPA,
     USNAT,
+    UNKNOWN;
+
+    companion object {
+        fun fromCore(type: SPCampaignType) = when(type) {
+            SPCampaignType.Gdpr -> GDPR
+            SPCampaignType.Ccpa -> CCPA
+            SPCampaignType.UsNat -> USNAT
+            SPCampaignType.unknown, SPCampaignType.IOS14 -> UNKNOWN
+        }
+    }
+
+    fun toCore(): SPCampaignType = when(this) {
+        GDPR -> SPCampaignType.Gdpr
+        CCPA -> SPCampaignType.Ccpa
+        USNAT -> SPCampaignType.UsNat
+        UNKNOWN -> SPCampaignType.unknown
+    }
 }
 
 /**

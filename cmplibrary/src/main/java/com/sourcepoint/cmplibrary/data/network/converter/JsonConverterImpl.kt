@@ -12,6 +12,7 @@ import com.sourcepoint.cmplibrary.model.ConsentActionImpl
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
@@ -21,6 +22,7 @@ import org.json.JSONObject
  * @return an instance of the [JsonConverterImpl] implementation
  */
 internal fun JsonConverter.Companion.create(): JsonConverter = JsonConverterImpl()
+@OptIn(ExperimentalSerializationApi::class)
 internal val JsonConverter.Companion.converter: Json by lazy {
     Json {
         encodeDefaults = true

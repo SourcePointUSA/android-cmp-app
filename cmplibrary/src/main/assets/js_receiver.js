@@ -17,6 +17,7 @@ function getQueryParam(paramName, url) {
 function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
     return {
+        messageId: payload.messageId,
         legislation: window.spLegislation,
         name: payload.name,
         actionType: actionPayload.type,
@@ -32,6 +33,7 @@ function actionFromMessage(payload) {
 
 function actionFromPM(payload) {
     return {
+        messageId: payload.messageId,
         localPmId: window.localPmId,
         legislation: window.spLegislation,
         name: payload.name,
@@ -58,18 +60,20 @@ function notImplemented(callbackName) {
 }
 
 function handleEvent(event) {
+    console.log("message event:", JSON.stringify(event.data));
     var payload = event.data;
     var sdk = window.JSReceiver || {
-        onConsentUIReady: notImplemented('onConsentUIReady'),
+        readyForMessagePreload: notImplemented('readyForMessagePreload'),
+        loaded: notImplemented('onConsentUIReady'),
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
-        log: notImplemented('log')
+        log: notImplemented('log'),
     };
     try {
-        sdk.log(JSON.stringify(payload));
         switch (payload.name) {
+            case 'sp.loadMessage': break;
             case 'sp.showMessage':
-                sdk.onConsentUIReady(isFromPM(payload));
+                sdk.loaded();
                 break;
             case 'sp.hideMessage':
                 sdk.onAction(JSON.stringify(actionData(payload)));
@@ -77,24 +81,15 @@ function handleEvent(event) {
             case 'sp.renderingAppError':
                 sdk.onError(JSON.stringify(payload));
                 break;
+            case 'sp.readyForPreload':
+                sdk.readyForMessagePreload();
+                break;
             default:
-                sdk.log("Unexpected event name: " + JSON.stringify(payload.name));
+                sdk.log("Unexpected event name: " + JSON.stringify(payload));
         }
     } catch (err) {
         sdk.onError(err.stack);
     }
-}
-
-/*
-We export the handleEvent function inside a try-catch block
-because newer WebViews will throw an error when a variable
-is not defined. In this case, module is not defined by us
-but the Node runtime.
-*/
-try {
-    module.exports = handleEvent;
-} catch (error){
-  /* no-op */
 }
 
 window.addEventListener('message', handleEvent);

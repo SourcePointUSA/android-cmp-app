@@ -65,6 +65,7 @@ internal fun CampaignType.toCategoryId() = when (this) {
     CampaignType.GDPR -> 1
     CampaignType.CCPA -> 2
     CampaignType.USNAT -> 6
+    CampaignType.UNKNOWN -> 99
 }
 
 @Serializable

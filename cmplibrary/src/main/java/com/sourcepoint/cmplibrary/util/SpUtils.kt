@@ -82,6 +82,7 @@ fun campaignApplies(context: Context, campaign: CampaignType): Boolean {
         CampaignType.GDPR -> dataStorage.gdprApplies
         CampaignType.CCPA -> dataStorage.ccpaApplies
         CampaignType.USNAT -> dataStorage.usNatApplies
+        CampaignType.UNKNOWN -> false
     }
 }
 

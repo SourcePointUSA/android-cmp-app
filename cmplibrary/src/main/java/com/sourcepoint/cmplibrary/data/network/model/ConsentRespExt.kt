@@ -14,16 +14,15 @@ import com.sourcepoint.cmplibrary.model.getFieldValue
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
 import com.sourcepoint.cmplibrary.util.check
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.json.JSONObject
-import java.util.* //ktlint-disable
 
 internal fun String.toConsentActionOptimized(): Either<ConsentActionImplOptimized> = check {
     JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(this)
 }
 
+@Deprecated("This method refers to the old implementation of ConsentLib and should not be used.")
 internal fun String.toConsentAction(): ConsentActionImpl {
 
     val map: Map<String, Any?> = JSONObject(this).toTreeMap()
@@ -55,6 +54,7 @@ internal fun String.toConsentAction(): ConsentActionImpl {
         campaignType = CampaignType.valueOf(legislation),
         customActionId = customActionId,
         thisContent = map.toJSONObj(),
+        messageId = ""
     )
 }
 
