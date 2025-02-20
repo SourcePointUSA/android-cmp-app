@@ -26,6 +26,9 @@ import com.sourcepoint.cmplibrary.util.readFromAsset
 import com.sourcepoint.mobile_core.models.MessageToDisplay
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 
 interface SPMessageUIClient {
     fun loaded(view: View)
@@ -61,45 +64,94 @@ class SPConsentWebView(
     private lateinit var message: MessageToDisplay
 
     init {
-        id = viewId ?: View.generateViewId()
+        id = viewId ?: generateViewId()
         tag = CONSENT_WEB_VIEW_TAG_NAME
         settings.javaScriptEnabled = true
         setBackgroundColor(Color.TRANSPARENT)
-        requestFocus()
-        jsReceiver = context.readFromAsset("js_receiver.js")
+        setWebContentsDebuggingEnabled(true)
+        addJavascriptInterface(this, "JSReceiver")
         webChromeClient = object : WebChromeClient() {
-            override fun onCreateWindow(
-                view: WebView,
-                dialog: Boolean,
-                userGesture: Boolean,
-                resultMsg: Message
-            ): Boolean {
-                context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
-//                    jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it)
-                }
-                view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
-                return false
-            }
-
+//            override fun onCreateWindow(
+//                view: WebView,
+//                dialog: Boolean,
+//                userGesture: Boolean,
+//                resultMsg: Message
+//            ): Boolean {
+//                context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
+////                    jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it)
+//                }
+//                view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
+//                return false
+//            }
             override fun onConsoleMessage(message: String?, lineNumber: Int, sourceID: String?) {
                 super.onConsoleMessage(message, lineNumber, sourceID)
             }
         }
-        webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                view.loadUrl("javascript:$jsReceiver")
-            }
-        }
-
-        addJavascriptInterface(this, "JSReceiver")
     }
 
-    override fun load(message: MessageToDisplay, consents: SPConsents) {
+    override fun load(
+        url: String,
+        campaignType: CampaignType,
+        userData: SPUserData
+    ) {
+        internalLoad(message = null, url, campaignType, userData)
+    }
+
+    override fun load(
+        message: MessagesResponse.Message,
+        url: String,
+        campaignType: CampaignType,
+        userData: SPUserData
+    ) {
+        internalLoad(message, url, campaignType, userData)
+    }
+
+    private fun internalLoad(
+        message: MessagesResponse.Message? = null,
+        url: String,
+        campaignType: CampaignType,
+        consents: SPUserData
+    ) {
         this.consents = consents
         this.message = message
-        runOnMain { loadUrl(message.url) }
+        this.campaignType = campaignType
+        launch {
+            try {
+                val renderingAppWithJsReceiver = injectScriptInto(getRenderingApp(url), jsReceiver)
+                runOnMain {
+                    loadDataWithBaseURL(
+                        url,
+                        renderingAppWithJsReceiver,
+                        "text/html",
+                        "UTF-8",
+                        null
+                    )
+                }
+            } catch (error: Exception) {
+                onError()
+            }
+        }
     }
+
+    // TODO: cache/memoize rendering app's html per url
+    @Throws(IOException::class)
+    private fun getRenderingApp(url: String): String {
+        try {
+            var html: String? = null
+            val response = OkHttpClient().newCall(Request.Builder().url(url).build()).execute()
+            if (response.isSuccessful) {
+                html = response.body?.string()
+                if (html == null) throw IOException()
+            }
+            response.body?.close()
+            return html!!
+        } catch (error: IOException){
+            throw error // TODO: create custom error for this case
+        }
+    }
+
+    private fun injectScriptInto(html: String, script: String): String =
+        html.replaceFirst("<head>", "<head><script>$script</script>")
 
     override fun onAction(view: View, action: ConsentAction) {
         runOnMain {
