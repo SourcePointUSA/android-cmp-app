@@ -6,6 +6,11 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.cmplibrary.model.toConsentJSONObj
 import com.sourcepoint.cmplibrary.model.toJSONObjGrant
+import com.sourcepoint.mobile_core.models.consents.SPUserData
+import com.sourcepoint.mobile_core.network.encodeToJsonObject
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent as GDPRConsentCore
+import com.sourcepoint.mobile_core.models.consents.CCPAConsent as CCPAConsentCore
+import com.sourcepoint.mobile_core.models.consents.USNatConsent as USNATConsentCore
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -19,7 +24,13 @@ data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
     val ccpa: SPCCPAConsent? = null,
     val usNat: SpUsNatConsent? = null,
-)
+) {
+    internal constructor(core: SPUserData): this(
+        gdpr = core.gdpr?.consents?.let { SPGDPRConsent(consent = GDPRConsentInternal(it)) },
+        ccpa = core.ccpa?.consents?.let { SPCCPAConsent(consent = CCPAConsentInternal(it)) },
+        usNat = core.usnat?.consents?.let { SpUsNatConsent(consent = UsNatConsentInternal(it)) },
+    )
+}
 
 data class SPCustomConsents(
     val gdpr: JSONObject
@@ -67,7 +78,21 @@ internal data class GDPRConsentInternal(
     val childPmId: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
-) : GDPRConsent
+) : GDPRConsent {
+    // TODO: finish this
+    constructor(core: GDPRConsentCore): this(
+        euconsent = core.euconsent ?: "",
+        uuid = core.uuid,
+        tcData = core.tcData,
+//        grants = core.grants,
+        acceptedCategories = core.categories,
+        applies = core.applies,
+//        consentStatus = core.consentStatus,
+//        googleConsentMode = core.gcmStatus,
+        childPmId = core.childPmId,
+        webConsentPayload = core.webConsentPayload?.encodeToJsonObject()
+    )
+}
 
 interface CCPAConsent {
     companion object {
@@ -97,7 +122,21 @@ internal data class CCPAConsentInternal(
     val thisContent: JSONObject = JSONObject(),
     override val signedLspa: Boolean? = null,
     override val webConsentPayload: JsonObject? = null,
-) : CCPAConsent
+) : CCPAConsent {
+    // TODO: finish this
+    constructor(core: CCPAConsentCore): this(
+        uuid = core.uuid,
+        gppData = core.gppData,
+        rejectedCategories = core.rejectedCategories,
+        rejectedVendors = core.rejectedVendors,
+//        status = core.status,
+//        uspstring = core.uspstring,
+        childPmId = core.childPmId,
+        applies = core.applies,
+        signedLspa = core.signedLspa,
+        webConsentPayload = core.webConsentPayload?.encodeToJsonObject()
+    )
+}
 
 enum class CcpaStatus {
     rejectedAll,
@@ -188,7 +227,21 @@ internal data class UsNatConsentInternal(
             sensitiveDataStatus = consentStatus?.granularStatus?.sensitiveDataStatus,
             gpcStatus = consentStatus?.granularStatus?.gpcStatus,
         )
+
+    // TODO: finish this
+    constructor(core: USNATConsentCore): this(
+        gppData = core.gppData,
+        applies = core.applies,
+//        consentStrings = core.consentStrings,
+        dateCreated = core.dateCreated.toString(),
+//        vendors = core.userConsents.vendors,
+//        categories = core.userConsents.categories,
+        uuid = core.uuid,
+        webConsentPayload = core.webConsentPayload?.encodeToJsonObject(),
+//        consentStatus = core.consentStatus
+    )
 }
+
 fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
     ccpa?.consent?.let { ccpaConsent ->
         if (ccpaConsent.isWebConsentEligible()) {

@@ -1,6 +1,5 @@
 package com.sourcepoint.cmplibrary.model
 
-import com.sourcepoint.cmplibrary.data.network.converter.ActionTypeSerializer
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
@@ -26,6 +25,7 @@ data class ConsentActionImplOptimized(
     @SerialName("pubData") override val pubData2: JsonObject = JsonObject(mapOf()),
     override val privacyManagerId: String? = null,
     override val messageId: String,
+    override val pmUrl: String? = null
 ) : ConsentAction {
     override val pubData: JSONObject
         get() = JSONObject(pubData2)
@@ -39,8 +39,8 @@ data class ConsentActionImplOptimized(
     fun toCore(): SPAction = SPAction(
         type = actionType.toCore(),
         campaignType = campaignType.toCore(),
-        messageId = messageId.toString(),
-        pmPayload = saveAndExitVariables.toJsonObject(),
+        messageId = messageId,
+        pmPayload = saveAndExitVariablesOptimized,
         encodablePubData = pubData2,
     )
 }

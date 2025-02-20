@@ -24,6 +24,7 @@ function actionFromMessage(payload) {
         choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
         pmId: getQueryParam("message_id", actionPayload.iframe_url),
+        pmUrl: actionPayload.iframe_url,
         pmTab: getQueryParam("pmTab", actionPayload.iframe_url),
         saveAndExitVariables: {},
         consentLanguage: payload.consentLanguage,
@@ -41,6 +42,7 @@ function actionFromPM(payload) {
         choiceId: null,
         requestFromPm: true,
         pmId: getQueryParam("message_id", payload.iframe_url),
+        pmUrl: payload.iframe_url,
         pmTab: null,
         saveAndExitVariables: payload.payload,
         consentLanguage: payload.consentLanguage,
@@ -64,6 +66,7 @@ function handleEvent(event) {
     var payload = event.data;
     var sdk = window.JSReceiver || {
         readyForMessagePreload: notImplemented('readyForMessagePreload'),
+        readyForConsentPreload: notImplemented('readyForConsentPreload'),
         loaded: notImplemented('onConsentUIReady'),
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
@@ -72,6 +75,7 @@ function handleEvent(event) {
     try {
         switch (payload.name) {
             case 'sp.loadMessage': break;
+            case 'sp.loadConsent': break;
             case 'sp.showMessage':
                 sdk.loaded();
                 break;
@@ -83,6 +87,9 @@ function handleEvent(event) {
                 break;
             case 'sp.readyForPreload':
                 sdk.readyForMessagePreload();
+                break;
+            case 'sp.readyForPreloadConsent':
+                sdk.readyForConsentPreload();
                 break;
             default:
                 sdk.log("Unexpected event name: " + JSON.stringify(payload));

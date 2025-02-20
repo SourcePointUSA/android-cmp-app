@@ -2,30 +2,28 @@ package com.sourcepoint.cmplibrary.mobile_core
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
-import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
+import com.sourcepoint.cmplibrary.buildPMUrl
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView.Companion.CONSENT_WEB_VIEW_TAG_NAME
 import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
 import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ConsentActionImplOptimized
-import com.sourcepoint.cmplibrary.model.exposed.SPConsents
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.runOnMain
-import com.sourcepoint.cmplibrary.util.getLinkUrl
-import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
 import com.sourcepoint.cmplibrary.util.readFromAsset
-import com.sourcepoint.mobile_core.models.MessageToDisplay
+import com.sourcepoint.mobile_core.models.consents.SPUserData
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
@@ -38,7 +36,18 @@ interface SPMessageUIClient {
 }
 
 interface SPMessageUI {
-    fun load(message: MessageToDisplay, consents: SPConsents)
+    fun load(
+        message: MessagesResponse.Message,
+        url: String,
+        campaignType: CampaignType,
+        userData: SPUserData
+    )
+
+    fun load(
+        url: String,
+        campaignType: CampaignType,
+        userData: SPUserData
+    )
 }
 
 /**
@@ -48,20 +57,30 @@ interface SPMessageUI {
 interface SPWebMessageUIClient: SPMessageUIClient {
     fun loaded()
     fun readyForMessagePreload()
+    fun readyForConsentPreload()
     fun onAction(actionData: String)
     fun log(message: String)
     fun onError(error: String)
+}
+
+fun Uri.Builder.appendQueryParameterIfPresent(name: String, value: String?): Uri.Builder {
+    value?.let { appendQueryParameter(name, it) }
+    return this
 }
 
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
 class SPConsentWebView(
     context: Context,
     viewId: Int? = null,
+    val propertyId: Int,
     val messageUIClient: SPMessageUIClient,
 ): WebView(context), SPMessageUI, SPWebMessageUIClient {
-    private var jsReceiver: String
-    private lateinit var consents: SPConsents
-    private lateinit var message: MessageToDisplay
+    private var jsReceiver = context.readFromAsset("js_receiver.js")
+    private lateinit var consents: SPUserData
+    private lateinit var campaignType: CampaignType
+    private var message: MessagesResponse.Message? = null
+    private var isPresenting = false
+    private var isFirstLayer = true
 
     init {
         id = viewId ?: generateViewId()
@@ -156,15 +175,62 @@ class SPConsentWebView(
     override fun onAction(view: View, action: ConsentAction) {
         runOnMain {
             messageUIClient.onAction(view, action)
-            finished(view)
+            when (action.actionType) {
+                ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
+                ActionType.PM_DISMISS -> returnToFirstLayer()
+                else -> finished(view)
+            }
         }
     }
 
+    private fun loadPrivacyManagerFrom(action: ConsentAction) {
+        isFirstLayer = false
+        action.pmUrl?.let {
+            loadUrl(buildPMUrl(
+                campaignType = campaignType,
+                pmId = action.messageId,
+                propertyId = propertyId,
+                baseUrl = it,
+                userData = consents,
+                language = action.consentLanguage,
+                pmTab = null
+            ))
+        }
+    }
+
+    private fun returnToFirstLayer() {
+        if (canGoBack() && !isFirstLayer) {
+            isFirstLayer = true
+            goBack()
+        } else {
+            finished(this)
+        }
+    }
+
+    private fun preloadConsents() {
+        evaluateJavascript("""window.postMessage({
+            name: "sp.loadConsent",
+            consent: ${when (campaignType) {
+                CampaignType.GDPR -> Json.encodeToJsonElement(consents.gdpr?.consents)
+                CampaignType.CCPA -> Json.encodeToJsonElement(consents.ccpa?.consents)
+                CampaignType.USNAT -> Json.encodeToJsonElement(consents.usnat?.consents)
+                CampaignType.UNKNOWN -> null
+            }}
+        }, "*");""", null)
+    }
+
     override fun loaded(view: View) {
-        runOnMain { messageUIClient.loaded(view) }
+        runOnMain {
+            evaluateJavascript("""window.spLegislation="${campaignType.name}"""", null)
+            if (!isPresenting) {
+                isPresenting = true
+                messageUIClient.loaded(view)
+            }
+        }
     }
 
     override fun finished(view: View) {
+        isPresenting = false
         runOnMain { messageUIClient.finished(view) }
     }
 
@@ -190,13 +256,17 @@ class SPConsentWebView(
                 """
                     window.postMessage(Object.assign(
                         {name: "sp.loadMessage"},
-                        ${Json.encodeToString(message.message)}
+                        ${Json.encodeToString(message)}
                     ), "*");
-                    window.spLegislation="${CampaignType.fromCore(message.type)}"
                     """,
                 null
             )
         }
+    }
+
+    @JavascriptInterface
+    override fun readyForConsentPreload() {
+        runOnMain { preloadConsents() }
     }
 
     @JavascriptInterface

@@ -88,6 +88,8 @@ fun makeConsentLib(
 //                requestTimeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // TODO: pass timeout directly to Coordinator
 //            )
         ),
+        propertyId = spConfig.propertyId,
+        language = spConfig.messageLanguage,
         spClient = spClient,
         context = activity.applicationContext,
         activity = WeakReference(activity)

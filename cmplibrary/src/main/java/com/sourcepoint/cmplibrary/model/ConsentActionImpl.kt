@@ -20,6 +20,7 @@ interface ConsentAction {
     val saveAndExitVariables: JSONObject
     val consentLanguage: String?
     val messageId: String
+    val pmUrl: String?
 }
 
 internal data class ConsentActionImpl(
@@ -37,6 +38,7 @@ internal data class ConsentActionImpl(
     val pmTab: String? = null,
     val thisContent: JSONObject = JSONObject(),
     override val messageId: String,
+    override val pmUrl: String? = null
 ) : ConsentAction
 
 internal fun ConsentActionImpl.privacyManagerTab(): PMTab {

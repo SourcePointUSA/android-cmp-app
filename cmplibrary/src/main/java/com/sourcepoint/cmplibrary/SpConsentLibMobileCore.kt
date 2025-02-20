@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary
 import android.R.id.content
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -12,10 +13,16 @@ import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.mobile_core.SPConsentWebView
 import com.sourcepoint.cmplibrary.mobile_core.SPMessageUI
 import com.sourcepoint.cmplibrary.mobile_core.SPMessageUIClient
+import com.sourcepoint.cmplibrary.mobile_core.appendQueryParameterIfPresent
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.ConsentActionImplOptimized
+import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.MOBILE
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
@@ -23,7 +30,7 @@ import com.sourcepoint.mobile_core.Coordinator
 import com.sourcepoint.mobile_core.models.MessageToDisplay
 import com.sourcepoint.mobile_core.models.SPAction
 import com.sourcepoint.mobile_core.models.SPActionType
-import com.sourcepoint.mobile_core.models.SPCampaignType
+import com.sourcepoint.mobile_core.models.consents.SPUserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,22 +45,75 @@ fun runOnMain(task: () -> Unit) {
     Handler(Looper.getMainLooper()).post(task)
 }
 
+// TODO: move the url methods below to their own util class
+val basePmPaths = mapOf(
+    CampaignType.GDPR to mapOf(
+        LEGACY_OTT to "privacy-manager-ott/index.html",
+        OTT to "native-ott/index.html",
+        MOBILE to "privacy-manager/index.html"
+    ),
+    CampaignType.CCPA to mapOf(
+        LEGACY_OTT to "ccpa_ott/index.html",
+        OTT to "native-ott/index.html",
+        MOBILE to "ccpa_pm/index.html"
+    ),
+    CampaignType.USNAT to mapOf(
+        LEGACY_OTT to "ccpa_ott/index.html",
+        OTT to "native-ott/index.html",
+        MOBILE to "us_pm/index.html"
+    ),
+)
+
+// TODO: guard against not finding the correct path for the campaign/pm type?
+fun basePmUrlFor(campaignType: CampaignType, pmType: MessageType) =
+    "https://cdn.privacy-mgmt.com/" + (basePmPaths[campaignType]?.get(pmType) ?: "")
+
+fun buildPMUrl(
+    campaignType: CampaignType,
+    pmId: String,
+    propertyId: Int,
+    pmType: MessageType = MOBILE,
+    baseUrl: String? = basePmUrlFor(campaignType, pmType),
+    userData: SPUserData,
+    language: String?,
+    pmTab: PMTab?,
+): String {
+    val uuidQueryParam = when(campaignType) {
+        CampaignType.CCPA -> "ccpaUUID" to userData.ccpa?.consents?.uuid
+        CampaignType.GDPR -> "consentUUID" to userData.gdpr?.consents?.uuid
+        CampaignType.USNAT -> "consentUUID" to userData.usnat?.consents?.uuid
+        else -> "consentUUID" to null
+    }
+    return baseUrl.let {
+        Uri.parse(it).buildUpon()
+            .appendQueryParameterIfPresent("consentLanguage", language)
+            .appendQueryParameterIfPresent(uuidQueryParam.first, uuidQueryParam.second)
+            .appendQueryParameterIfPresent("pmTab", pmTab?.key)
+            .appendQueryParameter("message_id", pmId)
+            .appendQueryParameter("site_id", propertyId.toString())
+            .appendQueryParameter("preload_consent", "true")
+            .build()
+            .toString()
+    }
+}
+
 class SpConsentLibMobileCore(
-//    private val accountId: Int,
-//    private val propertyId: Int,
-//    private val propertyName: SPPropertyName,
-//    private val campaigns: SPCampaigns,
+    private val propertyId: Int,
+    private val language: MessageLanguage,
     private val activity: WeakReference<Activity>,
     private val context: Context,
     private val coordinator: Coordinator,
     private val spClient: SpClient,
 ): SpConsentLib, SPMessageUIClient {
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
-    private val currentMessage: SPMessageUI by lazy {
-        SPConsentWebView(context = context, messageUIClient = this)
+
+    private val messageUI: SPMessageUI by lazy {
+        SPConsentWebView(context = context, messageUIClient = this, propertyId = propertyId)
     }
-    private val mainView: ViewGroup?
-        get() = activity.get()?.findViewById(content)
+
+    private val mainView: ViewGroup? get() = activity.get()?.findViewById(content)
+
+    private val userData: SPUserData get() = coordinator.userData
 
     override fun loadMessage() {
         loadMessage(authId = null, pubData = null, cmpViewId = null)
@@ -80,11 +140,15 @@ class SpConsentLibMobileCore(
 
     private fun renderNextMessageIfAny() {
         if(messagesToDisplay.isEmpty()) {
-            spClient.onSpFinished(SPConsents()) // TODO: convert coordinator.userData to SPConsents
+            spClient.onSpFinished(SPConsents(coordinator.userData))
         } else {
-            runOnMain {
-                currentMessage.load(message = messagesToDisplay.removeFirst(), consents = SPConsents())
-            }
+            val messageToRender = messagesToDisplay.removeFirst()
+            messageUI.load(
+                message = messageToRender.message,
+                url = messageToRender.url,
+                campaignType = CampaignType.fromCore(messageToRender.type),
+                userData = userData
+            )
         }
     }
 
@@ -100,7 +164,7 @@ class SpConsentLibMobileCore(
                 categories = categories,
                 legIntCategories = legIntCategories
             )
-            success(SPConsents()) // TODO: convert coordinator.userData to SPConsents
+            success(SPConsents(coordinator.userData))
         }
     }
 
@@ -132,7 +196,7 @@ class SpConsentLibMobileCore(
                 categories = categories,
                 legIntCategories = legIntCategories
             )
-            success(SPConsents()) // TODO: convert coordinator.userData to SPConsents
+            success(SPConsents(coordinator.userData))
         }
     }
 
@@ -156,26 +220,31 @@ class SpConsentLibMobileCore(
         launch {
             coordinator.reportAction(SPAction(
                 type = SPActionType.RejectAll,
-                campaignType = SPCampaignType.Gdpr // TODO: make sure to convert from native to mobile core
+                campaignType = campaignType.toCore()
             ))
         }
     }
 
     override fun loadPrivacyManager(pmId: String, campaignType: CampaignType) {
-        loadPrivacyManager(pmId = pmId, campaignType = campaignType)
+        internalLoadPM(pmId = pmId, campaignType = campaignType)
     }
 
     override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) {
-        loadPrivacyManager(pmId = pmId, campaignType = campaignType, pmTab = pmTab)
+        internalLoadPM(pmId = pmId, campaignType = campaignType, pmTab = pmTab)
     }
 
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
         campaignType: CampaignType,
-        useGroupPmIfAvailable: Boolean
+        useGroupPmIfAvailable: Boolean // TODO: use group pm id
     ) {
-        TODO("Not yet implemented")
+        internalLoadPM(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            useGroupPmIfAvailable = useGroupPmIfAvailable
+        )
     }
 
     override fun loadPrivacyManager(
@@ -183,7 +252,7 @@ class SpConsentLibMobileCore(
         campaignType: CampaignType,
         messageType: MessageType
     ) {
-        loadPrivacyManager(pmId = pmId, campaignType = campaignType, messageType = messageType)
+        internalLoadPM(pmId = pmId, campaignType = campaignType, messageType = messageType)
     }
 
     override fun loadPrivacyManager(
@@ -192,7 +261,7 @@ class SpConsentLibMobileCore(
         campaignType: CampaignType,
         messageType: MessageType
     ) {
-        loadPrivacyManager(pmId = pmId, campaignType = campaignType, messageType = messageType, pmTab = pmTab)
+        internalLoadPM(pmId = pmId, pmTab = pmTab, campaignType = campaignType, messageType = messageType)
     }
 
     override fun loadPrivacyManager(
@@ -202,26 +271,49 @@ class SpConsentLibMobileCore(
         useGroupPmIfAvailable: Boolean,
         messageType: MessageType
     ) {
-        TODO("Not yet implemented")
+        internalLoadPM(
+            pmId = pmId,
+            pmTab = pmTab,
+            campaignType = campaignType,
+            useGroupPmIfAvailable = useGroupPmIfAvailable,
+            messageType = messageType
+        )
+    }
+
+    private fun internalLoadPM(
+        pmId: String,
+        campaignType: CampaignType,
+        pmTab: PMTab? = null,
+        useGroupPmIfAvailable: Boolean? = null, // TODO: use group pm id
+        messageType: MessageType = MOBILE
+    ) {
+        messageUI.load(
+            url = buildPMUrl(
+                campaignType = campaignType,
+                pmId = pmId,
+                propertyId = propertyId,
+                userData = userData,
+                language = language.value,
+                pmTab = pmTab,
+                pmType = messageType
+            ),
+            campaignType = campaignType,
+            userData = userData
+        )
     }
 
     override fun showView(view: View) {
-        mainView?.let {
-            it.post {
-                view.layoutParams = ViewGroup.LayoutParams(0, 0)
-                view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                view.bringToFront()
-                view.requestLayout()
-                it.addView(view)
-            }
-        }
+        view.layoutParams = ViewGroup.LayoutParams(0, 0)
+        view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        view.bringToFront()
+        view.requestLayout()
+        view.requestFocus()
+        mainView?.addView(view)
     }
 
     override fun removeView(view: View) {
-        mainView?.let { viewGroup ->
-            viewGroup.post { viewGroup.removeView(view) }
-        }
+        mainView?.removeView(view)
     }
 
     override fun dispose() {
@@ -245,7 +337,13 @@ class SpConsentLibMobileCore(
 
     override fun onAction(view: View, action: ConsentAction) {
         launch {
-            coordinator.reportAction((spClient.onAction(view, action) as ConsentActionImplOptimized).toCore())
+            val userAction = spClient.onAction(view, action) as ConsentActionImplOptimized
+            when(userAction.actionType) {
+                ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
+                    launch { coordinator.reportAction(userAction.toCore()) }
+                }
+                else -> {}
+            }
         }
     }
 
