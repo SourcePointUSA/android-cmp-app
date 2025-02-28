@@ -108,4 +108,6 @@ interface SpConsentLib {
         isMessageDismissible: Boolean = true,
         onHomePage: () -> Unit,
     )
+
+    fun clearLocalData()
 }

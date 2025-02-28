@@ -1,6 +1,10 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
-import com.sourcepoint.cmplibrary.data.network.converter.* //ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.converter.CcpaStatusSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.GrantsSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.GranularStateSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverterImpl
+import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -25,11 +29,17 @@ internal data class ConsentStatusParamReq(
     @SerialName("includeData") val includeData: JsonObject,
 )
 
+@Serializable(with = GranularStateSerializer::class)
 enum class GranularState {
     ALL,
     SOME,
     NONE,
-    EMPTY_VL,
+    EMPTY_VL;
+
+    companion object {
+        fun fromString(value: String?): GranularState? =
+            entries.find { it.name.equals(value, ignoreCase = true) }
+    }
 }
 
 enum class GCMStatus(val status: String) {

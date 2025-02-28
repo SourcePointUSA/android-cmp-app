@@ -12,7 +12,7 @@ import android.os.Build
  */
 internal fun ConnectionManager.Companion.create(context: Context): ConnectionManager = ConnectionManagerImpl(context)
 
-private class ConnectionManagerImpl(
+internal class ConnectionManagerImpl(
     private val context: Context
 ) : ConnectionManager {
 

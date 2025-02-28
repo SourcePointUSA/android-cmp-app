@@ -249,7 +249,7 @@ internal class SpConsentLibImpl(
                 )
                 executeOnMain {
                     when (ccResp) {
-                        is Either.Right -> success(userConsents(context))
+                        is Either.Right -> {}// success(userConsents(context))
                         is Either.Left -> {
                             spClient.onError(ccResp.t)
                             pLogger.clientEvent(
@@ -284,7 +284,7 @@ internal class SpConsentLibImpl(
                 )
                 executeOnMain {
                     when (ccResp) {
-                        is Either.Right -> success(userConsents(context))
+                        is Either.Right -> {} //success(userConsents(context))
                         is Either.Left -> {
                             spClient.onError(ccResp.t)
                             pLogger.clientEvent(
@@ -550,6 +550,10 @@ internal class SpConsentLibImpl(
         if (viewManager.isViewInLayout) viewManager.handleOnBackPress() else onHomePage()
     }
 
+    override fun clearLocalData() {
+
+    }
+
     /** Start Receiver methods */
     inner class JSReceiverDelegate : JSClientLib {
 
@@ -558,11 +562,9 @@ internal class SpConsentLibImpl(
         }
 
         override fun log(view: View, tag: String?, msg: String?) {
-            // TODO(not implemented)
         }
 
         override fun log(view: View, msg: String?) {
-            // TODO(not implemented)
         }
 
         override fun onError(view: View, errorMessage: String) {
@@ -855,7 +857,7 @@ internal class SpConsentLibImpl(
                     }
                     .executeOnLeft { spClient.onError(it) }
             }
-            CampaignType.USNAT -> { /* TODO(Not implemented, not in the roadmap) */ }
+            CampaignType.USNAT -> { /* Not implemented, not in the roadmap */ }
             CampaignType.UNKNOWN -> { }
         }
     }

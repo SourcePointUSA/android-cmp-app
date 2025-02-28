@@ -1,7 +1,16 @@
 package com.sourcepoint.cmplibrary.data.network.model.optimized
 
 import com.sourcepoint.cmplibrary.core.getOrNull
-import com.sourcepoint.cmplibrary.data.network.converter.* // ktlint-disable
+import com.sourcepoint.cmplibrary.data.network.converter.CampaignTypeSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.CcpaStatusSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.GrantsSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.GranularStateSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
+import com.sourcepoint.cmplibrary.data.network.converter.JsonMapSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.MessageCategorySerializer
+import com.sourcepoint.cmplibrary.data.network.converter.MessageSubCategorySerializer
+import com.sourcepoint.cmplibrary.data.network.converter.SpConsentStatusSerializer
+import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.data.network.util.Env
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -9,11 +18,14 @@ import com.sourcepoint.cmplibrary.model.exposed.GDPRPurposeGrants
 import com.sourcepoint.cmplibrary.model.exposed.MessageCategory
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import com.sourcepoint.cmplibrary.util.check
+import com.sourcepoint.mobile_core.models.consents.ConsentStatus.ConsentStatusGranularStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import com.sourcepoint.mobile_core.models.consents.ConsentStatus as CoreConsentStatus
+import com.sourcepoint.mobile_core.models.consents.GDPRConsent.GCMStatus as CoreGCMStatus
 
 @Serializable
 internal data class MessagesParamReq(
@@ -135,7 +147,14 @@ data class GoogleConsentMode(
     @SerialName("analytics_storage") @Serializable(with = SpConsentStatusSerializer::class) val analyticsStorage: GCMStatus?,
     @SerialName("ad_user_data") @Serializable(with = SpConsentStatusSerializer::class) val adUserData: GCMStatus?,
     @SerialName("ad_personalization") @Serializable(with = SpConsentStatusSerializer::class) val adPersonalization: GCMStatus?,
-)
+) {
+    constructor(core: CoreGCMStatus): this(
+        adStorage = GCMStatus.firstWithStatusOrNull(core.adStorage),
+        analyticsStorage = GCMStatus.firstWithStatusOrNull(core.analyticsStorage),
+        adUserData = GCMStatus.firstWithStatusOrNull(core.adUserData),
+        adPersonalization = GCMStatus.firstWithStatusOrNull(core.adPersonalization),
+    )
+}
 
 @Serializable
 data class ConsentStatus(
@@ -148,6 +167,17 @@ data class ConsentStatus(
     @SerialName("legalBasisChanges") var legalBasisChanges: Boolean? = null,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null
 ) {
+    constructor(core: CoreConsentStatus) : this(
+        consentedAll = core.consentedAll,
+        consentedToAny = core.consentedToAny,
+        hasConsentData = core.hasConsentData,
+        rejectedAny = core.rejectedAny,
+        rejectedLI = core.rejectedLI,
+        legalBasisChanges = core.legalBasisChanges,
+        vendorListAdditions = core.vendorListAdditions,
+        granularStatus = core.granularStatus?.let { GranularStatus(it) },
+    )
+
     @Serializable
     data class GranularStatus(
         @SerialName("defaultConsent") val defaultConsent: Boolean?,
@@ -156,7 +186,16 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val purposeLegInt: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
-    )
+    ) {
+        constructor(core: ConsentStatusGranularStatus): this(
+            defaultConsent = core.defaultConsent,
+            previousOptInAll = core.previousOptInAll,
+            purposeConsent = GranularState.fromString(core.purposeConsent),
+            purposeLegInt = GranularState.fromString(core.purposeLegInt),
+            vendorConsent = GranularState.fromString(core.vendorConsent),
+            vendorLegInt = GranularState.fromString(core.vendorLegInt),
+        )
+    }
 }
 
 @Serializable
@@ -168,6 +207,15 @@ data class USNatConsentStatus(
     @SerialName("hasConsentData") val hasConsentData: Boolean?,
     @SerialName("vendorListAdditions") var vendorListAdditions: Boolean? = null,
 ) {
+    constructor(core: CoreConsentStatus): this(
+        rejectedAny = core.rejectedAny,
+        consentedToAll = core.consentedToAll,
+        consentedToAny = core.consentedToAny,
+        hasConsentData = core.hasConsentData,
+        vendorListAdditions = core.vendorListAdditions,
+        granularStatus = core.granularStatus?.let { USNatGranularStatus(it) },
+    )
+
     @Serializable
     data class USNatGranularStatus(
         @SerialName("sellStatus") val sellStatus: Boolean?,
@@ -177,5 +225,15 @@ data class USNatConsentStatus(
         @SerialName("defaultConsent") val defaultConsent: Boolean?,
         @SerialName("previousOptInAll") var previousOptInAll: Boolean?,
         @SerialName("purposeConsent") var purposeConsent: String?,
-    )
+    ) {
+        constructor(core: ConsentStatusGranularStatus): this(
+            sellStatus = core.sellStatus,
+            shareStatus = core.shareStatus,
+            sensitiveDataStatus = core.sensitiveDataStatus,
+            gpcStatus = core.gpcStatus,
+            defaultConsent = core.defaultConsent,
+            previousOptInAll = core.previousOptInAll,
+            purposeConsent = core.purposeConsent,
+        )
+    }
 }

@@ -26,7 +26,6 @@ import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.* //ktlint-disable
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.extensions.isIncluded
-import com.sourcepoint.cmplibrary.util.updateCcpaUspString
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
 import kotlinx.serialization.encodeToString
@@ -683,7 +682,7 @@ private class CampaignManagerImpl(
         response.ccpa?.let { ccpa ->
             ccpaConsentStatus = ccpaConsentStatus?.copy(
                 applies = ccpa.applies,
-                uspstring = updateCcpaUspString(ccpaConsentStatus, logger)
+//                uspstring = updateCcpaUspString(ccpaConsentStatus, logger)
             )
 
             ccpa.sampleRate.let { newRate ->

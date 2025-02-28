@@ -47,9 +47,9 @@ class ClientEventManagerTest {
     fun `GIVEN 3 successfully sendConsent (GDPR, CCPA, USNAT) calls, TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.USNAT)) // accept the USNAT
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.USNAT)) // accept the USNAT
             registerConsentResponse() // first consent saved
             registerConsentResponse() // second consent saved
             registerConsentResponse() // third consent saved
@@ -63,8 +63,8 @@ class ClientEventManagerTest {
     fun `GIVEN 1 successfully sendConsent call and 1 dismiss action, TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
             registerConsentResponse() // first consent saved
             checkIfAllCampaignsWereProcessed() // check the status
         }
@@ -76,8 +76,8 @@ class ClientEventManagerTest {
     fun `GIVEN 1 campaign to process WHEN in the 2nd layer message AND user cancels the PM, TRIGGER 0 onSPFinished`() {
         clientEventManager.run {
             setCampaignsToProcess(1)
-            setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
             checkIfAllCampaignsWereProcessed() // check the status
         }
 
@@ -88,7 +88,7 @@ class ClientEventManagerTest {
     fun `GIVEN 1 campaign to process WHEN in the 1st layer message AND user cancels the PM, TRIGGER 1 onSPFinished`() {
         clientEventManager.run {
             setCampaignsToProcess(1)
-            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
             checkIfAllCampaignsWereProcessed() // check the status
         }
 
@@ -99,8 +99,8 @@ class ClientEventManagerTest {
     fun `GIVEN 2 dismiss action2, TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
             checkIfAllCampaignsWereProcessed() // check the status
         }
 
@@ -111,10 +111,10 @@ class ClientEventManagerTest {
     fun `GIVEN PM flow TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(2) // 2 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = true, campaignType = CampaignType.GDPR)) // accept the GDPR
-            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = SHOW_OPTIONS, requestFromPm = false, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = PM_DISMISS, requestFromPm = true, messageId = "", campaignType = CampaignType.GDPR)) // accept the GDPR
+            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
             registerConsentResponse()
             checkIfAllCampaignsWereProcessed() // check the status
         }
@@ -136,7 +136,7 @@ class ClientEventManagerTest {
     fun `GIVEN 1 campaigns and 1 ACCEPT_ALL TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(1) // 1 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = ACCEPT_ALL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
             registerConsentResponse()
             checkIfAllCampaignsWereProcessed() // check the status
         }
@@ -148,7 +148,7 @@ class ClientEventManagerTest {
     fun `GIVEN 1 campaigns and 1 MSG_CANCEL TRIGGER 1 onSpFinish`() {
         clientEventManager.run {
             setCampaignsToProcess(1) // 1 campaigns GDPR and CCPA
-            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, campaignType = CampaignType.CCPA)) // accept the CCPA
+            setAction(ConsentActionImpl(actionType = MSG_CANCEL, requestFromPm = false, messageId = "", campaignType = CampaignType.CCPA)) // accept the CCPA
             checkIfAllCampaignsWereProcessed() // check the status
         }
 

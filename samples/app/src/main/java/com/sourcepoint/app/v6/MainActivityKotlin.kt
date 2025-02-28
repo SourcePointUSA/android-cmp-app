@@ -13,19 +13,18 @@ import androidx.core.graphics.toColorInt
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.databinding.ActivityMainV7Binding
 import com.sourcepoint.app.v6.databinding.NativeMessageBinding
-import com.sourcepoint.app.v6.web.WebConsentTransferTestActivity
 import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeAction
 import com.sourcepoint.cmplibrary.core.nativemessage.NativeComponent
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
-import com.sourcepoint.cmplibrary.util.clearAllData
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
@@ -42,11 +41,13 @@ class MainActivityKotlin : AppCompatActivity() {
 
     private val dataProvider by inject<DataProvider>()
     private val spClientObserver: List<SpClient> by inject()
+    private val cManager: ConnectionManager by inject()
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
         spConfig = dataProvider.spConfig
+        connectionManager = cManager
 //        config {
 //            accountId = 22
 //            propertyId = 16893
@@ -71,7 +72,7 @@ class MainActivityKotlin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (dataProvider.resetAll) {
-            clearAllData(this)
+            spConsentLib.clearLocalData()
         }
 
         storeDiagnosticObj(dataProvider.diagnostic)
@@ -83,9 +84,7 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
-        binding.clearAll.setOnClickListener {
-            clearAllData(this)
-        }
+        binding.clearAll.setOnClickListener { spConsentLib.clearLocalData() }
         binding.authIdActivity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
         }
@@ -113,10 +112,6 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.refreshBtn.setOnClickListener { executeCmpLib() }
         binding.addOldConsent.setOnClickListener { addOldV6Consent() }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
-
-    private fun openTransferConsentActivity() {
-        startActivity(Intent(this, WebConsentTransferTestActivity::class.java))
     }
 
     override fun onResume() {
@@ -176,9 +171,9 @@ class MainActivityKotlin : AppCompatActivity() {
         }
 
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
-            spClientObserver.forEach { it.onAction(view, consentAction) }
             Log.i(TAG, "onAction ActionType: $consentAction")
             consentAction.pubData.put("pb_key", "pb_value")
+            spClientObserver.forEach { it.onAction(view, consentAction) }
             return consentAction
         }
 

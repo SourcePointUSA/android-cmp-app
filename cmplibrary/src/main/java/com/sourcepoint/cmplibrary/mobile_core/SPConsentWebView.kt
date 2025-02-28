@@ -4,25 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.net.Uri
+import android.os.Looper
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.sourcepoint.cmplibrary.buildPMUrl
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView.Companion.CONSENT_WEB_VIEW_TAG_NAME
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.ConsentActionImplOptimized
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.runOnMain
 import com.sourcepoint.cmplibrary.util.readFromAsset
 import com.sourcepoint.mobile_core.models.consents.SPUserData
+import com.sourcepoint.mobile_core.network.json
 import com.sourcepoint.mobile_core.network.responses.MessagesResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -31,11 +30,13 @@ import okio.IOException
 interface SPMessageUIClient {
     fun loaded(view: View)
     fun onAction(view: View, action: ConsentAction)
-    fun onError()
+    fun onError() // TODO: receive the error object
     fun finished(view: View)
 }
 
 interface SPMessageUI {
+    var isFirstLayer: Boolean
+
     fun load(
         message: MessagesResponse.Message,
         url: String,
@@ -80,7 +81,33 @@ class SPConsentWebView(
     private lateinit var campaignType: CampaignType
     private var message: MessagesResponse.Message? = null
     private var isPresenting = false
-    private var isFirstLayer = true
+    override var isFirstLayer = true
+
+    companion object {
+        fun create(
+            context: Context,
+            viewId: Int? = null,
+            propertyId: Int,
+            messageUIClient: SPMessageUIClient
+        ) =
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                SPConsentWebView(
+                    viewId = viewId,
+                    context = context,
+                    messageUIClient = messageUIClient,
+                    propertyId = propertyId
+                )
+            } else {
+                runBlocking(Dispatchers.Main) {
+                    SPConsentWebView(
+                        viewId = viewId,
+                        context = context,
+                        messageUIClient = messageUIClient,
+                        propertyId = propertyId
+                    )
+                }
+            }
+    }
 
     init {
         id = viewId ?: generateViewId()
@@ -134,9 +161,14 @@ class SPConsentWebView(
         this.consents = consents
         this.message = message
         this.campaignType = campaignType
+        loadRenderingApp(url, jsReceiver)
+    }
+
+    @Throws(Exception::class)
+    private fun loadRenderingApp(url: String, script: String) {
         launch {
             try {
-                val renderingAppWithJsReceiver = injectScriptInto(getRenderingApp(url), jsReceiver)
+                val renderingAppWithJsReceiver = injectScriptInto(getRenderingApp(url), script)
                 runOnMain {
                     loadDataWithBaseURL(
                         url,
@@ -186,15 +218,16 @@ class SPConsentWebView(
     private fun loadPrivacyManagerFrom(action: ConsentAction) {
         isFirstLayer = false
         action.pmUrl?.let {
-            loadUrl(buildPMUrl(
+            loadRenderingApp(buildPMUrl(
                 campaignType = campaignType,
                 pmId = action.messageId,
                 propertyId = propertyId,
                 baseUrl = it,
                 userData = consents,
                 language = action.consentLanguage,
-                pmTab = null
-            ))
+                pmTab = null,
+                useChildPmIfAvailable = false
+            ), jsReceiver)
         }
     }
 
@@ -211,9 +244,9 @@ class SPConsentWebView(
         evaluateJavascript("""window.postMessage({
             name: "sp.loadConsent",
             consent: ${when (campaignType) {
-                CampaignType.GDPR -> Json.encodeToJsonElement(consents.gdpr?.consents)
-                CampaignType.CCPA -> Json.encodeToJsonElement(consents.ccpa?.consents)
-                CampaignType.USNAT -> Json.encodeToJsonElement(consents.usnat?.consents)
+                CampaignType.GDPR -> json.encodeToJsonElement(consents.gdpr?.consents)
+                CampaignType.CCPA -> json.encodeToJsonElement(consents.ccpa?.consents)
+                CampaignType.USNAT -> json.encodeToJsonElement(consents.usnat?.consents)
                 CampaignType.UNKNOWN -> null
             }}
         }, "*");""", null)
@@ -236,7 +269,7 @@ class SPConsentWebView(
 
     @JavascriptInterface
     override fun onAction(actionData: String) {
-        onAction(this, JsonConverter.converter.decodeFromString<ConsentActionImplOptimized>(actionData))
+        onAction(this, json.decodeFromString(actionData) as SPConsentAction)
     }
 
     @JavascriptInterface
@@ -256,7 +289,7 @@ class SPConsentWebView(
                 """
                     window.postMessage(Object.assign(
                         {name: "sp.loadMessage"},
-                        ${Json.encodeToString(message)}
+                        ${json.encodeToString(message)}
                     ), "*");
                     """,
                 null

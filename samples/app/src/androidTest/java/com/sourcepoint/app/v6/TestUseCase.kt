@@ -32,6 +32,7 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.di.customCategoriesDataProd
 import com.sourcepoint.app.v6.di.customVendorDataListProd
 import com.sourcepoint.cmplibrary.SpClient
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.koin.core.module.Module
@@ -279,7 +280,7 @@ class TestUseCase {
         }
 
         fun checkPurposesTab() {
-            checkTextInParagraph("You give an affirmative action to indicate that we can use your data for this purpose.")
+            checkTextInParagraph("We have a need to use your data for this processing purpose that is required for us to deliver services to you.")
         }
 
         fun tapSiteVendorsWebView() {
@@ -415,6 +416,9 @@ class TestUseCase {
             messageType: MessageType = MessageType.MOBILE,
             spClientObserver: List<SpClient> = emptyList(),
             diagnostic: List<Pair<String, Any?>> = emptyList(),
+            connectionManager: ConnectionManager = object : ConnectionManager {
+                override val isConnected = true
+            }
         ): Module {
             return module {
                 single<List<SpClient?>> { spClientObserver }
@@ -433,6 +437,7 @@ class TestUseCase {
                         override val diagnostic: List<Pair<String, Any?>> = diagnostic
                     }
                 }
+                single { connectionManager }
             }
         }
     }

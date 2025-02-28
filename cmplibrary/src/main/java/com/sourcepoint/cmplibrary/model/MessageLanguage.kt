@@ -1,5 +1,7 @@
 package com.sourcepoint.cmplibrary.model
 
+import com.sourcepoint.mobile_core.models.SPMessageLanguage
+
 enum class MessageLanguage(val value: String) {
     BULGARIAN("BG"),
     CATALAN("CA"),
@@ -39,4 +41,8 @@ enum class MessageLanguage(val value: String) {
     SWEDISH("SV"),
     TAGALOG("TL"),
     TURKISH("TR");
+
+    fun toCore() = SPMessageLanguage.entries.find {
+        it.shortCode.uppercase() == value.uppercase()
+    }
 }

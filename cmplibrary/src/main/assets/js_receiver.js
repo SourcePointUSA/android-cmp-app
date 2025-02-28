@@ -18,15 +18,11 @@ function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
     return {
         messageId: payload.messageId,
-        legislation: window.spLegislation,
-        name: payload.name,
+        campaignType: window.spLegislation,
         actionType: actionPayload.type,
-        choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
-        pmId: getQueryParam("message_id", actionPayload.iframe_url),
         pmUrl: actionPayload.iframe_url,
-        pmTab: getQueryParam("pmTab", actionPayload.iframe_url),
-        saveAndExitVariables: {},
+        saveAndExitVariables: "{}",
         consentLanguage: payload.consentLanguage,
         customActionId: actionPayload.customAction
     };
@@ -35,16 +31,11 @@ function actionFromMessage(payload) {
 function actionFromPM(payload) {
     return {
         messageId: payload.messageId,
-        localPmId: window.localPmId,
-        legislation: window.spLegislation,
-        name: payload.name,
+        campaignType: window.spLegislation,
         actionType: payload.actionType,
-        choiceId: null,
         requestFromPm: true,
-        pmId: getQueryParam("message_id", payload.iframe_url),
         pmUrl: payload.iframe_url,
-        pmTab: null,
-        saveAndExitVariables: payload.payload,
+        saveAndExitVariables: JSON.stringify(Object.assign({}, payload.payload)),
         consentLanguage: payload.consentLanguage,
         customActionId: payload.customAction
     };
