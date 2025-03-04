@@ -32,7 +32,7 @@ enum class CampaignType {
             SPCampaignType.Gdpr -> GDPR
             SPCampaignType.Ccpa -> CCPA
             SPCampaignType.UsNat -> USNAT
-            SPCampaignType.unknown, SPCampaignType.IOS14 -> UNKNOWN
+            SPCampaignType.Unknown, SPCampaignType.IOS14 -> UNKNOWN
         }
     }
 
@@ -40,7 +40,7 @@ enum class CampaignType {
         GDPR -> SPCampaignType.Gdpr
         CCPA -> SPCampaignType.Ccpa
         USNAT -> SPCampaignType.UsNat
-        UNKNOWN -> SPCampaignType.unknown
+        UNKNOWN -> SPCampaignType.Unknown
     }
 }
 

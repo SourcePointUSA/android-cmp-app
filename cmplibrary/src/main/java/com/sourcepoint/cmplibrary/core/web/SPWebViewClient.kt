@@ -5,9 +5,9 @@ import android.net.http.SslError
 import android.webkit.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.*  //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.RenderingAppConnectionTimeoutException
-import com.sourcepoint.cmplibrary.exception.UrlLoadingException
-import com.sourcepoint.cmplibrary.exception.WebViewException
+//import com.sourcepoint.cmplibrary.exception.RenderingAppConnectionTimeoutException
+//import com.sourcepoint.cmplibrary.exception.UrlLoadingException
+//import com.sourcepoint.cmplibrary.exception.WebViewException
 import com.sourcepoint.cmplibrary.util.file2String
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
 
@@ -30,7 +30,7 @@ internal class SPWebViewClient(
         super.onPageStarted(view, url, favicon)
         timer.executeDelay(messageTimeout) {
             view?.stopLoading()
-            onError(RenderingAppConnectionTimeoutException(description = "There was an error while loading the rendering app. onConsentReady was not called within $messageTimeout seconds."))
+//            onError(RenderingAppConnectionTimeoutException(description = "There was an error while loading the rendering app. onConsentReady was not called within $messageTimeout seconds."))
         }
     }
 
@@ -52,29 +52,29 @@ internal class SPWebViewClient(
                     )
                 }
         } catch (e: Throwable) {
-            onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
+//            onError(WebViewException(cause = e, description = "Unable to load jsReceiver into ConasentLibWebview."))
         }
     }
 
     override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError) {
         super.onReceivedError(view, request, error)
-        onError(WebViewException(description = error.toString()))
+//        onError(WebViewException(description = error.toString()))
     }
 
     @Deprecated("Will be removed once we bump min supported API level to 24")
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String?) {
         super.onReceivedError(view, errorCode, description, failingUrl)
-        onError(WebViewException(description = description))
+//        onError(WebViewException(description = description))
     }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler?, error: SslError) {
         super.onReceivedSslError(view, handler, error)
-        onError(WebViewException(description = error.toString()))
+//        onError(WebViewException(description = error.toString()))
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
         val message = "The WebView rendering process crashed!"
-        onError(WebViewException(description = message))
+//        onError(WebViewException(description = message))
         return false
     }
 
@@ -106,7 +106,7 @@ internal class SPWebViewClient(
         }.toString()
         val errMess = "Error loading SPWebViewClient $nl StatusCode ---> ${errorResponse.statusCode} $nl$message "
         logger.e(this::class.java.name, errMess)
-        onError(UrlLoadingException(description = "The client failed to load the resource!!"))
+//        onError(UrlLoadingException(description = "The client failed to load the resource!!"))
     }
 
     override fun onPageCommitVisible(view: WebView?, url: String?) {

@@ -19,7 +19,7 @@ import com.sourcepoint.cmplibrary.exception.CampaignType.* //ktlint-disable
 import com.sourcepoint.cmplibrary.exception.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.exception.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
+//import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.model.* //ktlint-disable
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus.rejectedAll
@@ -536,10 +536,7 @@ internal class ServiceImpl(
             onSpConsentsSuccess?.invoke(spConsents)
         }
 
-        campaignManager.gdprConsentStatus ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The GDPR consent object cannot be null!!!",
-        )
+        campaignManager.gdprConsentStatus ?: throw Exception()
     }
 
     private fun sendConsentCcpa(
@@ -631,10 +628,7 @@ internal class ServiceImpl(
             onSpConsentsSuccess?.invoke(spConsents)
         }
 
-        campaignManager.ccpaConsentStatus ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The CCPA consent object cannot be null!!!",
-        )
+        campaignManager.ccpaConsentStatus ?: throw Exception()
     }
 
     private fun sendConsentUsNat(
@@ -722,10 +716,7 @@ internal class ServiceImpl(
             onSpConsentSuccess?.invoke(spConsents)
         }
 
-        campaignManager.usNatConsentData ?: throw InvalidConsentResponse(
-            cause = null,
-            description = "The UsNat consent data cannot be null!!!",
-        )
+        campaignManager.usNatConsentData ?: throw Exception()
     }
 
     private fun triggerConsentStatus(

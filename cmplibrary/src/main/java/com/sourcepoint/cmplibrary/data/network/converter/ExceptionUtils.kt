@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.data.network.converter
 
-import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
+//import com.sourcepoint.cmplibrary.exception.InvalidResponseWebMessageException
 import java.lang.RuntimeException
 
 /**
@@ -8,15 +8,15 @@ import java.lang.RuntimeException
  * @param param name of the null object
  */
 internal fun failParam(param: String): Nothing {
-    throw InvalidResponseWebMessageException(description = "$param object is null")
+    throw Exception()
 }
 
 internal fun fail(message: String): Nothing {
-    throw InvalidResponseWebMessageException(description = message)
+    throw Exception()
 }
 
 internal fun fail(message: String, throwable: Throwable): Nothing {
-    throw InvalidResponseWebMessageException(description = message, cause = throwable)
+    throw Exception()
 }
 
 internal fun genericFail(message: String): Nothing {

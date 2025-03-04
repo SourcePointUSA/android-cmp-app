@@ -41,12 +41,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.GET_CHOICE.apiPostfix,
-                choice = "_${choice.type}",
-                httpStatusCode = "_$status",
-            )
+            throw Exception()
         }
     }
 
@@ -66,11 +61,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_GDPR.apiPostfix,
-                httpStatusCode = "_$status",
-            )
+            throw Exception()
         }
     }
 
@@ -90,11 +81,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_CCPA.apiPostfix,
-                httpStatusCode = "_$status",
-            )
+            throw Exception()
         }
     }
 
@@ -114,11 +101,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.POST_CHOICE_USNAT.apiPostfix,
-                httpStatusCode = "_$status",
-            )
+            throw Exception()
         }
     }
 
@@ -138,11 +121,7 @@ private class ResponseManagerImpl(
                 is Either.Left -> throw either.t
             }
         } else {
-            throw RequestFailedException(
-                description = body,
-                apiRequestPostfix = ApiRequestPostfix.MESSAGES.apiPostfix,
-                httpStatusCode = "_$status",
-            )
+            throw Exception()
         }
     }
 }

@@ -2,19 +2,28 @@ package com.sourcepoint.cmplibrary.mobile_core
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Looper
+import android.os.Message
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.sourcepoint.cmplibrary.core.web.ConsentWebView.Companion.CONSENT_WEB_VIEW_TAG_NAME
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
+import com.sourcepoint.cmplibrary.exception.RenderingAppException
+import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
+import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.runOnMain
+import com.sourcepoint.cmplibrary.util.getLinkUrl
+import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
 import com.sourcepoint.cmplibrary.util.readFromAsset
 import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.network.json
@@ -30,7 +39,7 @@ import okio.IOException
 interface SPMessageUIClient {
     fun loaded(view: View)
     fun onAction(view: View, action: ConsentAction)
-    fun onError() // TODO: receive the error object
+    fun onError(error: ConsentLibExceptionK)
     fun finished(view: View)
 }
 
@@ -117,20 +126,17 @@ class SPConsentWebView(
         setWebContentsDebuggingEnabled(true)
         addJavascriptInterface(this, "JSReceiver")
         webChromeClient = object : WebChromeClient() {
-//            override fun onCreateWindow(
-//                view: WebView,
-//                dialog: Boolean,
-//                userGesture: Boolean,
-//                resultMsg: Message
-//            ): Boolean {
-//                context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult)) {
-////                    jsClientLib.onNoIntentActivitiesFoundFor(this@ConsentWebView, it)
-//                }
-//                view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
-//                return false
-//            }
-            override fun onConsoleMessage(message: String?, lineNumber: Int, sourceID: String?) {
-                super.onConsoleMessage(message, lineNumber, sourceID)
+            override fun onCreateWindow(
+                view: WebView,
+                dialog: Boolean,
+                userGesture: Boolean,
+                resultMsg: Message
+            ): Boolean {
+                context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult), onNoIntentActivitiesFound = {
+                    messageUIClient.onError(NoIntentFoundForUrl(it))
+                })
+                view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
+                return false
             }
         }
     }
@@ -139,18 +145,14 @@ class SPConsentWebView(
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
-    ) {
-        internalLoad(message = null, url, campaignType, userData)
-    }
+    ) = internalLoad(message = null, url, campaignType, userData)
 
     override fun load(
         message: MessagesResponse.Message,
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
-    ) {
-        internalLoad(message, url, campaignType, userData)
-    }
+    ) = internalLoad(message, url, campaignType, userData)
 
     private fun internalLoad(
         message: MessagesResponse.Message? = null,
@@ -164,54 +166,49 @@ class SPConsentWebView(
         loadRenderingApp(url, jsReceiver)
     }
 
-    @Throws(Exception::class)
-    private fun loadRenderingApp(url: String, script: String) {
-        launch {
-            try {
-                val renderingAppWithJsReceiver = injectScriptInto(getRenderingApp(url), script)
-                runOnMain {
-                    loadDataWithBaseURL(
-                        url,
-                        renderingAppWithJsReceiver,
-                        "text/html",
-                        "UTF-8",
-                        null
-                    )
-                }
-            } catch (error: Exception) {
-                onError()
+    private fun loadRenderingApp(url: String, script: String) = launch {
+        try {
+            val renderingAppWithJsReceiver = injectScriptInto(getRenderingApp(url), script)
+            runOnMain {
+                loadDataWithBaseURL(
+                    url,
+                    renderingAppWithJsReceiver,
+                    "text/html",
+                    "UTF-8",
+                    null
+                )
             }
+        } catch (error: UnableToDownloadRenderingApp) {
+            onError(error)
+        } catch (error: Throwable) {
+            onError(UnableToLoadRenderingApp(cause = error))
         }
     }
 
     // TODO: cache/memoize rendering app's html per url
-    @Throws(IOException::class)
-    private fun getRenderingApp(url: String): String {
-        try {
-            var html: String? = null
-            val response = OkHttpClient().newCall(Request.Builder().url(url).build()).execute()
-            if (response.isSuccessful) {
-                html = response.body?.string()
-                if (html == null) throw IOException()
-            }
-            response.body?.close()
-            return html!!
-        } catch (error: IOException){
-            throw error // TODO: create custom error for this case
+    @Throws(UnableToDownloadRenderingApp::class)
+    private fun getRenderingApp(url: String): String = try {
+        var html: String? = null
+        val response = OkHttpClient().newCall(Request.Builder().url(url).build()).execute()
+        if (response.isSuccessful) {
+            html = response.body?.string()
+            if (html == null) throw IOException()
         }
+        response.body?.close()
+        html!!
+    } catch (error: Throwable){
+        throw UnableToDownloadRenderingApp(cause = error, url)
     }
 
     private fun injectScriptInto(html: String, script: String): String =
         html.replaceFirst("<head>", "<head><script>$script</script>")
 
-    override fun onAction(view: View, action: ConsentAction) {
-        runOnMain {
-            messageUIClient.onAction(view, action)
-            when (action.actionType) {
-                ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
-                ActionType.PM_DISMISS -> returnToFirstLayer()
-                else -> finished(view)
-            }
+    override fun onAction(view: View, action: ConsentAction) = runOnMain {
+        messageUIClient.onAction(view, action)
+        when (action.actionType) {
+            ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
+            ActionType.PM_DISMISS -> returnToFirstLayer()
+            else -> finished(view)
         }
     }
 
@@ -231,17 +228,16 @@ class SPConsentWebView(
         }
     }
 
-    private fun returnToFirstLayer() {
+    private fun returnToFirstLayer() =
         if (canGoBack() && !isFirstLayer) {
             isFirstLayer = true
             goBack()
         } else {
             finished(this)
         }
-    }
 
-    private fun preloadConsents() {
-        evaluateJavascript("""window.postMessage({
+    private fun preloadConsents() = evaluateJavascript(
+        """window.postMessage({
             name: "sp.loadConsent",
             consent: ${when (campaignType) {
                 CampaignType.GDPR -> json.encodeToJsonElement(consents.gdpr?.consents)
@@ -250,15 +246,12 @@ class SPConsentWebView(
                 CampaignType.UNKNOWN -> null
             }}
         }, "*");""", null)
-    }
 
-    override fun loaded(view: View) {
-        runOnMain {
-            evaluateJavascript("""window.spLegislation="${campaignType.name}"""", null)
-            if (!isPresenting) {
-                isPresenting = true
-                messageUIClient.loaded(view)
-            }
+    override fun loaded(view: View) = runOnMain {
+        evaluateJavascript("""window.spLegislation="${campaignType.name}"""", null)
+        if (!isPresenting) {
+            isPresenting = true
+            messageUIClient.loaded(view)
         }
     }
 
@@ -268,47 +261,36 @@ class SPConsentWebView(
     }
 
     @JavascriptInterface
-    override fun onAction(actionData: String) {
+    override fun onAction(actionData: String) =
         onAction(this, json.decodeFromString(actionData) as SPConsentAction)
+
+    @JavascriptInterface
+    override fun loaded() = loaded(this)
+
+    override fun onError(error: ConsentLibExceptionK) = runOnMain { messageUIClient.onError(error) }
+
+    @JavascriptInterface
+    override fun readyForMessagePreload() = runOnMain {
+        evaluateJavascript(
+            """
+                window.postMessage(Object.assign(
+                    {name: "sp.loadMessage"},
+                    ${json.encodeToString(message)}
+                ), "*");
+                """,
+            null
+        )
     }
 
     @JavascriptInterface
-    override fun loaded() {
-        loaded(this)
-    }
-
-    @JavascriptInterface
-    override fun onError() {
-        runOnMain { messageUIClient.onError() }
-    }
-
-    @JavascriptInterface
-    override fun readyForMessagePreload() {
-        runOnMain {
-            evaluateJavascript(
-                """
-                    window.postMessage(Object.assign(
-                        {name: "sp.loadMessage"},
-                        ${json.encodeToString(message)}
-                    ), "*");
-                    """,
-                null
-            )
-        }
-    }
-
-    @JavascriptInterface
-    override fun readyForConsentPreload() {
-        runOnMain { preloadConsents() }
-    }
+    override fun readyForConsentPreload() = runOnMain { preloadConsents() }
 
     @JavascriptInterface
     override fun onError(error: String) {
-        messageUIClient.onError()
+        println(error)
+        messageUIClient.onError(RenderingAppException())
     }
 
     @JavascriptInterface
-    override fun log(message: String) {
-        println(message)
-    }
+    override fun log(message: String) = println(message)
 }

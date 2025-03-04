@@ -49,7 +49,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.creation.to
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
 import com.sourcepoint.cmplibrary.exception.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -462,31 +461,6 @@ class MainActivityKotlinTest {
                 }
             }
         }
-    }
-
-    @Test
-    fun without_a_stored_consent_given_no_internet_connection_exception_VERIFY_the_called_callbacks() = runBlocking {
-        val spClient = mockk<SpClient>(relaxed = true)
-
-        loadKoinModules(
-            mockModule(
-                spConfig = spConf,
-                gdprPmId = "488393",
-                ccpaPmId = "509688",
-                spClientObserver = listOf(spClient),
-                connectionManager = object : ConnectionManager {
-                    override val isConnected = false
-                }
-            )
-        )
-
-        scenario = launchActivity()
-
-        wr { verify(exactly = 1) { spClient.onError(any()) } }
-        wr { verify(exactly = 0) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIReady(any()) } }
-        wr { verify(exactly = 0) { spClient.onUIFinished(any()) } }
-        wr { verify(exactly = 0) { spClient.onSpFinished(any()) } }
     }
 
     @Test

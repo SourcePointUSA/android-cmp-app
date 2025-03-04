@@ -146,11 +146,11 @@ private class CampaignManagerImpl(
 
     init {
         if (!spConfig.propertyName.contains(validPattern)) {
-            throw InvalidArgumentException(
-                description = """
-                PropertyName can only include letters, numbers, '.', ':', '-' and '/'. (string) passed is invalid
-                """.trimIndent()
-            )
+//            throw InvalidArgumentException(
+//                description = """
+//                PropertyName can only include letters, numbers, '.', ':', '-' and '/'. (string) passed is invalid
+//                """.trimIndent()
+//            )
         }
         spConfig.also { spp ->
             spp.campaigns.forEach {
@@ -283,15 +283,15 @@ private class CampaignManagerImpl(
         val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
 
         if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
-            logger?.error(
-                ChildPmIdNotFound(
-                    description = """
-                              childPmId not found!!!
-                              GroupPmId[$groupPmId]
-                              useGroupPmIfAvailable [true] 
-                    """.trimIndent()
-                )
-            )
+//            logger?.error(
+//                ChildPmIdNotFound(
+//                    description = """
+//                              childPmId not found!!!
+//                              GroupPmId[$groupPmId]
+//                              useGroupPmIfAvailable [true]
+//                    """.trimIndent()
+//                )
+//            )
             logger?.e(
                 tag = "The childPmId is missing",
                 msg = """
@@ -328,15 +328,15 @@ private class CampaignManagerImpl(
         val useGroupPmIfAvailable = false // feature not yet implemented
 
         if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
-            logger?.error(
-                ChildPmIdNotFound(
-                    description = """
-                              childPmId not found!!!
-                              GroupPmId[groupPmId]
-                              useGroupPmIfAvailable [true] 
-                    """.trimIndent()
-                )
-            )
+//            logger?.error(
+//                ChildPmIdNotFound(
+//                    description = """
+//                              childPmId not found!!!
+//                              GroupPmId[groupPmId]
+//                              useGroupPmIfAvailable [true]
+//                    """.trimIndent()
+//                )
+//            )
         }
 
         val usedPmId = childPmId ?: pmId
@@ -361,15 +361,15 @@ private class CampaignManagerImpl(
         val usedPmId = selectPmId(pmId, childPmId, useGroupPmIfAvailable)
 
         if (hasGroupPmId && useGroupPmIfAvailable && isChildPmIdAbsent) {
-            logger?.error(
-                ChildPmIdNotFound(
-                    description = """
-                              childPmId not found!!!
-                              GroupPmId[$groupPmId]
-                              useGroupPmIfAvailable [true] 
-                    """.trimIndent()
-                )
-            )
+//            logger?.error(
+//                ChildPmIdNotFound(
+//                    description = """
+//                              childPmId not found!!!
+//                              GroupPmId[$groupPmId]
+//                              useGroupPmIfAvailable [true]
+//                    """.trimIndent()
+//                )
+//            )
             logger?.e(
                 tag = "The childPmId is missing",
                 msg = """
@@ -404,7 +404,7 @@ private class CampaignManagerImpl(
                 .getGdprMessage().isNotBlank() -> Pair(GDPR, mapTemplate[GDPR.name]!!)
             dataStorage
                 .getCcpaMessage().isNotBlank() -> Pair(CCPA, mapTemplate[CCPA.name]!!)
-            else -> throw MissingPropertyException(description = "Inconsistent Legislation!!!")
+            else -> throw Exception()
         }
     }
 

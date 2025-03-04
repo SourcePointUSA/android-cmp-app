@@ -6,7 +6,6 @@ import com.sourcepoint.cmplibrary.data.local.DataStorage
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toCCPAConsentInternal
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toGDPRUserConsent
 import com.sourcepoint.cmplibrary.data.network.model.optimized.toUsNatConsentInternal
-import com.sourcepoint.cmplibrary.exception.InvalidConsentResponse
 import com.sourcepoint.cmplibrary.model.exposed.* // ktlint-disable
 import com.sourcepoint.cmplibrary.util.* // ktlint-disable
 
@@ -34,23 +33,14 @@ private class ConsentManagerUtilsImpl(
     val ds: DataStorage
 ) : ConsentManagerUtils {
     override val gdprConsentOptimized: Either<GDPRConsentInternal> get() = check {
-        cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw InvalidConsentResponse(
-            cause = null,
-            "The GDPR consent is null!!!"
-        )
+        cm.gdprConsentStatus?.toGDPRUserConsent() ?: throw Exception()
     }
 
     override val ccpaConsentOptimized: Either<CCPAConsentInternal> get() = check {
-        cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw InvalidConsentResponse(
-            cause = null,
-            "The CCPA consent is null!!!"
-        )
+        cm.ccpaConsentStatus?.toCCPAConsentInternal() ?: throw Exception()
     }
     override val usNatConsent: Either<UsNatConsentInternal> get() = check {
-        cm.usNatConsentData?.toUsNatConsentInternal() ?: throw InvalidConsentResponse(
-            cause = null,
-            "The UsNat consent is null!!!"
-        )
+        cm.usNatConsentData?.toUsNatConsentInternal() ?: throw Exception()
     }
 
     override val spStoredConsent: Either<SPConsents> get() = check {

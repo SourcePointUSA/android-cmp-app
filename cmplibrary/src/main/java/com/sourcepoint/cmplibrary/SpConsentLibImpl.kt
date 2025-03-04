@@ -34,7 +34,7 @@ import com.sourcepoint.cmplibrary.util.ViewsManager
 import com.sourcepoint.cmplibrary.util.check
 import com.sourcepoint.cmplibrary.util.checkMainThread
 import com.sourcepoint.cmplibrary.util.extensions.toMessageType
-import com.sourcepoint.cmplibrary.util.toConsentLibException
+//import com.sourcepoint.cmplibrary.util.toConsentLibException
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONObject
 import java.util.* // ktlint-disable
@@ -207,13 +207,13 @@ internal class SpConsentLibImpl(
                     }
                 } else {
                     (error as? ConsentLibExceptionK)?.let { pLogger.error(it) }
-                    val ex = error.toConsentLibException()
+                    val ex = error
                     if (shouldCallOnErrorCallback) {
                         spClient.onError(ex)
                     }
                     pLogger.clientEvent(
                         event = "onError",
-                        msg = ex.code.errorCode,
+                        msg = "",
                         content = "${error.message}"
                     )
                     pLogger.e(
@@ -595,11 +595,9 @@ internal class SpConsentLibImpl(
 
         override fun onError(view: View, error: Throwable) {
             spClient.onError(error)
-            val ex = error.toConsentLibException()
-            pLogger.error(ex)
             pLogger.clientEvent(
                 event = "onError",
-                msg = ex.code.errorCode,
+                msg = "",
                 content = "$error"
             )
         }
