@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.FailedToDeleteCustomConsent
 import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages

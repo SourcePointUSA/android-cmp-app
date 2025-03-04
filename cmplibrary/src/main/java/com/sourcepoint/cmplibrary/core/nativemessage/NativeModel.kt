@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.core.nativemessage
 
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType.* // ktlint-disable
 

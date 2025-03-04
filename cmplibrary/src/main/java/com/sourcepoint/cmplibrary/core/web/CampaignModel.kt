@@ -1,6 +1,6 @@
 package com.sourcepoint.cmplibrary.core.web
 
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.MessageSubCategory
 import okhttp3.HttpUrl
 import org.json.JSONObject

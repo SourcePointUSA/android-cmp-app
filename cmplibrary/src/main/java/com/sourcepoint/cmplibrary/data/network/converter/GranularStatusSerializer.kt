@@ -9,14 +9,11 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object GranularStateSerializer : KSerializer<GranularState> {
-
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("GranularState", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): GranularState {
         val code = decoder.decodeString()
-        return GranularState.values()
-            .find { m -> m.name == code }
-            ?: GranularState.NONE
+        return GranularState.entries.find { m -> m.name == code } ?: GranularState.NONE
     }
 
     override fun serialize(encoder: Encoder, value: GranularState) {

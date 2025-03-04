@@ -1,14 +1,11 @@
 package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.creation.ConfigOption
-import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
-import com.sourcepoint.cmplibrary.data.network.converter.JsonConverter
-import com.sourcepoint.cmplibrary.data.network.converter.converter
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import kotlinx.serialization.json.encodeToJsonElement
+
+const val DEFAULT_TIMEOUT = 10000L // in ms
 
 data class SpConfig(
     @JvmField val accountId: Int,
@@ -18,7 +15,6 @@ data class SpConfig(
     @JvmField val messageTimeout: Long = DEFAULT_TIMEOUT,
     @JvmField val propertyId: Int,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
-    @JvmField val logger: Logger? = null,
     @JvmField val spGppConfig: SpGppConfig? = null,
 )
 
@@ -53,23 +49,10 @@ data class SpCampaign(
 
 data class TargetingParam(val key: String, val value: String)
 
-fun List<TargetingParam>.toJsonElement() = JsonConverter.converter.encodeToJsonElement(
-    fold(mutableMapOf<String, String>()) { params, targetingParam ->
-        params[targetingParam.key] = targetingParam.value
-        return@fold params
-    }
-)
-
 fun Pair<String, String>.toTParam() = TargetingParam(this.first, this.second)
 
 enum class MessageType {
     MOBILE,
     OTT,
     LEGACY_OTT
-}
-
-internal fun MessageSubCategory.toMessageType(): MessageType = when (this) {
-    MessageSubCategory.OTT -> MessageType.LEGACY_OTT
-    MessageSubCategory.NATIVE_OTT -> MessageType.OTT
-    else -> MessageType.MOBILE
 }

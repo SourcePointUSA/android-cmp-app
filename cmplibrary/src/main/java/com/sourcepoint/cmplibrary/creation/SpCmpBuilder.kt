@@ -5,7 +5,6 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
-import com.sourcepoint.cmplibrary.data.network.converter.genericFail
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
 @SpDSL
@@ -23,8 +22,8 @@ class SpCmpBuilder {
 
     internal fun build(): SpConsentLib {
 
-        if (!this::activity.isInitialized) genericFail("activity param must be initialised!!!")
-        if (!this::spConfig.isInitialized) genericFail("spConfig param must be initialised!!!")
+        if (!this::activity.isInitialized) throw RuntimeException("activity param must be initialised!!!")
+        if (!this::spConfig.isInitialized) throw RuntimeException("spConfig param must be initialised!!!")
 
         return makeConsentLib(
             spConfig = spConfig,

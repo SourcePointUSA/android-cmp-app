@@ -2,7 +2,7 @@
 package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.storage.Repository

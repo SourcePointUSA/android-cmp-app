@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.databinding.ActivityMainConsentBinding
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.util.campaignApplies
 import com.sourcepoint.cmplibrary.util.userConsents
 import org.koin.android.ext.android.inject

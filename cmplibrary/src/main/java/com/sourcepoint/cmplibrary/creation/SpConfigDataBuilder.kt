@@ -1,8 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.exception.Logger
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -15,7 +14,6 @@ import kotlin.properties.Delegates
 
 @SpDSL
 class SpConfigDataBuilder {
-
     private val campaigns = mutableListOf<SpCampaign>()
     var accountId by Delegates.notNull<Int>()
     var propertyId by Delegates.notNull<Int>()
@@ -23,7 +21,6 @@ class SpConfigDataBuilder {
     var messLanguage: MessageLanguage = MessageLanguage.ENGLISH
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
-    var logger: Logger? = null
     var spGppConfig: SpGppConfig? = null
 
     operator fun CampaignType.unaryPlus() {
@@ -66,10 +63,6 @@ class SpConfigDataBuilder {
 
     fun addMessageTimeout(messageTimeout: Long) = apply {
         this.messageTimeout = messageTimeout
-    }
-
-    fun addLogger(logger: Logger) = apply {
-        this.logger = logger
     }
 
     fun addGppConfig(spGppConfig: SpGppConfig) = apply {
@@ -127,7 +120,6 @@ class SpConfigDataBuilder {
             messageLanguage = messLanguage,
             messageTimeout = messageTimeout,
             campaignsEnv = campaignsEnv,
-            logger = logger,
             propertyId = propertyId,
             spGppConfig = spGppConfig,
         )

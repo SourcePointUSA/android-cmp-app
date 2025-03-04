@@ -8,9 +8,8 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
