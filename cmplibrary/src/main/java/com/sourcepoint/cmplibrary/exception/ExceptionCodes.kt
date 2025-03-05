@@ -22,4 +22,4 @@ internal object CodeList {
     val REQUEST_FAILED = ExceptionCodes("sp_metric_request_failed")
 }
 
-internal inline class ExceptionCodes(val errorCode: String)
+inline class ExceptionCodes(val errorCode: String)

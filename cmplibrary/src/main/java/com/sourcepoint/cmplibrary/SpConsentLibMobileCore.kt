@@ -10,6 +10,16 @@ import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
+import com.sourcepoint.cmplibrary.exception.FailedToDeleteCustomConsent
+import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
+import com.sourcepoint.cmplibrary.exception.FailedToPostCustomConsent
+import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
+import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
+import com.sourcepoint.cmplibrary.exception.RenderingAppException
+import com.sourcepoint.cmplibrary.exception.ReportActionException
+import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
+import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.mobile_core.SPConsentAction
 import com.sourcepoint.cmplibrary.mobile_core.SPConsentWebView
 import com.sourcepoint.cmplibrary.mobile_core.SPMessageUI
@@ -25,14 +35,18 @@ import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
 import com.sourcepoint.mobile_core.ICoordinator
+import com.sourcepoint.mobile_core.models.LoadMessagesException
 import com.sourcepoint.mobile_core.models.MessageToDisplay
 import com.sourcepoint.mobile_core.models.SPAction
 import com.sourcepoint.mobile_core.models.SPActionType.RejectAll
+import com.sourcepoint.mobile_core.models.SPError
 import com.sourcepoint.mobile_core.models.SPMessageLanguage.ENGLISH
 import com.sourcepoint.mobile_core.models.consents.SPUserData
+import com.sourcepoint.mobile_core.network.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 
@@ -47,7 +61,7 @@ fun runOnMain(task: () -> Unit) {
 class SpConsentLibMobileCore(
     private val propertyId: Int,
     private val language: MessageLanguage,
-    private val activity: WeakReference<Activity>,
+    private val activity: WeakReference<Activity>?,
     private val context: Context,
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
@@ -55,7 +69,7 @@ class SpConsentLibMobileCore(
 ): SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
-    private val mainView: ViewGroup? get() = activity.get()?.findViewById(content)
+    private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get () = SPConsents(userData)
 
@@ -77,21 +91,29 @@ class SpConsentLibMobileCore(
     override fun loadMessage(authId: String?) = loadMessage(authId = authId, pubData = null)
 
     override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) = launch {
-        if (connectionManager.isConnected) {
-            messagesToDisplay = ArrayDeque(
-                coordinator.loadMessages(
-                    authId = authId,
-                    pubData = pubData?.toJsonObject(),
-                    language = language.toCore() ?: ENGLISH
-                )
-            )
+        if (!connectionManager.isConnected) {
+            onError(NoInternetConnectionException())
+            return@launch
+        }
+
+        try {
+            messagesToDisplay = ArrayDeque(coordinator.loadMessages(
+                authId = authId,
+                pubData = pubData?.toJsonObject(),
+                language = language.toCore() ?: ENGLISH
+            ))
             if (messagesToDisplay.isEmpty()) {
                 spClient.onConsentReady(spConsents)
             }
             pendingActions = messagesToDisplay.size
             renderNextMessageIfAny()
-        } else {
-            onError() // TODO: specify the error
+        } catch (error: LoadMessagesException) {
+            val consents = spConsents
+            if(consents.gdpr != null || consents.ccpa != null || consents.usNat != null) {
+                renderNextMessageIfAny()
+            } else {
+                onError(FailedToLoadMessages(error))
+            }
         }
     }
 
@@ -114,12 +136,14 @@ class SpConsentLibMobileCore(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
     ) = launch {
-        coordinator.customConsentGDPR(
-            vendors = vendors,
-            categories = categories,
-            legIntCategories = legIntCategories
-        )
-        success(spConsents)
+        runCatching {
+            coordinator.customConsentGDPR(
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            success(spConsents)
+        }.onFailure { onError(FailedToPostCustomConsent(cause = it)) }
     }
 
     override fun customConsentGDPR(
@@ -131,9 +155,8 @@ class SpConsentLibMobileCore(
         vendors = vendors.toList(),
         categories = categories.toList(),
         legIntCategories = legIntCategories.toList()
-    ) {
-        // TODO: make sure to encode it to json string
-        successCallback.transferCustomConsentToUnity(it.toString())
+    ) { consents ->
+        consents?.let { successCallback.transferCustomConsentToUnity(json.encodeToString(it)) }
     }
 
     override fun deleteCustomConsentTo(
@@ -142,12 +165,14 @@ class SpConsentLibMobileCore(
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
     ) = launch {
-        coordinator.deleteCustomConsentGDPR(
-            vendors = vendors,
-            categories = categories,
-            legIntCategories = legIntCategories
-        )
-        success(spConsents)
+        runCatching {
+            coordinator.deleteCustomConsentGDPR(
+                vendors = vendors,
+                categories = categories,
+                legIntCategories = legIntCategories
+            )
+            success(spConsents)
+        }.onFailure { onError(FailedToDeleteCustomConsent(cause = it)) }
     }
 
     override fun deleteCustomConsentTo(
@@ -159,16 +184,18 @@ class SpConsentLibMobileCore(
         vendors = vendors.toList(),
         categories = categories.toList(),
         legIntCategories = legIntCategories.toList()
-    ) {
-        // TODO: make sure to encode it to json string
-        successCallback.transferCustomConsentToUnity(it.toString())
+    ) { consents ->
+        consents?.let { successCallback.transferCustomConsentToUnity(json.encodeToString(it)) }
     }
 
     override fun rejectAll(campaignType: CampaignType) = launch {
-        coordinator.reportAction(SPAction(type = RejectAll, campaignType = campaignType.toCore()))
-        val consents = SPConsents(userData)
-        spClient.onConsentReady(consents)
-        spClient.onSpFinished(consents)
+        val action = SPAction(type = RejectAll, campaignType = campaignType.toCore())
+        runCatching {
+            coordinator.reportAction(action)
+            val consents = SPConsents(userData)
+            spClient.onConsentReady(consents)
+            spClient.onSpFinished(consents)
+        }.onFailure { onError(ReportActionException(cause = it, action = action)) }
     }
 
     override fun loadPrivacyManager(pmId: String, campaignType: CampaignType) =
@@ -223,6 +250,11 @@ class SpConsentLibMobileCore(
         useGroupPmIfAvailable: Boolean? = null,
         messageType: MessageType = MOBILE
     ) {
+        if(!connectionManager.isConnected) {
+            onError(NoInternetConnectionException())
+            return
+        }
+
         pendingActions++
         messageUI.load(
             url = buildPMUrl(
@@ -278,8 +310,12 @@ class SpConsentLibMobileCore(
         val userAction = spClient.onAction(view, action) as SPConsentAction
         when(userAction.actionType) {
             ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
-                coordinator.reportAction(userAction.toCore()) // TODO: think about a way to get the results of GET faster?
-                spClient.onConsentReady(SPConsents(userData))
+                runCatching {
+                    coordinator.reportAction(userAction.toCore())
+                    spClient.onConsentReady(SPConsents(userData))}
+                    .onFailure {
+                        onError(ReportActionException(cause = it, action = userAction.toCore()))
+                    }
                 pendingActions--
             }
             ActionType.CUSTOM, ActionType.MSG_CANCEL, ActionType.UNKNOWN-> {
@@ -297,10 +333,23 @@ class SpConsentLibMobileCore(
         }
     }
 
-    override fun onError() {
+    override fun onError(error: ConsentLibExceptionK) {
         pendingActions = 0
         messagesToDisplay = ArrayDeque(emptyList())
-        spClient.onError(Exception())
+
+        when (error) {
+            is NoIntentFoundForUrl -> {
+                spClient.onNoIntentActivitiesFound(error.url ?: "")
+                return
+            }
+            is UnableToDownloadRenderingApp, is UnableToLoadRenderingApp, is RenderingAppException -> {
+                launch { coordinator.logError(SPError(code = error.code.errorCode)) }
+            }
+            else -> {
+                // NOTE: all other exceptions should have been logged by the `mobile-core` lib
+            }
+        }
+        spClient.onError(error)
     }
 
     override fun finished(view: View) {
