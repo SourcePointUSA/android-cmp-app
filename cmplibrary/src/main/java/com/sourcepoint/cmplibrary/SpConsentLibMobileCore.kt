@@ -71,7 +71,7 @@ class SpConsentLibMobileCore(
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
-    private val spConsents: SPConsents get () = SPConsents(userData)
+    private val spConsents: SPConsents get() = SPConsents(userData)
 
     private val messageUI: SPMessageUI by lazy {
         SPConsentWebView.create(
