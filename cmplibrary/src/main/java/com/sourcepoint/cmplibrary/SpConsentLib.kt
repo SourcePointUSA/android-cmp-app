@@ -10,7 +10,6 @@ import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import org.json.JSONObject
 
 interface SpConsentLib {
-
     /**
      * Load the First Layer Message (FLM)
      */
@@ -91,10 +90,7 @@ interface SpConsentLib {
      *
      * @param ottDelegate functional interface that provides the mechanism to override onBackPress
      */
-    fun handleOnBackPress(
-        isMessageDismissible: Boolean = true,
-        ottDelegate: SpBackPressOttDelegate,
-    )
+    fun handleOnBackPress(isMessageDismissible: Boolean = true, ottDelegate: SpBackPressOttDelegate)
 
     /**
      * Method that verifies home page and delegates navigation between the message view and the
@@ -104,10 +100,7 @@ interface SpConsentLib {
      *
      * @param onHomePage lambda that provides the mechanism to override onBackPress
      */
-    fun handleOnBackPress(
-        isMessageDismissible: Boolean = true,
-        onHomePage: () -> Unit,
-    )
+    fun handleOnBackPress(isMessageDismissible: Boolean = true, onHomePage: () -> Unit)
 
     fun clearLocalData()
 }

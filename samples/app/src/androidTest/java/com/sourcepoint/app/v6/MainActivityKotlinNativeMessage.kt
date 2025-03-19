@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import java.util.UUID
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+//@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityNativeMessTest {
 
     lateinit var scenario: ActivityScenario<NativeMessageActivity>

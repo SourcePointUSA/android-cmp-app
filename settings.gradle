@@ -2,10 +2,8 @@ include ":cmplibrary"
 include ":app"
 include ":metaapp"
 include ":ott-message-demo"
-include ':nat-message-demo'
 include ":ui-test-util"
 project(':ui-test-util').projectDir = new File(settingsDir, "ui-test-util")
 project(':app').projectDir = new File(settingsDir, "samples/app")
 project(':metaapp').projectDir = new File(settingsDir, "samples/metaapp")
 project(':ott-message-demo').projectDir = new File(settingsDir, "samples/ott-message-demo")
-project(':nat-message-demo').projectDir = new File(settingsDir, "samples/nat-message-demo")

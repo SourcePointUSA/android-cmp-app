@@ -17,10 +17,7 @@ interface SpClient {
      * It is invoked when the message is available to the client App
      */
     fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
-    @Deprecated(
-        "onMessageReady callback will be removed in favor of onUIReady. " +
-            "Currently this callback is disabled."
-    )
+    @Deprecated("onMessageReady callback will be removed in favor of onUIReady. Currently this callback is disabled.")
     fun onMessageReady(message: JSONObject)
     fun onAction(view: View, consentAction: ConsentAction): ConsentAction
 
