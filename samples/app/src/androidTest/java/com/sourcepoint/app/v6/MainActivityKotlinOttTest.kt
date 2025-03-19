@@ -13,7 +13,7 @@ import com.sourcepoint.app.v6.utils.LazyActivityScenario
 import com.sourcepoint.app.v6.utils.ScreenshotTakingRule
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
@@ -25,7 +25,7 @@ import org.junit.rules.RuleChain
 import org.koin.core.context.loadKoinModules
 
 class MainActivityKotlinOttTest {
-    val rule = LazyActivityScenario(launchActivity = false, MainActivityKotlin::class.java)
+    private val rule = LazyActivityScenario(launchActivity = false, MainActivityKotlin::class.java)
 
     private val device by lazy { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()) }
 
@@ -64,7 +64,7 @@ class MainActivityKotlinOttTest {
 
 
     @Test
-    fun given_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking<Unit> {
+    fun given_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL() = runBlocking {
         val spClient = mockk<SpClient>(relaxed = true)
         loadModules(spClient)
 
@@ -94,7 +94,7 @@ class MainActivityKotlinOttTest {
     }
 
     @Test
-    fun given_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL_from_PM() = runBlocking<Unit> {
+    fun given_an_OTT_campaign_SHOW_message_and_ACCEPT_ALL_from_PM() = runBlocking {
         val spClient = mockk<SpClient>(relaxed = true)
         loadModules(spClient)
 

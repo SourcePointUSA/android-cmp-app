@@ -11,8 +11,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.sourcepoint.cmplibrary.core.web.ConsentWebView.Companion.CONSENT_WEB_VIEW_TAG_NAME
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
 import com.sourcepoint.cmplibrary.exception.RenderingAppException
@@ -24,7 +23,6 @@ import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.runOnMain
 import com.sourcepoint.cmplibrary.util.getLinkUrl
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
-import com.sourcepoint.cmplibrary.util.readFromAsset
 import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.network.json
 import com.sourcepoint.mobile_core.network.responses.MessagesResponse
@@ -82,10 +80,14 @@ fun Uri.Builder.appendQueryParameterIfPresent(name: String, value: String?): Uri
 class SPConsentWebView(
     context: Context,
     viewId: Int? = null,
+    tagName: String = "consent-web-view",
     val propertyId: Int,
     val messageUIClient: SPMessageUIClient,
 ): WebView(context), SPMessageUI, SPWebMessageUIClient {
-    private var jsReceiver = context.readFromAsset("js_receiver.js")
+    private var jsReceiver = context.assets
+        .open("js_receiver.js")
+        .reader()
+        .readText()
     private lateinit var consents: SPUserData
     private lateinit var campaignType: CampaignType
     private var message: MessagesResponse.Message? = null
@@ -96,12 +98,14 @@ class SPConsentWebView(
         fun create(
             context: Context,
             viewId: Int? = null,
+            tagName: String = "consent-web-view",
             propertyId: Int,
             messageUIClient: SPMessageUIClient
         ) =
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 SPConsentWebView(
                     viewId = viewId,
+                    tagName = tagName,
                     context = context,
                     messageUIClient = messageUIClient,
                     propertyId = propertyId
@@ -110,6 +114,7 @@ class SPConsentWebView(
                 runBlocking(Dispatchers.Main) {
                     SPConsentWebView(
                         viewId = viewId,
+                        tagName = tagName,
                         context = context,
                         messageUIClient = messageUIClient,
                         propertyId = propertyId
@@ -120,7 +125,7 @@ class SPConsentWebView(
 
     init {
         id = viewId ?: generateViewId()
-        tag = CONSENT_WEB_VIEW_TAG_NAME
+        tag = tagName
         settings.javaScriptEnabled = true
         setBackgroundColor(Color.TRANSPARENT)
         setWebContentsDebuggingEnabled(true)

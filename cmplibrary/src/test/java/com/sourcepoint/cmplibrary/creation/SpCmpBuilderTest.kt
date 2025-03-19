@@ -4,7 +4,7 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK

@@ -2,7 +2,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 
 import com.sourcepoint.cmplibrary.data.network.DEFAULT_TIMEOUT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionBinary
 import com.sourcepoint.cmplibrary.model.exposed.SpGppOptionTernary

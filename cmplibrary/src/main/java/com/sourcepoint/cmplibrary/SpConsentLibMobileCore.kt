@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.FailedToDeleteCustomConsent
 import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
@@ -71,7 +71,7 @@ class SpConsentLibMobileCore(
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
-    private val spConsents: SPConsents get () = SPConsents(userData)
+    private val spConsents: SPConsents get() = SPConsents(userData)
 
     private val messageUI: SPMessageUI by lazy {
         SPConsentWebView.create(
@@ -291,11 +291,8 @@ class SpConsentLibMobileCore(
         // TODO: deprecate
     }
 
-    override fun handleOnBackPress(
-        isMessageDismissible: Boolean,
-        ottDelegate: SpBackPressOttDelegate
-    ) {
-        TODO("Not yet implemented")
+    override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
+        handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
     }
 
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {
@@ -343,7 +340,7 @@ class SpConsentLibMobileCore(
                 return
             }
             is UnableToDownloadRenderingApp, is UnableToLoadRenderingApp, is RenderingAppException -> {
-                launch { coordinator.logError(SPError(code = error.code.errorCode)) }
+                launch { coordinator.logError(SPError(code = error.code)) }
             }
             else -> {
                 // NOTE: all other exceptions should have been logged by the `mobile-core` lib

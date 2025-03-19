@@ -24,11 +24,11 @@ class FactoryKtTest {
     fun `CREATE a new instance of ConsentLib`() {
         makeConsentLib(
             spConfig = SpConfig(
-                22,
-                "asfa",
-                emptyList(),
-                MessageLanguage.ENGLISH,
+                accountId = 22,
+                propertyName = "foo",
                 propertyId = 1234,
+                campaigns = emptyList(),
+                messageLanguage = MessageLanguage.ENGLISH,
                 messageTimeout = 3000,
             ),
             activity = context,

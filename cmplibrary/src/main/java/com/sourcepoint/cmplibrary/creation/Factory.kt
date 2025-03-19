@@ -4,10 +4,10 @@ import android.app.Activity
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibMobileCore
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.mobile_core.Coordinator
@@ -32,7 +32,7 @@ fun makeConsentLib(
     spConfig: SpConfig,
     activity: Activity,
     spClient: SpClient,
-    connectionManager: ConnectionManager
+    connectionManager: ConnectionManager = ConnectionManagerImpl(activity.applicationContext),
 ): SpConsentLib = SpConsentLibMobileCore(
     coordinator = Coordinator(
         accountId = spConfig.accountId,

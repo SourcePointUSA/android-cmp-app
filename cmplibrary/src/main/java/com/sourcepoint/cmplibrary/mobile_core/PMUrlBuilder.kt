@@ -1,7 +1,7 @@
 package com.sourcepoint.cmplibrary.mobile_core
 
 import android.net.Uri
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
@@ -43,9 +43,9 @@ fun buildPMUrl(
     useChildPmIfAvailable: Boolean
 ): String {
     val uuidAndChildPmId: Triple<String, String?, String?> = when(campaignType) {
-        CampaignType.CCPA -> Triple("ccpaUUID", userData.ccpa?.consents?.uuid, userData?.ccpa?.childPmId)
-        CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData?.gdpr?.childPmId)
-        CampaignType.USNAT -> Triple("consentUUID", userData.usnat?.consents?.uuid, userData?.usnat?.childPmId)
+        CampaignType.CCPA -> Triple("ccpaUUID", userData.ccpa?.consents?.uuid, userData.ccpa?.childPmId)
+        CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData.gdpr?.childPmId)
+        CampaignType.USNAT -> Triple("consentUUID", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)
         else -> Triple("consentUUID", null, null)
     }
     val messageId = if (useChildPmIfAvailable && uuidAndChildPmId.third?.isNotEmpty() == true) {

@@ -1,8 +1,8 @@
 package com.sourcepoint.cmplibrary.core.nativemessage
 
 import com.sourcepoint.cmplibrary.assertNotNull
-import com.sourcepoint.cmplibrary.exception.CampaignType
-import com.sourcepoint.cmplibrary.util.file2String
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.file2String
 import org.json.JSONObject
 import org.junit.Test
 

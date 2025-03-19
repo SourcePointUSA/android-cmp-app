@@ -431,7 +431,7 @@ class TestUseCase {
                         override val spConfig: SpConfig = spConfig
                         override val gdprPmId: String = gdprPmId
                         override val ccpaPmId: String = ccpaPmId
-                        override val messageType: MessageType? = messageType
+                        override val messageType: MessageType = messageType
                         override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                         override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
                         override val diagnostic: List<Pair<String, Any?>> = diagnostic

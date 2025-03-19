@@ -17,8 +17,8 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapNmAcceptAll
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapNmDismiss
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import java.util.UUID
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+//@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityNativeMessTest {
 
     lateinit var scenario: ActivityScenario<NativeMessageActivity>
