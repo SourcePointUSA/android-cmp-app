@@ -17,14 +17,11 @@ interface SpClient {
      * It is invoked when the message is available to the client App
      */
     fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
-    @Deprecated("onMessageReady callback will be removed in favor of onUIReady. Currently this callback is disabled.")
+
+    @Deprecated("onMessageReady callback will be removed in favor of onMessageReady(message: MessageStructure, messageController: NativeMessageController). Currently this callback is disabled.")
     fun onMessageReady(message: JSONObject)
     fun onAction(view: View, consentAction: ConsentAction): ConsentAction
 
-    /***
-     * This callback does NOT make sense for the Native message because:
-     * the CLIENT KNOWS when the view gets removed.
-     */
     fun onUIFinished(view: View)
     fun onConsentReady(consent: SPConsents)
     fun onError(error: Throwable)

@@ -291,11 +291,8 @@ class SpConsentLibMobileCore(
         // TODO: deprecate
     }
 
-    override fun handleOnBackPress(
-        isMessageDismissible: Boolean,
-        ottDelegate: SpBackPressOttDelegate
-    ) {
-        TODO("Not yet implemented")
+    override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
+        handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
     }
 
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {
@@ -343,7 +340,7 @@ class SpConsentLibMobileCore(
                 return
             }
             is UnableToDownloadRenderingApp, is UnableToLoadRenderingApp, is RenderingAppException -> {
-                launch { coordinator.logError(SPError(code = error.code.errorCode)) }
+                launch { coordinator.logError(SPError(code = error.code)) }
             }
             else -> {
                 // NOTE: all other exceptions should have been logged by the `mobile-core` lib

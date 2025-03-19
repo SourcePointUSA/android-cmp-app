@@ -5,6 +5,7 @@ import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
+import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
@@ -82,4 +83,8 @@ val appModule = module {
 
     // for tests purpose
     single<List<SpClient>> { emptyList() }
+
+    single<ConnectionManager> { object : ConnectionManager {
+        override val isConnected = true
+    } }
 }
