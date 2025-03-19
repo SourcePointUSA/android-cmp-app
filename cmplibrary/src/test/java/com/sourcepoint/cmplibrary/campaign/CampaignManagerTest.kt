@@ -314,7 +314,7 @@ class CampaignManagerTest {
     fun `GIVEN a different applicableSections compared with the stored one RETURN true`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"_id":""}}
             """.trimIndent()
         )
 
@@ -328,7 +328,7 @@ class CampaignManagerTest {
     fun `GIVEN an applicableSections without changes compared with the stored one RETURN false`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}} 
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"_id":""}} 
             """.trimIndent()
         )
 
@@ -343,7 +343,7 @@ class CampaignManagerTest {
 
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"_id":""}}
             """.trimIndent()
         )
 
@@ -366,7 +366,7 @@ class CampaignManagerTest {
     fun `GIVEN an applicableSections without usnat configured RETURN false`() {
         every { dataStorage.metaDataResp }.returns(
             """
-           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"additionsChangeDate":"","_id":""}}
+           {"usnat":{"applicableSections":[7],"applies":false,"sampleRate":0.0,"_id":""}}
             """.trimIndent()
         )
 
@@ -381,11 +381,8 @@ class CampaignManagerTest {
             vendorListId = "",
             applies = true,
             sampleRate = 1.0f,
-            additionsChangeDate = "",
             applicableSections = sections,
-        ),
-        ccpa = null,
-        gdpr = null
+        )
     )
 
     private val usnatConsentData = """
