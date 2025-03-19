@@ -628,13 +628,13 @@ private class CampaignManagerImpl(
         get() = dataStorage.gdprConsentStatus != null || dataStorage.ccpaConsentStatus != null
 
     override val gdprAdditionsChangeDate: String?
-        get() = metaDataResp?.gdpr?.additionsChangeDate
+        get() = metaDataResp?.gdpr?.additionsChangeDate?.toString()
 
     override val gdprLegalBasisChangeDate: String?
-        get() = metaDataResp?.gdpr?.legalBasisChangeDate
+        get() = metaDataResp?.gdpr?.legalBasisChangeDate?.toString()
 
     override val usnatAdditionsChangeDate: String?
-        get() = metaDataResp?.usnat?.additionsChangeDate
+        get() = metaDataResp?.usnat?.additionsChangeDate?.toString()
 
     override fun handleAuthIdOrPropertyIdChange(
         newAuthId: String?,

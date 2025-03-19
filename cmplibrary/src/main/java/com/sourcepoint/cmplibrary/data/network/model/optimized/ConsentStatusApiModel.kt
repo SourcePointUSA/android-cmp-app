@@ -68,8 +68,8 @@ data class CcpaCS(
             rejectedCategories = core.rejectedCategories,
             signedLspa = core.signedLspa,
             status = CcpaStatus.entries.firstOrNull { it.name.lowercase() == core.status?.name?.lowercase() },
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
+            dateCreated = core.dateCreated.toString(),
+            expirationDate = core.expirationDate.toString(),
             uuid = core.uuid,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             gppData = core.gppData
@@ -98,8 +98,8 @@ data class USNatConsentData(
 
         return copy(
             applies = applies,
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
+            dateCreated = core.dateCreated.toString(),
+            expirationDate = core.expirationDate.toString(),
             uuid = core.uuid,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
             gppData = core.gppData,
@@ -185,8 +185,8 @@ data class GdprCS(
             legIntVendors = core.legIntVendors,
             specialFeatures = core.specialFeatures,
             vendors = core.vendors,
-            dateCreated = core.dateCreated,
-            expirationDate = core.expirationDate,
+            dateCreated = core.dateCreated.toString(),
+            expirationDate = core.expirationDate.toString(),
             euconsent = core.euconsent,
             uuid = core.uuid,
             webConsentPayload = core.webConsentPayload?.let { JsonConverterImpl().toJsonObject(it) },
