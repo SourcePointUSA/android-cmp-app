@@ -28,7 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class SPConsentLibCoreTest {
     private val accountId = 22
     private val propertyId = 16893
     private val propertyName = SPPropertyName.create("mobile.multicampaign.demo")
@@ -60,8 +60,7 @@ class ExampleInstrumentedTest {
     @Test
     fun onUIReadyIsCalled() = runBlocking {
         val client = spClient
-        val consentLib = getConsentLib(spClient = client)
-        consentLib.loadMessage()
+        getConsentLib(spClient = client).loadMessage()
         wr {
             verify(exactly = 1) { client.onUIReady(any()) }
             verify(exactly = 0) { client.onError(any()) }
@@ -71,11 +70,10 @@ class ExampleInstrumentedTest {
     @Test
     fun whenTheresNoInternetCallsOnErrorWithNoInternetError() = runBlocking {
         val client = spClient
-        val consentLib = getConsentLib(
+        getConsentLib(
             spClient = client,
             connectionManager = object : ConnectionManager { override val isConnected = false }
-        )
-        consentLib.loadMessage()
+        ).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 1) { client.onError(ofType<NoInternetConnectionException>()) }
@@ -88,11 +86,7 @@ class ExampleInstrumentedTest {
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns SPUserData()
         coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
-        val consentLib = getConsentLib(
-            spClient =  client,
-            coordinator = coordinatorMock
-        )
-        consentLib.loadMessage()
+        getConsentLib(spClient =  client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 1) { client.onError(ofType<FailedToLoadMessages>()) }
@@ -106,11 +100,7 @@ class ExampleInstrumentedTest {
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns userData
         coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
-        val consentLib = getConsentLib(
-            spClient =  client,
-            coordinator = coordinatorMock
-        )
-        consentLib.loadMessage()
+        getConsentLib(spClient =  client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 0) { client.onError(any()) }

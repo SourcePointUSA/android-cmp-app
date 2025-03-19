@@ -3,6 +3,7 @@ package com.sourcepoint.app.v6
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.*
@@ -19,9 +20,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-//@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinNativeOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>
