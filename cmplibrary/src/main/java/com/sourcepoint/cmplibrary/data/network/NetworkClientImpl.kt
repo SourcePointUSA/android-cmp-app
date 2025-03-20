@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -17,7 +16,6 @@ import com.sourcepoint.cmplibrary.data.network.util.create
 import com.sourcepoint.cmplibrary.exception.ApiRequestPostfix
 import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepoint.cmplibrary.util.check
-import com.sourcepoint.mobile_core.models.SPPropertyName
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.network.SourcepointClient
 import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
@@ -34,7 +32,6 @@ import okhttp3.RequestBody
 internal fun createNetworkClient(
     accountId: Int,
     propertyId: Int,
-    propertyName: String,
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
     logger: Logger,
@@ -44,11 +41,7 @@ internal fun createNetworkClient(
     urlManager,
     logger,
     responseManager,
-    coreClient = SourcepointClient(
-        accountId = accountId,
-        propertyId = propertyId,
-        propertyName = SPPropertyName.create(propertyName)
-    )
+    coreClient = SourcepointClient(accountId = accountId, propertyId = propertyId)
 )
 
 private class NetworkClientImpl(

@@ -85,7 +85,6 @@ class Builder {
         val networkClient = networkClient(
             accountId = spc.accountId,
             propertyId = spc.propertyId,
-            propertyName = spc.propertyName,
             appCtx = appCtx,
             netClient = okHttpClient,
             responseManage = responseManager,

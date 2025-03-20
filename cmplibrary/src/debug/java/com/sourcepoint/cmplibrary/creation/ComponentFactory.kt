@@ -41,7 +41,6 @@ internal fun getConnectionManager(appCtx: Context): ConnectionManager {
 internal fun networkClient(
     accountId: Int,
     propertyId: Int,
-    propertyName: String,
     appCtx: Context,
     netClient: OkHttpClient,
     responseManage: ResponseManager,
@@ -55,7 +54,6 @@ internal fun networkClient(
         logger = logger,
         accountId = accountId,
         propertyId = propertyId,
-        propertyName = propertyName
     )
 
     val mockObject: NetworkClient? = com.sourcepoint.cmplibrary.util.check {

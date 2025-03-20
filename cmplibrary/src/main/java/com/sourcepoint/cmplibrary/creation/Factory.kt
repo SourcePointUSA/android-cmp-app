@@ -65,7 +65,6 @@ fun makeConsentLib(
     val networkClient = networkClient(
         accountId = spConfig.accountId,
         propertyId = spConfig.propertyId,
-        propertyName = spConfig.propertyName,
         appCtx = appCtx,
         netClient = okHttpClient,
         responseManage = responseManager,

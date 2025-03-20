@@ -91,7 +91,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.1.0")
+    implementation("com.sourcepoint:core:0.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
     // kotlin
