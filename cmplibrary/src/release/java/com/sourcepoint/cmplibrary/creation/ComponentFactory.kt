@@ -14,7 +14,6 @@ internal fun getConnectionManager(appCtx: Context): ConnectionManager = Connecti
 internal fun networkClient(
     accountId: Int,
     propertyId: Int,
-    propertyName: String,
     appCtx: Context,
     netClient: OkHttpClient,
     responseManage: ResponseManager,
@@ -22,7 +21,6 @@ internal fun networkClient(
 ) = createNetworkClient(
     accountId = accountId,
     propertyId = propertyId,
-    propertyName = propertyName,
     httpClient = netClient,
     responseManager = responseManage,
     urlManager = HttpUrlManagerSingleton,
