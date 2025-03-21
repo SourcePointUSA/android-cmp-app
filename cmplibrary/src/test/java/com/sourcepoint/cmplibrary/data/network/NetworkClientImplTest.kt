@@ -45,7 +45,6 @@ class NetworkClientImplTest {
         createNetworkClient(
             accountId = 123,
             propertyId = 123,
-            propertyName = "",
             httpClient = okHttp,
             responseManager = responseManager,
             urlManager = HttpUrlManagerSingleton,

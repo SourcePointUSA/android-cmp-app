@@ -215,10 +215,7 @@ class CampaignManagerImplTest {
         campaignManager.metaDataResp = MetaDataResponse(
             gdpr = MetaDataResponse.MetaDataResponseGDPR(
                 vendorListId = "123",
-                additionsChangeDate = "",
                 applies = false,
-                childPmId = null,
-                legalBasisChangeDate = "",
                 sampleRate = 1.0f
             ),
             usnat = null,
@@ -232,10 +229,7 @@ class CampaignManagerImplTest {
         campaignManager.metaDataResp = MetaDataResponse(
             gdpr = MetaDataResponse.MetaDataResponseGDPR(
                 vendorListId = "123",
-                additionsChangeDate = "",
                 applies = false,
-                childPmId = null,
-                legalBasisChangeDate = "",
                 sampleRate = 1.0f
             ),
             usnat = null,
@@ -249,14 +243,9 @@ class CampaignManagerImplTest {
         campaignManager.metaDataResp = MetaDataResponse(
             gdpr = MetaDataResponse.MetaDataResponseGDPR(
                 vendorListId = "123",
-                additionsChangeDate = "",
                 applies = false,
-                childPmId = null,
-                legalBasisChangeDate = "",
                 sampleRate = 1.0f
-            ),
-            usnat = null,
-            ccpa = null
+            )
         )
         campaignManager.hasGdprVendorListIdChanged(null).assertFalse()
     }
@@ -275,11 +264,9 @@ class CampaignManagerImplTest {
             usnat = MetaDataResponse.MetaDataResponseUSNat(
                 applies = false,
                 sampleRate = 1.0f,
-                additionsChangeDate = "",
                 applicableSections = emptyList(),
                 vendorListId = "123"
             ),
-            ccpa = null
         )
         campaignManager
             .hasUsNatVendorListIdChanged("123")
@@ -289,15 +276,12 @@ class CampaignManagerImplTest {
     @Test
     fun given_usnat_vendor_list_id_changed_from_something_to_something_else_THEN_should_return_true() {
         campaignManager.metaDataResp = MetaDataResponse(
-            gdpr = null,
             usnat = MetaDataResponse.MetaDataResponseUSNat(
                 applies = false,
                 sampleRate = 1.0f,
-                additionsChangeDate = "",
                 applicableSections = emptyList(),
                 vendorListId = "123"
             ),
-            ccpa = null
         )
         campaignManager
             .hasUsNatVendorListIdChanged("abc")
@@ -308,15 +292,12 @@ class CampaignManagerImplTest {
     fun given_usnat_vendor_list_id_changed_from_something_to_null_THEN_should_return_false() {
         campaignManager.handleMetaDataResponse(
             MetaDataResponse(
-                gdpr = null,
                 usnat = MetaDataResponse.MetaDataResponseUSNat(
                     applies = false,
                     sampleRate = 1.0f,
-                    additionsChangeDate = "",
                     applicableSections = emptyList(),
                     vendorListId = "123"
-                ),
-                ccpa = null
+                )
             )
         )
         campaignManager
@@ -331,15 +312,12 @@ class CampaignManagerImplTest {
         val newRate = 0.5
         campaignManager.handleMetaDataResponse(
             MetaDataResponse(
-                gdpr = null,
                 usnat = MetaDataResponse.MetaDataResponseUSNat(
                     applies = false,
                     sampleRate = newRate.toFloat(),
-                    additionsChangeDate = "",
                     applicableSections = emptyList(),
                     vendorListId = ""
                 ),
-                ccpa = null
             )
         )
         dataStorage.usnatSampleRate.assertEquals(newRate)
@@ -353,15 +331,12 @@ class CampaignManagerImplTest {
         val newRate = 0.5
         campaignManager.handleMetaDataResponse(
             MetaDataResponse(
-                gdpr = null,
                 usnat = MetaDataResponse.MetaDataResponseUSNat(
                     applies = false,
                     sampleRate = newRate.toFloat(),
-                    additionsChangeDate = "",
                     applicableSections = emptyList(),
                     vendorListId = ""
-                ),
-                ccpa = null
+                )
             )
         )
         dataStorage.usnatSampleRate.assertEquals(newRate)

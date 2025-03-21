@@ -35,6 +35,7 @@ import com.sourcepoint.mobile_core.network.requests.ConsentStatusRequest
 import com.sourcepoint.mobile_core.network.requests.MetaDataRequest
 import com.sourcepoint.mobile_core.network.requests.PvDataRequest
 import com.sourcepoint.mobile_core.network.responses.MetaDataResponse
+import kotlinx.datetime.Instant
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
 
@@ -736,7 +737,7 @@ internal class ServiceImpl(
             gdpr = campaigns4Config.firstOrNull { it.campaignType == GDPR }?.let {
                 ConsentStatusRequest.MetaData.Campaign(
                     applies = gdprApplies ?: false,
-                    dateCreated = gdprConsentStatus?.dateCreated,
+                    dateCreated = gdprConsentStatus?.dateCreated?.let { Instant.parse(it) },
                     uuid = gdprConsentStatus?.uuid,
                     hasLocalData = false
                 )
@@ -744,7 +745,7 @@ internal class ServiceImpl(
             usnat = campaigns4Config.firstOrNull { it.campaignType == USNAT }?.let {
                 ConsentStatusRequest.MetaData.USNatCampaign(
                     applies = usNatApplies ?: false,
-                    dateCreated = transitionCCPAUSnatDateCreated,
+                    dateCreated = transitionCCPAUSnatDateCreated?.let { Instant.parse(it) },
                     uuid = usNatConsentData?.uuid,
                     hasLocalData = false,
                     transitionCCPAAuth = transitionCCPAAuth,
@@ -754,7 +755,7 @@ internal class ServiceImpl(
             ccpa = campaigns4Config.firstOrNull { it.campaignType == CCPA }?.let {
                 ConsentStatusRequest.MetaData.Campaign(
                     applies = ccpaApplies ?: false,
-                    dateCreated = ccpaConsentStatus?.dateCreated,
+                    dateCreated = ccpaConsentStatus?.dateCreated?.let { Instant.parse(it) },
                     uuid = ccpaConsentStatus?.uuid,
                     hasLocalData = false,
                 )
@@ -769,15 +770,15 @@ internal class ServiceImpl(
         if (spConfig.isIncluded(GDPR)) {
             gdprConsentStatus = (gdprConsentStatus ?: GdprCS()).copyingFrom(core = response.consentStatusData.gdpr, applies = gdprApplies)
             gdprUuid = response.consentStatusData.gdpr?.uuid
-            gdprDateCreated = response.consentStatusData.gdpr?.dateCreated
-            response.consentStatusData.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate }
+            gdprDateCreated = response.consentStatusData.gdpr?.dateCreated.toString()
+            response.consentStatusData.gdpr?.expirationDate?.let { exDate -> dataStorage.gdprExpirationDate = exDate.toString() }
         }
 
         if (spConfig.isIncluded(CCPA)) {
             ccpaConsentStatus = (ccpaConsentStatus ?: CcpaCS()).copyingFrom(core = response.consentStatusData.ccpa, applies = ccpaApplies)
             ccpaUuid = response.consentStatusData.ccpa?.uuid
-            ccpaDateCreated = response.consentStatusData.ccpa?.dateCreated
-            response.consentStatusData.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate }
+            ccpaDateCreated = response.consentStatusData.ccpa?.dateCreated.toString()
+            response.consentStatusData.ccpa?.expirationDate?.let { exDate -> dataStorage.ccpaExpirationDate = exDate.toString() }
         }
 
         if (spConfig.isIncluded(USNAT)) {

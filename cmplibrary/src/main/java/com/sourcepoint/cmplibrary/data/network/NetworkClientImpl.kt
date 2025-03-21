@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.* //ktlint-disabl
 import com.sourcepoint.cmplibrary.data.network.model.optimized.MessagesParamReq
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.ChoiceResp
 import com.sourcepoint.cmplibrary.data.network.model.optimized.choice.GetChoiceParamReq
-import com.sourcepoint.cmplibrary.data.network.util.* //ktlint-disable
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManager
 import com.sourcepoint.cmplibrary.data.network.util.HttpUrlManagerSingleton
 import com.sourcepoint.cmplibrary.data.network.util.ResponseManager
@@ -33,7 +32,6 @@ import okhttp3.RequestBody
 internal fun createNetworkClient(
     accountId: Int,
     propertyId: Int,
-    propertyName: String,
     httpClient: OkHttpClient,
     urlManager: HttpUrlManager,
     logger: Logger,
@@ -43,11 +41,7 @@ internal fun createNetworkClient(
     urlManager,
     logger,
     responseManager,
-    coreClient = SourcepointClient(
-        accountId = accountId,
-        propertyId = propertyId,
-        propertyName = propertyName
-    )
+    coreClient = SourcepointClient(accountId = accountId, propertyId = propertyId)
 )
 
 private class NetworkClientImpl(
