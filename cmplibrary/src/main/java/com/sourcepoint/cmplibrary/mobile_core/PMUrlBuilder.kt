@@ -42,7 +42,7 @@ fun buildPMUrl(
     pmTab: PMTab?,
     useChildPmIfAvailable: Boolean
 ): String {
-    val uuidAndChildPmId: Triple<String, String?, String?> = when(campaignType) {
+    val uuidAndChildPmId: Triple<String, String?, String?> = when (campaignType) {
         CampaignType.CCPA -> Triple("ccpaUUID", userData.ccpa?.consents?.uuid, userData.ccpa?.childPmId)
         CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData.gdpr?.childPmId)
         CampaignType.USNAT -> Triple("consentUUID", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)

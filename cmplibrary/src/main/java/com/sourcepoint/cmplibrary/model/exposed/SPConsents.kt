@@ -23,7 +23,7 @@ data class SPConsents(
     val ccpa: SPCCPAConsent? = null,
     val usNat: SpUsNatConsent? = null,
 ) {
-    internal constructor(core: SPUserData): this(
+    internal constructor(core: SPUserData) : this(
         gdpr = core.gdpr?.consents?.let { SPGDPRConsent(consent = GDPRConsentInternal(it, core.gdpr?.childPmId)) },
         ccpa = core.ccpa?.consents?.let { SPCCPAConsent(consent = CCPAConsentInternal(it, core.ccpa?.childPmId)) },
         usNat = core.usnat?.consents?.let { SpUsNatConsent(consent = UsNatConsentInternal(it)) }, // SpUsNatConsent doesn't have childPmId
@@ -73,7 +73,7 @@ internal data class GDPRConsentInternal(
     val thisContent: JSONObject = JSONObject(),
     override val webConsentPayload: JsonObject? = null,
 ) : GDPRConsent {
-    constructor(core: GDPRConsentCore, childPmId: String?): this(
+    constructor(core: GDPRConsentCore, childPmId: String?) : this(
         euconsent = core.euconsent ?: "",
         uuid = core.uuid,
         tcData = core.tcData,
@@ -115,7 +115,7 @@ internal data class CCPAConsentInternal(
     override val signedLspa: Boolean? = null,
     override val webConsentPayload: JsonObject? = null,
 ) : CCPAConsent {
-    constructor(core: CCPAConsentCore, childPmId: String?): this(
+    constructor(core: CCPAConsentCore, childPmId: String?) : this(
         uuid = core.uuid,
         gppData = core.gppData,
         rejectedCategories = core.rejectedCategories,
@@ -138,7 +138,7 @@ enum class CcpaStatus {
     unknown;
 
     companion object {
-        fun fromCore(core: CoreCCPAConsentStatus) = when(core) {
+        fun fromCore(core: CoreCCPAConsentStatus) = when (core) {
             CoreCCPAConsentStatus.ConsentedAll -> consentedAll
             CoreCCPAConsentStatus.RejectedAll -> rejectedAll
             CoreCCPAConsentStatus.RejectedSome -> rejectedSome
@@ -209,14 +209,16 @@ internal data class UsNatConsentInternal(
             gpcStatus = consentStatus?.granularStatus?.gpcStatus,
         )
 
-    constructor(core: USNATConsentCore): this(
+    constructor(core: USNATConsentCore) : this(
         gppData = core.gppData,
         applies = core.applies,
-        consentStrings = core.consentStrings.map { USNatConsentData.ConsentString(
-            sectionId = it.sectionId,
-            sectionName = it.sectionName,
-            consentString = it.consentString
-        ) },
+        consentStrings = core.consentStrings.map {
+            USNatConsentData.ConsentString(
+                sectionId = it.sectionId,
+                sectionName = it.sectionName,
+                consentString = it.consentString
+            )
+        },
         dateCreated = core.dateCreated.toString(),
         vendors = core.userConsents.vendors.map { ConsentableImpl(id = it.id, consented = it.consented) },
         categories = core.userConsents.categories.map { ConsentableImpl(id = it.id, consented = it.consented) },

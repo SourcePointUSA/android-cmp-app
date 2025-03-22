@@ -62,7 +62,7 @@ interface SPMessageUI {
  * These functions need to be added with the annotation `@JavascriptInterface` in order to
  * take effect.
  */
-interface SPWebMessageUIClient: SPMessageUIClient {
+interface SPWebMessageUIClient : SPMessageUIClient {
     fun loaded()
     fun readyForMessagePreload()
     fun readyForConsentPreload()
@@ -83,7 +83,7 @@ class SPConsentWebView(
     tagName: String = "consent-web-view",
     val propertyId: Int,
     val messageUIClient: SPMessageUIClient,
-): WebView(context), SPMessageUI, SPWebMessageUIClient {
+) : WebView(context), SPMessageUI, SPWebMessageUIClient {
     private var jsReceiver = context.assets
         .open("js_receiver.js")
         .reader()
@@ -137,9 +137,12 @@ class SPConsentWebView(
                 userGesture: Boolean,
                 resultMsg: Message
             ): Boolean {
-                context.loadLinkOnExternalBrowser(getLinkUrl(view.hitTestResult), onNoIntentActivitiesFound = {
-                    messageUIClient.onError(NoIntentFoundForUrl(it))
-                })
+                context.loadLinkOnExternalBrowser(
+                    getLinkUrl(view.hitTestResult),
+                    onNoIntentActivitiesFound = {
+                        messageUIClient.onError(NoIntentFoundForUrl(it))
+                    }
+                )
                 view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
                 return false
             }
@@ -201,7 +204,7 @@ class SPConsentWebView(
         }
         response.body?.close()
         html!!
-    } catch (error: Throwable){
+    } catch (error: Throwable) {
         throw UnableToDownloadRenderingApp(cause = error, url)
     }
 
@@ -220,16 +223,19 @@ class SPConsentWebView(
     private fun loadPrivacyManagerFrom(action: ConsentAction) {
         isFirstLayer = false
         action.pmUrl?.let {
-            loadRenderingApp(buildPMUrl(
-                campaignType = campaignType,
-                pmId = action.messageId,
-                propertyId = propertyId,
-                baseUrl = it,
-                userData = consents,
-                language = action.consentLanguage,
-                pmTab = null,
-                useChildPmIfAvailable = false
-            ), jsReceiver)
+            loadRenderingApp(
+                buildPMUrl(
+                    campaignType = campaignType,
+                    pmId = action.messageId,
+                    propertyId = propertyId,
+                    baseUrl = it,
+                    userData = consents,
+                    language = action.consentLanguage,
+                    pmTab = null,
+                    useChildPmIfAvailable = false
+                ),
+                jsReceiver
+            )
         }
     }
 
@@ -245,12 +251,14 @@ class SPConsentWebView(
         """window.postMessage({
             name: "sp.loadConsent",
             consent: ${when (campaignType) {
-                CampaignType.GDPR -> json.encodeToJsonElement(consents.gdpr?.consents)
-                CampaignType.CCPA -> json.encodeToJsonElement(consents.ccpa?.consents)
-                CampaignType.USNAT -> json.encodeToJsonElement(consents.usnat?.consents)
-                CampaignType.UNKNOWN -> null
-            }}
-        }, "*");""", null)
+            CampaignType.GDPR -> json.encodeToJsonElement(consents.gdpr?.consents)
+            CampaignType.CCPA -> json.encodeToJsonElement(consents.ccpa?.consents)
+            CampaignType.USNAT -> json.encodeToJsonElement(consents.usnat?.consents)
+            CampaignType.UNKNOWN -> null
+        }}
+        }, "*");""",
+        null
+    )
 
     override fun loaded(view: View) = runOnMain {
         evaluateJavascript("""window.spLegislation="${campaignType.name}"""", null)

@@ -86,7 +86,7 @@ class SPConsentLibCoreTest {
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns SPUserData()
         coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
-        getConsentLib(spClient =  client, coordinator = coordinatorMock).loadMessage()
+        getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 1) { client.onError(ofType<FailedToLoadMessages>()) }
@@ -100,7 +100,7 @@ class SPConsentLibCoreTest {
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns userData
         coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
-        getConsentLib(spClient =  client, coordinator = coordinatorMock).loadMessage()
+        getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 0) { client.onError(any()) }
@@ -115,7 +115,7 @@ class SPConsentLibCoreTest {
         preferences.apply {
 //            putString("")
         }.commit()
-        val consentLib = getConsentLib(spClient =  client)
+        val consentLib = getConsentLib(spClient = client)
         consentLib.loadMessage()
         wr {
 //            verify(exactly = 0) { client.onUIReady(any()) }

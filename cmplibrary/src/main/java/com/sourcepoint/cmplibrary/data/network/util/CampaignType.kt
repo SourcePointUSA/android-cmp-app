@@ -15,7 +15,7 @@ enum class CampaignType {
     UNKNOWN;
 
     companion object {
-        fun fromCore(type: SPCampaignType) = when(type) {
+        fun fromCore(type: SPCampaignType) = when (type) {
             SPCampaignType.Gdpr -> GDPR
             SPCampaignType.Ccpa -> CCPA
             SPCampaignType.UsNat -> USNAT
@@ -23,7 +23,7 @@ enum class CampaignType {
         }
     }
 
-    fun toCore(): SPCampaignType = when(this) {
+    fun toCore(): SPCampaignType = when (this) {
         GDPR -> SPCampaignType.Gdpr
         CCPA -> SPCampaignType.Ccpa
         USNAT -> SPCampaignType.UsNat

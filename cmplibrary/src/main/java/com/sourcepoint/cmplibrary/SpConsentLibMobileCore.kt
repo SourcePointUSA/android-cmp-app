@@ -66,7 +66,7 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
-): SpConsentLib, SPMessageUIClient {
+) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
@@ -97,11 +97,13 @@ class SpConsentLibMobileCore(
         }
 
         try {
-            messagesToDisplay = ArrayDeque(coordinator.loadMessages(
-                authId = authId,
-                pubData = pubData?.toJsonObject(),
-                language = language.toCore() ?: ENGLISH
-            ))
+            messagesToDisplay = ArrayDeque(
+                coordinator.loadMessages(
+                    authId = authId,
+                    pubData = pubData?.toJsonObject(),
+                    language = language.toCore() ?: ENGLISH
+                )
+            )
             if (messagesToDisplay.isEmpty()) {
                 spClient.onConsentReady(spConsents)
             }
@@ -109,7 +111,7 @@ class SpConsentLibMobileCore(
             renderNextMessageIfAny()
         } catch (error: LoadMessagesException) {
             val consents = spConsents
-            if(consents.gdpr != null || consents.ccpa != null || consents.usNat != null) {
+            if (consents.gdpr != null || consents.ccpa != null || consents.usNat != null) {
                 renderNextMessageIfAny()
             } else {
                 onError(FailedToLoadMessages(error))
@@ -118,7 +120,7 @@ class SpConsentLibMobileCore(
     }
 
     private fun renderNextMessageIfAny() =
-        if(pendingActions == 0 && messagesToDisplay.isEmpty()) {
+        if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
             spClient.onSpFinished(spConsents)
         } else if (messagesToDisplay.isNotEmpty()) {
             val messageToRender = messagesToDisplay.removeFirst()
@@ -250,7 +252,7 @@ class SpConsentLibMobileCore(
         useGroupPmIfAvailable: Boolean? = null,
         messageType: MessageType = MOBILE
     ) {
-        if(!connectionManager.isConnected) {
+        if (!connectionManager.isConnected) {
             onError(NoInternetConnectionException())
             return
         }
@@ -305,28 +307,29 @@ class SpConsentLibMobileCore(
 
     override fun onAction(view: View, action: ConsentAction) = launch {
         val userAction = spClient.onAction(view, action) as SPConsentAction
-        when(userAction.actionType) {
+        when (userAction.actionType) {
             ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
                 runCatching {
                     coordinator.reportAction(userAction.toCore())
-                    spClient.onConsentReady(SPConsents(userData))}
+                    spClient.onConsentReady(SPConsents(userData))
+                }
                     .onFailure {
                         onError(ReportActionException(cause = it, action = userAction.toCore()))
                     }
                 pendingActions--
             }
-            ActionType.CUSTOM, ActionType.MSG_CANCEL, ActionType.UNKNOWN-> {
+            ActionType.CUSTOM, ActionType.MSG_CANCEL, ActionType.UNKNOWN -> {
                 pendingActions--
             }
             ActionType.PM_DISMISS -> {
-                if(messageUI.isFirstLayer) {
+                if (messageUI.isFirstLayer) {
                     pendingActions--
                 }
             }
             else -> {}
         }
-        if(pendingActions == 0 && messagesToDisplay.isEmpty()) {
-           spClient.onSpFinished(SPConsents(userData))
+        if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
+            spClient.onSpFinished(SPConsents(userData))
         }
     }
 

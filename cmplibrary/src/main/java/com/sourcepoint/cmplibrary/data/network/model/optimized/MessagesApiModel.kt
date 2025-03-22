@@ -15,7 +15,7 @@ data class GoogleConsentMode(
     @SerialName("ad_user_data") @Serializable(with = SpConsentStatusSerializer::class) val adUserData: GCMStatus?,
     @SerialName("ad_personalization") @Serializable(with = SpConsentStatusSerializer::class) val adPersonalization: GCMStatus?,
 ) {
-    constructor(core: CoreGCMStatus): this(
+    constructor(core: CoreGCMStatus) : this(
         adStorage = GCMStatus.firstWithStatusOrNull(core.adStorage),
         analyticsStorage = GCMStatus.firstWithStatusOrNull(core.analyticsStorage),
         adUserData = GCMStatus.firstWithStatusOrNull(core.adUserData),
@@ -54,7 +54,7 @@ data class ConsentStatus(
         @Serializable(with = GranularStateSerializer::class) val vendorConsent: GranularState?,
         @Serializable(with = GranularStateSerializer::class) val vendorLegInt: GranularState?
     ) {
-        constructor(core: ConsentStatusGranularStatus): this(
+        constructor(core: ConsentStatusGranularStatus) : this(
             defaultConsent = core.defaultConsent,
             previousOptInAll = core.previousOptInAll,
             purposeConsent = GranularState.fromString(core.purposeConsent),
@@ -74,7 +74,7 @@ data class USNatConsentStatus(
     val hasConsentData: Boolean?,
     var vendorListAdditions: Boolean? = null,
 ) {
-    constructor(core: CoreConsentStatus): this(
+    constructor(core: CoreConsentStatus) : this(
         rejectedAny = core.rejectedAny,
         consentedToAll = core.consentedToAll,
         consentedToAny = core.consentedToAny,
@@ -85,15 +85,15 @@ data class USNatConsentStatus(
 
     @Serializable
     data class USNatGranularStatus(
-       val sellStatus: Boolean?,
-       val shareStatus: Boolean?,
-       val sensitiveDataStatus: Boolean?,
-       val gpcStatus: Boolean?,
-       val defaultConsent: Boolean?,
-       var previousOptInAll: Boolean?,
-       var purposeConsent: String?,
+        val sellStatus: Boolean?,
+        val shareStatus: Boolean?,
+        val sensitiveDataStatus: Boolean?,
+        val gpcStatus: Boolean?,
+        val defaultConsent: Boolean?,
+        var previousOptInAll: Boolean?,
+        var purposeConsent: String?,
     ) {
-        constructor(core: ConsentStatusGranularStatus): this(
+        constructor(core: ConsentStatusGranularStatus) : this(
             sellStatus = core.sellStatus,
             shareStatus = core.shareStatus,
             sensitiveDataStatus = core.sensitiveDataStatus,

@@ -12,11 +12,13 @@ fun userConsents(context: Context) = userConsents()
 
 fun userConsents(): SPConsents {
     val state = Repository().state
-    return SPConsents(core = SPUserData(
-        gdpr = SPUserData.SPConsent(consents = state?.gdpr?.consents),
-        usnat = SPUserData.SPConsent(consents = state?.usNat?.consents),
-        ccpa = SPUserData.SPConsent(consents = state?.ccpa?.consents)
-    ))
+    return SPConsents(
+        core = SPUserData(
+            gdpr = SPUserData.SPConsent(consents = state?.gdpr?.consents),
+            usnat = SPUserData.SPConsent(consents = state?.usNat?.consents),
+            ccpa = SPUserData.SPConsent(consents = state?.ccpa?.consents)
+        )
+    )
 }
 
 @Deprecated("Use clearAllData() instead.", ReplaceWith("clearAllData()"))
