@@ -37,15 +37,6 @@ android {
         debug{
             signingConfig = signingConfigs.debug
         }
-        stage{
-            initWith debug
-        }
-        localProd{
-            initWith debug
-        }
-        preprod{
-            initWith debug
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

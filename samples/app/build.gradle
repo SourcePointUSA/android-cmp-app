@@ -33,18 +33,6 @@ android {
         debug {
             applicationIdSuffix ".debug"
         }
-        stage {
-            initWith debug
-            applicationIdSuffix ".stage"
-        }
-        localProd {
-            initWith debug
-            applicationIdSuffix ".localProd"
-        }
-        preprod {
-            initWith debug
-            applicationIdSuffix ".preprod"
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

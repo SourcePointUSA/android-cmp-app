@@ -32,22 +32,6 @@ android {
             buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
             buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
         }
-        create("stage") {
-            initWith(getByName("debug"))
-            isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"stage\"")
-        }
-        create("preprod") {
-            initWith(getByName("debug"))
-            isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PRE_PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
-        }
         getByName("release") {
             isMinifyEnabled = false
             buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
@@ -91,7 +75,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.1.0")
+    implementation("com.sourcepoint:core:0.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
@@ -99,6 +83,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    testImplementation("io.mockk:mockk:1.13.16")
 }
 
 tasks.register("versionTxt") {
