@@ -15,25 +15,14 @@ version = versionLib
 android {
     compileSdk = 35
     namespace = "com.sourcepoint.cmplibrary"
-    testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
         minSdk = 21
-        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        getByName("debug") {
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
-        }
+        getByName("debug")
         getByName("release") {
             isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
             consumerProguardFiles("cmp-consumer-proguard-rules.pro")
         }
     }
@@ -60,13 +49,6 @@ android {
             kotlinOptions.jvmTarget = "11"
         }
     }
-
-    testOptions {
-        // JSONObject return null during unit tests
-        // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
-        unitTests.isReturnDefaultValues = true
-        unitTests.isIncludeAndroidResources = true
-    }
 }
 
 dependencies {
@@ -78,9 +60,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-
-    testImplementation("io.mockk:mockk:1.13.16")
 }
+
 
 tasks.register("versionTxt") {
     group = "release-utility"

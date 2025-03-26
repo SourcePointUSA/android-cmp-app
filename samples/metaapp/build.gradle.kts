@@ -24,7 +24,6 @@ android {
         targetSdk = 35
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
-        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
