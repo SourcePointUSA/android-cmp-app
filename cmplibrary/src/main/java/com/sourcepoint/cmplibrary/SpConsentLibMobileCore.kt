@@ -294,11 +294,12 @@ class SpConsentLibMobileCore(
     }
 
     override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
+        // TODO: deprecate
         handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
     }
 
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {
-        TODO("Not yet implemented")
+        // TODO: deprecate
     }
 
     override fun clearLocalData() = coordinator.clearLocalData()
