@@ -12,15 +12,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.espresso.web.assertion.WebViewAssertions.webMatches
-import androidx.test.espresso.web.model.Atoms
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms.*
 import androidx.test.espresso.web.webdriver.Locator
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf.allOf
-import org.hamcrest.core.StringContains.containsString
 
 
 @Throws(Throwable::class)
@@ -30,12 +27,6 @@ fun isDisplayedAllOfByResId(@IdRes resId: Int) {
 
 fun isDisplayedByResIdByText(@IdRes resId: Int, text: String) {
     onView(allOf(withId(resId), withText(text), isDisplayed()))
-}
-
-@Throws(Throwable::class)
-fun performClickByIdCompletelyDisplayed(@IdRes resId: Int) {
-    onView(allOf(withId(resId), isCompletelyDisplayed()))
-        .perform(ViewActions.click())
 }
 
 @Throws(Throwable::class)
@@ -66,23 +57,6 @@ fun addTextById(@IdRes resId: Int, text: String) {
 }
 
 @Throws(Throwable::class)
-fun containsText(@IdRes resId: Int, content: String) {
-    onView(withId(resId)).check(ViewAssertions.matches(withText(containsString(content))))
-}
-
-@Throws(Throwable::class)
-fun checkWebViewHasText(text: String) {
-    onWebView().check(webMatches(Atoms.getCurrentUrl(), containsString(text)))
-}
-
-@Throws(Throwable::class)
-fun checkElementWithText(id: String, expected: String) {
-    onWebView()
-        .withElement(findElement(Locator.ID, id))
-        .check(webMatches(getText(), containsString(expected)))
-}
-
-@Throws(Throwable::class)
 fun performClickOnWebViewByContent(text: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//button[contains(text(), '$text')]"))
@@ -102,14 +76,6 @@ fun checkTextInParagraph(text: String) {
 fun performClickOnLabelWebViewByContent(text: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//a[contains(text(), '$text')]"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
-}
-
-@Throws(Throwable::class)
-fun performClickOnWebViewByClass(classValue: String) {
-    onWebView()
-        .withElement(findElement(Locator.CLASS_NAME, classValue))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -150,36 +116,9 @@ fun checkConsentStateVendor(selected: Boolean, stackType: String) {
 }
 
 @Throws(Throwable::class)
-fun checkPMTabSelected(expected: String) {
-    onWebView()
-        .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab active') and text()='$expected']"))
-}
-
-@Throws(Throwable::class)
 fun performClickPMTabSelected(expected: String) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[contains(@class, 'pm-tab') and text()='$expected']"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
-}
-
-@Throws(Throwable::class)
-fun tapOnToggle(property: String) {
-    onWebView()
-        .withElement(findElement(Locator.XPATH, "//span[@aria-label='$property'and @class='slider round']"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
-}
-
-@Throws(Throwable::class)
-fun tapOnToggle(property: String, tapOnlyWhen: Boolean) {
-    onWebView()
-        .withElement(
-            findElement(
-                Locator.XPATH,
-                "//span[@aria-label='$property'and @aria-checked='$tapOnlyWhen' and @class='slider round']"
-            )
-        )
         .perform(webScrollIntoView())
         .perform(webClick())
 }
@@ -189,14 +128,6 @@ fun tapOnToggle2(property: String, tapOnlyWhen: Boolean) {
     onWebView()
         .withElement(findElement(Locator.XPATH, "//div[@class='tcfv2-stack']"))
         .withContextualElement(findElement(Locator.XPATH, "//button[@aria-checked='$tapOnlyWhen' and @aria-label='$property']"))
-        .perform(webScrollIntoView())
-        .perform(webClick())
-}
-
-@Throws(Throwable::class)
-fun checkConsentWebView(consent: String) {
-    onWebView()
-        .withElement(findElement(Locator.XPATH, "//label[@aria-label='$consent']/span[@class='slider round']"))
         .perform(webScrollIntoView())
         .perform(webClick())
 }
