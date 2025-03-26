@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Looper
 import android.os.Message
+import android.view.KeyEvent
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
@@ -19,7 +20,10 @@ import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
 import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.*
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.runOnMain
 import com.sourcepoint.cmplibrary.util.getLinkUrl
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
@@ -46,12 +50,14 @@ interface SPMessageUI {
 
     fun load(
         message: MessagesResponse.Message,
+        messageType: MessageType,
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
     )
 
     fun load(
+        messageType: MessageType,
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
@@ -90,6 +96,7 @@ class SPConsentWebView(
         .readText()
     private lateinit var consents: SPUserData
     private lateinit var campaignType: CampaignType
+    private lateinit var messageType: MessageType
     private var message: MessagesResponse.Message? = null
     private var isPresenting = false
     override var isFirstLayer = true
@@ -149,21 +156,39 @@ class SPConsentWebView(
         }
     }
 
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+            if (messageType == OTT || messageType == LEGACY_OTT) {
+                evaluateJavascript("window.postMessage({name:\"sp.BACK\"})", null)
+            } else {
+                onAction(view = this, action = SPConsentAction(
+                    actionType = if(isFirstLayer) MSG_CANCEL else PM_DISMISS,
+                    campaignType = campaignType,
+                    messageId = ""
+                ))
+            }
+        }
+        return true
+    }
+
     override fun load(
+        messageType: MessageType,
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
-    ) = internalLoad(message = null, url, campaignType, userData)
+    ) = internalLoad(message = null, messageType, url, campaignType, userData)
 
     override fun load(
         message: MessagesResponse.Message,
+        messageType: MessageType,
         url: String,
         campaignType: CampaignType,
         userData: SPUserData
-    ) = internalLoad(message, url, campaignType, userData)
+    ) = internalLoad(message, messageType, url, campaignType, userData)
 
     private fun internalLoad(
         message: MessagesResponse.Message? = null,
+        messageType: MessageType,
         url: String,
         campaignType: CampaignType,
         consents: SPUserData
@@ -171,6 +196,7 @@ class SPConsentWebView(
         this.consents = consents
         this.message = message
         this.campaignType = campaignType
+        this.messageType = messageType
         loadRenderingApp(url, jsReceiver)
     }
 
@@ -214,9 +240,11 @@ class SPConsentWebView(
     override fun onAction(view: View, action: ConsentAction) = runOnMain {
         messageUIClient.onAction(view, action)
         when (action.actionType) {
-            ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
-            ActionType.PM_DISMISS -> returnToFirstLayer()
-            else -> finished(view)
+            SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
+            PM_DISMISS -> returnToFirstLayer()
+            else -> {
+                finished(view)
+            }
         }
     }
 
@@ -243,9 +271,7 @@ class SPConsentWebView(
         if (canGoBack() && !isFirstLayer) {
             isFirstLayer = true
             goBack()
-        } else {
-            finished(this)
-        }
+        } else {}
 
     private fun preloadConsents() = evaluateJavascript(
         """window.postMessage({
@@ -270,7 +296,6 @@ class SPConsentWebView(
 
     override fun finished(view: View) {
         isPresenting = false
-        runOnMain { messageUIClient.finished(view) }
     }
 
     @JavascriptInterface
