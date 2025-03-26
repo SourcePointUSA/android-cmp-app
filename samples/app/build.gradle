@@ -73,7 +73,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:2.0.0"
 
     implementation "androidx.appcompat:appcompat:1.7.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     implementation(Libs.androidxCore)
 
     implementation project(":cmplibrary")
@@ -85,8 +85,8 @@ dependencies {
     androidTestImplementation "io.insert-koin:koin-test:4.0.0"
 
     // mockk
-    testImplementation("io.mockk:mockk:1.13.13")
-    androidTestImplementation("io.mockk:mockk-android:1.13.13")
+    testImplementation("io.mockk:mockk:1.13.16")
+    androidTestImplementation("io.mockk:mockk-android:1.13.16")
 
     androidTestImplementation group: 'androidx.test.uiautomator', name: 'uiautomator', version: '2.3.0'
 

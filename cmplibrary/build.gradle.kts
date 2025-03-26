@@ -7,10 +7,6 @@ plugins {
     id("kotlinx-serialization")
 }
 
-apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
-apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
-apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
-
 val versionLib = project.property("VERSION_NAME") as String
 
 group = "com.sourcepoint.cmplibrary"
@@ -21,7 +17,7 @@ android {
     namespace = "com.sourcepoint.cmplibrary"
     testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
-        minSdk = 23
+        minSdk = 21
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,7 +43,6 @@ android {
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
         getByName("main").resources.srcDir("${projectDir.path}/files")
-
     }
 
     compileOptions {
@@ -119,3 +114,7 @@ changeLogConfig {
     content = file(  "${rootDir.path}/${project.name}/release_note.txt").readText()
     version = versionName
 }
+
+apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
+apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
+apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
