@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
@@ -28,7 +29,7 @@ import com.sourcepoint.cmplibrary.mobile_core.buildPMUrl
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.*
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.MOBILE
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -126,6 +127,7 @@ class SpConsentLibMobileCore(
             val messageToRender = messagesToDisplay.removeFirst()
             messageUI.load(
                 message = messageToRender.message,
+                messageType = MessageType.fromMessageSubCategory(messageToRender.metaData.subCategoryId),
                 url = messageToRender.url,
                 campaignType = CampaignType.fromCore(messageToRender.type),
                 userData = userData
@@ -259,6 +261,7 @@ class SpConsentLibMobileCore(
 
         pendingActions++
         messageUI.load(
+            messageType = messageType,
             url = buildPMUrl(
                 campaignType = campaignType,
                 pmId = pmId,
@@ -275,10 +278,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun showView(view: View) {
-        view.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         view.bringToFront()
         view.requestLayout()
         view.requestFocus()
@@ -308,7 +308,7 @@ class SpConsentLibMobileCore(
     override fun onAction(view: View, action: ConsentAction) = launch {
         val userAction = spClient.onAction(view, action) as SPConsentAction
         when (userAction.actionType) {
-            ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
+            ACCEPT_ALL, REJECT_ALL, SAVE_AND_EXIT -> {
                 runCatching {
                     coordinator.reportAction(userAction.toCore())
                     spClient.onConsentReady(SPConsents(userData))
@@ -317,19 +317,23 @@ class SpConsentLibMobileCore(
                         onError(ReportActionException(cause = it, action = userAction.toCore()))
                     }
                 pendingActions--
+                finished(view)
             }
-            ActionType.CUSTOM, ActionType.MSG_CANCEL, ActionType.UNKNOWN -> {
+            CUSTOM, UNKNOWN -> {
                 pendingActions--
+                finished(view)
             }
-            ActionType.PM_DISMISS -> {
+            PM_DISMISS -> {
                 if (messageUI.isFirstLayer) {
                     pendingActions--
                 }
             }
+            MSG_CANCEL -> {
+                pendingActions--
+                // TODO: not call `finished` if the message is not dismissible
+                finished(view)
+            }
             else -> {}
-        }
-        if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
-            spClient.onSpFinished(SPConsents(userData))
         }
     }
 
@@ -353,7 +357,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun finished(view: View) {
-        spClient.onUIFinished(view)
+        runOnMain { spClient.onUIFinished(view) }
         renderNextMessageIfAny()
     }
 }
