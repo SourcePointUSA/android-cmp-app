@@ -4,6 +4,8 @@ import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory.*
 
 const val DEFAULT_TIMEOUT = 10000L // in ms
 
@@ -54,5 +56,13 @@ fun Pair<String, String>.toTParam() = TargetingParam(this.first, this.second)
 enum class MessageType {
     MOBILE,
     OTT,
-    LEGACY_OTT
+    LEGACY_OTT;
+
+    internal  companion object {
+        internal fun fromMessageSubCategory(subCategory: MessageSubCategory) = when (subCategory) {
+            PrivacyManagerOTT, CCPAOTT -> LEGACY_OTT
+            NativeOTT -> OTT
+            else -> MOBILE
+        }
+    }
 }
