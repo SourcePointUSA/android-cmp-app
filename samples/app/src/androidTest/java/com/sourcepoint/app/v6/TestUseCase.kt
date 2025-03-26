@@ -1,27 +1,18 @@
 package com.sourcepoint.app.v6
 
-import android.webkit.CookieManager
 import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestData.ACCEPT
 import com.sourcepoint.app.v6.TestData.ACCEPT_ALL
-import com.sourcepoint.app.v6.TestData.ACCEPT_DE
 import com.sourcepoint.app.v6.TestData.CANCEL
 import com.sourcepoint.app.v6.TestData.CCPA_CONSENT_LIST
-import com.sourcepoint.app.v6.TestData.CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.CONSENT_LIST_2
-import com.sourcepoint.app.v6.TestData.FEATURES
 import com.sourcepoint.app.v6.TestData.GDPR_CONSENT_LIST_2
-import com.sourcepoint.app.v6.TestData.MESSAGE
 import com.sourcepoint.app.v6.TestData.NETWORK
 import com.sourcepoint.app.v6.TestData.OPTIONS
-import com.sourcepoint.app.v6.TestData.PARTIAL_CONSENT_LIST
 import com.sourcepoint.app.v6.TestData.PM_CONSENT_LIST
-import com.sourcepoint.app.v6.TestData.PRIVACY_MANAGER
-import com.sourcepoint.app.v6.TestData.PURPOSES
 import com.sourcepoint.app.v6.TestData.REJECT
 import com.sourcepoint.app.v6.TestData.REJECT_ALL
 import com.sourcepoint.app.v6.TestData.SAVE_AND_EXIT
-import com.sourcepoint.app.v6.TestData.SETTINGS_DE
 import com.sourcepoint.app.v6.TestData.SETTINGS_OTT_EN
 import com.sourcepoint.app.v6.TestData.SITE_VENDORS
 import com.sourcepoint.app.v6.TestData.TITLE_GDPR
@@ -45,30 +36,6 @@ class TestUseCase {
             performClickById(R.id.reject_all_gdpr_button)
         }
 
-        fun checkConsentIsNotSelected() {
-            CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, false)
-            }
-        }
-
-        fun checkConsentIsSelected() {
-            CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true)
-            }
-        }
-
-        fun tapToEnableAllConsent() {
-            CONSENT_LIST_2.forEach { consent ->
-                tapOnToggle(property = consent, tapOnlyWhen = false)
-            }
-        }
-
-        fun tapAllConsent() {
-            CONSENT_LIST_2.forEach { consent ->
-                tapOnToggle(property = consent)
-            }
-        }
-
         fun tapToDisableSomeConsent() {
             CONSENT_LIST_2.forEach { consent ->
                 tapOnToggle2(property = consent, tapOnlyWhen = true)
@@ -78,12 +45,6 @@ class TestUseCase {
         fun tapToEnableSomeOption() {
             CONSENT_LIST_2.forEach { consent ->
                 tapOnToggle2(property = consent, tapOnlyWhen = false)
-            }
-        }
-
-        fun checkSomeConsentsOn() {
-            CONSENT_LIST_2.forEach { consent ->
-                checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
@@ -105,7 +66,8 @@ class TestUseCase {
                 checkConsentState(consent, true, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
+            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }
+                .toSet()).forEach { consent ->
                 checkConsentState(consent, false, "tcfv2-stack")
             }
         }
@@ -116,35 +78,22 @@ class TestUseCase {
                 checkConsentState(consent, false, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }).forEach { consent ->
+            CONSENT_LIST_2.subtract(customCategoriesDataProd.map { it.second }
+                .toSet()).forEach { consent ->
                 checkConsentState(consent, true, "tcfv2-stack")
             }
         }
 
         fun checkCustomVendorDataList() {
             // the customVendorDataList elements are enabled
-            customVendorDataListProd.map { it.second }.forEach { consent ->
-                checkConsentStateVendor(consent, true, "tcfv2-stack")
+            customVendorDataListProd.map { it.second }.forEach { _ ->
+                checkConsentStateVendor(true, "tcfv2-stack")
             }
             // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
-                checkConsentStateVendor(consent, false, "tcfv2-stack")
+            VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }
+                .toSet()).forEach { _ ->
+                checkConsentStateVendor(false, "tcfv2-stack")
             }
-        }
-
-        fun checkDeletedCustomVendorDataList() {
-            // the customVendorDataList elements are enabled
-            customVendorDataListProd.map { it.second }.forEach { consent ->
-                checkConsentStateVendor(consent, false, "tcfv2-stack")
-            }
-//            // all CONSENT_LIST_2 elements are disabled except the customCategoriesData
-            VENDORS_LIST.subtract(customVendorDataListProd.map { it.second }).forEach { consent ->
-                checkConsentStateVendor(consent, false, "tcfv2-stack")
-            }
-        }
-
-        fun checkMainWebViewDisplayed() {
-            isDisplayedAllOfByResId(resId = R.id.review_consents_gdpr)
         }
 
         fun checkDeepLinkDisplayed() {
@@ -161,20 +110,10 @@ class TestUseCase {
             }
         }
 
-        fun checkAllTogglesOn() {
-            PM_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true, "tcfv2-stack")
-            }
-        }
-
         fun checkAllTogglesOFF() {
             PM_CONSENT_LIST.forEach { consent ->
                 checkConsentState(consent, false, "tcfv2-stack")
             }
-        }
-
-        fun clickOnClearConsent() {
-            performClickById(resId = R.id.clear_all)
         }
 
         fun checkGdprNativeTitle() {
@@ -183,10 +122,6 @@ class TestUseCase {
 
         fun tapNmDismiss() {
             performClickById(R.id.cancel)
-        }
-
-        fun checkCcpaNativeTitle() {
-            isDisplayedByResIdByText(resId = R.id.title_nm, text = "CCPA Lorem Ipsum")
         }
 
         fun tapNmAcceptAll() {
@@ -205,44 +140,8 @@ class TestUseCase {
             performClickById(resId = R.id.review_consents_ccpa)
         }
 
-        fun clickOnConsentActivity() {
-            performClickById(resId = R.id.consent_btn)
-        }
-
         fun clickOnRefreshBtnActivity() {
             performClickById(resId = R.id.refresh_btn)
-        }
-
-        fun openAuthIdActivity() {
-            performClickByIdCompletelyDisplayed(resId = R.id.auth_id_activity)
-        }
-
-        fun checkAuthIdIsDisplayed(autId : String) {
-            checkElementWithText("authId", autId)
-        }
-
-        fun checkEuconsent(euconsent : String) {
-            containsText(R.id.consent_uuid, euconsent)
-        }
-
-        fun checkGdprApplies(value : String) {
-            containsText(R.id.gdpr_applies, value)
-        }
-
-        fun checkAuthIdIsNotDisplayed() {
-            checkElementWithText("authId", "no_auth_id")
-        }
-
-        fun checkWebViewDisplayedForMessage() {
-            checkWebViewHasText(MESSAGE)
-        }
-
-        fun clickPMTabSelectedPurposes() {
-            performClickPMTabSelected(PURPOSES)
-        }
-
-        fun clickPMTabSelectedFeatures() {
-            performClickPMTabSelected(FEATURES)
         }
 
         fun tapOptionWebView() {
@@ -262,8 +161,8 @@ class TestUseCase {
         }
 
         fun checkAllVendorsOff() {
-            VENDORS_LIST_2.forEach { consent ->
-                checkConsentStateVendor(consent, false, "tcfv2-stack")
+            VENDORS_LIST_2.forEach { _ ->
+                checkConsentStateVendor( false, "tcfv2-stack")
             }
         }
 
@@ -311,24 +210,8 @@ class TestUseCase {
             performClickOnWebViewByContent(REJECT_ALL)
         }
 
-        fun tapDismissWebView() {
-            performClickOnWebViewByClass("message-stacksclose")
-        }
-
         fun tapAcceptOnWebView() {
             performClickOnWebViewByContent(ACCEPT)
-        }
-
-        fun tapAcceptOnWebViewDE() {
-            performClickOnWebViewByContent(ACCEPT_DE)
-        }
-
-        fun tapAcceptOnOk() {
-            performClickOnWebViewByContent("OK")
-        }
-
-        fun tapSettingsOnWebViewDE() {
-            performClickOnWebViewByContent(SETTINGS_DE)
         }
 
         fun tapSettingsOnWebView() {
@@ -337,71 +220,6 @@ class TestUseCase {
 
         fun tapAcceptCcpaOnWebView() {
             performClickOnWebViewByContent(ACCEPT_ALL)
-        }
-
-        fun setFocusOnLayoutActivity() {
-            performClickByIdCompletelyDisplayed(resId = R.id.main_view)
-        }
-
-        fun checkWebViewDisplayedForPrivacyManager() {
-            checkWebViewHasText(PRIVACY_MANAGER)
-        }
-
-        fun checkPartialConsentIsSelected() {
-            PARTIAL_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, true)
-            }
-        }
-
-        fun checkPartialConsentIsNotSelected() {
-            PARTIAL_CONSENT_LIST.forEach { consent ->
-                checkConsentState(consent, false)
-            }
-        }
-
-        fun checkConsentAsSelectedFromPartialConsentList() {
-            PARTIAL_CONSENT_LIST.forEach { consent ->
-                tapOnToggle(consent)
-            }
-        }
-        fun checkConsentAsSelectedConsentList() {
-            CONSENT_LIST.forEach { consent ->
-                tapOnToggle(consent)
-            }
-        }
-
-        fun setConsent() {
-            CONSENT_LIST.forEach { consent ->
-                tapOnToggle(consent)
-            }
-        }
-
-        fun checkPMTabSelectedFeatures() {
-            checkPMTabSelected(FEATURES)
-        }
-
-        fun checkPMTabSelectedPurposes() {
-            checkPMTabSelected(PURPOSES)
-        }
-
-        fun selectPartialConsentList() {
-            PARTIAL_CONSENT_LIST.forEach { consent ->
-                checkConsentWebView(consent)
-            }
-        }
-
-        fun checkCookieExist(url : String, value : String){
-            CookieManager.getInstance()
-                .getCookie(url)
-                .contains(value)
-                .assertTrue()
-        }
-
-        fun checkCookieNotExist(url : String){
-            CookieManager.getInstance()
-                .getCookie(url)
-                .contains("authId=")
-                .assertFalse()
         }
 
         fun mockModule(
