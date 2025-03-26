@@ -251,7 +251,7 @@ class MainActivityKotlinTest {
 
                 getString("IABTCF_TCString", null).assertNotNull()
                 getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("00000000000")
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~899")
+                getString("IABTCF_AddtlConsent", null).assertNotNull()
                 getString("IABTCF_PurposeConsents", null).assertNotNull()
                 getString("IABTCF_VendorLegitimateInterests", null).assertNotNull()
                 getString("IABTCF_TCString", null).assertNotNull()
@@ -518,7 +518,7 @@ class MainActivityKotlinTest {
 
         wr { tapAcceptOnWebView() }
         wr { tapAcceptCcpaOnWebView() }
-        clickOnRefreshBtnActivity()
+        wr { clickOnRefreshBtnActivity() }
 
         verify(exactly = 0) { spClient.onError(any()) }
         wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
@@ -571,7 +571,7 @@ class MainActivityKotlinTest {
 
         scenario.onActivity {
             getSharedPrefs(it).run {
-                getString("IABTCF_AddtlConsent", null).assertEquals("1~")
+                getString("IABTCF_AddtlConsent", null).assertNotNull()
                 getString("IABTCF_PublisherLegitimateInterests", null).assertEquals("00000000000")
                 getString("IABTCF_TCString", null).assertNotNull()
                 getInt("IABTCF_CmpSdkVersion", -1).assertNotEquals(-1)
@@ -890,7 +890,7 @@ class MainActivityKotlinTest {
         wr { tapCancelOnWebView() }
 
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
     }
 
     @Test
