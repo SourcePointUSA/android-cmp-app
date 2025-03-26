@@ -32,20 +32,20 @@ data class SPConsentAction(
     @Deprecated("use this.pubData instead", replaceWith = ReplaceWith("this.pubData"), level = DeprecationLevel.ERROR)
     override val pubData2: JsonObject = JsonObject(emptyMap()),
     override val campaignType: CampaignType,
-    override val customActionId: String?,
+    override val customActionId: String? = null,
 
     @Deprecated("this field is no longer in use and should be removed")
-    override val privacyManagerId: String?,
+    override val privacyManagerId: String? = null,
 
     @Deprecated("this field is no longer in use and should be removed", level = DeprecationLevel.ERROR)
-    override val choiceId: String?,
+    override val choiceId: String? = null,
 
     @Deprecated("this field is no longer in use and should be removed")
-    override val requestFromPm: Boolean,
+    override val requestFromPm: Boolean? = null,
     @Serializable(with = JSONObjectSerializer::class) override val saveAndExitVariables: JSONObject = JSONObject(),
-    override val consentLanguage: String?,
+    override val consentLanguage: String? = null,
     override val messageId: String,
-    override val pmUrl: String?
+    override val pmUrl: String? = null
 ) : ConsentAction {
     fun toCore(): SPAction = SPAction(
         type = actionType.toCore(),
