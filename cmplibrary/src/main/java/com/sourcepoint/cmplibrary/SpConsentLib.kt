@@ -82,24 +82,18 @@ interface SpConsentLib {
 
     fun dispose()
 
-    /**
-     * Method that verifies home page and delegates navigation between the message view and the
-     * activity that utilizes the message, using functional interface.
-     *
-     * Applicable for Java and Kotlin implementations.
-     *
-     * @param ottDelegate functional interface that provides the mechanism to override onBackPress
-     */
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """)
     fun handleOnBackPress(isMessageDismissible: Boolean = true, ottDelegate: SpBackPressOttDelegate)
 
-    /**
-     * Method that verifies home page and delegates navigation between the message view and the
-     * activity that utilizes the message, using lambda.
-     *
-     * Applicable for Kotlin implementation.
-     *
-     * @param onHomePage lambda that provides the mechanism to override onBackPress
-     */
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """)
     fun handleOnBackPress(isMessageDismissible: Boolean = true, onHomePage: () -> Unit)
 
     fun clearLocalData()
