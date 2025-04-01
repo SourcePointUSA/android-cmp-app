@@ -22,6 +22,7 @@
 * Fixed an issue preventing the MetaApp from being released at Google Play
 
 ## 7.10.2 (September, 30, 2024)
+* Fixed a regression causing sampled properties to have wrong reporting data [6a1b7d](https://github.com/SourcePointUSA/android-cmp-app/commit/6a1b7d34a2eaa7fb9f6fdd8cbc87ee13f6b2557d)
 * [DIA-4092](https://sourcepoint.atlassian.net/browse/DIA-4092) Fixed an issue preventing the cancel button on USNat messages from dismissing the consent layer. [#833](https://github.com/SourcePointUSA/android-cmp-app/pull/833)
 * [DIA-4456](https://sourcepoint.atlassian.net/browse/DIA-4456) Refactored network client to use [mobile-core](https://github.com/SourcePointUSA/mobile-core/) `/meta-data` implementation. [#835](https://github.com/SourcePointUSA/android-cmp-app/pull/835)
 * Updated project dependencies and plugins [#831](https://github.com/SourcePointUSA/android-cmp-app/pull/831)
