@@ -1,3 +1,6 @@
+## 7.11.2 (March, 21, 2025)
+* [DIA-5293(https://sourcepoint.atlassian.net/browse/DIA-5293) Fix an issue causing the SDK to throw an exception when network calls would fail. [#848](https://github.com/SourcePointUSA/android-cmp-app/pull/848)
+
 ## 7.11.1 (February, 11, 2025)
 * [DIA-5149](https://sourcepoint.atlassian.net/browse/DIA-5149) Fix an issue causing google consent mode attributes to be `null`. [#845](https://github.com/SourcePointUSA/android-cmp-app/pull/845)
 * [DIA-3500](https://sourcepoint.atlassian.net/browse/DIA-3500) Replace native call to `pv-data` with `mobile-core`'s implementation. This should be transparent to clients. [#841](https://github.com/SourcePointUSA/android-cmp-app/pull/841)
