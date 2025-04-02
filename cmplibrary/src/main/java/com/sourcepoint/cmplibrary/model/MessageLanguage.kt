@@ -3,7 +3,10 @@ package com.sourcepoint.cmplibrary.model
 import com.sourcepoint.mobile_core.models.SPMessageLanguage
 
 enum class MessageLanguage(val value: String) {
+    ARABIC("AR"),
     BULGARIAN("BG"),
+    BOSNIAN("BS"),
+    BASQUE("EUS"),    
     CATALAN("CA"),
     CHINESE("ZH"),
     CROATIAN("HR"),
@@ -14,6 +17,7 @@ enum class MessageLanguage(val value: String) {
     ESTONIAN("ET"),
     FINNISH("FI"),
     FRENCH("FR"),
+    GALICIAN("GD"),
     GAELIC("GD"),
     GERMAN("DE"),
     GREEK("EL"),
