@@ -306,18 +306,22 @@ class SpConsentLibMobileCore(
 
     override fun loaded(view: View) = spClient.onUIReady(view)
 
-    override fun onAction(view: View, action: ConsentAction) = launch {
+    override fun onAction(view: View, action: ConsentAction) {
         val userAction = spClient.onAction(view, action) as SPConsentAction
         when (userAction.actionType) {
             ACCEPT_ALL, REJECT_ALL, SAVE_AND_EXIT -> {
                 runCatching {
-                    coordinator.reportAction(userAction.toCore())
-                    spClient.onConsentReady(SPConsents(userData))
-                }
-                    .onFailure {
-                        onError(ReportActionException(cause = it, action = userAction.toCore()))
+                    launch {
+                        coordinator.reportAction(userAction.toCore())
+                        spClient.onConsentReady(SPConsents(userData))
+                        pendingActions--
+                        if (pendingActions == 0) {
+                            spClient.onSpFinished(spConsents)
+                        }
                     }
-                pendingActions--
+                }.onFailure {
+                    onError(ReportActionException(cause = it, action = userAction.toCore()))
+                }
                 finished(view)
             }
             CUSTOM, UNKNOWN -> {
@@ -327,6 +331,7 @@ class SpConsentLibMobileCore(
             PM_DISMISS -> {
                 if (messageUI.isFirstLayer) {
                     pendingActions--
+                    finished(view)
                 }
             }
             MSG_CANCEL -> {
@@ -358,6 +363,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun finished(view: View) {
+        messageUI.isPresenting = false
         runOnMain { spClient.onUIFinished(view) }
         renderNextMessageIfAny()
     }

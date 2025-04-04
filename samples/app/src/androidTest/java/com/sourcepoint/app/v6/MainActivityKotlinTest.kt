@@ -49,7 +49,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.creation.to
-import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus
+import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus.*
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
@@ -173,21 +173,27 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapAcceptOnWebView() }
+        wr { tapAcceptOnWebView() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
-        wr { verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished( withArg {
-            it.usNat!!.consent.run {
-                scenario.onActivity { activity ->
-                    getSharedPrefs(activity).getString("IABUSPrivacy_String", null).assertEquals("1YNN")
-                }
-                applies.assertTrue()
-                statuses.consentedToAll!!.assertTrue()
-                uuid.assertNotNull()
+        wr {
+            verify { spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") }) }
+            verify(exactly = 1) {
+                spClient.onSpFinished(
+                    withArg {
+                        it.usNat!!.consent.run {
+                            scenario.onActivity { activity ->
+                                getSharedPrefs(activity).getString("IABUSPrivacy_String", null)
+                                    .assertEquals("1YNN")
+                            }
+                            applies.assertTrue()
+                            statuses.consentedToAll!!.assertTrue()
+                            uuid.assertNotNull()
+                        }
+                    }
+                )
             }
-        }) } }
+        }
     }
 
     @Test
@@ -229,10 +235,10 @@ class MainActivityKotlinTest {
                     it.gdpr!!.consent.applies.assertTrue()
                     it.gdpr!!.consent.uuid.assertNotNull()
                     it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
-                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.GRANTED)
-                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.GRANTED)
-                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GCMStatus.GRANTED)
-                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GCMStatus.GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(GRANTED)
+                    it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(GRANTED)
                     it.gdpr!!.consent.tcData.assertNotEquals(emptyMap())
                 })
             }
@@ -291,18 +297,20 @@ class MainActivityKotlinTest {
         wr { checkAllCcpaConsentsOn() }
 
         verify(exactly = 0) { spClient.onError(any()) }
-        wr { verify {
-            spClient.run {
-                onUIReady(any())
-                onUIFinished(any())
-                spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
-                onConsentReady(any())
-                onSpFinished(withArg {
-                    it.ccpa!!.consent.applies.assertTrue()
-                    it.ccpa!!.consent.uuid.assertNotNull()
-                })
+        wr {
+            verify {
+                spClient.apply {
+                    onUIReady(any())
+                    onUIFinished(any())
+                    spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+                    onConsentReady(any())
+                    onSpFinished(withArg {
+                        it.ccpa!!.consent.applies.assertTrue()
+                        it.ccpa!!.consent.uuid.assertNotNull()
+                    })
+                }
             }
-        }}
+        }
 
         wr {
             scenario.onActivity {
@@ -380,26 +388,20 @@ class MainActivityKotlinTest {
                 spClient.run {
                     onUIReady(any())
                     onUIFinished(any())
-                    spClient.onAction(
-                        any(),
-                        withArg { it.pubData["pb_key"].assertEquals("pb_value") })
+                    spClient.onAction(any(), withArg { it.pubData["pb_key"].assertEquals("pb_value") })
                     onConsentReady(withArg {
-                        it.gdpr?.consent?.acceptedCategories?.sorted()?.assertEquals(emptyList())
-                        it.gdpr?.consent?.grants?.values?.forEach { el -> el.granted.assertFalse() }
-                        it.gdpr?.consent?.uuid.assertNotNull()
+                        it.gdpr!!.consent.acceptedCategories!!.sorted().assertEquals(emptyList())
+                        it.gdpr!!.consent.grants.values.forEach { el -> el.granted.assertFalse() }
+                        it.gdpr!!.consent.uuid.assertNotNull()
                     })
                     onSpFinished(withArg {
                         it.gdpr!!.consent.applies.assertTrue()
                         it.gdpr!!.consent.consentStatus!!.consentedAll.assertNotNull()
                         it.gdpr!!.consent.uuid.assertNotNull()
-                        it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(GCMStatus.DENIED)
-                        it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(GCMStatus.DENIED)
-                        it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(
-                            GCMStatus.DENIED
-                        )
-                        it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(
-                            GCMStatus.DENIED
-                        )
+                        it.gdpr!!.consent.googleConsentMode!!.adStorage.assertEquals(DENIED)
+                        it.gdpr!!.consent.googleConsentMode!!.adUserData.assertEquals(DENIED)
+                        it.gdpr!!.consent.googleConsentMode!!.adPersonalization.assertEquals(DENIED)
+                        it.gdpr!!.consent.googleConsentMode!!.analyticsStorage.assertEquals(DENIED)
                     })
                 }
             }
@@ -860,7 +862,7 @@ class MainActivityKotlinTest {
 
         scenario = launchActivity()
 
-        wr(backup = { clickOnRefreshBtnActivity() }) { tapOptionWebView() }
+        wr { tapOptionWebView() }
         wr { tapCancelOnWebView() }
         wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
         wr { tapAcceptAllOnWebView() }
@@ -890,7 +892,7 @@ class MainActivityKotlinTest {
         wr { tapCancelOnWebView() }
 
         wr { verify(exactly = 1) { spClient.onConsentReady(any()) } }
-        wr { verify(exactly = 1) { spClient.onSpFinished(any()) } }
+        wr { verify(exactly = 2) { spClient.onSpFinished(any()) } }
     }
 
     @Test

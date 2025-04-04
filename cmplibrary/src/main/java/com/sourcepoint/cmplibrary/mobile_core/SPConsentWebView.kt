@@ -47,6 +47,7 @@ interface SPMessageUIClient {
 
 interface SPMessageUI {
     var isFirstLayer: Boolean
+    var isPresenting: Boolean
 
     fun load(
         message: MessagesResponse.Message,
@@ -98,7 +99,7 @@ class SPConsentWebView(
     private lateinit var campaignType: CampaignType
     private lateinit var messageType: MessageType
     private var message: MessagesResponse.Message? = null
-    private var isPresenting = false
+    override var isPresenting = false
     override var isFirstLayer = true
 
     companion object {
