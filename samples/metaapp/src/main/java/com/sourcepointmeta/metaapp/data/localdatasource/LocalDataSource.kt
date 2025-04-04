@@ -2,7 +2,7 @@ package com.sourcepointmeta.metaapp.data.localdatasource
 
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepoint.cmplibrary.model.exposed.SpGppConfig
@@ -49,7 +49,7 @@ internal interface LocalDataSource {
             campaignStatus: Set<StatusCampaign>,
             list: List<MetaTargetingParam>,
 
-        ): List<TargetingParam>? {
+            ): List<TargetingParam>? {
             val campaign: CampaignType? = campaignStatus
                 .firstOrNull { it.campaignType == campaignType && it.enabled }
                 ?.campaignType

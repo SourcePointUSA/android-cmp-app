@@ -98,7 +98,7 @@ jobs:
         run: touch local.properties
       - name: generating MetaApp build release
         id: buildRelease
-        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease  :metaapp:assemblePreprod :metaapp:assembleDebug
+        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease :metaapp:assembleDebug
       - name: Sign APK
         id: sign
         uses: r0adkll/sign-android-release@v1
@@ -131,12 +131,6 @@ jobs:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: ./gradlew addCommitPush
-      - name: Publish MetaAppPreprod artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: MetaAppPreprod
-          path: samples/metaapp/build/outputs/apk/preprod/metaapp-preprod.apk
       - name: Publish MetaAppDebug artifact
         if: always()
         uses: actions/upload-artifact@v4

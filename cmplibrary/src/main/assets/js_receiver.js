@@ -17,14 +17,12 @@ function getQueryParam(paramName, url) {
 function actionFromMessage(payload) {
     var actionPayload = payload.actions && payload.actions.length && payload.actions[0] && payload.actions[0].data ? payload.actions[0].data : {};
     return {
-        legislation: window.spLegislation,
-        name: payload.name,
+        messageId: payload.messageId,
+        campaignType: window.spLegislation,
         actionType: actionPayload.type,
-        choiceId: String(actionPayload.choice_id),
         requestFromPm: false,
-        pmId: getQueryParam("message_id", actionPayload.iframe_url),
-        pmTab: getQueryParam("pmTab", actionPayload.iframe_url),
-        saveAndExitVariables: {},
+        pmUrl: actionPayload.iframe_url,
+        saveAndExitVariables: "{}",
         consentLanguage: payload.consentLanguage,
         customActionId: actionPayload.customAction
     };
@@ -32,15 +30,12 @@ function actionFromMessage(payload) {
 
 function actionFromPM(payload) {
     return {
-        localPmId: window.localPmId,
-        legislation: window.spLegislation,
-        name: payload.name,
+        messageId: payload.messageId,
+        campaignType: window.spLegislation,
         actionType: payload.actionType,
-        choiceId: null,
         requestFromPm: true,
-        pmId: getQueryParam("message_id", payload.iframe_url),
-        pmTab: null,
-        saveAndExitVariables: payload.payload,
+        pmUrl: payload.iframe_url,
+        saveAndExitVariables: JSON.stringify(Object.assign({}, payload.payload)),
         consentLanguage: payload.consentLanguage,
         customActionId: payload.customAction
     };
@@ -58,18 +53,22 @@ function notImplemented(callbackName) {
 }
 
 function handleEvent(event) {
+    console.log("message event:", JSON.stringify(event.data));
     var payload = event.data;
     var sdk = window.JSReceiver || {
-        onConsentUIReady: notImplemented('onConsentUIReady'),
+        readyForMessagePreload: notImplemented('readyForMessagePreload'),
+        readyForConsentPreload: notImplemented('readyForConsentPreload'),
+        loaded: notImplemented('onConsentUIReady'),
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
-        log: notImplemented('log')
+        log: notImplemented('log'),
     };
     try {
-        sdk.log(JSON.stringify(payload));
         switch (payload.name) {
+            case 'sp.loadMessage': break;
+            case 'sp.loadConsent': break;
             case 'sp.showMessage':
-                sdk.onConsentUIReady(isFromPM(payload));
+                sdk.loaded();
                 break;
             case 'sp.hideMessage':
                 sdk.onAction(JSON.stringify(actionData(payload)));
@@ -77,24 +76,18 @@ function handleEvent(event) {
             case 'sp.renderingAppError':
                 sdk.onError(JSON.stringify(payload));
                 break;
+            case 'sp.readyForPreload':
+                sdk.readyForMessagePreload();
+                break;
+            case 'sp.readyForPreloadConsent':
+                sdk.readyForConsentPreload();
+                break;
             default:
-                sdk.log("Unexpected event name: " + JSON.stringify(payload.name));
+                sdk.log("Unexpected event name: " + JSON.stringify(payload));
         }
     } catch (err) {
         sdk.onError(err.stack);
     }
-}
-
-/*
-We export the handleEvent function inside a try-catch block
-because newer WebViews will throw an error when a variable
-is not defined. In this case, module is not defined by us
-but the Node runtime.
-*/
-try {
-    module.exports = handleEvent;
-} catch (error){
-  /* no-op */
 }
 
 window.addEventListener('message', handleEvent);

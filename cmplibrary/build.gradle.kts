@@ -7,10 +7,6 @@ plugins {
     id("kotlinx-serialization")
 }
 
-apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
-apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
-apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
-
 val versionLib = project.property("VERSION_NAME") as String
 
 group = "com.sourcepoint.cmplibrary"
@@ -19,41 +15,14 @@ version = versionLib
 android {
     compileSdk = 35
     namespace = "com.sourcepoint.cmplibrary"
-    testOptions.unitTests.isIncludeAndroidResources = true
     defaultConfig {
-        minSdk = 23
-        multiDexEnabled = true
+        minSdk = 21
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        getByName("debug") {
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
-        }
-        create("stage") {
-            initWith(getByName("debug"))
-            isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"STAGE\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"stage\"")
-        }
-        create("preprod") {
-            initWith(getByName("debug"))
-            isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PRE_PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"localProd\"")
-        }
+        getByName("debug")
         getByName("release") {
             isMinifyEnabled = false
-            buildConfigField("String", "LOGGER_URL", "\"https://cdn.privacy-mgmt.com/wrapper/metrics/v1/custom-metrics\"")
-            buildConfigField("String", "SDK_ENV", "\"PROD\"")
-            buildConfigField("String", "VERSION_NAME", "\"$versionLib\"")
-            buildConfigField("String", "ENV_QUERY_PARAM", "\"prod\"")
             consumerProguardFiles("cmp-consumer-proguard-rules.pro")
         }
     }
@@ -63,7 +32,6 @@ android {
         getByName("test").resources.srcDir(sharedRes)
         getByName("androidTest").resources.srcDir(sharedRes)
         getByName("main").resources.srcDir("${projectDir.path}/files")
-
     }
 
     compileOptions {
@@ -81,31 +49,19 @@ android {
             kotlinOptions.jvmTarget = "11"
         }
     }
-
-    testOptions {
-        // JSONObject return null during unit tests
-        // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
-        unitTests.isReturnDefaultValues = true
-        unitTests.isIncludeAndroidResources = true
-    }
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.1.1")
+    implementation("com.sourcepoint:core:0.1.2")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-
-    // kotlin
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
-    testImplementation("io.mockk:mockk:1.13.16")
 }
+
 
 tasks.register("versionTxt") {
     group = "release-utility"
@@ -118,9 +74,7 @@ tasks.register("versionTxt") {
 addCommitPushConfig {
     fileList = listOf(
         "${rootDir.path}/CHANGELOG.md",
-        "${rootDir.path}/README.md",
-        "${rootDir.path}/samples/web-message-demo/build.gradle",
-        "${rootDir.path}/samples/nat-message-demo/build.gradle"
+        "${rootDir.path}/README.md"
     )
 }
 
@@ -129,16 +83,6 @@ replaceInFile {
     docs {
         create("doc") {
             path = "${rootDir.path}/README.md"
-            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
-            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
-        }
-        create("doc1") {
-            path = "${rootDir.path}/samples/web-message-demo/build.gradle"
-            find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
-            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
-        }
-        create("doc2") {
-            path = "${rootDir.path}/samples/nat-message-demo/build.gradle"
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
             replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
         }
@@ -151,3 +95,7 @@ changeLogConfig {
     content = file(  "${rootDir.path}/${project.name}/release_note.txt").readText()
     version = versionName
 }
+
+apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
+apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
+apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")

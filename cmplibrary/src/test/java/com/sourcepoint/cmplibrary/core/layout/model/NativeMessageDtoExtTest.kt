@@ -1,9 +1,9 @@
 package com.sourcepoint.cmplibrary.core.layout.model
 
 import com.sourcepoint.cmplibrary.assertNotNull
+import com.sourcepoint.cmplibrary.file2String
 import com.sourcepoint.cmplibrary.model.getMap
 import com.sourcepoint.cmplibrary.model.toTreeMap
-import com.sourcepoint.cmplibrary.util.file2String
 import org.json.JSONObject
 import org.junit.Test
 

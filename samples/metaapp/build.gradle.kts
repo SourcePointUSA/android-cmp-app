@@ -24,7 +24,6 @@ android {
         targetSdk = 35
         versionCode = versionCodeMeta
         versionName = "${rootProject.project("cmplibrary").version}"
-        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -54,16 +53,6 @@ android {
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
-            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
-        }
-        create("stage") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".stage"
-            buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
-        }
-        create("preprod") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".preprod"
             buildConfigField("String", "URL_PROPERTY_FILE", "\"https://raw.githubusercontent.com/SourcePointUSA/android-cmp-app/master/cmplibrary/gradle.properties\"")
         }
         getByName("release") {

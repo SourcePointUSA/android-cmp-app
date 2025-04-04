@@ -2,7 +2,7 @@ package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -10,7 +10,6 @@ import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
 import org.json.JSONObject
 
 interface SpConsentLib {
-
     /**
      * Load the First Layer Message (FLM)
      */
@@ -83,29 +82,19 @@ interface SpConsentLib {
 
     fun dispose()
 
-    /**
-     * Method that verifies home page and delegates navigation between the message view and the
-     * activity that utilizes the message, using functional interface.
-     *
-     * Applicable for Java and Kotlin implementations.
-     *
-     * @param ottDelegate functional interface that provides the mechanism to override onBackPress
-     */
-    fun handleOnBackPress(
-        isMessageDismissible: Boolean = true,
-        ottDelegate: SpBackPressOttDelegate,
-    )
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """)
+    fun handleOnBackPress(isMessageDismissible: Boolean = true, ottDelegate: SpBackPressOttDelegate)
 
-    /**
-     * Method that verifies home page and delegates navigation between the message view and the
-     * activity that utilizes the message, using lambda.
-     *
-     * Applicable for Kotlin implementation.
-     *
-     * @param onHomePage lambda that provides the mechanism to override onBackPress
-     */
-    fun handleOnBackPress(
-        isMessageDismissible: Boolean = true,
-        onHomePage: () -> Unit,
-    )
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """)
+    fun handleOnBackPress(isMessageDismissible: Boolean = true, onHomePage: () -> Unit)
+
+    fun clearLocalData()
 }

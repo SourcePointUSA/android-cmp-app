@@ -1,7 +1,6 @@
 package com.sourcepointmeta.metaapp.logger
 
 import android.util.Log
-import com.sourcepoint.cmplibrary.exception.Logger
 import com.sourcepointmeta.metaapp.data.localdatasource.LocalDataSource
 import com.sourcepointmeta.metaapp.data.localdatasource.MetaLog
 import kotlinx.coroutines.DelicateCoroutinesApi

@@ -10,22 +10,20 @@ import com.example.uitestutil.*
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnGdprReviewConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.clickOnRefreshBtnActivity
 import com.sourcepoint.app.v6.TestUseCase.Companion.mockModule
-import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptAllOnWebView
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapAcceptOnWebView
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.data.network.util.CampaignsEnv
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 
-//@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityKotlinNativeOttTest {
 
     lateinit var scenario: ActivityScenario<MainActivityKotlin>

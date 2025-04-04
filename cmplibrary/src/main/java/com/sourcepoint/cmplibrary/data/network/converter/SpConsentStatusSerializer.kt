@@ -9,14 +9,11 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object SpConsentStatusSerializer : KSerializer<GCMStatus> {
-
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SpConsentStatus", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): GCMStatus {
         val code = decoder.decodeString()
-        return GCMStatus.values()
-            .find { m -> m.status == code }
-            ?: GCMStatus.DENIED
+        return GCMStatus.entries.find { m -> m.status == code } ?: GCMStatus.DENIED
     }
 
     override fun serialize(encoder: Encoder, value: GCMStatus) {

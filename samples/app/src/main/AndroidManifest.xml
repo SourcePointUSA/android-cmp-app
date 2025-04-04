@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OnlyGdprKotlin" />
         <activity android:name=".MainActivityJava" />
         <activity android:name=".MainActivityAuthId" />
         <activity android:name=".NativeMessageActivity" />

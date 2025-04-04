@@ -6,7 +6,7 @@ import android.view.View
 import androidx.core.content.FileProvider
 import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.* //ktlint-disable
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import com.sourcepointmeta.metaapp.core.getOrNull
 import com.sourcepointmeta.metaapp.databinding.DemoHeaderBinding

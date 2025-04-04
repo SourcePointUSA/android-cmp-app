@@ -1,7 +1,6 @@
 package com.sourcepoint.cmplibrary.core.nativemessage
 
-import com.sourcepoint.cmplibrary.data.local.DataStorage
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType.UNKNOWN
 import com.sourcepoint.cmplibrary.model.getFieldValue
@@ -10,27 +9,11 @@ import com.sourcepoint.cmplibrary.model.toTreeMap
 import org.json.JSONObject
 import java.lang.RuntimeException
 
-internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType, dataStorage: DataStorage): MessageStructure {
-    return when (dataStorage.messagesOptimizedLocalState) {
-        null -> toNativeMessageDTO(campaignType)
-        else -> toNativeMessageDTOOptimized(campaignType)
-    }
-}
-
 internal fun JSONObject.toNativeMessageDTO(campaignType: CampaignType): MessageStructure {
     val nmMap: Map<String, Any?> = this.toTreeMap()
 
     return MessageStructure(
         messageComponents = nmMap.getMap("message_json")?.toMessageComponents(campaignType),
-        campaignType = campaignType
-    )
-}
-
-internal fun JSONObject.toNativeMessageDTOOptimized(campaignType: CampaignType): MessageStructure {
-    val nmMap: Map<String, Any?> = this.toTreeMap()
-
-    return MessageStructure(
-        messageComponents = nmMap.getMap("message_json")?.toMessageComponentsOptimized(campaignType),
         campaignType = campaignType
     )
 }
@@ -43,18 +26,6 @@ internal fun Map<String, Any?>.toMessageComponents(legislation: CampaignType): M
         body = componentsMap.getMap("body")?.toNativeComponent(),
         customFields = (this.getMap("customFields") as? Map<String, String>) ?: emptyMap(),
         actions = componentsMap.toNativeActions(legislation)
-    )
-}
-
-internal fun Map<String, Any?>.toMessageComponentsOptimized(legislation: CampaignType): MessageComponents {
-    val componentsMap = this
-    val messageJsonStructure: Map<String, Any?>? = componentsMap.getFieldValue<String>("message_json_string")?.let { JSONObject(it).toTreeMap() }
-    return MessageComponents(
-        name = messageJsonStructure?.getFieldValue<String>("name") ?: "",
-        title = messageJsonStructure?.getMap("title")?.toNativeComponent(),
-        body = messageJsonStructure?.getMap("body")?.toNativeComponent(),
-        customFields = (messageJsonStructure?.getMap("customFields") as? Map<String, String>) ?: emptyMap(),
-        actions = messageJsonStructure?.toNativeActions(legislation) ?: emptyList()
     )
 }
 

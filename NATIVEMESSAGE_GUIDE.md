@@ -119,6 +119,3 @@ available functions:
 
 ## A complete example
 A complete example can be found into the `samples/nat-message-demo`
-
-
-

@@ -1,6 +1,6 @@
 package com.sourcepointmeta.metaapp.ui.component
 
-import com.sourcepoint.cmplibrary.exception.CampaignType
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepointmeta.metaapp.data.localdatasource.Property
