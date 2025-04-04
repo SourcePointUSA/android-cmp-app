@@ -1,97 +1,78 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import com.example.uitestutil.assertNotNull
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.assertNotNull
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
-import com.sourcepoint.cmplibrary.model.MessageLanguage
-import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.MockK
-import org.junit.Before
+import io.mockk.mockk
 import org.junit.Test
 
 class SpCmpBuilderTest {
-
-    @MockK
-    private lateinit var mockContext: Activity
-    @MockK
-    private lateinit var mockClient: SpClient
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this, relaxUnitFun = true, relaxed = true)
-    }
+    private val activityMock = mockk<Activity>(relaxed = true)
+    private val spClientMock = mockk<SpClient>(relaxed = true)
 
     @Test(expected = RuntimeException::class)
-    fun `GIVEN a DLS config without propertyId THROW an exception`() {
+    fun throwsExceptionIfConfigHasNoPropertyId() {
         val sut by spConsentLibLazy {
-            activity = mockContext
-            spClient = mockClient
+            activity = activityMock
+            spClient = spClientMock
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                messLanguage = MessageLanguage.ENGLISH
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         }
         sut.assertNotNull()
     }
 
     @Test
-    fun `GIVEN a DLS config VERIFY the spConfig object created`() {
+    fun makeSureConfigIsCreated() {
         val sut by spConsentLibLazy {
-            activity = mockContext
-            spClient = mockClient
+            activity = activityMock
+            spClient = spClientMock
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                messLanguage = MessageLanguage.ENGLISH
                 propertyId = 16893
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         }
         sut.assertNotNull()
     }
 
     @Test(expected = RuntimeException::class)
-    fun `GIVEN an obj with a missing config THROWS an exception`() {
+    fun throwsExceptionIfConfigIsMissing() {
         val sut by spConsentLibLazy {
-            activity = mockContext
-            spClient = mockClient
+            activity = activityMock
+            spClient = spClientMock
         }
         sut.assertNotNull()
     }
 
     @Test(expected = RuntimeException::class)
-    fun `GIVEN an obj with a missing activity THROWS an exception`() {
+    fun throwsExceptionIfActivityIsMissing() {
         val sut by spConsentLibLazy {
-            spClient = mockClient
+            spClient = spClientMock
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                messLanguage = MessageLanguage.ENGLISH
                 propertyId = 16893
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         }
         sut.assertNotNull()
     }
 
     @Test(expected = RuntimeException::class)
-    fun `GIVEN an obj with a missing spClient THROWS an exception`() {
+    fun throwsExceptionIfSpClientIsMissing() {
         val sut by spConsentLibLazy {
-            activity = mockContext
+            activity = activityMock
             config {
                 accountId = 22
                 propertyName = "mobile.multicampaign.demo"
-                messLanguage = MessageLanguage.ENGLISH
                 propertyId = 16893
                 +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
             }
         }
         sut.assertNotNull()

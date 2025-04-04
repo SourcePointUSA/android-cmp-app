@@ -17,7 +17,6 @@ import com.sourcepoint.mobile_core.models.SPCampaign
 import com.sourcepoint.mobile_core.models.SPCampaignEnv
 import com.sourcepoint.mobile_core.models.SPCampaigns
 import com.sourcepoint.mobile_core.models.SPPropertyName
-import com.sourcepoint.mobile_core.models.consents.State
 import java.lang.ref.WeakReference
 
 fun makeConsentLib(
