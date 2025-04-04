@@ -42,7 +42,6 @@ class LegacyStateTest {
                 }
                 consents.apply {
                     applies.assertTrue()
-                    applies.assertTrue()
                     uuid.assertEquals("gdprUUID")
                     dateCreated.assertEquals(Instant.parse("2025-03-29T13:45:32.988Z"))
                     consentStatus.apply {
