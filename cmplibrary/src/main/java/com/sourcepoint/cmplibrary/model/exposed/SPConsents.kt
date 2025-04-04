@@ -146,6 +146,15 @@ enum class CcpaStatus {
             CoreCCPAConsentStatus.LinkedNoAction -> linkedNoAction
         }
     }
+
+    fun toCore() = when (this) {
+        consentedAll -> CoreCCPAConsentStatus.ConsentedAll
+        rejectedAll -> CoreCCPAConsentStatus.RejectedAll
+        rejectedSome -> CoreCCPAConsentStatus.RejectedSome
+        rejectedNone -> CoreCCPAConsentStatus.RejectedNone
+        linkedNoAction -> CoreCCPAConsentStatus.LinkedNoAction
+        unknown -> null
+    }
 }
 
 interface Consentable {

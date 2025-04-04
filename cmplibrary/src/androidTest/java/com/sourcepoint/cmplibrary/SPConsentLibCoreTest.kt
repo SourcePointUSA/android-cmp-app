@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.sourcepoint.cmplibrary
 
 import android.content.Context
@@ -9,6 +10,8 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
 import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
+import com.sourcepoint.cmplibrary.legacy.loadLegacySharedPrefs
+import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.mobile_core.Coordinator
 import com.sourcepoint.mobile_core.ICoordinator
@@ -24,6 +27,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -54,8 +58,12 @@ class SPConsentLibCoreTest {
         spClient = spClient,
     )
 
-    @Suppress("DEPRECATION")
-    private val preferences = PreferenceManager.getDefaultSharedPreferences(context).edit()
+    private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    @Before
+    fun cleanPreferences() {
+        preferences.edit().clear().commit()
+    }
 
     @Test
     fun onUIReadyIsCalled() = runBlocking {
@@ -110,17 +118,25 @@ class SPConsentLibCoreTest {
 
     @Test
     fun noMessageIsShownIfTheresDataFromSDKWithoutMobileCore() = runBlocking {
+        // NOTE: If this test fails, chances are the SDK (more specifically the mobile-core's Coordinator)
+        // is reseting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
         val client = spClient
-        // TODO: dump data from sharedprefs from previous version of the SDK
-        preferences.apply {
-//            putString("")
-        }.commit()
-        val consentLib = getConsentLib(spClient = client)
-        consentLib.loadMessage()
+        loadLegacySharedPrefs(preferences)
+        getConsentLib(spClient = client, coordinator = Coordinator(
+            accountId = accountId,
+            propertyId = propertyId,
+            propertyName = propertyName,
+            campaigns = campaigns,
+            state = migrateLegacyToNewState(
+                preferences = preferences,
+                accountId = accountId,
+                propertyId = propertyId
+            )
+        )).loadMessage()
         wr {
-//            verify(exactly = 0) { client.onUIReady(any()) }
-//            verify(exactly = 0) { client.onError(any()) }
-//            verify(exactly = 1) { client.onSpFinished(any()) }
+            verify(exactly = 0) { client.onUIReady(any()) }
+            verify(exactly = 0) { client.onError(any()) }
+            verify(exactly = 1) { client.onSpFinished(any()) }
         }
     }
 }

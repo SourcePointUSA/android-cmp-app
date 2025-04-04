@@ -1,12 +1,14 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.SpConsentLibMobileCore
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -15,6 +17,7 @@ import com.sourcepoint.mobile_core.models.SPCampaign
 import com.sourcepoint.mobile_core.models.SPCampaignEnv
 import com.sourcepoint.mobile_core.models.SPCampaigns
 import com.sourcepoint.mobile_core.models.SPPropertyName
+import com.sourcepoint.mobile_core.models.consents.State
 import java.lang.ref.WeakReference
 
 fun makeConsentLib(
@@ -39,6 +42,11 @@ fun makeConsentLib(
         propertyName = SPPropertyName.create(spConfig.propertyName),
         propertyId = spConfig.propertyId,
         campaigns = spConfig.campaigns.toCore(spConfig),
+        state = migrateLegacyToNewState(
+            preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
+            accountId = spConfig.accountId,
+            propertyId = spConfig.propertyId
+        )
         // TODO: pass timeout directly to Coordinator
     ),
     propertyId = spConfig.propertyId,
