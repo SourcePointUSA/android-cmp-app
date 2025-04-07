@@ -56,7 +56,7 @@ fun makeConsentLib(
     connectionManager = connectionManager
 )
 
-fun List<SpCampaign>.toCore(spConfig: SpConfig): SPCampaigns = SPCampaigns(
+fun List<SpCampaign>.toCore(spConfig: SpConfig) = SPCampaigns(
     gdpr = firstOrNull { it.campaignType == CampaignType.GDPR }?.toCore(),
     ccpa = firstOrNull { it.campaignType == CampaignType.CCPA }?.toCore(),
     usnat = firstOrNull { it.campaignType == CampaignType.USNAT }?.toCore(),

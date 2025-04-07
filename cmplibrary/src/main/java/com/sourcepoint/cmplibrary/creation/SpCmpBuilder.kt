@@ -9,7 +9,6 @@ import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
 @SpDSL
 class SpCmpBuilder {
-
     lateinit var spConfig: SpConfig
     var authId: String? = null
     lateinit var activity: Activity

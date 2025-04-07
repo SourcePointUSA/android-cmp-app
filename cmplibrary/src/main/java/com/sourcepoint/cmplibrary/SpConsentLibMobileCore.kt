@@ -290,17 +290,25 @@ class SpConsentLibMobileCore(
     }
 
     override fun dispose() {
-        // TODO: deprecate
+
     }
 
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """, replaceWith = ReplaceWith("")
+    )
     override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
-        // TODO: deprecate
         handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
     }
 
-    override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {
-        // TODO: deprecate
-    }
+    @Deprecated(message = """
+        This method is no longer necessary.
+        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+        This method will be removed shortly in future releases.
+    """)
+    override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {}
 
     override fun clearLocalData() = coordinator.clearLocalData()
 

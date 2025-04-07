@@ -36,20 +36,20 @@ class SpConfigDataBuilder {
     }
 
     operator fun Map<CampaignType, Set<ConfigOption>>.unaryPlus() {
-        this.entries.firstOrNull()?.let {
+        entries.firstOrNull()?.let {
             campaigns.add(SpCampaign(it.key, configParams = it.value))
         }
     }
 
-    fun addAccountId(accountId: Int): SpConfigDataBuilder = apply {
+    fun addAccountId(accountId: Int) = apply {
         this.accountId = accountId
     }
 
-    fun addPropertyId(propertyId: Int): SpConfigDataBuilder = apply {
+    fun addPropertyId(propertyId: Int) = apply {
         this.propertyId = propertyId
     }
 
-    fun addPropertyName(propertyName: String): SpConfigDataBuilder = apply {
+    fun addPropertyName(propertyName: String) = apply {
         this.propertyName = propertyName
     }
 
@@ -69,25 +69,18 @@ class SpConfigDataBuilder {
         this.spGppConfig = spGppConfig
     }
 
-    fun addCampaign(
-        campaignType: CampaignType,
-        targetingParams: String
-    ): SpConfigDataBuilder = apply {
-
-        val tp = JSONObject(targetingParams)
-        val array = tp
+    fun addCampaign(campaignType: CampaignType, targetingParams: String) = apply {
+        campaigns.add(SpCampaign(campaignType, JSONObject(targetingParams)
             .toTreeMap()
             .entries
-            .fold(mutableListOf<TargetingParam>()) { acc, elem ->
+            .fold(mutableListOf()) { acc, elem ->
                 acc.add(TargetingParam(elem.key, (elem.value as? String) ?: ""))
                 acc
             }
-        campaigns.add(SpCampaign(campaignType, array))
+        ))
     }
 
-    fun addCampaign(
-        campaignType: CampaignType
-    ): SpConfigDataBuilder = apply {
+    fun addCampaign(campaignType: CampaignType) = apply {
         campaigns.add(SpCampaign(campaignType, emptyList()))
     }
 
@@ -95,7 +88,7 @@ class SpConfigDataBuilder {
         campaignType: CampaignType,
         params: List<TargetingParam>,
         groupPmId: String?
-    ): SpConfigDataBuilder = apply {
+    ) = apply {
         campaigns.add(SpCampaign(campaignType, params, groupPmId))
     }
 
@@ -104,36 +97,33 @@ class SpConfigDataBuilder {
         params: List<TargetingParam>,
         groupPmId: String?,
         configParams: Set<ConfigOption> = emptySet(),
-    ): SpConfigDataBuilder = apply {
+    ) = apply {
         campaigns.add(SpCampaign(campaignType, params, groupPmId, configParams))
     }
 
-    fun addCampaign(campaign: SpCampaign): SpConfigDataBuilder = apply {
+    fun addCampaign(campaign: SpCampaign) = apply {
         campaigns.add(campaign)
     }
 
-    fun build(): SpConfig {
-        return SpConfig(
-            accountId = accountId,
-            propertyName = propertyName,
-            campaigns = campaigns,
-            messageLanguage = messLanguage,
-            messageTimeout = messageTimeout,
-            campaignsEnv = campaignsEnv,
-            propertyId = propertyId,
-            spGppConfig = spGppConfig,
-        )
-    }
+    fun build() = SpConfig(
+        accountId = accountId,
+        propertyName = propertyName,
+        campaigns = campaigns,
+        messageLanguage = messLanguage,
+        messageTimeout = messageTimeout,
+        campaignsEnv = campaignsEnv,
+        propertyId = propertyId,
+        spGppConfig = spGppConfig,
+    )
 }
 
 fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
     return SpConfigDataBuilder().apply(dsl).build()
 }
+
 enum class ConfigOption(option: String) {
     TRANSITION_CCPA_AUTH("transitionCCPAAuth"),
     SUPPORT_LEGACY_USPSTRING("supportLegacyUSPString")
 }
 
-infix fun CampaignType.to(config: Set<ConfigOption>): Map<CampaignType, Set<ConfigOption>> {
-    return mapOf(Pair(this, config))
-}
+infix fun CampaignType.to(config: Set<ConfigOption>) = mapOf(Pair(this, config))

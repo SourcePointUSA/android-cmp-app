@@ -75,9 +75,8 @@ class MainActivityKotlinOttTest {
             device.pressEnter()
         }
 
-        // TODO: uncomment when https://sourcepoint.atlassian.net/browse/DIA-5350 is solved
-//        verify(exactly = 0) { spClient.onError(any()) }
-//        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
+        verify(exactly = 0) { spClient.onError(any()) }
+        wr{ verify(exactly = 1) { spClient.onConsentReady(any()) } }
         verify { spClient.onAction(any(), any()) }
 
         wr {
@@ -112,8 +111,7 @@ class MainActivityKotlinOttTest {
             device.pressEnter()
         }
 
-        // TODO: uncomment when https://sourcepoint.atlassian.net/browse/DIA-5350 is solved
-//        wr { verify(exactly = 0) { spClient.onError(any()) } }
+        wr { verify(exactly = 0) { spClient.onError(any()) } }
         wr { verify(atLeast = 2) { spClient.onConsentReady(any()) } }
         wr { verify { spClient.onAction(any(), any()) } }
 

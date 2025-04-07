@@ -327,8 +327,7 @@ class SPConsentWebView(
     @JavascriptInterface
     override fun onError(error: String) {
         println(error)
-        // TODO: uncomment once https://sourcepoint.atlassian.net/browse/DIA-5356 is released
-//        messageUIClient.onError(RenderingAppException())
+        messageUIClient.onError(RenderingAppException())
     }
 
     @JavascriptInterface
