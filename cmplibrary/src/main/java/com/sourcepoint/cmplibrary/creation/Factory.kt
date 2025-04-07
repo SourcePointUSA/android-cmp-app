@@ -43,8 +43,8 @@ fun makeConsentLib(
             preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
             accountId = spConfig.accountId,
             propertyId = spConfig.propertyId
-        )
-        // TODO: pass timeout directly to Coordinator
+        ),
+        timeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // convert to seconds
     ),
     propertyId = spConfig.propertyId,
     language = spConfig.messageLanguage,
