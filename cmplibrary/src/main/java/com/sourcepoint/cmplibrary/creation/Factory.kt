@@ -57,18 +57,18 @@ fun makeConsentLib(
 )
 
 fun List<SpCampaign>.toCore(spConfig: SpConfig) = SPCampaigns(
-    gdpr = firstOrNull { it.campaignType == CampaignType.GDPR }?.toCore(),
-    ccpa = firstOrNull { it.campaignType == CampaignType.CCPA }?.toCore(),
-    usnat = firstOrNull { it.campaignType == CampaignType.USNAT }?.toCore(),
+    gdpr = firstOrNull { it.campaignType == GDPR }?.toCore(),
+    ccpa = firstOrNull { it.campaignType == CCPA }?.toCore(),
+    usnat = firstOrNull { it.campaignType == USNAT }?.toCore(),
     environment = spConfig.campaignsEnv.toCore()
 )
 
 fun SpCampaign.toCore(): SPCampaign = SPCampaign(
     targetingParams = targetingParams.associate { it.key to it.value },
     groupPmId = groupPmId,
-    supportLegacyUSPString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING),
-    transitionCCPAAuth = configParams.contains(ConfigOption.TRANSITION_CCPA_AUTH),
     gppConfig = null // TODO implement
+    supportLegacyUSPString = configParams.contains(SUPPORT_LEGACY_USPSTRING),
+    transitionCCPAAuth = configParams.contains(TRANSITION_CCPA_AUTH),
 )
 
 fun CampaignsEnv.toCore() = when (this) {
