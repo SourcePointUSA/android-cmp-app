@@ -21,11 +21,7 @@ import com.sourcepoint.mobile_core.models.SPCampaigns
 import com.sourcepoint.mobile_core.models.SPPropertyName
 import java.lang.ref.WeakReference
 
-fun makeConsentLib(
-    spConfig: SpConfig,
-    activity: Activity,
-    spClient: SpClient
-) = makeConsentLib(
+fun makeConsentLib(spConfig: SpConfig, activity: Activity, spClient: SpClient) = makeConsentLib(
     spConfig = spConfig,
     activity = activity,
     spClient = spClient,
@@ -47,8 +43,8 @@ fun makeConsentLib(
             preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
             accountId = spConfig.accountId,
             propertyId = spConfig.propertyId
-        )
-        // TODO: pass timeout directly to Coordinator
+        ),
+        timeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // convert to seconds
     ),
     propertyId = spConfig.propertyId,
     language = spConfig.messageLanguage,
