@@ -1,44 +1,33 @@
 package com.sourcepoint.cmplibrary.legacy
 
 import android.content.SharedPreferences
-import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParser.END_DOCUMENT
+import org.xmlpull.v1.XmlPullParser.START_TAG
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
 
 fun loadLegacySharedPrefs(prefs: SharedPreferences, xml: String = legacySharedPrefsXML) {
     val editor = prefs.edit()
-
-    val factory = XmlPullParserFactory.newInstance()
-    val parser = factory.newPullParser()
+    val parser = XmlPullParserFactory.newInstance().newPullParser()
     parser.setInput(StringReader(xml))
 
     var eventType = parser.eventType
-    while (eventType != XmlPullParser.END_DOCUMENT) {
-        if (eventType == XmlPullParser.START_TAG) {
+    while (eventType != END_DOCUMENT) {
+        if (eventType == START_TAG) {
             val tag = parser.name
             val name = parser.getAttributeValue(null, "name")
 
             when (tag) {
-                "string" -> {
-                    val value = parser.nextText()
-                    editor.putString(name, value)
-                }
-                "int" -> {
-                    val value = parser.getAttributeValue(null, "value").toInt()
-                    editor.putInt(name, value)
-                }
-                "long" -> {
-                    val value = parser.getAttributeValue(null, "value").toLong()
-                    editor.putLong(name, value)
-                }
-                "float" -> {
-                    val value = parser.getAttributeValue(null, "value").toFloat()
-                    editor.putFloat(name, value)
-                }
-                "boolean" -> {
-                    val value = parser.getAttributeValue(null, "value").toBoolean()
-                    editor.putBoolean(name, value)
-                }
+                "string" ->
+                    editor.putString(name, parser.nextText())
+                "int" ->
+                    editor.putInt(name, parser.getAttributeValue(null, "value").toInt())
+                "long" ->
+                    editor.putLong(name, parser.getAttributeValue(null, "value").toLong())
+                "float" ->
+                    editor.putFloat(name, parser.getAttributeValue(null, "value").toFloat())
+                "boolean" ->
+                    editor.putBoolean(name, parser.getAttributeValue(null, "value").toBoolean())
             }
         }
         eventType = parser.next()
