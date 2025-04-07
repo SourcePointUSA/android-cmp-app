@@ -119,14 +119,16 @@ class SPConsentLibCoreTest {
     @Test
     fun noMessageIsShownIfTheresDataFromSDKWithoutMobileCore() = runBlocking {
         // NOTE: If this test fails, chances are the SDK (more specifically the mobile-core's Coordinator)
-        // is reseting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
+        // is resetting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
         val client = spClient
         loadLegacySharedPrefs(preferences)
         getConsentLib(spClient = client, coordinator = Coordinator(
             accountId = accountId,
             propertyId = propertyId,
             propertyName = propertyName,
-            campaigns = campaigns,
+            // we leave usnat off, because its applicableSections might change depending on the physical location
+            // of the CI servers running the tests, causing State to reset and the test to fail
+            campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign()),
             state = migrateLegacyToNewState(
                 preferences = preferences,
                 accountId = accountId,
