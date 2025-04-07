@@ -21,11 +21,7 @@ import com.sourcepoint.mobile_core.models.SPCampaigns
 import com.sourcepoint.mobile_core.models.SPPropertyName
 import java.lang.ref.WeakReference
 
-fun makeConsentLib(
-    spConfig: SpConfig,
-    activity: Activity,
-    spClient: SpClient
-) = makeConsentLib(
+fun makeConsentLib(spConfig: SpConfig, activity: Activity, spClient: SpClient) = makeConsentLib(
     spConfig = spConfig,
     activity = activity,
     spClient = spClient,
