@@ -126,7 +126,9 @@ class SPConsentLibCoreTest {
             accountId = accountId,
             propertyId = propertyId,
             propertyName = propertyName,
-            campaigns = campaigns,
+            // we leave usnat off, because its applicableSections might change depending on the physical location
+            // of the CI servers running the tests, causing State to reset and the test to fail
+            campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign()),
             state = migrateLegacyToNewState(
                 preferences = preferences,
                 accountId = accountId,
