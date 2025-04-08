@@ -5,7 +5,9 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory
-import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory.*
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory.CCPAOTT
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory.NativeOTT
+import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory.PrivacyManagerOTT
 
 const val DEFAULT_TIMEOUT = 10000L // in ms
 
@@ -58,7 +60,7 @@ enum class MessageType {
     OTT,
     LEGACY_OTT;
 
-    internal  companion object {
+    internal companion object {
         internal fun fromMessageSubCategory(subCategory: MessageSubCategory) = when (subCategory) {
             PrivacyManagerOTT, CCPAOTT -> LEGACY_OTT
             NativeOTT -> OTT

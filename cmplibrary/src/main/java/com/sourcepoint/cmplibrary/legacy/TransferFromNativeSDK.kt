@@ -4,13 +4,13 @@ import android.content.SharedPreferences
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
-import com.sourcepoint.mobile_core.network.json
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonObject
 import com.sourcepoint.mobile_core.models.consents.State
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
+import com.sourcepoint.mobile_core.network.json
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 typealias CoreConsentStatus = com.sourcepoint.mobile_core.models.consents.ConsentStatus
@@ -21,7 +21,7 @@ fun migrateLegacyToNewState(
     accountId: Int,
     propertyId: Int
 ): State? {
-    if(preferences.contains(LegacyLocalState.PREFS_KEY)) {
+    if (preferences.contains(LegacyLocalState.PREFS_KEY)) {
         try {
             val newState = LegacyState(preferences).toState(accountId, propertyId)
             removeLegacyData(preferences)

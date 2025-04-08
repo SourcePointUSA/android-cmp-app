@@ -70,14 +70,18 @@ class SpConfigDataBuilder {
     }
 
     fun addCampaign(campaignType: CampaignType, targetingParams: String) = apply {
-        campaigns.add(SpCampaign(campaignType, JSONObject(targetingParams)
-            .toTreeMap()
-            .entries
-            .fold(mutableListOf()) { acc, elem ->
-                acc.add(TargetingParam(elem.key, (elem.value as? String) ?: ""))
-                acc
-            }
-        ))
+        campaigns.add(
+            SpCampaign(
+                campaignType,
+                JSONObject(targetingParams)
+                    .toTreeMap()
+                    .entries
+                    .fold(mutableListOf()) { acc, elem ->
+                        acc.add(TargetingParam(elem.key, (elem.value as? String) ?: ""))
+                        acc
+                    }
+            )
+        )
     }
 
     fun addCampaign(campaignType: CampaignType) = apply {

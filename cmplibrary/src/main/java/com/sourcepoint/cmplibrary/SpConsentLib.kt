@@ -82,18 +82,22 @@ interface SpConsentLib {
 
     fun dispose()
 
-    @Deprecated(message = """
-        This method is no longer necessary.
-        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-        This method will be removed shortly in future releases.
-    """)
+    @Deprecated(
+        message = """
+            This method is no longer necessary.
+            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+            This method will be removed shortly in future releases.
+        """
+    )
     fun handleOnBackPress(isMessageDismissible: Boolean = true, ottDelegate: SpBackPressOttDelegate)
 
-    @Deprecated(message = """
-        This method is no longer necessary.
-        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-        This method will be removed shortly in future releases.
-    """)
+    @Deprecated(
+        message = """
+            This method is no longer necessary.
+            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+            This method will be removed shortly in future releases.
+        """
+    )
     fun handleOnBackPress(isMessageDismissible: Boolean = true, onHomePage: () -> Unit)
 
     fun clearLocalData()

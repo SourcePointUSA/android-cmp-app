@@ -122,19 +122,22 @@ class SPConsentLibCoreTest {
         // is resetting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
         val client = spClient
         loadLegacySharedPrefs(preferences)
-        getConsentLib(spClient = client, coordinator = Coordinator(
-            accountId = accountId,
-            propertyId = propertyId,
-            propertyName = propertyName,
-            // we leave usnat off, because its applicableSections might change depending on the physical location
-            // of the CI servers running the tests, causing State to reset and the test to fail
-            campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign()),
-            state = migrateLegacyToNewState(
-                preferences = preferences,
+        getConsentLib(
+            spClient = client,
+            coordinator = Coordinator(
                 accountId = accountId,
-                propertyId = propertyId
+                propertyId = propertyId,
+                propertyName = propertyName,
+                // we leave usnat off, because its applicableSections might change depending on the physical location
+                // of the CI servers running the tests, causing State to reset and the test to fail
+                campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign()),
+                state = migrateLegacyToNewState(
+                    preferences = preferences,
+                    accountId = accountId,
+                    propertyId = propertyId
+                )
             )
-        )).loadMessage()
+        ).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
             verify(exactly = 0) { client.onError(any()) }

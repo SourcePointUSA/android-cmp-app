@@ -20,10 +20,10 @@ import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
 import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.exposed.ActionType.*
-import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
-import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
+import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
 import com.sourcepoint.cmplibrary.runOnMain
 import com.sourcepoint.cmplibrary.util.getLinkUrl
 import com.sourcepoint.cmplibrary.util.loadLinkOnExternalBrowser
@@ -162,11 +162,14 @@ class SPConsentWebView(
             if (messageType == OTT || messageType == LEGACY_OTT) {
                 evaluateJavascript("window.postMessage({name:\"sp.BACK\"})", null)
             } else {
-                onAction(view = this, action = SPConsentAction(
-                    actionType = if(isFirstLayer) MSG_CANCEL else PM_DISMISS,
-                    campaignType = campaignType,
-                    messageId = ""
-                ))
+                onAction(
+                    view = this,
+                    action = SPConsentAction(
+                        actionType = if (isFirstLayer) ActionType.MSG_CANCEL else ActionType.PM_DISMISS,
+                        campaignType = campaignType,
+                        messageId = ""
+                    )
+                )
             }
         }
         return true
@@ -241,8 +244,8 @@ class SPConsentWebView(
     override fun onAction(view: View, action: ConsentAction) = runOnMain {
         messageUIClient.onAction(view, action)
         when (action.actionType) {
-            SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
-            PM_DISMISS -> returnToFirstLayer()
+            ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
+            ActionType.PM_DISMISS -> returnToFirstLayer()
             else -> {
                 finished(view)
             }

@@ -29,7 +29,7 @@ import com.sourcepoint.cmplibrary.mobile_core.buildPMUrl
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType.*
+import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.MOBILE
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -289,25 +289,27 @@ class SpConsentLibMobileCore(
         mainView?.removeView(view)
     }
 
-    override fun dispose() {
+    override fun dispose() {}
 
-    }
-
-    @Deprecated(message = """
-        This method is no longer necessary.
-        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-        This method will be removed shortly in future releases.
-    """, replaceWith = ReplaceWith("")
+    @Deprecated(
+        message = """
+            This method is no longer necessary.
+            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+            This method will be removed shortly in future releases.
+        """,
+        replaceWith = ReplaceWith("")
     )
     override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
         handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
     }
 
-    @Deprecated(message = """
-        This method is no longer necessary.
-        The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-        This method will be removed shortly in future releases.
-    """)
+    @Deprecated(
+        message = """
+            This method is no longer necessary.
+            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
+            This method will be removed shortly in future releases.
+        """
+    )
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {}
 
     override fun clearLocalData() = coordinator.clearLocalData()
@@ -317,7 +319,7 @@ class SpConsentLibMobileCore(
     override fun onAction(view: View, action: ConsentAction) {
         val userAction = spClient.onAction(view, action) as SPConsentAction
         when (userAction.actionType) {
-            ACCEPT_ALL, REJECT_ALL, SAVE_AND_EXIT -> {
+            ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
                 runCatching {
                     launch {
                         coordinator.reportAction(userAction.toCore())
@@ -332,17 +334,17 @@ class SpConsentLibMobileCore(
                 }
                 finished(view)
             }
-            CUSTOM, UNKNOWN -> {
+            ActionType.CUSTOM, ActionType.UNKNOWN -> {
                 pendingActions--
                 finished(view)
             }
-            PM_DISMISS -> {
+            ActionType.PM_DISMISS -> {
                 if (messageUI.isFirstLayer) {
                     pendingActions--
                     finished(view)
                 }
             }
-            MSG_CANCEL -> {
+            ActionType.MSG_CANCEL -> {
                 pendingActions--
                 // TODO: not call `finished` if the message is not dismissible
                 finished(view)
