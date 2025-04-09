@@ -1298,7 +1298,7 @@ This way, Android won't re-instantiate your activity when users rotate the devic
 
 ### 1. How big is the SDK?
 
-The SDK is pretty slim, there are no assets, a single dependency, it's just pure code. The SDK shouldn't exceed `2 MB`.
+The SDK adds around 1.8Mb to your bundle size. This number may vary depending on your project's Android minSdk version, proguard configuration and whether you build it for Debug or Release.
 
 ### 2. What's the lowest Android API supported?
 
