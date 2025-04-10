@@ -1,6 +1,7 @@
 ## 7.12.0 (April, 08, 2025)
 * [DIA-4947](https://sourcepoint.atlassian.net/browse/DIA-4947) Integrate the (SourcepointUSA/mobile-core)[https://github.com/SourcePointUSA/mobile-core]. This is a major internal change. We moved the majority of our business logic, network, and data layers into our Kotlin Multiplatform library named mobile-core (mobile-core)[https://github.com/SourcePointUSA/mobile-core]. This change not only allows us to move faster when developing new features and addressing issues, but also helps us maintain a standardized approach across multiple platforms. The mobile team did its best to accomplish all of this while keeping the public interface untouched. [#846](https://github.com/SourcePointUSA/android-cmp-app/pull/846)
 * Expand the list of supported message languages. For a complete list check [MessageLanguage.kt](https://github.com/SourcePointUSA/android-cmp-app/blob/develop/cmplibrary/src/main/java/com/sourcepoint/cmplibrary/model/MessageLanguage.kt) [#853](https://github.com/SourcePointUSA/android-cmp-app/pull/853)
+* rollback Android minSdk version from 23 to 21
 
 ## 7.11.2 (March, 21, 2025)
 * [DIA-5293(https://sourcepoint.atlassian.net/browse/DIA-5293) Fix an issue causing the SDK to throw an exception when network calls would fail. [#848](https://github.com/SourcePointUSA/android-cmp-app/pull/848)
