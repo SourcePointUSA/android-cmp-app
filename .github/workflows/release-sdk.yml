@@ -19,10 +19,9 @@ jobs:
       - name: Build
         run: ./gradlew cmplibrary:build
       - name: Get current time
-        uses: 1466587594/get-current-time@v2
         id: current-time
-        with:
-          format: (MMMM, DD, YYYY)
+        run: |
+          echo "formattedTime=$(date +"(%B, %d, %Y)")" >> $GITHUB_OUTPUT
       - name: Set version lib into VERSION_NAME variable
         run: |
           ./gradlew cmplibrary:versionTxt
@@ -33,14 +32,23 @@ jobs:
         run: ./gradlew cmplibrary:replaceInFile
       - name: Read Release Note
         id: release_note
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./cmplibrary/release_note.txt
+        run: |
+          echo 'content<<EOF' >> $GITHUB_OUTPUT
+          if [ -f ./cmplibrary/release_note.txt ]; then
+            cat ./cmplibrary/release_note.txt >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+          else
+            echo "No release note found" >> $GITHUB_OUTPUT
+          fi
+          echo 'EOF' >> $GITHUB_OUTPUT
       - name: Get the version
         id: get_version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./cmplibrary/version.txt
+        run: |
+          if [ -f ./cmplibrary/version.txt ]; then
+            echo "content=$(cat ./cmplibrary/version.txt | tr -d '\n')" >> $GITHUB_OUTPUT
+          else
+            echo "content=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+          fi
       - name: Prepare environment
         env:
           SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
@@ -101,7 +109,8 @@ jobs:
         run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease :metaapp:assembleDebug
       - name: Sign APK
         id: sign
-        uses: r0adkll/sign-android-release@v1
+        # uses v1 tag of r0adkll/sign-android-release as of 2025-04-15
+        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407
         with:
           releaseDirectory: samples/metaapp/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
@@ -120,7 +129,8 @@ jobs:
           path: ${{ steps.sign.outputs.signedReleaseFile }}
       - name: Deploy to Play Store
         id: deploy
-        uses: r0adkll/upload-google-play@v1.0.15
+        # uses v1.0.15 tag of r0adkll/upload-google-play as of 2025-04-15
+        uses: r0adkll/upload-google-play@9745ef904e395471bca5696056a6ce8a60d18cf8
         with:
           serviceAccountJson: service_account.json
           packageName: com.sourcepointmeta.metaapp
