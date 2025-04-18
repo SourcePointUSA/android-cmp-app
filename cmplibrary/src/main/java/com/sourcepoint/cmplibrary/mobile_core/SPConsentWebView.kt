@@ -171,10 +171,10 @@ class SPConsentWebView(
                     )
                 )
             }
+            return true
         } else {
-            super.dispatchKeyEvent(event)
+            return super.dispatchKeyEvent(event)
         }
-        return true
     }
 
     override fun load(
