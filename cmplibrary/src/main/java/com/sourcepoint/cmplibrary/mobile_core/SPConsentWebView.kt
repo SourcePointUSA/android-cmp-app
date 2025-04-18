@@ -171,6 +171,8 @@ class SPConsentWebView(
                     )
                 )
             }
+        } else {
+            super.dispatchKeyEvent(event)
         }
         return true
     }
