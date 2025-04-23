@@ -60,8 +60,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    testImplementation("org.json:json:20250107")
+    testImplementation("junit:junit:4.13.2")
 }
-
 
 tasks.register("versionTxt") {
     group = "release-utility"
@@ -97,5 +98,4 @@ changeLogConfig {
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
-apply(from = "${project.rootDir.path}/gradleutils/test_config.gradle")
 apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
