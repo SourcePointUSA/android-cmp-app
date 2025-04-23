@@ -27,7 +27,6 @@ val customCategoriesDataProd = listOf(
 )
 
 val appModule = module {
-
     single<DataProvider> {
         val gdprPmId = "488393" // stage "13111"
         val ccpaPmId = "509688" // "14967"
@@ -87,4 +86,6 @@ val appModule = module {
     single<ConnectionManager> { object : ConnectionManager {
         override val isConnected = true
     } }
+
+    single<Boolean>(named("dismissMessageOnBackPress")) { true }
 }
