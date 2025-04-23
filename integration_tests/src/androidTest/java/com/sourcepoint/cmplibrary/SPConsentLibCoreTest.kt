@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.wr
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
 import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
 import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.legacy.loadLegacySharedPrefs
@@ -47,7 +46,9 @@ class SPConsentLibCoreTest {
             propertyName = propertyName,
             campaigns = campaigns
         ),
-        connectionManager: ConnectionManager = ConnectionManagerImpl(context),
+        connectionManager: ConnectionManager = object : ConnectionManager {
+            override val isConnected: Boolean = true
+        }
     ): SpConsentLib = SpConsentLibMobileCore(
         propertyId = propertyId,
         language = MessageLanguage.ENGLISH,

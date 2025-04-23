@@ -61,7 +61,7 @@ jobs:
           disk-size: 6000M
           heap-size: 1024M
           emulator-options: -no-snapshot-save -no-window -noaudio -no-boot-anim -camera-back none
-          script: ./gradlew cmplibrary:connectedAndroidTest
+          script: ./gradlew integration_tests:connectedAndroidTest
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4

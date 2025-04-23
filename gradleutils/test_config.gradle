@@ -1,9 +1,7 @@
 dependencies {
     androidTestImplementation project(':ui-test-util')
 
-    // JSONObject return null during unit tests
-    // https://stackoverflow.com/questions/49667567/android-org-json-jsonobject-returns-null-in-unit-tests/57592457#57592457
-    testImplementation("org.json:json:20180813")
+    testImplementation("org.json:json:20250107")
     testImplementation "junit:junit:4.13.2"
     testImplementation("io.mockk:mockk:1.13.16")
     androidTestUtil "androidx.test:orchestrator:1.5.1"
