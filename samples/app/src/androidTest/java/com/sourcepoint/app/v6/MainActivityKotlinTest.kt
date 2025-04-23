@@ -4,6 +4,8 @@ import android.app.Activity
 import android.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.example.uitestutil.assertEquals
 import com.example.uitestutil.assertFalse
 import com.example.uitestutil.assertNotEquals
@@ -871,6 +873,22 @@ class MainActivityKotlinTest {
         wr { tapAcceptAllOnWebView() }
 
         verify(atLeast = 4) { spClient.onAction(any(), any()) }
+    }
+
+    @Test
+    fun dismissOnBackPress_when_set_to_false_prevents_the_message_from_being_dismissed() = runBlocking {
+        val spClient = mockk<SpClient>(relaxed = true)
+        loadKoinModules(
+            mockModule(
+                spConfig = spConfGdpr,
+                spClientObserver = listOf(spClient),
+                dismissMessageOnBackPress = false
+            )
+        )
+        scenario = launchActivity()
+
+        wr { UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack() }
+        wr { checkWebViewDisplayedGDPRFirstLayerMessage() }
     }
 
     @Test

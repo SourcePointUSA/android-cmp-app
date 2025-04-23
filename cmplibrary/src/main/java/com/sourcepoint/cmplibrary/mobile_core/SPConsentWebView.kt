@@ -48,6 +48,7 @@ interface SPMessageUIClient {
 interface SPMessageUI {
     var isFirstLayer: Boolean
     var isPresenting: Boolean
+    val onBackPressed: Boolean
 
     fun load(
         message: MessagesResponse.Message,
@@ -78,11 +79,6 @@ interface SPWebMessageUIClient : SPMessageUIClient {
     fun onError(error: String)
 }
 
-fun Uri.Builder.appendQueryParameterIfPresent(name: String, value: String?): Uri.Builder {
-    value?.let { appendQueryParameter(name, it) }
-    return this
-}
-
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
 class SPConsentWebView(
     context: Context,
@@ -90,6 +86,7 @@ class SPConsentWebView(
     tagName: String = "consent-web-view",
     val propertyId: Int,
     val messageUIClient: SPMessageUIClient,
+    override val onBackPressed: Boolean,
 ) : WebView(context), SPMessageUI, SPWebMessageUIClient {
     private var jsReceiver = context.assets
         .open("js_receiver.js")
@@ -108,7 +105,8 @@ class SPConsentWebView(
             viewId: Int? = null,
             tagName: String = "consent-web-view",
             propertyId: Int,
-            messageUIClient: SPMessageUIClient
+            messageUIClient: SPMessageUIClient,
+            onBackPressed: Boolean
         ) =
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 SPConsentWebView(
@@ -116,7 +114,8 @@ class SPConsentWebView(
                     tagName = tagName,
                     context = context,
                     messageUIClient = messageUIClient,
-                    propertyId = propertyId
+                    propertyId = propertyId,
+                    onBackPressed = onBackPressed
                 )
             } else {
                 runBlocking(Dispatchers.Main) {
@@ -125,7 +124,8 @@ class SPConsentWebView(
                         tagName = tagName,
                         context = context,
                         messageUIClient = messageUIClient,
-                        propertyId = propertyId
+                        propertyId = propertyId,
+                        onBackPressed = onBackPressed
                     )
                 }
             }
@@ -162,14 +162,16 @@ class SPConsentWebView(
             if (messageType == OTT || messageType == LEGACY_OTT) {
                 evaluateJavascript("window.postMessage({name:\"sp.BACK\"})", null)
             } else {
-                onAction(
-                    view = this,
-                    action = SPConsentAction(
-                        actionType = if (isFirstLayer) ActionType.MSG_CANCEL else ActionType.PM_DISMISS,
-                        campaignType = campaignType,
-                        messageId = ""
+                if (onBackPressed) {
+                    onAction(
+                        view = this,
+                        action = SPConsentAction(
+                            actionType = if (isFirstLayer) ActionType.MSG_CANCEL else ActionType.PM_DISMISS,
+                            campaignType = campaignType,
+                            messageId = ""
+                        )
                     )
-                )
+                }
             }
             return true
         } else {

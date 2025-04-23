@@ -27,6 +27,7 @@ import com.sourcepoint.cmplibrary.model.exposed.NativeMessageActionType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class MainActivityKotlin : AppCompatActivity() {
 
@@ -42,12 +43,14 @@ class MainActivityKotlin : AppCompatActivity() {
     private val dataProvider by inject<DataProvider>()
     private val spClientObserver: List<SpClient> by inject()
     private val cManager: ConnectionManager by inject()
+    private val injectedDismissMessageOnBackPress: Boolean by inject(named("dismissMessageOnBackPress"))
 
     private val spConsentLib by spConsentLibLazy {
         activity = this@MainActivityKotlin
         spClient = LocalClient()
         spConfig = dataProvider.spConfig
         connectionManager = cManager
+        dismissMessageOnBackPress = injectedDismissMessageOnBackPress // true by default
 //        config {
 //            accountId = 22
 //            propertyId = 16893

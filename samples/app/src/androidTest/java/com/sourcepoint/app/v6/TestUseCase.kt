@@ -26,7 +26,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
-import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 class TestUseCase {
@@ -236,27 +236,27 @@ class TestUseCase {
             diagnostic: List<Pair<String, Any?>> = emptyList(),
             connectionManager: ConnectionManager = object : ConnectionManager {
                 override val isConnected = true
-            }
-        ): Module {
-            return module {
-                single<List<SpClient?>> { spClientObserver }
-                single<DataProvider> {
-                    object : DataProvider {
-                        override val authId = pAuthId
-                        override val resetAll = pResetAll
-                        override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
-                        override val url = url
-                        override val spConfig: SpConfig = spConfig
-                        override val gdprPmId: String = gdprPmId
-                        override val ccpaPmId: String = ccpaPmId
-                        override val messageType: MessageType = messageType
-                        override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
-                        override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
-                        override val diagnostic: List<Pair<String, Any?>> = diagnostic
-                    }
+            },
+            dismissMessageOnBackPress: Boolean = true,
+        ) = module {
+            single<List<SpClient?>> { spClientObserver }
+            single<DataProvider> {
+                object : DataProvider {
+                    override val authId = pAuthId
+                    override val resetAll = pResetAll
+                    override val useGdprGroupPmIfAvailable: Boolean = useGdprGroupPmIfAvailable
+                    override val url = url
+                    override val spConfig: SpConfig = spConfig
+                    override val gdprPmId: String = gdprPmId
+                    override val ccpaPmId: String = ccpaPmId
+                    override val messageType: MessageType = messageType
+                    override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
+                    override val customCategories: List<String> = customCategoriesDataProd.map { it.first }
+                    override val diagnostic: List<Pair<String, Any?>> = diagnostic
                 }
-                single { connectionManager }
             }
+            single { connectionManager }
+            single(named("dismissMessageOnBackPress")) { dismissMessageOnBackPress }
         }
     }
 }

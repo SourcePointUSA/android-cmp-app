@@ -27,7 +27,6 @@ val basePmPaths = mapOf(
     ),
 )
 
-// TODO: guard against not finding the correct path for the campaign/pm type?
 fun basePmUrlFor(campaignType: CampaignType, pmType: MessageType) =
     "https://cdn.privacy-mgmt.com/" + (basePmPaths[campaignType]?.get(pmType) ?: "")
 
@@ -64,4 +63,8 @@ fun buildPMUrl(
             .build()
             .toString()
     }
+}
+
+fun Uri.Builder.appendQueryParameterIfPresent(name: String, value: String?) = apply {
+    value?.let { appendQueryParameter(name, it) }
 }

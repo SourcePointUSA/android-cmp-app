@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 package com.sourcepoint.cmplibrary.creation
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
@@ -22,6 +23,7 @@ class SpConfigDataBuilder {
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
     var spGppConfig: SpGppConfig? = null
+    var dismissMessageOnBackPress: Boolean = true
 
     operator fun CampaignType.unaryPlus() {
         campaigns.add(SpCampaign(this, emptyList()))
@@ -109,6 +111,10 @@ class SpConfigDataBuilder {
         campaigns.add(campaign)
     }
 
+    fun dismissMessageOnBackPress(dismiss: Boolean) = apply {
+        this.dismissMessageOnBackPress = dismiss
+    }
+
     fun build() = SpConfig(
         accountId = accountId,
         propertyName = propertyName,
@@ -121,9 +127,7 @@ class SpConfigDataBuilder {
     )
 }
 
-fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
-    return SpConfigDataBuilder().apply(dsl).build()
-}
+fun config(dsl: SpConfigDataBuilder.() -> Unit) = SpConfigDataBuilder().apply(dsl).build()
 
 enum class ConfigOption(option: String) {
     TRANSITION_CCPA_AUTH("transitionCCPAAuth"),

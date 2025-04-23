@@ -26,13 +26,15 @@ fun makeConsentLib(spConfig: SpConfig, activity: Activity, spClient: SpClient) =
     spConfig = spConfig,
     activity = activity,
     spClient = spClient,
-    connectionManager = ConnectionManagerImpl(activity.applicationContext)
+    connectionManager = ConnectionManagerImpl(activity.applicationContext),
+    dismissMessageOnBackPress = true
 )
 
 fun makeConsentLib(
     spConfig: SpConfig,
     activity: Activity,
     spClient: SpClient,
+    dismissMessageOnBackPress: Boolean = true,
     connectionManager: ConnectionManager = ConnectionManagerImpl(activity.applicationContext),
 ): SpConsentLib = SpConsentLibMobileCore(
     coordinator = Coordinator(
@@ -52,7 +54,8 @@ fun makeConsentLib(
     spClient = spClient,
     context = activity.applicationContext,
     activity = WeakReference(activity),
-    connectionManager = connectionManager
+    connectionManager = connectionManager,
+    dismissMessageOnBackPress = dismissMessageOnBackPress
 )
 
 fun List<SpCampaign>.toCore(spConfig: SpConfig) = SPCampaigns(

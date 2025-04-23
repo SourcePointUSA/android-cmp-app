@@ -67,6 +67,7 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
+    override val dismissMessageOnBackPress: Boolean = true
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
@@ -78,7 +79,8 @@ class SpConsentLibMobileCore(
         SPConsentWebView.create(
             context = context,
             messageUIClient = this@SpConsentLibMobileCore,
-            propertyId = propertyId
+            propertyId = propertyId,
+            onBackPressed = dismissMessageOnBackPress
         )
     }
 
@@ -292,23 +294,24 @@ class SpConsentLibMobileCore(
     override fun dispose() {}
 
     @Deprecated(
-        message = """
-            This method is no longer necessary.
-            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-            This method will be removed shortly in future releases.
-        """,
-        replaceWith = ReplaceWith("")
+        message = "This method is deprecated and has no effect.",
+        replaceWith = ReplaceWith(
+            """
+            Set dismissMessageOnBackPress = false if you wish to prevent the user from dismissing the message
+            when the back button is pressed.
+        """"
+        )
     )
-    override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {
-        handleOnBackPress(isMessageDismissible, ottDelegate::onHomePage)
-    }
+    override fun handleOnBackPress(isMessageDismissible: Boolean, ottDelegate: SpBackPressOttDelegate) {}
 
     @Deprecated(
-        message = """
-            This method is no longer necessary.
-            The SDK can identify when a message is dismissible and act accordingly when the back button is pressed.
-            This method will be removed shortly in future releases.
-        """
+        message = "This method is deprecated and has no effect.",
+        replaceWith = ReplaceWith(
+            """
+            Set dismissMessageOnBackPress = false if you wish to prevent the user from dismissing the message
+            when the back button is pressed.
+        """"
+        )
     )
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {}
 

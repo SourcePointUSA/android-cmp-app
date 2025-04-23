@@ -14,13 +14,13 @@ class SpCmpBuilder {
     lateinit var activity: Activity
     lateinit var spClient: SpClient
     var connectionManager: ConnectionManager? = null
+    var dismissMessageOnBackPress = true
 
     fun config(dsl: SpConfigDataBuilder.() -> Unit) {
         spConfig = SpConfigDataBuilder().apply(dsl).build()
     }
 
     internal fun build(): SpConsentLib {
-
         if (!this::activity.isInitialized) throw RuntimeException("activity param must be initialised!!!")
         if (!this::spConfig.isInitialized) throw RuntimeException("spConfig param must be initialised!!!")
 
@@ -28,7 +28,8 @@ class SpCmpBuilder {
             spConfig = spConfig,
             activity = activity,
             spClient = spClient,
-            connectionManager = connectionManager ?: ConnectionManagerImpl(activity.applicationContext)
+            connectionManager = connectionManager ?: ConnectionManagerImpl(activity.applicationContext),
+            dismissMessageOnBackPress = dismissMessageOnBackPress
         )
     }
 }
