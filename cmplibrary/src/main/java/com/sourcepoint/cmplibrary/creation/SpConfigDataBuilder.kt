@@ -127,9 +127,7 @@ class SpConfigDataBuilder {
     )
 }
 
-fun config(dsl: SpConfigDataBuilder.() -> Unit): SpConfig {
-    return SpConfigDataBuilder().apply(dsl).build()
-}
+fun config(dsl: SpConfigDataBuilder.() -> Unit) = SpConfigDataBuilder().apply(dsl).build()
 
 enum class ConfigOption(option: String) {
     TRANSITION_CCPA_AUTH("transitionCCPAAuth"),

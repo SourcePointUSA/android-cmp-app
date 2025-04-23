@@ -79,11 +79,6 @@ interface SPWebMessageUIClient : SPMessageUIClient {
     fun onError(error: String)
 }
 
-fun Uri.Builder.appendQueryParameterIfPresent(name: String, value: String?): Uri.Builder {
-    value?.let { appendQueryParameter(name, it) }
-    return this
-}
-
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
 class SPConsentWebView(
     context: Context,
