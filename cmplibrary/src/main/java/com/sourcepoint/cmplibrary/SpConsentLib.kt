@@ -11,6 +11,12 @@ import org.json.JSONObject
 
 interface SpConsentLib {
     /**
+     * Instructs the SDK to dismiss the message when it intercepts a back press event from
+     * within the message view. It's true by default.
+     */
+    val dismissMessageOnBackPress: Boolean
+
+    /**
      * Load the First Layer Message (FLM)
      */
     fun loadMessage()

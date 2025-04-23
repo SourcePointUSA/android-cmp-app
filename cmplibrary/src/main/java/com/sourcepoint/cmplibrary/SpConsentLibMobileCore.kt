@@ -67,6 +67,7 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
+    override val dismissMessageOnBackPress: Boolean = true
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
@@ -78,7 +79,8 @@ class SpConsentLibMobileCore(
         SPConsentWebView.create(
             context = context,
             messageUIClient = this@SpConsentLibMobileCore,
-            propertyId = propertyId
+            propertyId = propertyId,
+            onBackPressed = dismissMessageOnBackPress
         )
     }
 
