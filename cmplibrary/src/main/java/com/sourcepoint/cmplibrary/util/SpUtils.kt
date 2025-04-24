@@ -35,6 +35,7 @@ internal fun campaignApplies(campaignType: CampaignType): Boolean {
         CampaignType.GDPR -> consents.gdpr?.consent?.applies == true
         CampaignType.CCPA -> consents.ccpa?.consent?.applies == true
         CampaignType.USNAT -> consents.usNat?.consent?.applies == true
+        CampaignType.PREFERENCES -> true
         CampaignType.UNKNOWN -> false
     }
 }
