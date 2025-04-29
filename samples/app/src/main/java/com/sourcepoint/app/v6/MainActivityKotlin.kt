@@ -233,7 +233,7 @@ class MainActivityKotlin : AppCompatActivity() {
                     when (message.campaignType) {
                         CampaignType.GDPR -> dataProvider.gdprPmId
                         CampaignType.CCPA -> dataProvider.ccpaPmId
-                        CampaignType.USNAT, CampaignType.UNKNOWN -> throw RuntimeException()
+                        CampaignType.PREFERENCES, CampaignType.USNAT, CampaignType.UNKNOWN -> throw RuntimeException()
                     }.let { pmId ->
                         messageController.showOptionNativeMessage(message.campaignType, pmId)
                     }

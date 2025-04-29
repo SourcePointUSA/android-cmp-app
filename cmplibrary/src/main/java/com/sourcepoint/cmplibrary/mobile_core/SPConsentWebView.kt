@@ -288,7 +288,7 @@ class SPConsentWebView(
             CampaignType.GDPR -> json.encodeToJsonElement(consents.gdpr?.consents)
             CampaignType.CCPA -> json.encodeToJsonElement(consents.ccpa?.consents)
             CampaignType.USNAT -> json.encodeToJsonElement(consents.usnat?.consents)
-            CampaignType.UNKNOWN -> null
+            CampaignType.PREFERENCES, CampaignType.UNKNOWN -> null
         }}
         }, "*");""",
         null

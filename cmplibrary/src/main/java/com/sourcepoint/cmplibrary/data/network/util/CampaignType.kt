@@ -12,6 +12,7 @@ enum class CampaignType {
     GDPR,
     CCPA,
     USNAT,
+    PREFERENCES,
     UNKNOWN;
 
     companion object {
@@ -20,6 +21,7 @@ enum class CampaignType {
             SPCampaignType.Ccpa -> CCPA
             SPCampaignType.UsNat -> USNAT
             SPCampaignType.Unknown, SPCampaignType.IOS14 -> UNKNOWN
+            SPCampaignType.Preferences -> PREFERENCES
         }
     }
 
@@ -27,6 +29,7 @@ enum class CampaignType {
         GDPR -> SPCampaignType.Gdpr
         CCPA -> SPCampaignType.Ccpa
         USNAT -> SPCampaignType.UsNat
+        PREFERENCES -> SPCampaignType.Preferences
         UNKNOWN -> SPCampaignType.Unknown
     }
 }

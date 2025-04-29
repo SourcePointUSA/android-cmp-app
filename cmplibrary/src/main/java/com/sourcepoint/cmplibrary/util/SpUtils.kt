@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.util
 
 import android.content.Context
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.model.exposed.PreferencesConsentInternal
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.storage.Repository
@@ -16,7 +17,8 @@ fun userConsents(): SPConsents {
         core = SPUserData(
             gdpr = SPUserData.SPConsent(consents = state?.gdpr?.consents),
             usnat = SPUserData.SPConsent(consents = state?.usNat?.consents),
-            ccpa = SPUserData.SPConsent(consents = state?.ccpa?.consents)
+            ccpa = SPUserData.SPConsent(consents = state?.ccpa?.consents),
+            preferences = SPUserData.SPConsent(consents = state?.preferences?.consents)
         )
     )
 }
@@ -35,6 +37,7 @@ internal fun campaignApplies(campaignType: CampaignType): Boolean {
         CampaignType.GDPR -> consents.gdpr?.consent?.applies == true
         CampaignType.CCPA -> consents.ccpa?.consent?.applies == true
         CampaignType.USNAT -> consents.usNat?.consent?.applies == true
+        CampaignType.PREFERENCES -> consents.preferences?.consent != null && consents.preferences.consent != PreferencesConsentInternal()
         CampaignType.UNKNOWN -> false
     }
 }
