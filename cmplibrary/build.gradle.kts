@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.1.4")
+    implementation("com.sourcepoint:core:0.1.6")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")

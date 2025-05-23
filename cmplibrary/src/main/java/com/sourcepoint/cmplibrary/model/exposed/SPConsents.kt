@@ -6,6 +6,7 @@ import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentData
 import com.sourcepoint.cmplibrary.data.network.model.optimized.USNatConsentStatus
 import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.network.encodeToJsonObject
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -17,16 +18,21 @@ import com.sourcepoint.mobile_core.models.consents.CCPAConsent as CCPAConsentCor
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus as CoreCCPAConsentStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent as GDPRConsentCore
 import com.sourcepoint.mobile_core.models.consents.USNatConsent as USNATConsentCore
+import com.sourcepoint.mobile_core.models.consents.PreferencesConsent as PreferencesConsentCore
+import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesStatus as PreferencesStatusCore
+import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesSubType as PreferencesSubTypeCore
 
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
     val ccpa: SPCCPAConsent? = null,
     val usNat: SpUsNatConsent? = null,
+    val preferences: SPPreferencesConsent? = null
 ) {
     internal constructor(core: SPUserData) : this(
         gdpr = core.gdpr?.consents?.let { SPGDPRConsent(consent = GDPRConsentInternal(it, core.gdpr?.childPmId)) },
         ccpa = core.ccpa?.consents?.let { SPCCPAConsent(consent = CCPAConsentInternal(it, core.ccpa?.childPmId)) },
         usNat = core.usnat?.consents?.let { SpUsNatConsent(consent = UsNatConsentInternal(it)) }, // SpUsNatConsent doesn't have childPmId
+        preferences = core.preferences?.consents?.let { SPPreferencesConsent(consent = PreferencesConsentInternal(it)) } // SPPreferencesConsent doesn't have childPmId
     )
 }
 
@@ -40,6 +46,10 @@ data class SPCCPAConsent(
 
 data class SpUsNatConsent(
     val consent: UsNatConsent,
+)
+
+data class SPPreferencesConsent(
+    val consent: PreferencesConsent
 )
 
 @Serializable
@@ -234,6 +244,72 @@ internal data class UsNatConsentInternal(
         uuid = core.uuid,
         webConsentPayload = core.webConsentPayload?.encodeToJsonObject(),
         consentStatus = USNatConsentStatus(core.consentStatus)
+    )
+}
+
+data class PreferencesStatus(
+    val categoryId: Int,
+    val channels: List<PreferencesChannels>?,
+    val changed: Boolean?,
+    val dateConsented: Instant?,
+    val subType: PreferencesSubType? = PreferencesSubType.Unknown
+) {
+    constructor(status: PreferencesStatusCore) : this(
+        categoryId = status.categoryId,
+        channels = status.channels?.map { PreferencesChannels(channelId = it.channelId, status = it.status) },
+        changed = status.changed,
+        dateConsented = status.dateConsented,
+        subType = PreferencesSubType.fromCore(status.subType)
+    )
+
+    data class PreferencesChannels(
+        val channelId: Int,
+        val status: Boolean
+    )
+
+    enum class PreferencesSubType {
+        Unknown,
+        AIPolicy,
+        TermsAndConditions,
+        PrivacyPolicy,
+        LegalPolicy,
+        TermsOfSale;
+
+        companion object {
+            fun fromCore(subType: PreferencesSubTypeCore?) = when(subType) {
+                PreferencesSubTypeCore.Unknown -> Unknown
+                PreferencesSubTypeCore.AIPolicy -> AIPolicy
+                PreferencesSubTypeCore.TermsAndConditions -> TermsAndConditions
+                PreferencesSubTypeCore.PrivacyPolicy -> PrivacyPolicy
+                PreferencesSubTypeCore.LegalPolicy -> LegalPolicy
+                PreferencesSubTypeCore.TermsOfSale -> TermsOfSale
+                null -> Unknown
+            }
+        }
+    }
+}
+
+interface PreferencesConsent {
+    val dateCreated: Instant?
+    val messageId: Int?
+    val status: List<PreferencesStatus>?
+    val rejectedStatus: List<PreferencesStatus>?
+    val uuid: String?
+}
+
+internal data class PreferencesConsentInternal(
+    override val dateCreated: Instant? = null,
+    override val messageId: Int? = null,
+    override val status: List<PreferencesStatus>? = emptyList(),
+    override val rejectedStatus: List<PreferencesStatus>? = emptyList(),
+    override val uuid: String? = null
+) : PreferencesConsent {
+    constructor(core: PreferencesConsentCore) : this(
+        dateCreated = core.dateCreated,
+        messageId = core.messageId,
+        status = core.status?.map { PreferencesStatus(it) },
+        rejectedStatus = core.rejectedStatus?.map { PreferencesStatus(it) },
+        uuid = core.uuid
     )
 }
 

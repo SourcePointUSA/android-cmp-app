@@ -1,5 +1,5 @@
 function isFromPM(payload) {
-    return payload.fromPM || (payload.settings && payload.settings.vendorList != null);
+    return window.spLegislation == "PREFERENCES" || payload.fromPM || (payload.settings && payload.settings.vendorList != null);
 }
 
 function getQueryParam(paramName, url) {

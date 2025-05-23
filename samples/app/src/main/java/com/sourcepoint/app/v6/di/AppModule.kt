@@ -64,6 +64,7 @@ val appModule = module {
                 messLanguage = MessageLanguage.ENGLISH
                 campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
+                +(CampaignType.PREFERENCES)
             }
         } else {
             config {
@@ -74,6 +75,7 @@ val appModule = module {
                 campaignsEnv = CampaignsEnv.PUBLIC
                 +(CampaignType.GDPR)
                 +(CampaignType.CCPA to listOf(("location" to "US")))
+                +(CampaignType.PREFERENCES)
             }
         }
     }
