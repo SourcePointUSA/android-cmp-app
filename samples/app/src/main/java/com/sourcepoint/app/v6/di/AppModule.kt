@@ -30,6 +30,7 @@ val appModule = module {
     single<DataProvider> {
         val gdprPmId = "488393" // stage "13111"
         val ccpaPmId = "509688" // "14967"
+        val globalcmpPmId = "1315599" // "14967"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
@@ -37,6 +38,7 @@ val appModule = module {
             spConfig = get(),
             gdprPmId = gdprPmId,
             ccpaPmId = ccpaPmId,
+            globalcmpPmId = globalcmpPmId,
             customVendorList = customVendorDataList,
             customCategories = customCategoriesData,
             useGdprGroupPmIfAvailable = false,

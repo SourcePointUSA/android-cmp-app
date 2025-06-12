@@ -87,6 +87,7 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
+        binding.reviewConsentsGlobalcmp.setOnClickListener { selectGLOBALCMPPM(dataProvider) }
         binding.clearAll.setOnClickListener { spConsentLib.clearLocalData() }
         binding.authIdActivity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
@@ -233,7 +234,7 @@ class MainActivityKotlin : AppCompatActivity() {
                     when (message.campaignType) {
                         CampaignType.GDPR -> dataProvider.gdprPmId
                         CampaignType.CCPA -> dataProvider.ccpaPmId
-                        CampaignType.PREFERENCES, CampaignType.USNAT, CampaignType.UNKNOWN -> throw RuntimeException()
+                        CampaignType.GLOBALCMP, CampaignType.PREFERENCES, CampaignType.USNAT, CampaignType.UNKNOWN -> throw RuntimeException()
                     }.let { pmId ->
                         messageController.showOptionNativeMessage(message.campaignType, pmId)
                     }
@@ -371,6 +372,26 @@ class MainActivityKotlin : AppCompatActivity() {
                     pmId = dataProvider.ccpaPmId,
                     pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.CCPA
+                )
+            }
+    }
+
+
+    private fun selectGLOBALCMPPM(dataProvider: DataProvider){
+        dataProvider.messageType
+            ?.let {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.globalcmpPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.GLOBALCMP,
+                    messageType = it
+                )
+            }
+            ?: run {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.globalcmpPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.GLOBALCMP
                 )
             }
     }
