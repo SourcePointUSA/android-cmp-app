@@ -25,6 +25,9 @@ val basePmPaths = mapOf(
         OTT to "native-ott/index.html",
         MOBILE to "us_pm/index.html"
     ),
+    CampaignType.GLOBALCMP to mapOf(
+        MOBILE to "us_pm/index.html?is_global_cmp=true"
+    ),
 )
 
 fun basePmUrlFor(campaignType: CampaignType, pmType: MessageType) =
