@@ -34,7 +34,7 @@ data class SPConsents(
         gdpr = core.gdpr?.consents?.let { SPGDPRConsent(consent = GDPRConsentInternal(it, core.gdpr?.childPmId)) },
         ccpa = core.ccpa?.consents?.let { SPCCPAConsent(consent = CCPAConsentInternal(it, core.ccpa?.childPmId)) },
         usNat = core.usnat?.consents?.let { SpUsNatConsent(consent = UsNatConsentInternal(it)) }, // SpUsNatConsent doesn't have childPmId
-        globalcmp = core.globalcmp?.consents?.let { SPGlobalCmpConsent(consent = GlobalCmpConsentInternal(it)) }, // SPGlobalCmpConsent doesn't have childPmId
+        globalcmp = core.globalcmp?.consents?.let { SPGlobalCmpConsent(consent = GlobalCmpConsentInternal(it)) }, // SPGlobalCmpConsent does have childPmId
         preferences = core.preferences?.consents?.let { SPPreferencesConsent(consent = PreferencesConsentInternal(it)) } // SPPreferencesConsent doesn't have childPmId
     )
 }
