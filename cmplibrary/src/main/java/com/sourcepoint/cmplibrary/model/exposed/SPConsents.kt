@@ -17,10 +17,10 @@ import org.json.JSONObject
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent as CCPAConsentCore
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus as CoreCCPAConsentStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent as GDPRConsentCore
-import com.sourcepoint.mobile_core.models.consents.USNatConsent as USNATConsentCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent as PreferencesConsentCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesStatus as PreferencesStatusCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesSubType as PreferencesSubTypeCore
+import com.sourcepoint.mobile_core.models.consents.USNatConsent as USNATConsentCore
 
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
@@ -276,7 +276,7 @@ data class PreferencesStatus(
         TermsOfSale;
 
         companion object {
-            fun fromCore(subType: PreferencesSubTypeCore?) = when(subType) {
+            fun fromCore(subType: PreferencesSubTypeCore?) = when (subType) {
                 PreferencesSubTypeCore.Unknown -> Unknown
                 PreferencesSubTypeCore.AIPolicy -> AIPolicy
                 PreferencesSubTypeCore.TermsAndConditions -> TermsAndConditions

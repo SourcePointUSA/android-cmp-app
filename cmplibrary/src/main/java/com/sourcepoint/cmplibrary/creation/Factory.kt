@@ -9,8 +9,8 @@ import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.CCPA
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.GDPR
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.PREFERENCES
+import com.sourcepoint.cmplibrary.data.network.util.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
