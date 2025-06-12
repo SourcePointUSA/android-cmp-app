@@ -87,6 +87,7 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
+        binding.reviewConsentsUsnat.setOnClickListener { selectUSNATPM(dataProvider) }
         binding.reviewConsentsGlobalcmp.setOnClickListener { selectGLOBALCMPPM(dataProvider) }
         binding.clearAll.setOnClickListener { spConsentLib.clearLocalData() }
         binding.authIdActivity.setOnClickListener { _: View? ->
@@ -376,6 +377,24 @@ class MainActivityKotlin : AppCompatActivity() {
             }
     }
 
+    private fun selectUSNATPM(dataProvider: DataProvider){
+        dataProvider.messageType
+            ?.let {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.usnatPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.USNAT,
+                    messageType = it
+                )
+            }
+            ?: run {
+                spConsentLib.loadPrivacyManager(
+                    pmId = dataProvider.usnatPmId,
+                    pmTab = PMTab.PURPOSES,
+                    campaignType = CampaignType.USNAT
+                )
+            }
+    }
 
     private fun selectGLOBALCMPPM(dataProvider: DataProvider){
         dataProvider.messageType
