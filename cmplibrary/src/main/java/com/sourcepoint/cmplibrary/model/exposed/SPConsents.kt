@@ -22,6 +22,7 @@ import com.sourcepoint.mobile_core.models.consents.GlobalCmpConsent as GlobalCmp
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent as PreferencesConsentCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesStatus as PreferencesStatusCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesSubType as PreferencesSubTypeCore
+import com.sourcepoint.mobile_core.models.consents.USNatConsent as USNATConsentCore
 
 data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
@@ -321,7 +322,7 @@ data class PreferencesStatus(
         TermsOfSale;
 
         companion object {
-            fun fromCore(subType: PreferencesSubTypeCore?) = when(subType) {
+            fun fromCore(subType: PreferencesSubTypeCore?) = when (subType) {
                 PreferencesSubTypeCore.Unknown -> Unknown
                 PreferencesSubTypeCore.AIPolicy -> AIPolicy
                 PreferencesSubTypeCore.TermsAndConditions -> TermsAndConditions

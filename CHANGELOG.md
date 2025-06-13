@@ -1,3 +1,6 @@
+## 7.14.0 (June, 12, 2025)
+* [DIA-5360](https://sourcepoint.atlassian.net/browse/DIA-5360) Added support to `preferences` campaign type. README will be updated in the upcoming week. [#859](https://github.com/SourcePointUSA/android-cmp-app/pull/859)
+
 ## 7.13.0 (April, 23, 2025)
 * [DIA-5502](https://sourcepoint.atlassian.net/browse/DIA-5502) Fixed a regression affecting AndroidTV and the back button. [#856](https://github.com/SourcePointUSA/android-cmp-app/pull/856)
 * [DIA-5417](https://sourcepoint.atlassian.net/browse/DIA-5417) Implemented the new setting `dismissMessageOnBackPress`. Set this to `false` if you wish to prevent the message from being dismissed when the back button is pressed. Default value is `true`. [#857](https://github.com/SourcePointUSA/android-cmp-app/pull/857)
