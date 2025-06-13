@@ -12,6 +12,7 @@ enum class CampaignType {
     GDPR,
     CCPA,
     USNAT,
+    GLOBALCMP,
     PREFERENCES,
     UNKNOWN;
 
@@ -20,6 +21,7 @@ enum class CampaignType {
             SPCampaignType.Gdpr -> GDPR
             SPCampaignType.Ccpa -> CCPA
             SPCampaignType.UsNat -> USNAT
+            SPCampaignType.GlobalCmp -> GLOBALCMP
             SPCampaignType.Unknown, SPCampaignType.IOS14 -> UNKNOWN
             SPCampaignType.Preferences -> PREFERENCES
         }
@@ -29,6 +31,7 @@ enum class CampaignType {
         GDPR -> SPCampaignType.Gdpr
         CCPA -> SPCampaignType.Ccpa
         USNAT -> SPCampaignType.UsNat
+        GLOBALCMP -> SPCampaignType.GlobalCmp
         PREFERENCES -> SPCampaignType.Preferences
         UNKNOWN -> SPCampaignType.Unknown
     }
