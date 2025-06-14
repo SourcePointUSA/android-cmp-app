@@ -49,10 +49,6 @@ jobs:
           else
             echo "content=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
-      - name: Release build
-        run: ./gradlew cmplibrary:assemble
-      - name: Source jar and dokka
-        run: ./gradlew androidSourcesJar javadocJar
       - run: ./gradlew publish --no-parallel --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralUsername }}
