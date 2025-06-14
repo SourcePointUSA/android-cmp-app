@@ -310,7 +310,7 @@ internal data class PreferencesConsentInternal(
         override val changed: Boolean?,
         override val dateConsented: Instant?,
         override val subType: PreferencesConsent.SubType? = PreferencesConsent.SubType.Unknown
-    ): PreferencesConsent.Status {
+    ) : PreferencesConsent.Status {
         constructor(status: PreferencesStatusCore) : this(
             categoryId = status.categoryId,
             channels = status.channels?.map { Channel(id = it.channelId, status = it.status) },
@@ -322,7 +322,7 @@ internal data class PreferencesConsentInternal(
         data class Channel(
             override val id: Int,
             override val status: Boolean
-        ): PreferencesConsent.Channel
+        ) : PreferencesConsent.Channel
     }
 }
 
