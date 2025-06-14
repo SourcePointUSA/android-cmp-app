@@ -247,27 +247,27 @@ internal data class UsNatConsentInternal(
     )
 }
 
-data class PreferencesStatus(
-    val categoryId: Int,
-    val channels: List<PreferencesChannels>?,
-    val changed: Boolean?,
-    val dateConsented: Instant?,
-    val subType: PreferencesSubType? = PreferencesSubType.Unknown
-) {
-    constructor(status: PreferencesStatusCore) : this(
-        categoryId = status.categoryId,
-        channels = status.channels?.map { PreferencesChannels(channelId = it.channelId, status = it.status) },
-        changed = status.changed,
-        dateConsented = status.dateConsented,
-        subType = PreferencesSubType.fromCore(status.subType)
-    )
+interface PreferencesConsent {
+    val dateCreated: Instant?
+    val messageId: Int?
+    val status: List<Status>?
+    val rejectedStatus: List<Status>?
+    val uuid: String?
 
-    data class PreferencesChannels(
-        val channelId: Int,
+    interface Status {
+        val categoryId: Int
+        val channels: List<Channel>?
+        val changed: Boolean?
+        val dateConsented: Instant?
+        val subType: SubType?
+    }
+
+    interface Channel {
+        val id: Int
         val status: Boolean
-    )
+    }
 
-    enum class PreferencesSubType {
+    enum class SubType {
         Unknown,
         AIPolicy,
         TermsAndConditions,
@@ -289,28 +289,41 @@ data class PreferencesStatus(
     }
 }
 
-interface PreferencesConsent {
-    val dateCreated: Instant?
-    val messageId: Int?
-    val status: List<PreferencesStatus>?
-    val rejectedStatus: List<PreferencesStatus>?
-    val uuid: String?
-}
-
 internal data class PreferencesConsentInternal(
     override val dateCreated: Instant? = null,
     override val messageId: Int? = null,
-    override val status: List<PreferencesStatus>? = emptyList(),
-    override val rejectedStatus: List<PreferencesStatus>? = emptyList(),
+    override val status: List<PreferencesConsent.Status>? = emptyList(),
+    override val rejectedStatus: List<PreferencesConsent.Status>? = emptyList(),
     override val uuid: String? = null
 ) : PreferencesConsent {
     constructor(core: PreferencesConsentCore) : this(
         dateCreated = core.dateCreated,
         messageId = core.messageId,
-        status = core.status?.map { PreferencesStatus(it) },
-        rejectedStatus = core.rejectedStatus?.map { PreferencesStatus(it) },
+        status = core.status?.map { Status(it) },
+        rejectedStatus = core.rejectedStatus?.map { Status(it) },
         uuid = core.uuid
     )
+
+    data class Status(
+        override val categoryId: Int,
+        override val channels: List<Channel>?,
+        override val changed: Boolean?,
+        override val dateConsented: Instant?,
+        override val subType: PreferencesConsent.SubType? = PreferencesConsent.SubType.Unknown
+    ): PreferencesConsent.Status {
+        constructor(status: PreferencesStatusCore) : this(
+            categoryId = status.categoryId,
+            channels = status.channels?.map { Channel(id = it.channelId, status = it.status) },
+            changed = status.changed,
+            dateConsented = status.dateConsented,
+            subType = PreferencesConsent.SubType.fromCore(status.subType)
+        )
+
+        data class Channel(
+            override val id: Int,
+            override val status: Boolean
+        ): PreferencesConsent.Channel
+    }
 }
 
 fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
