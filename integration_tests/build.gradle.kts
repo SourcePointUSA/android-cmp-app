@@ -36,7 +36,7 @@ android {
 
 dependencies {
     implementation(project(":cmplibrary"))
-    implementation("com.sourcepoint:core:0.1.4")
+    implementation("com.sourcepoint:core:0.1.8")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }
