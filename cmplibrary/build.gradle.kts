@@ -1,3 +1,10 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
+var versionLib = project.property("VERSION_NAME") as String
+
+group = "com.sourcepoint.cmplibrary"
+version = versionLib
+
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -5,12 +12,8 @@ plugins {
     id("io.github.dryrum.replace-in-file")
     id("io.github.dryrum.git-utils")
     id("kotlinx-serialization")
+    id("com.vanniktech.maven.publish") version "0.32.0"
 }
-
-val versionLib = project.property("VERSION_NAME") as String
-
-group = "com.sourcepoint.cmplibrary"
-version = versionLib
 
 android {
     compileSdk = 35
@@ -67,8 +70,7 @@ dependencies {
 tasks.register("versionTxt") {
     group = "release-utility"
     doLast {
-        val version = project.property("VERSION_NAME") as String
-        File(projectDir, "version.txt").writeText(version)
+        File(projectDir, "version.txt").writeText(versionLib)
     }
 }
 
@@ -80,22 +82,49 @@ addCommitPushConfig {
 }
 
 replaceInFile {
-    val versionName = project.property("VERSION_NAME") as String
     docs {
         create("doc") {
             path = "${rootDir.path}/README.md"
             find = "com.sourcepoint.cmplibrary:cmplibrary:(\\d)+\\.(\\d)+\\.(\\d)+"
-            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionName"
+            replaceWith = "com.sourcepoint.cmplibrary:cmplibrary:$versionLib"
         }
     }
 }
 
 changeLogConfig {
-    val versionName = project.property("VERSION_NAME") as String
     changeLogPath = rootDir.path + "/CHANGELOG.md"
     content = file(  "${rootDir.path}/${project.name}/release_note.txt").readText()
-    version = versionName
+    this.version = versionLib
 }
 
 apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
-apply(from = "${project.rootDir.path}/scripts/publish-mavencentral.gradle")
+
+mavenPublishing {
+    coordinates(group.toString(), "cmplibrary", versionLib)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+    pom {
+        name = "Sourcepoint Android CMP"
+        description = "The internal Network & Data layers used by our mobile SDKs"
+        url = "https://github.com/SourcePointUSA/android-cmp-app"
+
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "andresilveirah"
+                name = "Andre Herculano"
+                email = "andresilveirah@gmail.com"
+            }
+        }
+        scm {
+            connection = "scm:git:github.com/SourcePointUSA/android-cmp-app.git"
+            developerConnection = "scm:git:ssh://github.com/SourcePointUSA/android-cmp-app.git"
+            url = "https://github.com/SourcePointUSA/android-cmp-app/tree/main"
+        }
+    }
+}

@@ -49,23 +49,17 @@ jobs:
           else
             echo "content=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
-      - name: Prepare environment
-        env:
-          SIGNING_SECRET_KEY_RING_FILE_CONTENT: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE_CONTENT }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
-        run: sudo bash -c "echo '$SIGNING_SECRET_KEY_RING_FILE_CONTENT' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
       - name: Release build
         run: ./gradlew cmplibrary:assemble
       - name: Source jar and dokka
         run: ./gradlew androidSourcesJar javadocJar
-      - name: Publish to MavenCentral
-        run: ./gradlew publishReleasePublicationToSonatypeRepository #--max-workers 1 closeAndReleaseRepository --info
+      - run: ./gradlew publish --no-parallel --no-configuration-cache
         env:
-          OSSRH_TOKEN_USER: ${{ secrets.OSSRH_TOKEN_USER }}
-          OSSRH_TOKEN_PASSWORD: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralUsername }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_mavenCentralPassword }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyId }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyPassword }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
       - name: Add, commit and push edited files
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
@@ -84,66 +78,66 @@ jobs:
             ${{ steps.release_note.outputs.content }}
           draft: false
           prerelease: false
-  release-metaapp:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
-          cache: gradle
-      - name: Bump versionCode
-        id: bump
-        run: |
-          git config user.email "andre@sourcepoint.com"
-          git config user.name "GitHub Action"
-          ./gradlew metaapp:bumpVersionCode
-      - name: creating local.properties
-        run: touch local.properties
-      - name: generating MetaApp build release
-        id: buildRelease
-        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease :metaapp:assembleDebug
-      - name: Sign APK
-        id: sign
-        # uses v1 tag of r0adkll/sign-android-release as of 2025-04-15
-        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407
-        with:
-          releaseDirectory: samples/metaapp/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.SIGNING_ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
-      - name: Create service_account.json
-        id: createServiceAccount
-        run: |
-          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
-      - name: 'Publish release artifact'
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'release-artifact'
-          path: ${{ steps.sign.outputs.signedReleaseFile }}
-      - name: Deploy to Play Store
-        id: deploy
-        # uses v1.0.15 tag of r0adkll/upload-google-play as of 2025-04-15
-        uses: r0adkll/upload-google-play@9745ef904e395471bca5696056a6ce8a60d18cf8
-        with:
-          serviceAccountJson: service_account.json
-          packageName: com.sourcepointmeta.metaapp
-          releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
-          track: production
-      - name: Add, commit and push edited files
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
-        run: ./gradlew addCommitPush
-      - name: Publish MetaAppDebug artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: MetaAppDebug
-          path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
+#  release-metaapp:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: write
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: set up JDK 17
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: zulu
+#          java-version: 17
+#          cache: gradle
+#      - name: Bump versionCode
+#        id: bump
+#        run: |
+#          git config user.email "andre@sourcepoint.com"
+#          git config user.name "GitHub Action"
+#          ./gradlew metaapp:bumpVersionCode
+#      - name: creating local.properties
+#        run: touch local.properties
+#      - name: generating MetaApp build release
+#        id: buildRelease
+#        run: ./gradlew :metaapp:bundleRelease :metaapp:bundleDebug :metaapp:assembleRelease :metaapp:assembleDebug
+#      - name: Sign APK
+#        id: sign
+#        # uses v1 tag of r0adkll/sign-android-release as of 2025-04-15
+#        uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407
+#        with:
+#          releaseDirectory: samples/metaapp/build/outputs/bundle/release
+#          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+#          alias: ${{ secrets.SIGNING_ALIAS }}
+#          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+#          keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+#      - name: Create service_account.json
+#        id: createServiceAccount
+#        run: |
+#          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+#      - name: 'Publish release artifact'
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 'release-artifact'
+#          path: ${{ steps.sign.outputs.signedReleaseFile }}
+#      - name: Deploy to Play Store
+#        id: deploy
+#        # uses v1.0.15 tag of r0adkll/upload-google-play as of 2025-04-15
+#        uses: r0adkll/upload-google-play@9745ef904e395471bca5696056a6ce8a60d18cf8
+#        with:
+#          serviceAccountJson: service_account.json
+#          packageName: com.sourcepointmeta.metaapp
+#          releaseFiles: ${{ steps.sign.outputs.signedReleaseFile }}
+#          track: production
+#      - name: Add, commit and push edited files
+#        env:
+#          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+#          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+#        run: ./gradlew addCommitPush
+#      - name: Publish MetaAppDebug artifact
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: MetaAppDebug
+#          path: samples/metaapp/build/outputs/apk/debug/metaapp-debug.apk
