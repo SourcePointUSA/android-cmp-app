@@ -5,43 +5,31 @@ buildscript {
 
     repositories {
         google()
-        maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/"}
-        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
+        gradlePluginPortal()
         mavenCentral()
-        maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'
+        classpath 'com.android.tools.build:gradle:8.10.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
 
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
-        classpath "com.squareup.sqldelight:gradle-plugin:1.5.4"
+        classpath "com.squareup.sqldelight:gradle-plugin:1.5.5"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 plugins {
-    id 'io.github.dryrum.update-changelog' version '0.6.4'
-    id 'io.github.dryrum.replace-in-file' version '0.6.4'
-    id 'io.github.dryrum.git-utils' version '0.6.4'
-    id 'io.github.dryrum.bump-version-code' version '0.6.4'
+    id 'io.github.dryrum.update-changelog' version '0.7.0'
+    id 'io.github.dryrum.replace-in-file' version '0.7.0'
+    id 'io.github.dryrum.git-utils' version '0.7.0'
+    id 'io.github.dryrum.bump-version-code' version '0.7.0'
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
 }
-
-apply plugin: 'io.codearte.nexus-staging'
 
 allprojects {
     repositories {
         google()
-        maven { url "https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/" }
-        maven { url "https://s01.oss.sonatype.org/content/repositories/releases/"} // repo to test the release
+        gradlePluginPortal()
         mavenCentral()
-        maven { url 'https://www.jetbrains.com/intellij-repository/releases' }
-        maven {
-            url "https://nexus.pentaho.org/content/groups/omni"
-            artifactUrls "https://repository-master.mulesoft.org/nexus/content/groups/public/"
-        }
     }
 }
