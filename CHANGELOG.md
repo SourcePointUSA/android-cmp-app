@@ -1,3 +1,7 @@
+## 7.14.1-beta2 (June, 14, 2025)
+* [DIA-5780](https://sourcepoint.atlassian.net/browse/DIA-5780) Update dependencies and migrate from app nexus to Maven Central. [#864](https://github.com/SourcePointUSA/android-cmp-app/pull/864)
+* Rename PreferencesConsent subclasses. [#863](https://github.com/SourcePointUSA/android-cmp-app/pull/863)
+
 ## 7.14.0 (June, 12, 2025)
 * [DIA-5360](https://sourcepoint.atlassian.net/browse/DIA-5360) Added support to `preferences` campaign type. README will be updated in the upcoming week. [#859](https://github.com/SourcePointUSA/android-cmp-app/pull/859)
 
