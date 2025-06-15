@@ -60,27 +60,16 @@ val appModule = module {
     }
 
     single<SpConfig> {
-        if (get(qualifier = named("prod"))) {
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                messLanguage = MessageLanguage.ENGLISH
-                campaignsEnv = CampaignsEnv.PUBLIC
-                +(CampaignType.GDPR)
-                +(CampaignType.PREFERENCES)
-            }
-        } else {
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                messLanguage = MessageLanguage.ENGLISH
-                campaignsEnv = CampaignsEnv.PUBLIC
-                +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
-                +(CampaignType.PREFERENCES)
-            }
+        config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            propertyId = 16893
+            messLanguage = MessageLanguage.ENGLISH
+            campaignsEnv = CampaignsEnv.PUBLIC
+            +(CampaignType.GDPR)
+            +(CampaignType.CCPA)
+            +(CampaignType.USNAT)
+            +(CampaignType.PREFERENCES)
         }
     }
 
