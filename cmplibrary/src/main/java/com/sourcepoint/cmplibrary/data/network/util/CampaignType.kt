@@ -24,6 +24,7 @@ enum class CampaignType {
             SPCampaignType.GlobalCmp -> GLOBALCMP
             SPCampaignType.Unknown, SPCampaignType.IOS14 -> UNKNOWN
             SPCampaignType.Preferences -> PREFERENCES
+            SPCampaignType.GlobalCmp -> TODO("add GlobalCMP support")
         }
     }
 
