@@ -18,6 +18,7 @@ fun userConsents(): SPConsents {
             gdpr = SPUserData.SPConsent(consents = state?.gdpr?.consents),
             usnat = SPUserData.SPConsent(consents = state?.usNat?.consents),
             ccpa = SPUserData.SPConsent(consents = state?.ccpa?.consents),
+            globalcmp = SPUserData.SPConsent(consents = state?.globalcmp?.consents),
             preferences = SPUserData.SPConsent(consents = state?.preferences?.consents)
         )
     )
@@ -37,6 +38,7 @@ internal fun campaignApplies(campaignType: CampaignType): Boolean {
         CampaignType.GDPR -> consents.gdpr?.consent?.applies == true
         CampaignType.CCPA -> consents.ccpa?.consent?.applies == true
         CampaignType.USNAT -> consents.usNat?.consent?.applies == true
+        CampaignType.GLOBALCMP -> consents.globalcmp?.consent?.applies == true
         CampaignType.PREFERENCES -> consents.preferences?.consent != null && consents.preferences.consent != PreferencesConsentInternal()
         CampaignType.UNKNOWN -> false
     }
