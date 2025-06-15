@@ -101,7 +101,7 @@ apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 
 mavenPublishing {
     coordinates(group.toString(), "cmplibrary", versionLib)
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
     signAllPublications()
     pom {
         name = "Sourcepoint Android CMP"
