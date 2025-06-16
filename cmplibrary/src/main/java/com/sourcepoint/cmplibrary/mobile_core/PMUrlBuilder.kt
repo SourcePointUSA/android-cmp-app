@@ -55,11 +55,13 @@ fun buildPMUrl(
     } else {
         pmId
     }
+    val is_global_cmp = if (campaignType == CampaignType.GLOBALCMP) "true" else null
     return baseUrl.let {
         Uri.parse(it).buildUpon()
             .appendQueryParameterIfPresent("consentLanguage", language)
             .appendQueryParameterIfPresent(uuidAndChildPmId.first, uuidAndChildPmId.second)
             .appendQueryParameterIfPresent("pmTab", pmTab?.key)
+            .appendQueryParameterIfPresent("is_global_cmp", is_global_cmp)
             .appendQueryParameter("message_id", messageId)
             .appendQueryParameter("site_id", propertyId.toString())
             .appendQueryParameter("preload_consent", "true")
