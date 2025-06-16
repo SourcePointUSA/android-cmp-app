@@ -48,6 +48,7 @@ fun buildPMUrl(
         CampaignType.CCPA -> Triple("ccpaUUID", userData.ccpa?.consents?.uuid, userData.ccpa?.childPmId)
         CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData.gdpr?.childPmId)
         CampaignType.USNAT -> Triple("uuid", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)
+        CampaignType.GLOBALCMP -> Triple("uuid", userData.globalcmp?.consents?.uuid, userData.globalcmp?.childPmId)
         else -> Triple("consentUUID", null, null)
     }
     val messageId = if (useChildPmIfAvailable && uuidAndChildPmId.third?.isNotEmpty() == true) {
