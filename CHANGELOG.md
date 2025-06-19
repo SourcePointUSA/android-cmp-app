@@ -1,3 +1,6 @@
+## 7.15.0 (June, 19, 2025)
+* [DIA-5653](https://sourcepoint.atlassian.net/browse/DIA-5653) Add support to `globalcmp` campaign type. README will be updated soon. [#861](https://github.com/SourcePointUSA/android-cmp-app/pull/861)
+
 ## 7.14.1-beta2 (June, 14, 2025)
 * [DIA-5780](https://sourcepoint.atlassian.net/browse/DIA-5780) Update dependencies and migrate from app nexus to Maven Central. [#864](https://github.com/SourcePointUSA/android-cmp-app/pull/864)
 * Rename PreferencesConsent subclasses. [#863](https://github.com/SourcePointUSA/android-cmp-app/pull/863)
