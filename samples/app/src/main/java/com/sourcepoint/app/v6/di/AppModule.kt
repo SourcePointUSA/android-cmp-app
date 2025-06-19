@@ -31,7 +31,7 @@ val appModule = module {
         val gdprPmId = "488393" // stage "13111"
         val ccpaPmId = "509688" // "14967"
         val usnatPmId = "988851"
-        val globalcmpPmId = "1315599"
+        val globalcmpPmId = "1323762"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
@@ -70,6 +70,7 @@ val appModule = module {
             +(CampaignType.CCPA)
             +(CampaignType.USNAT)
             +(CampaignType.PREFERENCES)
+            +(CampaignType.GLOBALCMP)
         }
     }
 
