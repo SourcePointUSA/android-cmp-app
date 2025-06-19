@@ -30,6 +30,8 @@ val appModule = module {
     single<DataProvider> {
         val gdprPmId = "488393" // stage "13111"
         val ccpaPmId = "509688" // "14967"
+        val usnatPmId = "988851"
+        val globalcmpPmId = "1323762"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
@@ -37,6 +39,8 @@ val appModule = module {
             spConfig = get(),
             gdprPmId = gdprPmId,
             ccpaPmId = ccpaPmId,
+            usnatPmId = usnatPmId,
+            globalcmpPmId = globalcmpPmId,
             customVendorList = customVendorDataList,
             customCategories = customCategoriesData,
             useGdprGroupPmIfAvailable = false,
@@ -56,27 +60,17 @@ val appModule = module {
     }
 
     single<SpConfig> {
-        if (get(qualifier = named("prod"))) {
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                messLanguage = MessageLanguage.ENGLISH
-                campaignsEnv = CampaignsEnv.PUBLIC
-                +(CampaignType.GDPR)
-                +(CampaignType.PREFERENCES)
-            }
-        } else {
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                messLanguage = MessageLanguage.ENGLISH
-                campaignsEnv = CampaignsEnv.PUBLIC
-                +(CampaignType.GDPR)
-                +(CampaignType.CCPA to listOf(("location" to "US")))
-                +(CampaignType.PREFERENCES)
-            }
+        config {
+            accountId = 22
+            propertyName = "mobile.multicampaign.demo"
+            propertyId = 16893
+            messLanguage = MessageLanguage.ENGLISH
+            campaignsEnv = CampaignsEnv.PUBLIC
+            +(CampaignType.GDPR)
+            +(CampaignType.CCPA)
+            +(CampaignType.USNAT)
+            +(CampaignType.PREFERENCES)
+            +(CampaignType.GLOBALCMP)
         }
     }
 
