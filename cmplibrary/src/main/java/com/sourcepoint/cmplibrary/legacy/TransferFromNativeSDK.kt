@@ -6,6 +6,8 @@ import com.sourcepoint.mobile_core.models.consents.CCPAConsent
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent
 import com.sourcepoint.mobile_core.models.consents.State
 import com.sourcepoint.mobile_core.models.consents.USNatConsent
+import com.sourcepoint.mobile_core.models.consents.UserConsents
+import com.sourcepoint.mobile_core.models.consents.UserConsents.Consentable
 import com.sourcepoint.mobile_core.network.json
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
@@ -180,7 +182,7 @@ data class USNatLegacyConsent(
 
     @Serializable
     data class UserConsents(val vendors: List<Consentable>, val categories: List<Consentable>) {
-        fun toCore() = USNatConsent.USNatUserConsents(
+        fun toCore() = UserConsents(
             vendors = vendors.map { it.toCore() },
             categories = categories.map { it.toCore() }
         )
@@ -188,7 +190,7 @@ data class USNatLegacyConsent(
 
     @Serializable
     data class Consentable(val _id: String, val consented: Boolean) {
-        fun toCore() = USNatConsent.USNatConsentable(
+        fun toCore() = Consentable(
             id = _id,
             consented = consented
         )

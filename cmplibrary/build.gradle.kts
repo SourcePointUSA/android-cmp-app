@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation("com.sourcepoint:core:0.1.8")
+    implementation("com.sourcepoint:core:0.1.9")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
@@ -101,7 +101,7 @@ apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 
 mavenPublishing {
     coordinates(group.toString(), "cmplibrary", versionLib)
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
     signAllPublications()
     pom {
         name = "Sourcepoint Android CMP"

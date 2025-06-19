@@ -41,6 +41,12 @@
                 android:layout_height="wrap_content"/>
 
         <Button
+            android:id="@+id/review_consents_globalcmp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/review_consents_globalcmp" />
+
+        <Button
                 android:id="@+id/auth_id_activity"
                 android:text="@string/authid_activity"
                 android:layout_width="match_parent"

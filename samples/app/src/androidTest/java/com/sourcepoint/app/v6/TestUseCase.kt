@@ -227,6 +227,7 @@ class TestUseCase {
             gdprPmId: String = "",
             ccpaPmId: String = "",
             usnatPmId: String = "",
+            globalCmpPmId: String = "",
             pAuthId: String? = null,
             url: String = "",
             useGdprGroupPmIfAvailable: Boolean = false,
@@ -249,6 +250,8 @@ class TestUseCase {
                     override val spConfig: SpConfig = spConfig
                     override val gdprPmId: String = gdprPmId
                     override val ccpaPmId: String = ccpaPmId
+                    override val usnatPmId: String = usnatPmId
+                    override val globalcmpPmId: String = globalCmpPmId
                     override val messageType: MessageType = messageType
                     override val customVendorList: List<String> = customVendorDataListProd.map { it.first }
                     override val customCategories: List<String> = customCategoriesDataProd.map { it.first }

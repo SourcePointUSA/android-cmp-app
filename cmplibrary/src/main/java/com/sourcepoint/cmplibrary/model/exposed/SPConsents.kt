@@ -17,6 +17,7 @@ import org.json.JSONObject
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent as CCPAConsentCore
 import com.sourcepoint.mobile_core.models.consents.CCPAConsent.CCPAConsentStatus as CoreCCPAConsentStatus
 import com.sourcepoint.mobile_core.models.consents.GDPRConsent as GDPRConsentCore
+import com.sourcepoint.mobile_core.models.consents.GlobalCmpConsent as GlobalCmpConsentCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent as PreferencesConsentCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesStatus as PreferencesStatusCore
 import com.sourcepoint.mobile_core.models.consents.PreferencesConsent.PreferencesSubType as PreferencesSubTypeCore
@@ -26,12 +27,14 @@ data class SPConsents(
     val gdpr: SPGDPRConsent? = null,
     val ccpa: SPCCPAConsent? = null,
     val usNat: SpUsNatConsent? = null,
+    val globalcmp: SPGlobalCmpConsent? = null,
     val preferences: SPPreferencesConsent? = null
 ) {
     internal constructor(core: SPUserData) : this(
         gdpr = core.gdpr?.consents?.let { SPGDPRConsent(consent = GDPRConsentInternal(it, core.gdpr?.childPmId)) },
         ccpa = core.ccpa?.consents?.let { SPCCPAConsent(consent = CCPAConsentInternal(it, core.ccpa?.childPmId)) },
         usNat = core.usnat?.consents?.let { SpUsNatConsent(consent = UsNatConsentInternal(it)) }, // SpUsNatConsent doesn't have childPmId
+        globalcmp = core.globalcmp?.consents?.let { SPGlobalCmpConsent(consent = GlobalCmpConsentInternal(it, core.globalcmp?.childPmId)) },
         preferences = core.preferences?.consents?.let { SPPreferencesConsent(consent = PreferencesConsentInternal(it)) } // SPPreferencesConsent doesn't have childPmId
     )
 }
@@ -46,6 +49,10 @@ data class SPCCPAConsent(
 
 data class SpUsNatConsent(
     val consent: UsNatConsent,
+)
+
+data class SPGlobalCmpConsent(
+    val consent: GlobalCmpConsent,
 )
 
 data class SPPreferencesConsent(
@@ -247,6 +254,49 @@ internal data class UsNatConsentInternal(
     )
 }
 
+interface GlobalCmpConsent {
+    val applies: Boolean
+    val statuses: UsNatStatuses
+    val dateCreated: String?
+    val vendors: List<Consentable>?
+    val categories: List<Consentable>?
+    val uuid: String?
+    val webConsentPayload: JsonObject?
+}
+
+internal data class GlobalCmpConsentInternal(
+    override val applies: Boolean = false,
+    override val dateCreated: String? = null,
+    override val vendors: List<ConsentableImpl> = listOf(),
+    override val categories: List<ConsentableImpl> = listOf(),
+    override val uuid: String? = null,
+    override val statuses: UsNatStatuses,
+    override val webConsentPayload: JsonObject? = null,
+    val url: String? = null,
+    val childPmId: String?
+) : GlobalCmpConsent {
+
+    constructor(core: GlobalCmpConsentCore, childPmId: String?) : this(
+        applies = core.applies,
+        dateCreated = core.dateCreated.toString(),
+        vendors = core.userConsents.vendors.map { ConsentableImpl(id = it.id, consented = it.consented) },
+        categories = core.userConsents.categories.map { ConsentableImpl(id = it.id, consented = it.consented) },
+        uuid = core.uuid,
+        statuses = UsNatStatuses(
+            hasConsentData = core.consentStatus.hasConsentData,
+            rejectedAny = core.consentStatus.rejectedAny,
+            consentedToAll = core.consentStatus.consentedToAll,
+            consentedToAny = core.consentStatus.consentedToAny,
+            sellStatus = core.consentStatus.granularStatus?.sellStatus,
+            shareStatus = core.consentStatus.granularStatus?.shareStatus,
+            sensitiveDataStatus = core.consentStatus.granularStatus?.sensitiveDataStatus,
+            gpcStatus = core.consentStatus.granularStatus?.gpcStatus
+        ),
+        webConsentPayload = core.webConsentPayload?.encodeToJsonObject(),
+        childPmId = childPmId
+    )
+}
+
 interface PreferencesConsent {
     val dateCreated: Instant?
     val messageId: Int?
@@ -351,6 +401,14 @@ fun SPConsents.toWebViewConsentsJsonObject(): JsonObject = buildJsonObject {
             }
         }
     }
+    globalcmp?.consent?.let { globalcmpConsent ->
+        if (globalcmpConsent.isWebConsentEligible()) {
+            putJsonObject("globalcmp") {
+                put("uuid", JsonPrimitive(globalcmpConsent.uuid))
+                put("webConsentPayload", JsonPrimitive(globalcmpConsent.webConsentPayload.toString()))
+            }
+        }
+    }
 }
 
 internal fun GDPRConsent.isWebConsentEligible() =
@@ -360,4 +418,7 @@ internal fun CCPAConsent.isWebConsentEligible() =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
 
 internal fun UsNatConsent.isWebConsentEligible() =
+    uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()
+
+internal fun GlobalCmpConsent.isWebConsentEligible() =
     uuid.isNullOrEmpty().not() && webConsentPayload.isNullOrEmpty().not()

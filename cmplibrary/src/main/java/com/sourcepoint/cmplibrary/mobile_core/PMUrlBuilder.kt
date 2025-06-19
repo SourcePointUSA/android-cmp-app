@@ -25,6 +25,9 @@ val basePmPaths = mapOf(
         OTT to "native-ott/index.html",
         MOBILE to "us_pm/index.html"
     ),
+    CampaignType.GLOBALCMP to mapOf(
+        MOBILE to "us_pm/index.html?is_global_cmp=true"
+    ),
 )
 
 fun basePmUrlFor(campaignType: CampaignType, pmType: MessageType) =
@@ -44,7 +47,8 @@ fun buildPMUrl(
     val uuidAndChildPmId: Triple<String, String?, String?> = when (campaignType) {
         CampaignType.CCPA -> Triple("ccpaUUID", userData.ccpa?.consents?.uuid, userData.ccpa?.childPmId)
         CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData.gdpr?.childPmId)
-        CampaignType.USNAT -> Triple("consentUUID", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)
+        CampaignType.USNAT -> Triple("uuid", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)
+        CampaignType.GLOBALCMP -> Triple("uuid", userData.globalcmp?.consents?.uuid, userData.globalcmp?.childPmId)
         else -> Triple("consentUUID", null, null)
     }
     val messageId = if (useChildPmIfAvailable && uuidAndChildPmId.third?.isNotEmpty() == true) {
@@ -52,11 +56,13 @@ fun buildPMUrl(
     } else {
         pmId
     }
+    val is_global_cmp = if (campaignType == CampaignType.GLOBALCMP) "true" else null
     return baseUrl.let {
         Uri.parse(it).buildUpon()
             .appendQueryParameterIfPresent("consentLanguage", language)
             .appendQueryParameterIfPresent(uuidAndChildPmId.first, uuidAndChildPmId.second)
             .appendQueryParameterIfPresent("pmTab", pmTab?.key)
+            .appendQueryParameterIfPresent("is_global_cmp", is_global_cmp)
             .appendQueryParameter("message_id", messageId)
             .appendQueryParameter("site_id", propertyId.toString())
             .appendQueryParameter("preload_consent", "true")
