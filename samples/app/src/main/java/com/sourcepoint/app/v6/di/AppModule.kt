@@ -32,7 +32,7 @@ val appModule = module {
         val ccpaPmId = "509688" // "14967"
         val usnatPmId = "988851"
         val globalcmpPmId = "1323762"
-        val preferencesPmId = "1319982"
+        val preferencesPmId = "1292630"
         val customVendorDataList = customVendorDataListProd.map { it.first }
         val customCategoriesData = customCategoriesDataProd.map { it.first }
         DataProvider.create(
