@@ -14,7 +14,7 @@ interface DataProvider {
     val ccpaPmId: String
     val usnatPmId: String
     val globalcmpPmId: String
-    val preferencesPmId: String
+    val preferencesCenterId: String
     val spConfig: SpConfig
     val messageType: MessageType?
     val customVendorList: List<String>
@@ -44,7 +44,7 @@ fun DataProvider.Companion.create(
     ccpaPmId = ccpaPmId,
     usnatPmId= usnatPmId,
     globalcmpPmId = globalcmpPmId,
-    preferencesPmId = preferencesPmId,
+    preferencesCenterId = preferencesPmId,
     authId = authId,
     customCategories = customCategories,
     customVendorList = customVendorList,
@@ -60,7 +60,7 @@ private class DataProviderImpl(
     override val ccpaPmId: String,
     override val usnatPmId: String,
     override val globalcmpPmId: String,
-    override val preferencesPmId: String,
+    override val preferencesCenterId: String,
     override val messageType: MessageType? = MessageType.MOBILE,
     override val useGdprGroupPmIfAvailable: Boolean = false,
     override val resetAll: Boolean = false,

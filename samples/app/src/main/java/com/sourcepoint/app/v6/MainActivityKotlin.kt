@@ -89,7 +89,7 @@ class MainActivityKotlin : AppCompatActivity() {
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
         binding.reviewConsentsUsnat.setOnClickListener { selectUSNATPM(dataProvider) }
         binding.reviewConsentsGlobalcmp.setOnClickListener { selectGLOBALCMPPM(dataProvider) }
-        binding.reviewConsentsPreferences.setOnClickListener { selectPREFERENCESPM(dataProvider) }
+        binding.reviewConsentsPreferences.setOnClickListener { selectPREFERENCES(dataProvider) }
         binding.clearAll.setOnClickListener { spConsentLib.clearLocalData() }
         binding.authIdActivity.setOnClickListener { _: View? ->
             startActivity(Intent(this, MainActivityAuthId::class.java))
@@ -416,11 +416,11 @@ class MainActivityKotlin : AppCompatActivity() {
             }
     }
 
-    private fun selectPREFERENCESPM(dataProvider: DataProvider){
+    private fun selectPREFERENCES(dataProvider: DataProvider){
         dataProvider.messageType
             ?.let {
                 spConsentLib.loadPrivacyManager(
-                    pmId = dataProvider.preferencesPmId,
+                    pmId = dataProvider.preferencesCenterId,
                     pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.PREFERENCES,
                     messageType = it
@@ -428,7 +428,7 @@ class MainActivityKotlin : AppCompatActivity() {
             }
             ?: run {
                 spConsentLib.loadPrivacyManager(
-                    pmId = dataProvider.preferencesPmId,
+                    pmId = dataProvider.preferencesCenterId,
                     pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.PREFERENCES
                 )
