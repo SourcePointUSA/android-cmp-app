@@ -421,7 +421,6 @@ class MainActivityKotlin : AppCompatActivity() {
             ?.let {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.preferencesCenterId,
-                    pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.PREFERENCES,
                     messageType = it
                 )
@@ -429,7 +428,6 @@ class MainActivityKotlin : AppCompatActivity() {
             ?: run {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.preferencesCenterId,
-                    pmTab = PMTab.PURPOSES,
                     campaignType = CampaignType.PREFERENCES
                 )
             }
