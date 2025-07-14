@@ -1,3 +1,9 @@
+# 7.15.1 (July, 14, 2025)
+* [DIA-5863](https://sourcepoint.atlassian.net/browse/DIA-5863) added `loadPreferenceCenter` function for `Preferences` campaign [#865](https://github.com/SourcePointUSA/android-cmp-app/pull/865)
+
+## 7.15.0 (June, 19, 2025)
+* [DIA-5653](https://sourcepoint.atlassian.net/browse/DIA-5653) Add support to `globalcmp` campaign type [#861](https://github.com/SourcePointUSA/android-cmp-app/pull/861)
+
 ## 7.14.0 (June, 12, 2025)
 * [DIA-5360](https://sourcepoint.atlassian.net/browse/DIA-5360) Added support to `preferences` campaign type. README will be updated in the upcoming week. [#859](https://github.com/SourcePointUSA/android-cmp-app/pull/859)
 
