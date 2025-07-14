@@ -28,6 +28,9 @@ val basePmPaths = mapOf(
     CampaignType.GLOBALCMP to mapOf(
         MOBILE to "us_pm/index.html?is_global_cmp=true"
     ),
+    CampaignType.PREFERENCES to mapOf(
+        MOBILE to "preferences-app/index.html"
+    ),
 )
 
 fun basePmUrlFor(campaignType: CampaignType, pmType: MessageType) =
@@ -49,6 +52,7 @@ fun buildPMUrl(
         CampaignType.GDPR -> Triple("consentUUID", userData.gdpr?.consents?.uuid, userData.gdpr?.childPmId)
         CampaignType.USNAT -> Triple("uuid", userData.usnat?.consents?.uuid, userData.usnat?.childPmId)
         CampaignType.GLOBALCMP -> Triple("uuid", userData.globalcmp?.consents?.uuid, userData.globalcmp?.childPmId)
+        CampaignType.PREFERENCES -> Triple("preferencesUUID", userData.preferences?.consents?.uuid, null)
         else -> Triple("consentUUID", null, null)
     }
     val messageId = if (useChildPmIfAvailable && uuidAndChildPmId.third?.isNotEmpty() == true) {

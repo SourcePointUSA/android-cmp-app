@@ -1,5 +1,8 @@
+## 7.15.1 (July, 14, 2025)
+* [DIA-5863](https://sourcepoint.atlassian.net/browse/DIA-5863) added `loadPreferenceCenter` function for `Preferences` campaign [#865](https://github.com/SourcePointUSA/android-cmp-app/pull/865)
+
 ## 7.15.0 (June, 19, 2025)
-* [DIA-5653](https://sourcepoint.atlassian.net/browse/DIA-5653) Add support to `globalcmp` campaign type. README will be updated soon. [#861](https://github.com/SourcePointUSA/android-cmp-app/pull/861)
+* [DIA-5653](https://sourcepoint.atlassian.net/browse/DIA-5653) Add support to `globalcmp` campaign type [#861](https://github.com/SourcePointUSA/android-cmp-app/pull/861)
 
 ## 7.14.1-beta2 (June, 14, 2025)
 * [DIA-5780](https://sourcepoint.atlassian.net/browse/DIA-5780) Update dependencies and migrate from app nexus to Maven Central. [#864](https://github.com/SourcePointUSA/android-cmp-app/pull/864)
