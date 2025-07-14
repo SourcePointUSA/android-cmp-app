@@ -1,3 +1,6 @@
+## 7.15.0 (July, 14, 2025)
+* [DIA-5863](https://sourcepoint.atlassian.net/browse/DIA-5863) added `loadPreferenceCenter` function for `Preferences` campaign [#865](https://github.com/SourcePointUSA/android-cmp-app/pull/865)
+
 ## 7.15.1 (July, 14, 2025)
 * [DIA-5863](https://sourcepoint.atlassian.net/browse/DIA-5863) added `loadPreferenceCenter` function for `Preferences` campaign [#865](https://github.com/SourcePointUSA/android-cmp-app/pull/865)
 
