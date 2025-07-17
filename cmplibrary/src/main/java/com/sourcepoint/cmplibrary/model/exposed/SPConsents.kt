@@ -310,6 +310,7 @@ interface PreferencesConsent {
         val changed: Boolean?
         val dateConsented: Instant?
         val subType: SubType?
+        val versionId: String?
     }
 
     interface Channel {
@@ -359,14 +360,16 @@ internal data class PreferencesConsentInternal(
         override val channels: List<Channel>?,
         override val changed: Boolean?,
         override val dateConsented: Instant?,
-        override val subType: PreferencesConsent.SubType? = PreferencesConsent.SubType.Unknown
+        override val subType: PreferencesConsent.SubType? = PreferencesConsent.SubType.Unknown,
+        override val versionId: String?
     ) : PreferencesConsent.Status {
         constructor(status: PreferencesStatusCore) : this(
             categoryId = status.categoryId,
             channels = status.channels?.map { Channel(id = it.channelId, status = it.status) },
             changed = status.changed,
             dateConsented = status.dateConsented,
-            subType = PreferencesConsent.SubType.fromCore(status.subType)
+            subType = PreferencesConsent.SubType.fromCore(status.subType),
+            versionId = status.versionId
         )
 
         data class Channel(
