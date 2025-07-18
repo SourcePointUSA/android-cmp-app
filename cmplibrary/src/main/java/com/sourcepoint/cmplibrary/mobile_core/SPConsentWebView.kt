@@ -20,7 +20,9 @@ import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
 import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.MSG_CANCEL
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.PM_DISMISS
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
@@ -64,6 +66,8 @@ interface SPMessageUI {
         campaignType: CampaignType,
         userData: SPUserData
     )
+
+    fun dismiss()
 }
 
 /**
@@ -166,7 +170,7 @@ class SPConsentWebView(
                     onAction(
                         view = this,
                         action = SPConsentAction(
-                            actionType = if (isFirstLayer) ActionType.MSG_CANCEL else ActionType.PM_DISMISS,
+                            actionType = if (isFirstLayer) MSG_CANCEL else PM_DISMISS,
                             campaignType = campaignType,
                             messageId = ""
                         )
@@ -248,8 +252,8 @@ class SPConsentWebView(
     override fun onAction(view: View, action: ConsentAction) = runOnMain {
         messageUIClient.onAction(view, action)
         when (action.actionType) {
-            ActionType.SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
-            ActionType.PM_DISMISS -> returnToFirstLayer()
+            SHOW_OPTIONS -> loadPrivacyManagerFrom(action)
+            PM_DISMISS -> returnToFirstLayer()
             else -> {
                 finished(view)
             }
@@ -294,6 +298,17 @@ class SPConsentWebView(
         }, "*");""",
         null
     )
+
+    override fun dismiss() {
+        onAction(
+            view = this,
+            action = SPConsentAction(
+                actionType = MSG_CANCEL,
+                campaignType = campaignType,
+                messageId = ""
+            )
+        )
+    }
 
     override fun loaded(view: View) = runOnMain {
         evaluateJavascript("""window.spLegislation="${campaignType.name}"""", null)
