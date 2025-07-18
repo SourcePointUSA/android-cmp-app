@@ -86,6 +86,8 @@ interface SpConsentLib {
     fun showView(view: View)
     fun removeView(view: View)
 
+    fun dismissMessage()
+
     fun dispose()
 
     @Deprecated(

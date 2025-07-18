@@ -291,6 +291,10 @@ class SpConsentLibMobileCore(
         mainView?.removeView(view)
     }
 
+    override fun dismissMessage() {
+        messageUI.dismiss()
+    }
+
     override fun dispose() {}
 
     @Deprecated(
