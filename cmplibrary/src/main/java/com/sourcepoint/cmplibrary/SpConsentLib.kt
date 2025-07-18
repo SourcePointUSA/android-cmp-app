@@ -88,6 +88,7 @@ interface SpConsentLib {
 
     fun dismissMessage()
 
+    @Deprecated(message = "This method is deprecated and has no effect.")
     fun dispose()
 
     @Deprecated(
