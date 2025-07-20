@@ -843,6 +843,14 @@ It’s possible to programmatically issue a “reject all” action on behalf of
     spConsentLib.rejectAll(CampaignType.GDPR)
 ```
 
+## Programmatically dismissing a message
+
+You might have the use case in which you want to programmatically dismiss a message without relying on user input. The `dismissMessage()` method will try to dispatch a dismiss action on the message being currently displayed, just as if a user would have pressed the dismiss button on the UI.
+
+```kotlin
+spConsentLib.dismissMessage()
+```
+
 ## Adding or Removing custom consents
 
 It's possible to programmatically consent the current user to a list of vendors, categories and legitimate interest categories by using the following method from the consent lib:
