@@ -328,17 +328,17 @@ class SpConsentLibMobileCore(
         val userAction = spClient.onAction(view, action) as SPConsentAction
         when (userAction.actionType) {
             ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
-                runCatching {
-                    launch {
+                launch {
+                    runCatching {
                         coordinator.reportAction(userAction.toCore())
                         spClient.onConsentReady(SPConsents(userData))
                         pendingActions--
                         if (pendingActions == 0) {
                             spClient.onSpFinished(spConsents)
                         }
+                    }.onFailure {
+                        onError(ReportActionException(cause = it, action = userAction.toCore()))
                     }
-                }.onFailure {
-                    onError(ReportActionException(cause = it, action = userAction.toCore()))
                 }
                 finished(view)
             }
