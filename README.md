@@ -8,6 +8,9 @@
   - [Create new _Config_ object](#create-new-config-object)
   - [Create an instance of the CMP library](#create-an-instance-of-the-cmp-library)
   - [Delegate Methods](#delegate-methods)
+    - [onError callback](#onerror-callback)
+    - [onAction callback](#onaction-callback)
+    - [pubData](#pubdata)
   - [Loading a Privacy Manager on demand](#loading-a-privacy-manager-on-demand)
   - [Loading the OTT First Layer Message](#loading-the-ott-first-layer-message)
   - [Loading an OTT privacy manager](#loading-an-ott-privacy-manager)
@@ -31,9 +34,6 @@
     - `campaignApplies`
   - [Adding or Removing custom consents](#adding-or-removing-custom-consents)
   - [Vendor Grants object](#vendor-grants-object)
-  - [The onAction callback](#the-onaction-callback)
-  - [The ConsentAction object](#the-consentaction-object)
-  - [`pubData`](#pubdata)
   - [The Nativemessage](NATIVEMESSAGE_GUIDE.md)
   - [Google Additional Consent](#google-additional-consent)
   - [Transfer opt-in/opt-out preferences from U.S. Privacy (Legacy) to U.S. Multi-State Privacy](#transfer-opt-inopt-out-preferences-from-us-privacy-legacy-to-us-multi-state-privacy)
@@ -148,7 +148,26 @@ public class MainActivityJava extends AppCompatActivity {
 
 ## Delegate Methods
 
-Create a client to receive the events from the Cmp SDK
+Create a client to receive the event callbacks from the Sourcepoint Android SDK. The following event callbacks are available:
+
+| **Event callback**     | **Description**                                                                                                                                                                                                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `onUIFinished`         | The consent view should be removed                                                                                                                                                                                                                                                                                |
+| `onNativeMessageReady` | A native message should be created                                                                                                                                                                                                                                                                                |
+| `onConsentReady`       | The client receives the end-user's saved consent                                                                                                                                                                                                                                                                  |
+| `onError`              | An error occured and the client has access to the error details. See [`onError` callback](#onerror-callback) for more information                                                                                                                                                                                 |
+| `onUIReady`            | The consent view should be inflated                                                                                                                                                                                                                                                                               |
+| `onAction`             | The client receives the end-user's selected action and has the chance to set any `pubData` fields. If necessary, use this callback to check against a specific `actionType` and customize how the message should behave in response to the action. See [`onAction` callback](#onaction-callback) for more details |
+| `onSpFinished`         | All the work is done and there is nothing to process                                                                                                                                                                                                                                                              |
+
+> Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:<br>
+> | Main thread | Worker thread |
+> | ---------------------- | -------------- |
+> | `onUIReady` | `onSpFinished` |
+> | `onError` | `onAction` |
+> | `onConsentReady` | |
+> | `onNativeMessageReady` | |
+> | `onUIFinished` | |
 
 Kotlin
 
@@ -205,27 +224,7 @@ Java
     }
 ```
 
-Meaning of the callbacks :
-
-- `onUIFinished`: the consent view should be removed;
-- `onNativeMessageReady`: the native message should be created;
-- `onConsentReady`: the client receives the saved consent;
-- `onError`: the client has access to the error details. [See `onError` codes](#onerror-codes)
-- `onUIReady`: the consent view should be inflated;
-- `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields;
-- `onSpFinished`: there is nothing to process, all the work is done.
-
-Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
-
-| Main thread            | Worker thread  |
-| ---------------------- | -------------- |
-| `onUIReady`            | `onSpFinished` |
-| `onError`              | `onAction`     |
-| `onConsentReady`       |                |
-| `onNativeMessageReady` |                |
-| `onUIFinished`         |                |
-
-### onError codes
+### `onError` callback
 
 The `onError` callback can return the following responses:
 
@@ -238,6 +237,81 @@ The `onError` callback can return the following responses:
 | `ExecutionInTheWrongThreadException` | Method is being attempted in a wrong thread |
 | `RequestFailedException`             | Request failed due to a 4XX or 5XX error    |
 | `InvalidRequestException`            | Request is invalid                          |
+
+### `onAction` callback
+
+The `onAction` callback is created with the purpose of giving the client the chance to know with kind of action the end-user made and to set custom information using the `pubData` object. The callback returns the `ConsentAction` object which contains:
+
+| **Field**        | **Description**                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `actionType`     | An enumeration type which indicates the type of action the end-user made. If necessary, check against the value of this field to include any customization regarding how the message should behave in response to a specific action. Can return the following values:<br> - `SHOW_OPTIONS`<br> - `REJECT_ALL`<br> - `ACCEPT_ALL`<br> - `MSG_CANCEL`<br> - `CUSTOM`<br> - `SAVE_AND_EXIST`<br> - `PM_DISMSS` |
+| `pubData`        | A JSONObject object that is used to send custom parameters to Sourcepoint's backend. See [`pubData`](#pubdata) for more information                                                                                                                                                                                                                                                                         |
+| `campaignType`   | Campaign type associated with the end-user's action                                                                                                                                                                                                                                                                                                                                                         |
+| `customActionId` | A `nullable` field which returns the custom id set along with the custom action from Sourcepoint's web message builder                                                                                                                                                                                                                                                                                      |
+
+```
+ConsentAction
+|-- actionType: ActionType
+|-- pubData: JSONObject
+|-- campaignType: CampaignType
+|-- customActionId: String?
+```
+
+#### `pubData`
+
+When the user takes an action within the consent UI, it is possible to attach an arbitrary payload to the action data and have it sent to our endpoints. Those values are `key-values` pairs that have to be added inside the `ConsentAction` object during the `onAction` callback execution.
+
+> The `onAction` callback is a non-blocking call for the UI, this means that it gets executed outside the UI main thread.
+> Following an example:
+
+```kotlin
+        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
+            consentAction.pubData.put("pb_key", "pb_value")
+            return consentAction
+        }
+```
+
+```java
+        @Override
+        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
+            consentAction.getPubData().put("pb_key", "pb_value");
+            return consentAction;
+        }
+```
+
+The `pubData` object can be also attached during the call to load the first layer message. In this case you only need to create a `JSONObject` entity with the desired structure and send it as a parameter of the `loadMessage` call, following an example
+
+Kotlin
+
+```kotlin
+
+    private val pubData: JSONObject = JSONObject().apply {
+      put("timeStamp", 1628620031363)
+      put("key_1", "value_1")
+      put("key_2", true)
+      put("key_3", JSONObject())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        spConsentLib.loadMessage(pubData)
+    }
+```
+
+Java
+
+```java
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JSONObject pubData = new JSONObject();
+        pubData.put("timeStamp", 1628620031363);
+        pubData.put("key_1", "value_1");
+        pubData.put("key_2", true);
+        pubData.put("key_3", new JSONObject());
+        spConsentLib.loadMessage(pubData);
+    }
+```
 
 ## Loading the First Layer Message
 
@@ -511,7 +585,7 @@ Java
     }
 ```
 
->If required for your app's log out process, your organization can use the [`clearAllData`](#clearalldata) function to erase local data. Once cleared, your organization can then call `spConsentLib.loadMessage` to collect consent from a non-authenticated user or `spConsentLib.loadMessage` with a new `authId` for a new authenticated user.
+> If required for your app's log out process, your organization can use the [`clearAllData`](#clearalldata) function to erase local data. Once cleared, your organization can then call `spConsentLib.loadMessage` to collect consent from a non-authenticated user or `spConsentLib.loadMessage` with a new `authId` for a new authenticated user.
 
 ## Setting a Targeting Param
 
@@ -819,7 +893,9 @@ A few remarks:
 3. Your web content needs to be loaded (or loading) on the webview and our web SDK should be included in it. Furthermore, you need to add the query param `_sp_pass_consent=true` to your URL, this will signal to Sourcepoint's web SDK it needs to wait for the consent data to be injected from the native code, instead of immediately querying it from our servers.
 
 ## Preventing users from dismissing the consent message on back press
+
 When the consent message is displayed, the SDK intercepts back press events and convert those into `Dismiss` actions by default. If you wish to opt out from this behaviour, simply set `dismissMessageOnBackPress` to `false` when building the SDK:
+
 ```kotlin
 private val spConsentLib by spConsentLibLazy {
     activity = this@MainActivityKotlin
@@ -827,7 +903,9 @@ private val spConsentLib by spConsentLibLazy {
     dismissMessageOnBackPress = false
 }
 ```
+
 Or
+
 ```java
 private final SpConfig spConfig = new SpConfigDataBuilder()
     ...
@@ -837,7 +915,7 @@ private final SpConfig spConfig = new SpConfigDataBuilder()
 
 ## Programmatically rejecting all for a user
 
-It’s possible to programmatically issue a “reject all” action on behalf of the current end-user by calling the rejectAll(campaignType) function. The rejectAll function behaves in the exact same manner as if an end-user  pressed the “reject all” button on the 1st layer message or privacy manager. Upon completion, the SDK will call either onConsentReady in case of success or onError in case of failure.
+It’s possible to programmatically issue a “reject all” action on behalf of the current end-user by calling the rejectAll(campaignType) function. The rejectAll function behaves in the exact same manner as if an end-user pressed the “reject all” button on the 1st layer message or privacy manager. Upon completion, the SDK will call either onConsentReady in case of success or onError in case of failure.
 
 ```kotlin
     spConsentLib.rejectAll(CampaignType.GDPR)
@@ -1011,85 +1089,6 @@ The `vendorGrants` is an attribute of `GDPRUserConsent` class. The `vendorGrants
   )
   // more vendors here
 ]
-```
-
-## The `onAction` callback
-
-The on Action callback is created with the purpose of giving the client the chance to know with kind of action was selected
-and to set custom information using the `pubData` object.
-
-## The `ConsentAction` object
-
-The `ConsentAction` contains
-
-```
-ConsentAction
-|-- actionType: ActionType
-|-- pubData: JSONObject
-|-- campaignType: CampaignType
-|-- customActionId: String?
-```
-
-- `actionType` is an enumeration type which has the following values: `SHOW_OPTIONS`, `REJECT_ALL`, `ACCEPT_ALL`, `MSG_CANCEL`, `CUSTOM`, `SAVE_AND_EXIT`,`PM_DISMISS`;
-- `customActionId` is a `nullable` field which returns the custom id set along with the custom action from our web message builder;
-- `pubData` is a JSONObject object, it is used to send custom parameters to our BE;
-- `campaignType` is the campaign type associated with the selected action.
-
-## `pubData`
-
-When the user takes an action within the consent UI, it's possible to attach an arbitrary payload to the action data and have it sent to our endpoints.
-Those values are `key-values` pairs that have to be added inside the object `ConsentAction` during the `onAction` callback execution.
-The `onAction` callback is a non-blocking call for the UI, this means that it gets executed outside the UI main thread.
-Following an example:
-
-```kotlin
-        override fun onAction(view: View, consentAction: ConsentAction): ConsentAction {
-            consentAction.pubData.put("pb_key", "pb_value")
-            return consentAction
-        }
-```
-
-```java
-        @Override
-        public ConsentAction onAction(@NotNull View view, @NotNull ConsentAction consentAction) {
-            consentAction.getPubData().put("pb_key", "pb_value");
-            return consentAction;
-        }
-```
-
-The `pubData` object can be also attached during the call to load the First Layer Message, in this case you only need to create
-a `JSONObject` entity with the desired structure and send it as parameter of the `loadMessage` call, following an example
-
-Kotlin
-
-```kotlin
-
-    private val pubData: JSONObject = JSONObject().apply {
-      put("timeStamp", 1628620031363)
-      put("key_1", "value_1")
-      put("key_2", true)
-      put("key_3", JSONObject())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        spConsentLib.loadMessage(pubData)
-    }
-```
-
-Java
-
-```java
-    @Override
-    protected void onResume() {
-        super.onResume();
-        JSONObject pubData = new JSONObject();
-        pubData.put("timeStamp", 1628620031363);
-        pubData.put("key_1", "value_1");
-        pubData.put("key_2", true);
-        pubData.put("key_3", new JSONObject());
-        spConsentLib.loadMessage(pubData);
-    }
 ```
 
 ## Google Additional Consent
@@ -1270,6 +1269,7 @@ SpUtils.clearAllData(context: Context)
 ## Dealing with device rotation
 
 Make sure to add the following to your `AndroidManifest.xml` file:
+
 ```diff
     <activity
         android:name=".ActivityWhereTheConsentUIIsPresented"
@@ -1277,6 +1277,7 @@ Make sure to add the following to your `AndroidManifest.xml` file:
         ...
     >
 ```
+
 This way, Android won't re-instantiate your activity when users rotate the device, keeping the consent UI in the view hierarchy and maitaining its state.
 
 ## Frequently Asked Questions
