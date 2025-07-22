@@ -1,3 +1,8 @@
+## 7.15.2 (July, 22, 2025)
+* [DIA-5645](https://sourcepoint.atlassian.net/browse/DIA-5645) fixed an issue potentially causing run time exception during `onAction` callback. [#868](https://github.com/SourcePointUSA/android-cmp-app/pull/868)
+* [DIA-5922](https://sourcepoint.atlassian.net/browse/DIA-5922) added `versionId` to Preferences consent status. [#866](https://github.com/SourcePointUSA/android-cmp-app/pull/866)
+* [DIA-5947](https://sourcepoint.atlassian.net/browse/DIA-5947) implemented `dismissMessage()` method. Allowing developers to trigger a dismiss action programmatically. [#867](https://github.com/SourcePointUSA/android-cmp-app/pull/867)
+
 ## 7.15.1 (July, 14, 2025)
 * [DIA-5863](https://sourcepoint.atlassian.net/browse/DIA-5863) added `Preference Center` (Privacy Manager) for `Preferences` campaign [#865](https://github.com/SourcePointUSA/android-cmp-app/pull/865)
 
