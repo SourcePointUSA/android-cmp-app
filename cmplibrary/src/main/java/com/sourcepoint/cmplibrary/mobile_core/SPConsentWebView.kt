@@ -20,9 +20,9 @@ import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
 import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.launch
 import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.MSG_CANCEL
 import com.sourcepoint.cmplibrary.model.exposed.ActionType.PM_DISMISS
+import com.sourcepoint.cmplibrary.model.exposed.ActionType.SHOW_OPTIONS
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.LEGACY_OTT
 import com.sourcepoint.cmplibrary.model.exposed.MessageType.OTT
