@@ -35,6 +35,11 @@ interface SpClient {
      * This callback is invoked if no activity could open an intent with the given url.
      */
     fun onNoIntentActivitiesFound(url: String)
+
+    /**
+     * This callback is invoked when the user becomes inactive in the rendering app.
+     */
+    fun onUserInactive()
 }
 
 interface UnitySpClient : SpClient {

@@ -12,6 +12,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
@@ -81,6 +82,7 @@ interface SPWebMessageUIClient : SPMessageUIClient {
     fun onAction(actionData: String)
     fun log(message: String)
     fun onError(error: String)
+    fun onUserInactive()
 }
 
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
@@ -355,4 +357,9 @@ class SPConsentWebView(
 
     @JavascriptInterface
     override fun log(message: String) = println(message)
+
+    @JavascriptInterface
+    override fun onUserInactive() = runOnMain {
+        (messageUIClient as? SpClient)?.onUserInactive()
+    }
 }
