@@ -62,6 +62,7 @@ function handleEvent(event) {
         onAction: notImplemented('onAction'),
         onError: notImplemented('onError'),
         log: notImplemented('log'),
+        onUserInactive: notImplemented('onUserInactive'),
     };
     try {
         switch (payload.name) {
@@ -81,6 +82,9 @@ function handleEvent(event) {
                 break;
             case 'sp.readyForPreloadConsent':
                 sdk.readyForConsentPreload();
+                break;
+            case 'sp.userInactive':
+                sdk.onUserInactive();
                 break;
             default:
                 sdk.log("Unexpected event name: " + JSON.stringify(payload));
