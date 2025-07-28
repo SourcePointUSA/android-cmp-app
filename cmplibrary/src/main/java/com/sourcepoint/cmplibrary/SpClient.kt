@@ -39,7 +39,7 @@ interface SpClient {
     /**
      * This callback is invoked when the user becomes inactive in the rendering app.
      */
-    fun onUserInactive()
+    fun onMessageInactivityTimeout()
 }
 
 interface UnitySpClient : SpClient {
