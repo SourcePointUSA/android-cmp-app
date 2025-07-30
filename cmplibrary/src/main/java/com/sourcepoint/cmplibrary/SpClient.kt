@@ -16,10 +16,10 @@ interface SpClient {
     /**
      * It is invoked when the message is available to the client App
      */
-    fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController)
+    fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {}
 
     @Deprecated("onMessageReady callback will be removed in favor of onMessageReady(message: MessageStructure, messageController: NativeMessageController). Currently this callback is disabled.")
-    fun onMessageReady(message: JSONObject)
+    fun onMessageReady(message: JSONObject) {}
     fun onAction(view: View, consentAction: ConsentAction): ConsentAction
 
     fun onUIFinished(view: View)
@@ -39,7 +39,7 @@ interface SpClient {
     /**
      * This callback is invoked when the user becomes inactive in the rendering app.
      */
-    fun onMessageInactivityTimeout()
+    fun onMessageInactivityTimeout() {}
 }
 
 interface UnitySpClient : SpClient {
