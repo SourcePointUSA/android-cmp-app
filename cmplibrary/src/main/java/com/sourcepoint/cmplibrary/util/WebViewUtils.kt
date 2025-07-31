@@ -18,7 +18,13 @@ internal fun Context.loadLinkOnExternalBrowser(
     if (canOpenURLIntent(this, intent))
         startActivity(intent)
     else
-        onNoIntentActivitiesFound(url)
+        if (url.startsWith("tel:")) {
+            val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+            callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(callIntent)
+        }
+        else
+            onNoIntentActivitiesFound(url)
 }
 
 internal fun canOpenURLIntent(context: Context, uriIntent: Intent): Boolean {
@@ -43,8 +49,14 @@ internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
         requestFocusNodeHref(message)
         return message.data["url"] as? String ?: ""
     }
+    if (doesLinkContainPhone(testResult)) {
+        return "tel:"+testResult.extra
+    }
     return testResult.extra ?: ""
 }
 
 internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean =
     testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+
+internal fun doesLinkContainPhone(testResult: WebView.HitTestResult): Boolean =
+    testResult.type == WebView.HitTestResult.PHONE_TYPE
