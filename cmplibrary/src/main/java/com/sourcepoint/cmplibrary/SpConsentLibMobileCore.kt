@@ -385,4 +385,8 @@ class SpConsentLibMobileCore(
         runOnMain { spClient.onUIFinished(view) }
         renderNextMessageIfAny()
     }
+
+    override fun onMessageInactivityTimeout() {
+        runOnMain { spClient.onMessageInactivityTimeout() }
+    }
 }

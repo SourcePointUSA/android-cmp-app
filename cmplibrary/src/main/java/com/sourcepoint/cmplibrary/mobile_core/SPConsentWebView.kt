@@ -46,6 +46,7 @@ interface SPMessageUIClient {
     fun onAction(view: View, action: ConsentAction)
     fun onError(error: ConsentLibExceptionK)
     fun finished(view: View)
+    fun onMessageInactivityTimeout()
 }
 
 interface SPMessageUI {
@@ -82,7 +83,6 @@ interface SPWebMessageUIClient : SPMessageUIClient {
     fun onAction(actionData: String)
     fun log(message: String)
     fun onError(error: String)
-    fun onMessageInactivityTimeout()
 }
 
 @SuppressLint("ViewConstructor", "SetJavaScriptEnabled")
@@ -360,6 +360,6 @@ class SPConsentWebView(
 
     @JavascriptInterface
     override fun onMessageInactivityTimeout() = runOnMain {
-        (messageUIClient as? SpClient)?.onMessageInactivityTimeout()
+        messageUIClient.onMessageInactivityTimeout()
     }
 }
