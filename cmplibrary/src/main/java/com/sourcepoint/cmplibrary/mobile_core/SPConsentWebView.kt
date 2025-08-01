@@ -141,6 +141,7 @@ class SPConsentWebView(
         settings.javaScriptEnabled = true
         setBackgroundColor(Color.TRANSPARENT)
         setWebContentsDebuggingEnabled(true)
+        settings.setSupportMultipleWindows(true)
         addJavascriptInterface(this, "JSReceiver")
         webChromeClient = object : WebChromeClient() {
             override fun onCreateWindow(
@@ -155,7 +156,6 @@ class SPConsentWebView(
                         messageUIClient.onError(NoIntentFoundForUrl(it))
                     }
                 )
-                view.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getLinkUrl(view.hitTestResult))))
                 return false
             }
         }
