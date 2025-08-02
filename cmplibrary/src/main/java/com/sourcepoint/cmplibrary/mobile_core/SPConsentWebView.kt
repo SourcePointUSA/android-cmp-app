@@ -2,9 +2,7 @@ package com.sourcepoint.cmplibrary.mobile_core
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Looper
 import android.os.Message
 import android.view.KeyEvent
@@ -12,7 +10,6 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl

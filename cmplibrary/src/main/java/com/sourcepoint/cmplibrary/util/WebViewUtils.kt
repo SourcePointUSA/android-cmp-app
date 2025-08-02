@@ -9,22 +9,18 @@ import android.os.Build
 import android.os.Handler
 import android.webkit.WebView
 
-internal fun Context.loadLinkOnExternalBrowser(
-    url: String,
-    onNoIntentActivitiesFound: (url: String) -> Unit
-) {
+internal fun Context.loadLinkOnExternalBrowser(url: String, onNoIntentActivitiesFound: (url: String) -> Unit) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    if (canOpenURLIntent(this, intent))
+    if (canOpenURLIntent(this, intent)) {
         startActivity(intent)
-    else
-        if (url.startsWith("tel:")) {
-            val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-            callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(callIntent)
-        }
-        else
-            onNoIntentActivitiesFound(url)
+    } else if (url.startsWith("tel:")) {
+        val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+        callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(callIntent)
+    } else {
+        onNoIntentActivitiesFound(url)
+    }
 }
 
 internal fun canOpenURLIntent(context: Context, uriIntent: Intent): Boolean {
@@ -50,13 +46,13 @@ internal fun WebView.getLinkUrl(testResult: WebView.HitTestResult): String {
         return message.data["url"] as? String ?: ""
     }
     if (doesLinkContainPhone(testResult)) {
-        return "tel:"+testResult.extra
+        return "tel:" + testResult.extra
     }
     return testResult.extra ?: ""
 }
 
-internal fun doesLinkContainImage(testResult: WebView.HitTestResult): Boolean =
+internal fun doesLinkContainImage(testResult: WebView.HitTestResult) =
     testResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
 
-internal fun doesLinkContainPhone(testResult: WebView.HitTestResult): Boolean =
+internal fun doesLinkContainPhone(testResult: WebView.HitTestResult) =
     testResult.type == WebView.HitTestResult.PHONE_TYPE
