@@ -1,3 +1,8 @@
+## 7.15.3 (August, 02, 2025)
+* [DIA-5954](https://sourcepoint.atlassian.net/browse/DIA-5954) implemented a new, optional, callback `onMessageInactivityTimeout`. Called when the user becomes inactive for an amount of time set on our message builder, for `preferences` messages. [#869](https://github.com/SourcePointUSA/ios-cmp-app/pull/869)
+* [DIA-5964](https://sourcepoint.atlassian.net/browse/DIA-5964) fixed an issue causing links not being opened on external browser. [#870](https://github.com/SourcePointUSA/android-cmp-app/pull/870)
+* [DIA-5916](https://sourcepoint.atlassian.net/browse/DIA-5916) fixed an issue preventing `tel:` links not bringing up the phone dial. [#871](https://github.com/SourcePointUSA/android-cmp-app/pull/871)
+
 ## 7.15.2 (July, 22, 2025)
 * [DIA-5645](https://sourcepoint.atlassian.net/browse/DIA-5645) fixed an issue potentially causing run time exception during `onAction` callback. [#868](https://github.com/SourcePointUSA/android-cmp-app/pull/868)
 * [DIA-5922](https://sourcepoint.atlassian.net/browse/DIA-5922) added `versionId` to Preferences consent status. [#866](https://github.com/SourcePointUSA/android-cmp-app/pull/866)
