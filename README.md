@@ -166,6 +166,7 @@ Kotlin
         override fun onConsentReady(consent: SPConsents) { }
         override fun onAction(view: View, consentAction: ConsentAction): ConsentAction = consentAction
         override fun onNoIntentActivitiesFound(url: String) {}
+        override fun onMessageInactivityTimeout() { }
         override fun onSpFinished(sPConsents: SPConsents) { }
     }
 ```
@@ -201,6 +202,9 @@ Java
         }
 
         @Override
+        public void onMessageInactivityTimeout() { }
+
+        @Override
         public void onSpFinished(@NotNull SPConsents sPConsents) { }
     }
 ```
@@ -213,17 +217,18 @@ Meaning of the callbacks :
 - `onError`: the client has access to the error details. [See `onError` codes](#onerror-codes)
 - `onUIReady`: the consent view should be inflated;
 - `onAction`: the client receives the selected action type and has the chance to set the `pubData` fields;
+- `onMessageInactivityTimeout`: called when the user becomes inactive while viewing a consent message;
 - `onSpFinished`: there is nothing to process, all the work is done.
 
 Some of the above callbacks work on the main thread while others are work on a worker thread. Please see the table below for the distinction:
 
 | Main thread            | Worker thread  |
 | ---------------------- | -------------- |
-| `onUIReady`            | `onSpFinished` |
-| `onError`              | `onAction`     |
-| `onConsentReady`       |                |
-| `onNativeMessageReady` |                |
-| `onUIFinished`         |                |
+| `onUIReady`                  | `onSpFinished`             |
+| `onError`                    | `onAction`                 |
+| `onConsentReady`             | `onMessageInactivityTimeout` |
+| `onNativeMessageReady`       |                            |
+| `onUIFinished`               |                            |
 
 ### onError codes
 

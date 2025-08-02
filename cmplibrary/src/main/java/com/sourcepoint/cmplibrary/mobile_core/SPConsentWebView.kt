@@ -12,6 +12,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
 import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
@@ -45,6 +46,7 @@ interface SPMessageUIClient {
     fun onAction(view: View, action: ConsentAction)
     fun onError(error: ConsentLibExceptionK)
     fun finished(view: View)
+    fun onMessageInactivityTimeout()
 }
 
 interface SPMessageUI {
@@ -355,4 +357,9 @@ class SPConsentWebView(
 
     @JavascriptInterface
     override fun log(message: String) = println(message)
+
+    @JavascriptInterface
+    override fun onMessageInactivityTimeout() = runOnMain {
+        messageUIClient.onMessageInactivityTimeout()
+    }
 }

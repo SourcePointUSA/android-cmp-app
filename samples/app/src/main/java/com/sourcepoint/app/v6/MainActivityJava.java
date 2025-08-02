@@ -100,7 +100,6 @@ public class MainActivityJava extends AppCompatActivity {
     }
 
     class LocalClient implements SpClient {
-
         @Override
         public void onConsentReady(@NotNull SPConsents consent) {
             Map<String, GDPRPurposeGrants> grants = consent.getGdpr().getConsent().getGrants();
@@ -149,6 +148,8 @@ public class MainActivityJava extends AppCompatActivity {
         public void onNoIntentActivitiesFound(@NotNull String url) {
 
         }
-    }
 
+        @Override
+        public void onMessageInactivityTimeout() {}
+    }
 }
