@@ -1,3 +1,6 @@
+## 7.15.4 (August, 13, 2025)
+* removed `coreLibraryDesugaring`. [#872](https://github.com/SourcePointUSA/ios-cmp-app/pull/872)
+
 ## 7.15.3 (August, 02, 2025)
 * [DIA-5954](https://sourcepoint.atlassian.net/browse/DIA-5954) implemented a new, optional, callback `onMessageInactivityTimeout`. Called when the user becomes inactive for an amount of time set on our message builder, for `preferences` messages. [#869](https://github.com/SourcePointUSA/ios-cmp-app/pull/869)
 * [DIA-5964](https://sourcepoint.atlassian.net/browse/DIA-5964) fixed an issue causing links not being opened on external browser. [#870](https://github.com/SourcePointUSA/android-cmp-app/pull/870)
