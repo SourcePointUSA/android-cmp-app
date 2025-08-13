@@ -60,7 +60,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
-    // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
     testImplementation("org.json:json:20250107")
     testImplementation("junit:junit:4.13.2")
 }
