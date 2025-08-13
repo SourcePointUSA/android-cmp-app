@@ -28,7 +28,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -40,5 +39,4 @@ dependencies {
     implementation("com.sourcepoint:core:0.1.8")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
