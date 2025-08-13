@@ -40,7 +40,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
     }
     namespace = "com.example.cmplibrary"
     testNamespace = "com.sourcepoint.cmplibrary"
@@ -62,7 +61,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     testImplementation("org.json:json:20250107")
     testImplementation("junit:junit:4.13.2")
 }
