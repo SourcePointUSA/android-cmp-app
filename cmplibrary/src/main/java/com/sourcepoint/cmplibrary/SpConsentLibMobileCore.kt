@@ -67,7 +67,8 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
-    override val dismissMessageOnBackPress: Boolean = true
+    override val dismissMessageOnBackPress: Boolean = true,
+    override var cleanUserDataOnError: Boolean = false
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
@@ -364,6 +365,10 @@ class SpConsentLibMobileCore(
     override fun onError(error: ConsentLibExceptionK) {
         pendingActions = 0
         messagesToDisplay = ArrayDeque(emptyList())
+
+        if (cleanUserDataOnError) {
+            clearLocalData()
+        }
 
         when (error) {
             is NoIntentFoundForUrl -> {

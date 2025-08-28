@@ -16,6 +16,8 @@ interface SpConsentLib {
      */
     val dismissMessageOnBackPress: Boolean
 
+    var cleanUserDataOnError: Boolean
+
     /**
      * Load the First Layer Message (FLM)
      */

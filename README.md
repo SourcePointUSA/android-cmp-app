@@ -244,6 +244,8 @@ The `onError` callback can return the following responses:
 | `RequestFailedException`             | Request failed due to a 4XX or 5XX error    |
 | `InvalidRequestException`            | Request is invalid                          |
 
+By default, the SDK preserves all user consent data in case of OnError event is called. Set `spConsentLib.cleanUserDataOnError` flag to true after you initialize `spConsentLib` if you wish to opt-out from this behavior. This may cause a consent message to be shown again, depending on your scenario.
+
 ## Loading the First Layer Message
 
 In order to show the FLM, the method `spConsentLib.loadMessage()` has to be called.
