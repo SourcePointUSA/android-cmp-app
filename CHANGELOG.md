@@ -1,3 +1,6 @@
+## 7.15.5 (August, 28, 2025)
+* Expose opt out setting `cleanUserDataOnError` to clear user data on error [#873](https://github.com/SourcePointUSA/android-cmp-app/pull/873)
+
 ## 7.15.4 (August, 13, 2025)
 * removed `coreLibraryDesugaring`. [#872](https://github.com/SourcePointUSA/ios-cmp-app/pull/872)
 
