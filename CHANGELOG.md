@@ -1,3 +1,6 @@
+## 7.15.6 (September, 02, 2025)
+* [DIA-5962](https://sourcepoint.atlassian.net/browse/DIA-5962) Fixed an issue causing the OTT CCPA message to load incorrect stacks in the first layer. [#874](https://github.com/SourcePointUSA/android-cmp-app/pull/874)
+
 ## 7.15.5 (August, 28, 2025)
 * Expose opt out setting `cleanUserDataOnError` to clear user data on error [#873](https://github.com/SourcePointUSA/android-cmp-app/pull/873)
 
