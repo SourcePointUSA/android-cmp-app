@@ -17,7 +17,7 @@ val basePmPaths = mapOf(
     ),
     CampaignType.CCPA to mapOf(
         LEGACY_OTT to "ccpa_ott/index.html",
-        OTT to "native-ott/index.html",
+        OTT to "native-ott/index.html?is_ccpa=true",
         MOBILE to "ccpa_pm/index.html"
     ),
     CampaignType.USNAT to mapOf(
