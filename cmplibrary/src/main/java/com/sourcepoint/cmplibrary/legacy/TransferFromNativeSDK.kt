@@ -50,6 +50,7 @@ fun removeLegacyData(preferences: SharedPreferences) {
         remove(LegacyGDPRChildPmId.PREFS_KEY)
         remove(LegacyCCPAChildPmId.PREFS_KEY)
         remove(LegacyUSNATChildPmId.PREFS_KEY)
+        unusedSPKeys.forEach { remove(it) }
         commit()
     }
 }
@@ -420,3 +421,13 @@ class LegacyUSNATChildPmId {
         const val PREFS_KEY = "sp.usnat.key.childPmId"
     }
 }
+
+private val unusedSPKeys = listOf(
+    "sp.gdpr.key.expiration.date",
+    "sp.ccpa.key.expiration.date",
+    "sp.usnat.key.expiration.date",
+    "sp.gdpr.consentUUID",
+    "sp.ccpa.consentUUID",
+    "sp.usnat.consentUUID",
+    "sp.key.config.propertyId"
+)
