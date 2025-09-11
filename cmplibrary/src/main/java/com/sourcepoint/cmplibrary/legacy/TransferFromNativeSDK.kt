@@ -254,7 +254,7 @@ data class GDPRLegacyConsent(
     val vendorListId: String,
     val webConsentPayload: JsonObject?,
     val expirationDate: String,
-    val gcmStatus: GDPRConsent.GCMStatus
+    val gcmStatus: GDPRConsent.GCMStatus?
 ) {
     companion object {
         const val PREFS_KEY = "sp.gdpr.key.consent.status"
