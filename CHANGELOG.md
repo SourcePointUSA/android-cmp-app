@@ -1,3 +1,6 @@
+## 7.15.7-beta.1 (September, 11, 2025)
+* [DIA-5932](https://sourcepoint.atlassian.net/browse/DIA-5932) Fixed an issue causing consent re-messaging for some clients when migrating from legacy version of the SDK and the GDPR campaign didn't have GCM enabled. [#875](https://github.com/SourcePointUSA/android-cmp-app/pull/875)
+
 ## 7.15.6 (September, 02, 2025)
 * [DIA-5962](https://sourcepoint.atlassian.net/browse/DIA-5962) Fixed an issue causing the OTT CCPA message to load incorrect stacks in the first layer. [#874](https://github.com/SourcePointUSA/android-cmp-app/pull/874)
 
