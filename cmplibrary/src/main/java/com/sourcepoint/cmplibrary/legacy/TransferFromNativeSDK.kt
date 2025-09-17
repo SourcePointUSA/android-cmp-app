@@ -38,6 +38,7 @@ fun migrateLegacyToNewState(
 
 fun removeLegacyData(preferences: SharedPreferences) {
     preferences.edit().apply {
+        remove(LegacyState.AUTH_ID_PREFS_KEY)
         remove(GDPRLegacyConsent.PREFS_KEY)
         remove(CCPALegacyConsent.PREFS_KEY)
         remove(USNatLegacyConsent.PREFS_KEY)
@@ -57,6 +58,7 @@ fun removeLegacyData(preferences: SharedPreferences) {
 
 @Serializable
 data class LegacyState(
+    val authId: String? = null,
     val gdpr: GDPRLegacyConsent? = null,
     val usnat: USNatLegacyConsent? = null,
     val ccpa: CCPALegacyConsent? = null,
@@ -70,11 +72,22 @@ data class LegacyState(
     val localState: JsonObject? = null,
     val nonKeyedLocalState: JsonObject? = null
 ) {
+    companion object {
+        const val AUTH_ID_PREFS_KEY = "sp.gdpr.authId"
+
+        private inline fun <reified T> decodeWithLogging(jsonString: String, name: String): T? = runCatching<T?> {
+            json.decodeFromString(jsonString)
+        }.onFailure { e ->
+            println("Failed to decode $name: ${e.message}")
+        }.getOrNull()
+    }
+
     constructor(sharedPrefs: SharedPreferences) : this(
         gdpr = sharedPrefs.getString(GDPRLegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
         ccpa = sharedPrefs.getString(CCPALegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
         usnat = sharedPrefs.getString(USNatLegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
         metaData = sharedPrefs.getString(LegacyMetaData.PREFS_KEY, null)?.let { json.decodeFromString(it) },
+        authId = sharedPrefs.getString(AUTH_ID_PREFS_KEY, null),
         gdprSampled = sharedPrefs.getBoolean(LegacyGDPRSampled.PREFS_KEY, false),
         usnatSampled = sharedPrefs.getBoolean(LegacyUSNATSampled.PREFS_KEY, false),
         ccpaSampled = sharedPrefs.getBoolean(LegacyCCPASampled.PREFS_KEY, false),
@@ -88,6 +101,7 @@ data class LegacyState(
     fun toState(accountId: Int, propertyId: Int) = State(
         accountId = accountId,
         propertyId = propertyId,
+        authId = authId,
         gdpr = State.GDPRState(
             consents = gdpr?.toCore() ?: GDPRConsent(),
             childPmId = gdprChildPmId,
