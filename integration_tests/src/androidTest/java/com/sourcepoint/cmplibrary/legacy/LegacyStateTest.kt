@@ -108,7 +108,13 @@ class LegacyStateTest {
         loadLegacySharedPrefs(preferences, faultyLegacySharedPrefsXML)
         migrateLegacyToNewState(preferences, accountId, propertyId).assertNotNull()
         preferences.getString(LegacyLocalState.PREFS_KEY, null).assertNull()
+    }
+
+    @Test
+    fun testMigratingLegacyStateReturnsNullIfLegacyStateIsNotPresent() {
+        loadLegacySharedPrefs(preferences, sharedPrefsWithoutLegacyState)
         migrateLegacyToNewState(preferences, accountId, propertyId).assertNull()
-        preferences.getString(LegacyLocalState.PREFS_KEY, null).assertNotNull()
+        preferences.getString(LegacyLocalState.PREFS_KEY, null).assertNull()
+        preferences.getString("foo", null).assertEquals("bar")
     }
 }

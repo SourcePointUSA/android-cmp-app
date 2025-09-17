@@ -60,3 +60,9 @@ const val faultyLegacySharedPrefsXML = """<?xml version='1.0' encoding='utf-8' s
     <string name="sp.key.messages.v7.local.state">{}</string>
 </map>
 """
+
+const val sharedPrefsWithoutLegacyState = """<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="foo">bar</string>
+</map>
+"""
