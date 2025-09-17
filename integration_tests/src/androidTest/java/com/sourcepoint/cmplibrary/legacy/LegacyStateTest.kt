@@ -106,6 +106,8 @@ class LegacyStateTest {
     @Test
     fun testMigratingLegacyStateDoesntThrowEvenWhenInvalid() {
         loadLegacySharedPrefs(preferences, faultyLegacySharedPrefsXML)
+        migrateLegacyToNewState(preferences, accountId, propertyId).assertNotNull()
+        preferences.getString(LegacyLocalState.PREFS_KEY, null).assertNull()
         migrateLegacyToNewState(preferences, accountId, propertyId).assertNull()
         preferences.getString(LegacyLocalState.PREFS_KEY, null).assertNotNull()
     }
