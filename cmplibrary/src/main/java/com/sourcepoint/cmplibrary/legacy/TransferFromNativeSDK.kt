@@ -24,16 +24,12 @@ fun migrateLegacyToNewState(
     propertyId: Int
 ): State? {
     if (preferences.contains(LegacyLocalState.PREFS_KEY)) {
-        try {
-            val newState = LegacyState(preferences).toState(accountId, propertyId)
-            removeLegacyData(preferences)
-            return newState
-        } catch (_: Exception) {
-            return null
-        }
-    } else {
-        return null
+        val legacyState = LegacyState(preferences)
+        val newState = legacyState.toState(accountId, propertyId)
+        removeLegacyData(preferences)
+        return newState
     }
+    return null
 }
 
 fun removeLegacyData(preferences: SharedPreferences) {
@@ -83,19 +79,19 @@ data class LegacyState(
     }
 
     constructor(sharedPrefs: SharedPreferences) : this(
-        gdpr = sharedPrefs.getString(GDPRLegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
-        ccpa = sharedPrefs.getString(CCPALegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
-        usnat = sharedPrefs.getString(USNatLegacyConsent.PREFS_KEY, null)?.let { json.decodeFromString(it) },
-        metaData = sharedPrefs.getString(LegacyMetaData.PREFS_KEY, null)?.let { json.decodeFromString(it) },
         authId = sharedPrefs.getString(AUTH_ID_PREFS_KEY, null),
+        gdpr = sharedPrefs.getString(GDPRLegacyConsent.PREFS_KEY, null)?.let { decodeWithLogging(it, "GDPRLegacyConsent") },
+        ccpa = sharedPrefs.getString(CCPALegacyConsent.PREFS_KEY, null)?.let { decodeWithLogging(it, "CCPALegacyConsent") },
+        usnat = sharedPrefs.getString(USNatLegacyConsent.PREFS_KEY, null)?.let { decodeWithLogging(it, "USNatLegacyConsent") },
+        metaData = sharedPrefs.getString(LegacyMetaData.PREFS_KEY, null)?.let { decodeWithLogging(it, "LegacyMetaData") },
         gdprSampled = sharedPrefs.getBoolean(LegacyGDPRSampled.PREFS_KEY, false),
         usnatSampled = sharedPrefs.getBoolean(LegacyUSNATSampled.PREFS_KEY, false),
         ccpaSampled = sharedPrefs.getBoolean(LegacyCCPASampled.PREFS_KEY, false),
         gdprChildPmId = sharedPrefs.getString(LegacyGDPRChildPmId.PREFS_KEY, null),
         ccpaChildPmId = sharedPrefs.getString(LegacyCCPAChildPmId.PREFS_KEY, null),
         usnatChildPmId = sharedPrefs.getString(LegacyUSNATChildPmId.PREFS_KEY, null),
-        localState = sharedPrefs.getString(LegacyLocalState.PREFS_KEY, null)?.let { json.decodeFromString(it) },
-        nonKeyedLocalState = sharedPrefs.getString(LegacyNonKeyedLocalState.PREFS_KEY, null)?.let { json.decodeFromString(it) }
+        localState = sharedPrefs.getString(LegacyLocalState.PREFS_KEY, null)?.let { decodeWithLogging(it, "LegacyLocalState") },
+        nonKeyedLocalState = sharedPrefs.getString(LegacyNonKeyedLocalState.PREFS_KEY, null)?.let { decodeWithLogging(it, "LegacyNonKeyedLocalState") }
     )
 
     fun toState(accountId: Int, propertyId: Int) = State(

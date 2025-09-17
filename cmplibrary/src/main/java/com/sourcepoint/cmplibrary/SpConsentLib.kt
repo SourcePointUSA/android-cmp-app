@@ -28,6 +28,7 @@ interface SpConsentLib {
      */
     fun loadMessage(cmpViewId: Int)
 
+    // TODO: remove authId from loadMessages and move it to SpConfig in the next major release
     /**
      * Load the First Layer Message (FLM)
      * @param authId is used to get an already saved consent
