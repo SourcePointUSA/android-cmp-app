@@ -72,11 +72,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    tasks {
-        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
 
     testOptions {
         // JSONObject return null during unit tests
@@ -88,10 +83,6 @@ android {
     lint {
         // https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/44752239
         abortOnError = false
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
     }
 }
 
