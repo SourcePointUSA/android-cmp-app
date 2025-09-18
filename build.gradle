@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.9.25'
+    ext.kotlin_version = "2.1.21"
 
     repositories {
         google()
@@ -23,7 +23,7 @@ plugins {
     id 'io.github.dryrum.replace-in-file' version '0.7.0'
     id 'io.github.dryrum.git-utils' version '0.7.0'
     id 'io.github.dryrum.bump-version-code' version '0.7.0'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "2.1.21"
 }
 
 allprojects {

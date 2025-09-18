@@ -67,6 +67,7 @@ data class GDPRPurposeGrants(
 
 interface GDPRConsent {
     val uuid: String?
+    val dateCreated: String?
     var euconsent: String
     var tcData: Map<String, Any?>
     var grants: Map<String, GDPRPurposeGrants>
@@ -80,6 +81,7 @@ interface GDPRConsent {
 internal data class GDPRConsentInternal(
     override var euconsent: String = "",
     override val uuid: String? = null,
+    override val dateCreated: String? = null,
     override var tcData: Map<String, Any?> = emptyMap(),
     override var grants: Map<String, GDPRPurposeGrants> = emptyMap(),
     override val acceptedCategories: List<String>? = null,
@@ -93,6 +95,7 @@ internal data class GDPRConsentInternal(
     constructor(core: GDPRConsentCore, childPmId: String?) : this(
         euconsent = core.euconsent ?: "",
         uuid = core.uuid,
+        dateCreated = core.dateCreated.toString(),
         tcData = core.tcData,
         grants = core.grants.entries.associate {
             it.key to GDPRPurposeGrants(granted = it.value.vendorGrant, purposeGrants = it.value.purposeGrants)
