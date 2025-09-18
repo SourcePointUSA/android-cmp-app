@@ -1,0 +1,44 @@
+name: Manual Job
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "What to run (e.g., verify, publish)"
+        type: choice
+        options: [verify, publish]
+        required: true
+        default: verify
+      version:
+        description: "Version/tag (optional)"
+        required: false
+        type: string
+
+jobs:
+  run:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show inputs
+        run: |
+          echo "target=${{ inputs.target }}"
+          echo "version=${{ inputs.version }}"
+      - name: Gradle build to local maven
+        if: ${{ inputs.target == 'verify' }}
+        run: ./gradlew clean --stacktrace && ./gradlew publishToMavenLocal --stacktrace
+      - name: Find and verify signatures
+        if: ${{ inputs.target == 'verify' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t ASC <<<"$(find ~/.m2/repository -name '*.asc' -print)"
+          if [[ ${#ASC[@]} -eq 0 ]]; then
+            echo "No .asc files found under ~/.m2"; exit 1
+          fi
+          for f in "${ASC[@]}"; do
+            base="${f%.asc}"
+            echo "==> Checking $(basename "$base")"
+            gpg --list-packets "$f" | sed -n '1,6p' || true
+            gpg --verify "$f" "$base" || { echo "FAILED: $base"; exit 2; }
+          done
+          echo "All signatures verified locally ✅"
