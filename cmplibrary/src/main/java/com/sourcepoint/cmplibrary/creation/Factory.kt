@@ -75,7 +75,8 @@ fun SpCampaign.toCore(gppConfig: SpGppConfig? = null) = SPCampaign(
     groupPmId = groupPmId,
     supportLegacyUSPString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING),
     transitionCCPAAuth = configParams.contains(ConfigOption.TRANSITION_CCPA_AUTH),
-    gppConfig = gppConfig?.toCore() ?: GPPConfig()
+    gppConfig = gppConfig?.toCore()?.copy(uspString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+        ?: GPPConfig(uspString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 )
 
 fun CampaignsEnv.toCore() = when (this) {
