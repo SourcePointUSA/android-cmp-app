@@ -1,3 +1,14 @@
+## 7.15.7 (September, 24, 2025)
+* [DIA-6102](https://sourcepoint.atlassian.net/browse/DIA-6102) SDKs Are Setting US Privacy String Even When supportLegacyUSPString: true Is Not Used [#878](https://github.com/SourcePointUSA/android-cmp-app/pull/878)
+* [DIA-5932](https://sourcepoint.atlassian.net/browse/DIA-5932) Fixed an issue causing re-messaging for some clients when migrating from legacy version of the SDK and the GDPR campaign didn't have GCM enabled. [#875](https://github.com/SourcePointUSA/android-cmp-app/pull/875)
+* [DIA-6098](https://sourcepoint.atlassian.net/browse/DIA-6098) Fixed an issue causing consent not persisting for authenticated consent without calling `loadMessage(authId)` on the same SDK instance. [#877](https://github.com/SourcePointUSA/android-cmp-app/pull/877)
+* [DIA-5970](https://sourcepoint.atlassian.net/browse/DIA-5970) Expose `gdpr.dateCreated` consent field. [#876](https://github.com/SourcePointUSA/android-cmp-app/pull/876)
+
+## 7.15.7-beta.2 (September, 18, 2025)
+* [DIA-5932](https://sourcepoint.atlassian.net/browse/DIA-5932) Fixed an issue causing re-messaging for some clients when migrating from legacy version of the SDK and the GDPR campaign didn't have GCM enabled. [#875](https://github.com/SourcePointUSA/android-cmp-app/pull/875)
+* [DIA-6098](https://sourcepoint.atlassian.net/browse/DIA-6098) Fixed an issue causing consent not persisting for authenticated consent without calling `loadMessage(authId)` on the same SDK instance. [#877](https://github.com/SourcePointUSA/android-cmp-app/pull/877)
+* [DIA-5970](https://sourcepoint.atlassian.net/browse/DIA-5970) Expose `gdpr.dateCreated` consent field. [#876](https://github.com/SourcePointUSA/android-cmp-app/pull/876)
+
 ## 7.15.7-beta.2 (September, 18, 2025)
 * [DIA-5932](https://sourcepoint.atlassian.net/browse/DIA-5932) Fixed an issue causing re-messaging for some clients when migrating from legacy version of the SDK and the GDPR campaign didn't have GCM enabled. [#875](https://github.com/SourcePointUSA/android-cmp-app/pull/875)
 * [DIA-6098](https://sourcepoint.atlassian.net/browse/DIA-6098) Fixed an issue causing consent not persisting for authenticated consent without calling `loadMessage(authId)` on the same SDK instance. [#877](https://github.com/SourcePointUSA/android-cmp-app/pull/877)
