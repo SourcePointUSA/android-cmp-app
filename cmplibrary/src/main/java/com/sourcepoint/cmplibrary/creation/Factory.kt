@@ -22,6 +22,7 @@ import com.sourcepoint.mobile_core.models.SPCampaign
 import com.sourcepoint.mobile_core.models.SPCampaignEnv
 import com.sourcepoint.mobile_core.models.SPCampaigns
 import com.sourcepoint.mobile_core.models.SPPropertyName
+import com.sourcepoint.mobile_core.network.requests.IncludeData.GPPConfig
 import java.lang.ref.WeakReference
 
 fun makeConsentLib(spConfig: SpConfig, activity: Activity, spClient: SpClient) = makeConsentLib(
@@ -74,7 +75,8 @@ fun SpCampaign.toCore(gppConfig: SpGppConfig? = null) = SPCampaign(
     groupPmId = groupPmId,
     supportLegacyUSPString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING),
     transitionCCPAAuth = configParams.contains(ConfigOption.TRANSITION_CCPA_AUTH),
-    gppConfig = gppConfig?.toCore()
+    gppConfig = gppConfig?.toCore()?.copy(uspString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING))
+        ?: GPPConfig(uspString = configParams.contains(ConfigOption.SUPPORT_LEGACY_USPSTRING))
 )
 
 fun CampaignsEnv.toCore() = when (this) {
