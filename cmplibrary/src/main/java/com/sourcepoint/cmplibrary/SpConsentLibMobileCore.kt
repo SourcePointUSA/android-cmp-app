@@ -87,13 +87,7 @@ class SpConsentLibMobileCore(
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get() = SPConsents(userData)
 
-    private var messageUI: SPMessageUI =
-        SPConsentWebView.create(
-            context = context,
-            messageUIClient = this@SpConsentLibMobileCore,
-            propertyId = propertyId,
-            onBackPressed = dismissMessageOnBackPress
-        )
+    private lateinit var messageUI: SPMessageUI
 
     override fun loadMessage() = loadMessage(authId = null, pubData = null, cmpViewId = null)
 
