@@ -71,23 +71,22 @@ class SpConsentLibMobileCore(
     override var cleanUserDataOnError: Boolean = false
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
-        set(value) {
-            if(field==0 && value>0) {
-                messageUI = SPConsentWebView.create(
-                    context = context,
-                    messageUIClient = this@SpConsentLibMobileCore,
-                    propertyId = propertyId,
-                    onBackPressed = dismissMessageOnBackPress
-                )
-            }
-            field = value
-        }
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get() = SPConsents(userData)
 
-    private lateinit var messageUI: SPMessageUI
+    private var messageUI: SPMessageUI? = null
+        get() {
+            field = field ?: SPConsentWebView.create(
+                context = context,
+                messageUIClient = this@SpConsentLibMobileCore,
+                propertyId = propertyId,
+                onBackPressed = dismissMessageOnBackPress
+            )
+            return field!!
+        }
+        set(value) { field = value}
 
     override fun loadMessage() = loadMessage(authId = null, pubData = null, cmpViewId = null)
 
@@ -129,10 +128,11 @@ class SpConsentLibMobileCore(
 
     private fun renderNextMessageIfAny() =
         if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
+            messageUI = null
             spClient.onSpFinished(spConsents)
         } else if (messagesToDisplay.isNotEmpty()) {
             val messageToRender = messagesToDisplay.removeFirst()
-            messageUI.load(
+            messageUI!!.load(
                 message = messageToRender.message,
                 messageType = MessageType.fromMessageSubCategory(messageToRender.metaData.subCategoryId),
                 url = messageToRender.url,
@@ -267,7 +267,7 @@ class SpConsentLibMobileCore(
         }
 
         pendingActions++
-        messageUI.load(
+        messageUI!!.load(
             messageType = messageType,
             url = buildPMUrl(
                 campaignType = campaignType,
@@ -297,7 +297,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun dismissMessage() {
-        messageUI.dismiss()
+        messageUI!!.dismiss()
     }
 
     @Deprecated(message = "This method is deprecated and has no effect.")
@@ -339,6 +339,7 @@ class SpConsentLibMobileCore(
                         spClient.onConsentReady(SPConsents(userData))
                         pendingActions--
                         if (pendingActions == 0) {
+                            messageUI = null
                             spClient.onSpFinished(spConsents)
                         }
                     }.onFailure {
@@ -352,7 +353,7 @@ class SpConsentLibMobileCore(
                 finished(view)
             }
             ActionType.PM_DISMISS -> {
-                if (messageUI.isFirstLayer) {
+                if (messageUI!!.isFirstLayer) {
                     pendingActions--
                     finished(view)
                 }
@@ -390,7 +391,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun finished(view: View) {
-        messageUI.isPresenting = false
+        messageUI!!.isPresenting = false
         runOnMain { spClient.onUIFinished(view) }
         renderNextMessageIfAny()
     }
