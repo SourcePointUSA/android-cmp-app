@@ -71,19 +71,29 @@ class SpConsentLibMobileCore(
     override var cleanUserDataOnError: Boolean = false
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
+        set(value) {
+            if(field==0 && value>0) {
+                messageUI = SPConsentWebView.create(
+                    context = context,
+                    messageUIClient = this@SpConsentLibMobileCore,
+                    propertyId = propertyId,
+                    onBackPressed = dismissMessageOnBackPress
+                )
+            }
+            field = value
+        }
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get() = SPConsents(userData)
 
-    private val messageUI: SPMessageUI by lazy {
+    private var messageUI: SPMessageUI =
         SPConsentWebView.create(
             context = context,
             messageUIClient = this@SpConsentLibMobileCore,
             propertyId = propertyId,
             onBackPressed = dismissMessageOnBackPress
         )
-    }
 
     override fun loadMessage() = loadMessage(authId = null, pubData = null, cmpViewId = null)
 
