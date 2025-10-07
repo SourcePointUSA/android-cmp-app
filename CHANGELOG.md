@@ -1,3 +1,6 @@
+## 7.15.8 (October, 07, 2025)
+* [DIA-6071](https://sourcepoint.atlassian.net/browse/DIA-6071) Fix for SDK being not responsive on Android phones when the app is running in the background for 10 minutes [#879](https://github.com/SourcePointUSA/android-cmp-app/pull/879)
+
 ## 7.15.7 (September, 24, 2025)
 * [DIA-6102](https://sourcepoint.atlassian.net/browse/DIA-6102) SDKs Are Setting US Privacy String Even When supportLegacyUSPString: true Is Not Used [#878](https://github.com/SourcePointUSA/android-cmp-app/pull/878)
 * [DIA-5932](https://sourcepoint.atlassian.net/browse/DIA-5932) Fixed an issue causing re-messaging for some clients when migrating from legacy version of the SDK and the GDPR campaign didn't have GCM enabled. [#875](https://github.com/SourcePointUSA/android-cmp-app/pull/875)
