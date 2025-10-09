@@ -5,6 +5,7 @@ import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManagerImpl
+import com.sourcepoint.cmplibrary.mobile_core.InternalFlags
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 
 @SpDSL
@@ -15,6 +16,7 @@ class SpCmpBuilder {
     lateinit var spClient: SpClient
     var connectionManager: ConnectionManager? = null
     var dismissMessageOnBackPress = true
+    var internalFlags = InternalFlags()
 
     fun config(dsl: SpConfigDataBuilder.() -> Unit) {
         spConfig = SpConfigDataBuilder().apply(dsl).build()
@@ -29,7 +31,8 @@ class SpCmpBuilder {
             activity = activity,
             spClient = spClient,
             connectionManager = connectionManager ?: ConnectionManagerImpl(activity.applicationContext),
-            dismissMessageOnBackPress = dismissMessageOnBackPress
+            dismissMessageOnBackPress = dismissMessageOnBackPress,
+            internalFlags = internalFlags
         )
     }
 }

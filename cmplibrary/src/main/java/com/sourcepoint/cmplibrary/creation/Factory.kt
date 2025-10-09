@@ -13,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignType.GLOBALCMP
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.PREFERENCES
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.USNAT
 import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
+import com.sourcepoint.cmplibrary.mobile_core.InternalFlags
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
@@ -39,12 +40,14 @@ fun makeConsentLib(
     spClient: SpClient,
     dismissMessageOnBackPress: Boolean = true,
     connectionManager: ConnectionManager = ConnectionManagerImpl(activity.applicationContext),
+    internalFlags: InternalFlags = InternalFlags()
 ): SpConsentLib = SpConsentLibMobileCore(
     coordinator = Coordinator(
         accountId = spConfig.accountId,
         propertyName = SPPropertyName.create(spConfig.propertyName),
         propertyId = spConfig.propertyId,
         campaigns = spConfig.campaigns.toCore(spConfig),
+        internalFlags = internalFlags.toCore(),
         state = migrateLegacyToNewState(
             preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
             accountId = spConfig.accountId,
