@@ -94,7 +94,7 @@ class SPConsentLibCoreTest {
         val client = spClient
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns SPUserData()
-        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
+        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(cause = SPError())
         getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
@@ -108,7 +108,7 @@ class SPConsentLibCoreTest {
         val userData = SPUserData(gdpr = SPUserData.SPConsent(consents = GDPRConsent()))
         val coordinatorMock = mockk<ICoordinator>(relaxed = true)
         every { coordinatorMock.userData } returns userData
-        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(causedBy = SPError())
+        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(cause = SPError())
         getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
