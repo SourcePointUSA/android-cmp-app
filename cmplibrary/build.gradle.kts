@@ -99,7 +99,10 @@ apply(from = "${project.rootDir.path}/gradleutils/ktlint_utils.gradle")
 mavenPublishing {
     coordinates(group.toString(), "cmplibrary", versionLib)
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
-    signAllPublications()
+    // skip signing for publishToMavenLocal task
+    if (!gradle.startParameter.taskNames.any { it.contains("publishToMavenLocal") }) {
+        signAllPublications()
+    }
     pom {
         name = "Sourcepoint Android CMP"
         description = "The internal Network & Data layers used by our mobile SDKs"

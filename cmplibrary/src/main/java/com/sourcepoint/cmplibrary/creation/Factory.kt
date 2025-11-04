@@ -38,6 +38,7 @@ fun makeConsentLib(
     activity: Activity,
     spClient: SpClient,
     dismissMessageOnBackPress: Boolean = true,
+    hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     connectionManager: ConnectionManager = ConnectionManagerImpl(activity.applicationContext),
 ): SpConsentLib = SpConsentLibMobileCore(
     coordinator = Coordinator(
@@ -58,7 +59,8 @@ fun makeConsentLib(
     context = activity.applicationContext,
     activity = WeakReference(activity),
     connectionManager = connectionManager,
-    dismissMessageOnBackPress = dismissMessageOnBackPress
+    dismissMessageOnBackPress = dismissMessageOnBackPress,
+    hideAppsViewsFromAccessibilityWhileMessageIsDisplayed = hideAppsViewsFromAccessibilityWhileMessageIsDisplayed
 )
 
 fun List<SpCampaign>.toCore(spConfig: SpConfig) = SPCampaigns(
