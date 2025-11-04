@@ -84,6 +84,9 @@ class SpConsentLibMobileCore(
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
     }
 
+    // used to store accessibility state of main view's children
+    private var a11ySnapshot: WeakHashMap<View, Int> = WeakHashMap()
+
     private var messageUI: SPMessageUI? = null
     fun getOrCreateMessageUI(): SPMessageUI {
         messageUI = messageUI ?: SPConsentWebView.create(
@@ -291,9 +294,31 @@ class SpConsentLibMobileCore(
         )
     }
 
+    // This is an aggressive way to "hide" ui elements from accessibility services in order to give
+    // the message full attention. We store a weak reference to each child, so we can later restore
+    // their original accessibility state.
+    private fun hideMainViewChildrenFromAccessibility(parent: ViewGroup?) {
+        val parent = parent ?: return
+        if(!a11ySnapshot.isEmpty()) return
+
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            a11ySnapshot[child] = child.importantForAccessibility
+            child.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+        }
+    }
+
+    private fun restoreChildrenA11y() {
+        for ((view, accessibilityState) in a11ySnapshot.entries.toList()) {
+            view.importantForAccessibility = accessibilityState
+        }
+        a11ySnapshot.clear()
+    }
+
     override fun showView(view: View) {
         mainView?.let { parentView ->
             view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            hideMainViewChildrenFromAccessibility(parentView)
             parentView.addView(view)
             view.bringToFront()
             view.requestLayout()
@@ -307,6 +332,7 @@ class SpConsentLibMobileCore(
     override fun removeView(view: View) {
         mainView?.let { parentView ->
             parentView.removeView(view)
+            restoreChildrenA11y()
         }
     }
 
@@ -384,6 +410,7 @@ class SpConsentLibMobileCore(
     override fun onError(error: ConsentLibExceptionK) {
         pendingActions = 0
         messagesToDisplay = ArrayDeque(emptyList())
+        restoreChildrenA11y()
 
         if (cleanUserDataOnError) {
             clearLocalData()
