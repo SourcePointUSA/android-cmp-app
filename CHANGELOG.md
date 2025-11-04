@@ -1,3 +1,6 @@
+## 7.15.9 (October, 13, 2025)
+* [DIA-6040](https://sourcepoint.atlassian.net/browse/DIA-6040) Fix crashes Due to Unhandled HttpRequestTimeoutException [#881](https://github.com/SourcePointUSA/android-cmp-app/pull/881)
+
 ## 7.15.8 (October, 07, 2025)
 * [DIA-6071](https://sourcepoint.atlassian.net/browse/DIA-6071) Fix for SDK being not responsive on Android phones when the app is running in the background for 10 minutes [#879](https://github.com/SourcePointUSA/android-cmp-app/pull/879)
 
