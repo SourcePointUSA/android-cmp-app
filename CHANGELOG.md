@@ -1,3 +1,6 @@
+## 7.15.10-beta.1 (November, 04, 2025)
+* [DIA-6160](https://sourcepoint.atlassian.net/browse/DIA-6160) Improve Android's Talk Back experience [#882](https://github.com/SourcePointUSA/android-cmp-app/pull/882)
+
 ## 7.15.9 (October, 13, 2025)
 * [DIA-6040](https://sourcepoint.atlassian.net/browse/DIA-6040) Fix crashes Due to Unhandled HttpRequestTimeoutException [#881](https://github.com/SourcePointUSA/android-cmp-app/pull/881)
 
