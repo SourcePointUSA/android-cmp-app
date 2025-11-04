@@ -1,1 +1,1 @@
-* [DIA-6040](https://sourcepoint.atlassian.net/browse/DIA-6040) Fix crashes Due to Unhandled HttpRequestTimeoutException. PR: [#881](https://github.com/SourcePointUSA/android-cmp-app/pull/881)
+* [DIA-6160](https://sourcepoint.atlassian.net/browse/DIA-6160) Improve Android's Talk Back experience [#882](https://github.com/SourcePointUSA/android-cmp-app/pull/882)

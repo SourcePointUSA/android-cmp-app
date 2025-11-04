@@ -6,8 +6,11 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
@@ -47,9 +50,10 @@ import com.sourcepoint.mobile_core.network.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import org.json.JSONObject
 import java.lang.ref.WeakReference
+import java.util.WeakHashMap
+import kotlin.getValue
 
 fun launch(task: suspend () -> Unit) {
     CoroutineScope(Dispatchers.Default).launch { task() }
@@ -67,14 +71,22 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
+    override val hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     override val dismissMessageOnBackPress: Boolean = true,
-    override var cleanUserDataOnError: Boolean = false
+    override var cleanUserDataOnError: Boolean = false,
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get() = SPConsents(userData)
+
+    private val accessibilityManater by lazy {
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    }
+
+    // used to store accessibility state of main view's children
+    private var a11ySnapshot: WeakHashMap<View, Int> = WeakHashMap()
 
     private var messageUI: SPMessageUI? = null
     fun getOrCreateMessageUI(): SPMessageUI {
@@ -283,16 +295,48 @@ class SpConsentLibMobileCore(
         )
     }
 
+    // This is an aggressive way to "hide" ui elements from accessibility services in order to give
+    // the message full attention. We store a weak reference to each child, so we can later restore
+    // their original accessibility state.
+    private fun hideMainViewChildrenFromAccessibility(parent: ViewGroup?) {
+        val parent = parent ?: return
+        if (!a11ySnapshot.isEmpty()) return
+
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            a11ySnapshot[child] = child.importantForAccessibility
+            child.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+        }
+    }
+
+    private fun restoreChildrenA11y() {
+        for ((view, accessibilityState) in a11ySnapshot.entries.toList()) {
+            view.importantForAccessibility = accessibilityState
+        }
+        a11ySnapshot.clear()
+    }
+
     override fun showView(view: View) {
-        view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        view.bringToFront()
-        view.requestLayout()
-        view.requestFocus()
-        mainView?.addView(view)
+        mainView?.let { parentView ->
+            view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            if (hideAppsViewsFromAccessibilityWhileMessageIsDisplayed) {
+                hideMainViewChildrenFromAccessibility(parentView)
+            }
+            parentView.addView(view)
+            view.bringToFront()
+            view.requestLayout()
+            view.requestFocus()
+            if (accessibilityManater.isEnabled && accessibilityManater.isTouchExplorationEnabled) {
+                view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            }
+        }
     }
 
     override fun removeView(view: View) {
-        mainView?.removeView(view)
+        mainView?.let { parentView ->
+            parentView.removeView(view)
+            restoreChildrenA11y()
+        }
     }
 
     override fun dismissMessage() {
@@ -369,6 +413,7 @@ class SpConsentLibMobileCore(
     override fun onError(error: ConsentLibExceptionK) {
         pendingActions = 0
         messagesToDisplay = ArrayDeque(emptyList())
+        restoreChildrenA11y()
 
         if (cleanUserDataOnError) {
             clearLocalData()
