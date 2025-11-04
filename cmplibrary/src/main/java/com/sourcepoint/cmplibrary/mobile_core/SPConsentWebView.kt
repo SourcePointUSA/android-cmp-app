@@ -3,6 +3,7 @@ package com.sourcepoint.cmplibrary.mobile_core
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Looper
 import android.os.Message
 import android.view.KeyEvent
@@ -142,6 +143,12 @@ class SPConsentWebView(
         setWebContentsDebuggingEnabled(true)
         settings.setSupportMultipleWindows(true)
         addJavascriptInterface(this, "JSReceiver")
+        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+        isFocusable = true
+        isFocusableInTouchMode = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            isScreenReaderFocusable = true
+        }
         webChromeClient = object : WebChromeClient() {
             override fun onCreateWindow(
                 view: WebView,

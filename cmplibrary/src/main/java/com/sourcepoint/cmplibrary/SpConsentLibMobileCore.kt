@@ -6,8 +6,11 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
@@ -47,9 +50,10 @@ import com.sourcepoint.mobile_core.network.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import org.json.JSONObject
 import java.lang.ref.WeakReference
+import java.util.WeakHashMap
+import kotlin.getValue
 
 fun launch(task: suspend () -> Unit) {
     CoroutineScope(Dispatchers.Default).launch { task() }
@@ -75,6 +79,10 @@ class SpConsentLibMobileCore(
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
     private val userData: SPUserData get() = coordinator.userData
     private val spConsents: SPConsents get() = SPConsents(userData)
+
+    private val accessibilityManater by lazy {
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    }
 
     private var messageUI: SPMessageUI? = null
     fun getOrCreateMessageUI(): SPMessageUI {
@@ -284,15 +292,22 @@ class SpConsentLibMobileCore(
     }
 
     override fun showView(view: View) {
-        view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        view.bringToFront()
-        view.requestLayout()
-        view.requestFocus()
-        mainView?.addView(view)
+        mainView?.let { parentView ->
+            view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            parentView.addView(view)
+            view.bringToFront()
+            view.requestLayout()
+            view.requestFocus()
+            if (accessibilityManater.isEnabled && accessibilityManater.isTouchExplorationEnabled) {
+                view.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            }
+        }
     }
 
     override fun removeView(view: View) {
-        mainView?.removeView(view)
+        mainView?.let { parentView ->
+            parentView.removeView(view)
+        }
     }
 
     override fun dismissMessage() {
