@@ -15,6 +15,7 @@ class SpCmpBuilder {
     lateinit var spClient: SpClient
     var connectionManager: ConnectionManager? = null
     var dismissMessageOnBackPress = true
+    var hideAppsViewsFromAccessibilityWhileMessageIsDisplayed = false
 
     fun config(dsl: SpConfigDataBuilder.() -> Unit) {
         spConfig = SpConfigDataBuilder().apply(dsl).build()
@@ -29,7 +30,8 @@ class SpCmpBuilder {
             activity = activity,
             spClient = spClient,
             connectionManager = connectionManager ?: ConnectionManagerImpl(activity.applicationContext),
-            dismissMessageOnBackPress = dismissMessageOnBackPress
+            dismissMessageOnBackPress = dismissMessageOnBackPress,
+            hideAppsViewsFromAccessibilityWhileMessageIsDisplayed = hideAppsViewsFromAccessibilityWhileMessageIsDisplayed
         )
     }
 }

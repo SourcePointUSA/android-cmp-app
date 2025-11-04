@@ -16,6 +16,12 @@ interface SpConsentLib {
      */
     val dismissMessageOnBackPress: Boolean
 
+    /**
+     * Instructs the SDK to hide the host app's views from accessibility services
+     * (e.g., screen readers) while the message is displayed. It's false by default.
+     */
+    val hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean
+
     var cleanUserDataOnError: Boolean
 
     /**

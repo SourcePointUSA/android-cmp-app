@@ -71,8 +71,9 @@ class SpConsentLibMobileCore(
     private val coordinator: ICoordinator,
     private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
+    override val hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     override val dismissMessageOnBackPress: Boolean = true,
-    override var cleanUserDataOnError: Boolean = false
+    override var cleanUserDataOnError: Boolean = false,
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
@@ -318,7 +319,9 @@ class SpConsentLibMobileCore(
     override fun showView(view: View) {
         mainView?.let { parentView ->
             view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            hideMainViewChildrenFromAccessibility(parentView)
+            if (hideAppsViewsFromAccessibilityWhileMessageIsDisplayed) {
+                hideMainViewChildrenFromAccessibility(parentView)
+            }
             parentView.addView(view)
             view.bringToFront()
             view.requestLayout()
