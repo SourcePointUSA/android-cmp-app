@@ -299,7 +299,7 @@ class SpConsentLibMobileCore(
     // their original accessibility state.
     private fun hideMainViewChildrenFromAccessibility(parent: ViewGroup?) {
         val parent = parent ?: return
-        if(!a11ySnapshot.isEmpty()) return
+        if (!a11ySnapshot.isEmpty()) return
 
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
