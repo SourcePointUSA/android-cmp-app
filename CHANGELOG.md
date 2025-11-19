@@ -1,3 +1,6 @@
+## 7.15.11 (November, 19, 2025)
+* [DIA-6165](https://sourcepoint.atlassian.net/browse/DIA-6165) [Fire TV] Add a `mutex` to `removeKeysStartingWith` too avoid potential crashes [#883](https://github.com/SourcePointUSA/android-cmp-app/pull/883)
+
 ## 7.15.10 (November, 07, 2025)
 * [DIA-6160](https://sourcepoint.atlassian.net/browse/DIA-6160) Improve Android's Talk Back experience [#882](https://github.com/SourcePointUSA/android-cmp-app/pull/882)
 
