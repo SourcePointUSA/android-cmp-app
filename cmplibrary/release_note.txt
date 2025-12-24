@@ -1,1 +1,2 @@
-* [DIA-6165](https://sourcepoint.atlassian.net/browse/DIA-6165) [Fire TV] Add a `mutex` to `removeKeysStartingWith` too avoid potential crashes [#883](https://github.com/SourcePointUSA/android-cmp-app/pull/883)
+* [DIA-6242](https://sourcepoint.atlassian.net/browse/DIA-6242) [Android TV] Implement experimental `InternalCoroutinesApi`
+- [x] Beta version release!
