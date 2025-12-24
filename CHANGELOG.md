@@ -1,3 +1,7 @@
+## 7.15.12-beta-1 (December, 24, 2025)
+* [DIA-6242](https://sourcepoint.atlassian.net/browse/DIA-6242) [Android TV] Implement experimental `InternalCoroutinesApi`
+- [x] Beta version release!
+
 ## 7.15.11 (November, 19, 2025)
 * [DIA-6165](https://sourcepoint.atlassian.net/browse/DIA-6165) [Fire TV] Add a `mutex` to `removeKeysStartingWith` too avoid potential crashes [#883](https://github.com/SourcePointUSA/android-cmp-app/pull/883)
 
