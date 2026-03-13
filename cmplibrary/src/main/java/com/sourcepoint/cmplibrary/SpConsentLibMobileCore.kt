@@ -435,7 +435,7 @@ class SpConsentLibMobileCore(
     }
 
     override fun finished(view: View) {
-        getOrCreateMessageUI().isPresenting = false
+        messageUI?.isPresenting = false
         runOnMain { spClient.onUIFinished(view) }
         renderNextMessageIfAny()
     }
