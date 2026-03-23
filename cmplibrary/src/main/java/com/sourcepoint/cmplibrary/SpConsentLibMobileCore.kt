@@ -86,7 +86,7 @@ class SpConsentLibMobileCore(
     }
 
     // used to store accessibility state of main view's children
-    private var a11ySnapshot: WeakHashMap<View, Int> = WeakHashMap()
+    private var a11ySnapshot: WeakHashMap<View?, Int> = WeakHashMap()
 
     private var messageUI: SPMessageUI? = null
     fun getOrCreateMessageUI(): SPMessageUI {
@@ -139,7 +139,7 @@ class SpConsentLibMobileCore(
 
     private fun renderNextMessageIfAny() =
         if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
-            messageUI = null
+            disposeMessageUI()
             spClient.onSpFinished(spConsents)
         } else if (messagesToDisplay.isNotEmpty()) {
             val messageToRender = messagesToDisplay.removeFirst()
@@ -311,9 +311,15 @@ class SpConsentLibMobileCore(
 
     private fun restoreChildrenA11y() {
         for ((view, accessibilityState) in a11ySnapshot.entries.toList()) {
-            view.importantForAccessibility = accessibilityState
+            view?.importantForAccessibility = accessibilityState
         }
         a11ySnapshot.clear()
+    }
+
+    private fun disposeMessageUI() {
+        // Remove view from parent before nullifying to avoid NPE in ViewGroup
+        messageUI?.let { removeView(it as View) }
+        messageUI = null
     }
 
     override fun showView(view: View) {
@@ -382,7 +388,7 @@ class SpConsentLibMobileCore(
                         spClient.onConsentReady(SPConsents(userData))
                         pendingActions--
                         if (pendingActions == 0) {
-                            messageUI = null
+                            disposeMessageUI()
                             spClient.onSpFinished(spConsents)
                         }
                     }.onFailure {
@@ -396,7 +402,7 @@ class SpConsentLibMobileCore(
                 finished(view)
             }
             ActionType.PM_DISMISS -> {
-                if (getOrCreateMessageUI().isFirstLayer) {
+                if (messageUI?.isFirstLayer == true) {
                     pendingActions--
                     finished(view)
                 }
