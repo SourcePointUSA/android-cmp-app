@@ -121,6 +121,8 @@ class SPConsentLibCoreTest {
     fun noMessageIsShownIfTheresDataFromSDKWithoutMobileCore() = runBlocking {
         // NOTE: If this test fails, chances are the SDK (more specifically the mobile-core's Coordinator)
         // is resetting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
+        // OR the consent expired in the server (i.e. longer than 1 year) and a new uuid needs to be saved (by accepting all with
+        // that auth id).
         val client = spClient
         loadLegacySharedPrefs(preferences)
         getConsentLib(
