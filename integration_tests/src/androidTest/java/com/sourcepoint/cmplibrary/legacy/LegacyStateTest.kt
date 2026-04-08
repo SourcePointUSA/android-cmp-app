@@ -43,7 +43,7 @@ class LegacyStateTest {
                 consents.apply {
                     applies.assertTrue()
                     uuid.assertEquals("gdprUUID")
-                    dateCreated.assertEquals(Instant.parse("2025-03-29T13:45:32.988Z"))
+                    dateCreated.assertEquals(Instant.parse("2026-04-07T17:00:24.263Z"))
                     consentStatus.apply {
                         consentedAll!!.assertTrue()
                     }
@@ -63,7 +63,7 @@ class LegacyStateTest {
                 consents.apply {
                     applies.assertTrue()
                     uuid.assertEquals("ccpaUUID")
-                    dateCreated.assertEquals(Instant.parse("2025-03-29T13:45:34.594Z"))
+                    dateCreated.assertEquals(Instant.parse("2026-04-07T17:00:24.263Z"))
                     status.assertEquals(CCPAConsent.CCPAConsentStatus.ConsentedAll)
                     gppData.isNotEmpty().assertTrue()
                     webConsentPayload.isNullOrEmpty().assertFalse()
@@ -80,7 +80,7 @@ class LegacyStateTest {
                 consents.apply {
                     applies.assertTrue()
                     uuid.assertEquals("usNatUUID")
-                    dateCreated.assertEquals(Instant.parse("2025-03-29T13:47:05.359Z"))
+                    dateCreated.assertEquals(Instant.parse("2026-04-07T17:00:24.263Z"))
                     gppData.isNotEmpty().assertTrue()
                     webConsentPayload.isNullOrEmpty().assertFalse()
                     consentStatus.apply {

@@ -1,2 +1,1 @@
-* [DIA-6242](https://sourcepoint.atlassian.net/browse/DIA-6242) [Android TV] Implement experimental `InternalCoroutinesApi`
-- [x] Beta version release!
+* [DIA-6317](https://sourcepoint.atlassian.net/browse/DIA-6317)
