@@ -1,6 +1,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import android.app.Application
 import android.preference.PreferenceManager
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.SpConsentLib
@@ -12,6 +13,7 @@ import com.sourcepoint.cmplibrary.data.network.util.CampaignType.GDPR
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.GLOBALCMP
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.PREFERENCES
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType.USNAT
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiIntegration
 import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
@@ -40,28 +42,44 @@ fun makeConsentLib(
     dismissMessageOnBackPress: Boolean = true,
     hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     connectionManager: ConnectionManager = ConnectionManagerImpl(activity.applicationContext),
-): SpConsentLib = SpConsentLibMobileCore(
-    coordinator = Coordinator(
-        accountId = spConfig.accountId,
-        propertyName = SPPropertyName.create(spConfig.propertyName),
-        propertyId = spConfig.propertyId,
-        campaigns = spConfig.campaigns.toCore(spConfig),
-        state = migrateLegacyToNewState(
-            preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
+): SpConsentLib {
+    // Initialize Didomi integration if config is provided
+    val didomiIntegration = spConfig.didomiConfig?.let { config ->
+        DidomiIntegration(config, spClient).also { integration ->
+            // Initialize Didomi SDK
+            (activity.applicationContext as? Application)?.let { app ->
+                integration.initialize(app)
+            } ?: run {
+                // If not Application context, log warning
+                android.util.Log.w("SpConsentLib", "Didomi integration requires Application context. Cannot initialize.")
+            }
+        }
+    }
+
+    return SpConsentLibMobileCore(
+        coordinator = Coordinator(
             accountId = spConfig.accountId,
-            propertyId = spConfig.propertyId
+            propertyName = SPPropertyName.create(spConfig.propertyName),
+            propertyId = spConfig.propertyId,
+            campaigns = spConfig.campaigns.toCore(spConfig),
+            state = migrateLegacyToNewState(
+                preferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
+                accountId = spConfig.accountId,
+                propertyId = spConfig.propertyId
+            ),
+            timeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // convert to seconds
         ),
-        timeoutInSeconds = spConfig.messageTimeout.toInt() / 1000 // convert to seconds
-    ),
-    propertyId = spConfig.propertyId,
-    language = spConfig.messageLanguage,
-    spClient = spClient,
-    context = activity.applicationContext,
-    activity = WeakReference(activity),
-    connectionManager = connectionManager,
-    dismissMessageOnBackPress = dismissMessageOnBackPress,
-    hideAppsViewsFromAccessibilityWhileMessageIsDisplayed = hideAppsViewsFromAccessibilityWhileMessageIsDisplayed
-)
+        propertyId = spConfig.propertyId,
+        language = spConfig.messageLanguage,
+        spClient = spClient,
+        context = activity.applicationContext,
+        activity = WeakReference(activity),
+        connectionManager = connectionManager,
+        dismissMessageOnBackPress = dismissMessageOnBackPress,
+        hideAppsViewsFromAccessibilityWhileMessageIsDisplayed = hideAppsViewsFromAccessibilityWhileMessageIsDisplayed,
+        didomiIntegration = didomiIntegration
+    )
+}
 
 fun List<SpCampaign>.toCore(spConfig: SpConfig) = SPCampaigns(
     gdpr = firstOrNull { it.campaignType == GDPR }?.toCore(),

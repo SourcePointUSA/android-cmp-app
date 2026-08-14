@@ -24,6 +24,7 @@ import com.sourcepoint.cmplibrary.exception.RenderingAppException
 import com.sourcepoint.cmplibrary.exception.ReportActionException
 import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
 import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiIntegration
 import com.sourcepoint.cmplibrary.mobile_core.SPConsentAction
 import com.sourcepoint.cmplibrary.mobile_core.SPConsentWebView
 import com.sourcepoint.cmplibrary.mobile_core.SPMessageUI
@@ -74,6 +75,7 @@ class SpConsentLibMobileCore(
     override val hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     override val dismissMessageOnBackPress: Boolean = true,
     override var cleanUserDataOnError: Boolean = false,
+    private val didomiIntegration: DidomiIntegration? = null,
 ) : SpConsentLib, SPMessageUIClient {
     private var pendingActions: Int = 0
     private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
