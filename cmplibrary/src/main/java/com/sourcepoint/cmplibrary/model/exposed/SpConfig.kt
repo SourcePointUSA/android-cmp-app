@@ -2,6 +2,7 @@ package com.sourcepoint.cmplibrary.model.exposed
 
 import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.mobile_core.network.responses.MessagesResponse.MessageMetaData.MessageSubCategory
@@ -20,6 +21,7 @@ data class SpConfig(
     @JvmField val propertyId: Int,
     @JvmField val campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC,
     @JvmField val spGppConfig: SpGppConfig? = null,
+    @JvmField val didomiConfig: DidomiConfig? = null,
 )
 
 data class SpCampaign(

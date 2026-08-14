@@ -2,6 +2,7 @@
 package com.sourcepoint.cmplibrary.creation
 
 import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
 import com.sourcepoint.cmplibrary.model.CampaignsEnv
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
@@ -23,6 +24,7 @@ class SpConfigDataBuilder {
     var campaignsEnv: CampaignsEnv = CampaignsEnv.PUBLIC
     var messageTimeout: Long = 5000
     var spGppConfig: SpGppConfig? = null
+    var didomiConfig: DidomiConfig? = null
     var dismissMessageOnBackPress: Boolean = true
 
     operator fun CampaignType.unaryPlus() {
@@ -69,6 +71,10 @@ class SpConfigDataBuilder {
 
     fun addGppConfig(spGppConfig: SpGppConfig) = apply {
         this.spGppConfig = spGppConfig
+    }
+
+    fun addDidomiConfig(didomiConfig: DidomiConfig) = apply {
+        this.didomiConfig = didomiConfig
     }
 
     fun addCampaign(campaignType: CampaignType, targetingParams: String) = apply {
@@ -124,6 +130,7 @@ class SpConfigDataBuilder {
         campaignsEnv = campaignsEnv,
         propertyId = propertyId,
         spGppConfig = spGppConfig,
+        didomiConfig = didomiConfig,
     )
 }
 
