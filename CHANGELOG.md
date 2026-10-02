@@ -1,3 +1,6 @@
+## 7.15.14 (October, 02, 2026)
+* [DIA-6442](https://sourcepoint.atlassian.net/browse/DIA-6442) Fixed an issue that prevented the SDK from correctly reporting a user's message status.
+
 ## 7.15.13 (April, 08, 2026)
 * [DIA-6317](https://sourcepoint.atlassian.net/browse/DIA-6317) Improve the SDK's thread safety in an attempt to fix a potential race condition causing the SKD to call `onUIReady` more than once, resulting in a crash when the app attempted to add the consent view a second time to the view hierarchy. [#885](https://github.com/SourcePointUSA/android-cmp-app/pull/885)
 * update `mobile-core` to version `0.1.16` which also brings thread safety improvements when accessing the SharedPrefs. [#886](https://github.com/SourcePointUSA/android-cmp-app/pull/886)
