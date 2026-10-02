@@ -14,8 +14,13 @@ interface SpClient {
     fun onUIReady(view: View)
 
     /**
-     * It is invoked when the message is available to the client App
+     * It is invoked when the message is available to the client App.
+     *
+     * Currently this callback is disabled. Since 7.12.0 every message is rendered through
+     * `SPConsentWebView`, and no code path in the library reaches this callback. See
+     * NATIVEMESSAGE_GUIDE.md.
      */
+    @Deprecated("Currently this callback is disabled. Since 7.12.0 the SDK renders every message through SPConsentWebView and no code path reaches this callback. See NATIVEMESSAGE_GUIDE.md.")
     fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {}
 
     @Deprecated("onMessageReady callback will be removed in favor of onMessageReady(message: MessageStructure, messageController: NativeMessageController). Currently this callback is disabled.")

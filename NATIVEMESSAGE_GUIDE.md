@@ -1,4 +1,18 @@
 # The Nativemessage
+
+> **Note: this feature is currently not functional on Android.**
+>
+> Since **7.12.0**, when the SDK's internals moved to `mobile-core`, nothing in the library
+> invokes `SpClient.onNativeMessageReady`. `SpConsentLibImpl` — the only class that called it —
+> was removed, and `SpConsentLibMobileCore` renders every message through `SPConsentWebView`.
+> `MessageType` has no native variant, so a property configured with a native message is
+> rendered as a web message instead, with no callback and no error.
+>
+> The last release in which the callback was invoked is **7.11.2**. The equivalent iOS API,
+> `onSPNativeMessageReady`, is unaffected.
+>
+> The rest of this guide is kept for reference and for anyone on 7.11.2 or earlier.
+
 ## Table of Contents
 - [Intro](#intro)
 - [Configure a property to use with the Nativemessage](#configure-a-property-to-use-with-the-nativemessage)
