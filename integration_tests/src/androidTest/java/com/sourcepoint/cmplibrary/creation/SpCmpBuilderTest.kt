@@ -1,27 +1,28 @@
 package com.sourcepoint.cmplibrary.creation
 
 import android.app.Activity
+import android.app.Application
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.assertNotNull
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
 
 class SpCmpBuilderTest {
-    private val activityMock = mockk<Activity>(relaxed = true)
+    private val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application
+    private val activityMock = mockk<Activity>(relaxed = true).also { every { it.application } returns application }
     private val spClientMock = mockk<SpClient>(relaxed = true)
+    private val testDidomiConfig = DidomiConfig(apiKey = "test-api-key")
 
     @Test(expected = RuntimeException::class)
-    fun throwsExceptionIfConfigHasNoPropertyId() {
+    fun throwsExceptionIfConfigHasNoDidomiConfig() {
         val sut by spConsentLibLazy {
             activity = activityMock
             spClient = spClientMock
-            config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                +(CampaignType.GDPR)
-            }
+            config { }
         }
         sut.assertNotNull()
     }
@@ -32,10 +33,7 @@ class SpCmpBuilderTest {
             activity = activityMock
             spClient = spClientMock
             config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                +(CampaignType.GDPR)
+                addDidomiConfig(testDidomiConfig)
             }
         }
         sut.assertNotNull()
@@ -55,10 +53,7 @@ class SpCmpBuilderTest {
         val sut by spConsentLibLazy {
             spClient = spClientMock
             config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                +(CampaignType.GDPR)
+                addDidomiConfig(testDidomiConfig)
             }
         }
         sut.assertNotNull()
@@ -69,10 +64,7 @@ class SpCmpBuilderTest {
         val sut by spConsentLibLazy {
             activity = activityMock
             config {
-                accountId = 22
-                propertyName = "mobile.multicampaign.demo"
-                propertyId = 16893
-                +(CampaignType.GDPR)
+                addDidomiConfig(testDidomiConfig)
             }
         }
         sut.assertNotNull()
