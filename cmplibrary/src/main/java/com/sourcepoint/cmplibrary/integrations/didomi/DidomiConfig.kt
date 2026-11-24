@@ -9,7 +9,7 @@ package com.sourcepoint.cmplibrary.integrations.didomi
  * @param localConfigurationPath Path to local Didomi config JSON file in assets (optional)
  * @param remoteConfigurationUrl URL to remote Didomi config JSON (optional)
  */
-data class DidomiConfig(
+data class DidomiConfig @JvmOverloads constructor(
     val apiKey: String,
     val noticeId: String? = null,
     val languageCode: String? = null,
