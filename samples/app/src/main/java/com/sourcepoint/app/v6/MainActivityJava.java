@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.sourcepoint.app.v6.core.DataProvider;
-import com.sourcepoint.cmplibrary.NativeMessageController;
 import com.sourcepoint.cmplibrary.SpClient;
 import com.sourcepoint.cmplibrary.SpConsentLib;
-import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure;
 import com.sourcepoint.cmplibrary.creation.FactoryKt;
 import com.sourcepoint.cmplibrary.creation.SpConfigDataBuilder;
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType;
-import com.sourcepoint.cmplibrary.model.CampaignsEnv;
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig;
 import com.sourcepoint.cmplibrary.model.ConsentAction;
 import com.sourcepoint.cmplibrary.model.MessageLanguage;
 import com.sourcepoint.cmplibrary.model.PMTab;
@@ -35,15 +32,9 @@ public class MainActivityJava extends AppCompatActivity {
     private static final String TAG = "**MainActivity";
 
     private final SpConfig spConfig = new SpConfigDataBuilder()
-            .addAccountId(22)
-            .addPropertyName("mobile.multicampaign.demo")
-            .addPropertyId(16893)
             .addMessageLanguage(MessageLanguage.ENGLISH)
             .addMessageTimeout(5000)
-            .addCampaignsEnv(CampaignsEnv.PUBLIC)
-            .addCampaign(new SpCampaign(CampaignType.GDPR, Collections.emptyList()))
-            .addCampaign(CampaignType.GDPR)
-//            .addCampaign(CampaignType.CCPA, Arrays.asList(new TargetingParam("location", "US")))
+            .addDidomiConfig(new DidomiConfig("eea5ad63-29d4-4552-9dac-2edebe1fe518", "BVP3EcHb"))
             .build();
 
     private SpConsentLib spConsentLib = null;
@@ -62,14 +53,12 @@ public class MainActivityJava extends AppCompatActivity {
         findViewById(R.id.review_consents_gdpr).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "488393",//"13111",
-                        PMTab.PURPOSES,
-                        CampaignType.GDPR
+                        PMTab.PURPOSES
                 ));
         findViewById(R.id.review_consents_ccpa).setOnClickListener(_v ->
                 spConsentLib.loadPrivacyManager(
                         "14967",
-                        PMTab.PURPOSES,
-                        CampaignType.CCPA
+                        PMTab.PURPOSES
                 ));
         findViewById(R.id.clear_all).setOnClickListener(_v ->
                 SpUtils.clearAllData(this)
@@ -111,16 +100,6 @@ public class MainActivityJava extends AppCompatActivity {
         @Override
         public void onError(@NotNull Throwable error) {
             error.printStackTrace();
-        }
-
-        @Override
-        public void onNativeMessageReady(@NotNull MessageStructure message, @NotNull NativeMessageController messageController) {
-
-        }
-
-        @Override
-        public void onMessageReady(@NotNull JSONObject message) {
-
         }
 
         @Override

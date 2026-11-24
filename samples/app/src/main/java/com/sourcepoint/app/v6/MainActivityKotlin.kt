@@ -13,7 +13,6 @@ import com.sourcepoint.app.v6.databinding.ActivityMainV7Binding
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -75,7 +74,7 @@ class MainActivityKotlin : AppCompatActivity() {
 
         binding = ActivityMainV7Binding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll(CampaignType.GDPR) }
+        binding.rejectAllGdprButton.setOnClickListener { spConsentLib.rejectAll() }
         binding.reviewConsentsGdpr.setOnClickListener { selectGDPRPM(dataProvider) }
         binding.reviewConsentsCcpa.setOnClickListener { selectCCPAPM(dataProvider) }
         binding.reviewConsentsUsnat.setOnClickListener { selectUSNATPM(dataProvider) }
@@ -210,7 +209,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.gdprPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.GDPR,
                     useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable,
                     messageType = it
                 )
@@ -219,7 +217,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.gdprPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.GDPR,
                     useGroupPmIfAvailable = dataProvider.useGdprGroupPmIfAvailable
                 )
             }
@@ -231,7 +228,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.ccpaPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.CCPA,
                     messageType = it
                 )
             }
@@ -239,7 +235,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.ccpaPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.CCPA
                 )
             }
     }
@@ -250,7 +245,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.usnatPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.USNAT,
                     messageType = it
                 )
             }
@@ -258,7 +252,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.usnatPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.USNAT
                 )
             }
     }
@@ -269,7 +262,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.globalcmpPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.GLOBALCMP,
                     messageType = it
                 )
             }
@@ -277,7 +269,6 @@ class MainActivityKotlin : AppCompatActivity() {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.globalcmpPmId,
                     pmTab = PMTab.PURPOSES,
-                    campaignType = CampaignType.GLOBALCMP
                 )
             }
     }
@@ -287,14 +278,12 @@ class MainActivityKotlin : AppCompatActivity() {
             ?.let {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.preferencesCenterId,
-                    campaignType = CampaignType.PREFERENCES,
                     messageType = it
                 )
             }
             ?: run {
                 spConsentLib.loadPrivacyManager(
                     pmId = dataProvider.preferencesCenterId,
-                    campaignType = CampaignType.PREFERENCES
                 )
             }
     }

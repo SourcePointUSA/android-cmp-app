@@ -13,7 +13,6 @@ import com.sourcepoint.app.v6.utils.LazyActivityScenario
 import com.sourcepoint.app.v6.utils.ScreenshotTakingRule
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import io.mockk.mockk
@@ -35,11 +34,8 @@ class MainActivityKotlinOttTest {
             .around(ScreenshotTakingRule())
 
     private val ottConfig = config {
-        accountId = 22
-        propertyId = 17935
-        propertyName = "appletv.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.GDPR)
     }
 
     private fun loadModules(client: SpClient = mockk<SpClient>(relaxed = true)) {

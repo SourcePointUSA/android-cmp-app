@@ -7,11 +7,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.databinding.ActivityWebConsentTransferTestBinding
-import com.sourcepoint.cmplibrary.NativeMessageController
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.core.nativemessage.MessageStructure
 import com.sourcepoint.cmplibrary.creation.delegate.spConsentLibLazy
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -28,13 +25,8 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         activity = this@WebConsentTransferTestActivity
         spClient = LocalClient()
         config {
-            accountId = 22
-            propertyId = 16893
-            propertyName = "mobile.multicampaign.demo"
             messLanguage = MessageLanguage.ENGLISH
             messageTimeout = 3000
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA)
         }
     }
 
@@ -106,10 +98,6 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
             return consentAction
         }
 
-        override fun onNativeMessageReady(message: MessageStructure, messageController: NativeMessageController) {
-
-        }
-
         override fun onUIFinished(view: View) {
             spConsentLib.removeView(view)
             Log.i(this::class.java.name, "onUIFinished")
@@ -128,8 +116,6 @@ class WebConsentTransferTestActivity : AppCompatActivity() {
         override fun onConsentReady(consent: SPConsents) {
             Log.i(this::class.java.name, "onConsentReady: $consent")
         }
-
-        override fun onMessageReady(message: JSONObject) {}
     }
 
     companion object {

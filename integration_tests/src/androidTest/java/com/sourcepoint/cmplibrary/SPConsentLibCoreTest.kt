@@ -1,150 +1,48 @@
-@file:Suppress("DEPRECATION")
 package com.sourcepoint.cmplibrary
 
-import android.content.Context
-import android.preference.PreferenceManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.uitestutil.wr
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
-import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
-import com.sourcepoint.cmplibrary.legacy.loadLegacySharedPrefs
-import com.sourcepoint.cmplibrary.legacy.migrateLegacyToNewState
-import com.sourcepoint.cmplibrary.model.MessageLanguage
-import com.sourcepoint.mobile_core.Coordinator
-import com.sourcepoint.mobile_core.ICoordinator
-import com.sourcepoint.mobile_core.models.LoadMessagesException
-import com.sourcepoint.mobile_core.models.SPCampaign
-import com.sourcepoint.mobile_core.models.SPCampaigns
-import com.sourcepoint.mobile_core.models.SPError
-import com.sourcepoint.mobile_core.models.SPPropertyName
-import com.sourcepoint.mobile_core.models.consents.GDPRConsent
-import com.sourcepoint.mobile_core.models.consents.SPUserData
-import io.mockk.coEvery
-import io.mockk.every
+import com.sourcepoint.cmplibrary.exception.RenderingAppException
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiIntegration
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// Consent collection and UI are handled by Didomi, so what's covered here is what SpConsentLibMobileCore does on its own.
+// Flows that need Didomi's UI belong in the sample app's UI tests.
 @RunWith(AndroidJUnit4::class)
 class SPConsentLibCoreTest {
-    private val accountId = 22
-    private val propertyId = 16893
-    private val propertyName = SPPropertyName.create("mobile.multicampaign.demo")
-    private val campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign(), usnat = SPCampaign())
-    private val spClient: SpClient get() = mockk<SpClient>(relaxed = true)
-    private val context: Context = InstrumentationRegistry.getInstrumentation().context
-    private fun getConsentLib(
-        spClient: SpClient = this.spClient,
-        coordinator: ICoordinator = Coordinator(
-            accountId = accountId,
-            propertyId = propertyId,
-            propertyName = propertyName,
-            campaigns = campaigns
-        ),
-        connectionManager: ConnectionManager = object : ConnectionManager {
-            override val isConnected: Boolean = true
-        }
-    ): SpConsentLib = SpConsentLibMobileCore(
-        propertyId = propertyId,
-        language = MessageLanguage.ENGLISH,
+    private val spClient = mockk<SpClient>(relaxed = true)
+    private val context = InstrumentationRegistry.getInstrumentation().context
+
+    private fun getConsentLib(spClient: SpClient = this.spClient): SpConsentLib = SpConsentLibMobileCore(
         activity = null,
         context = context,
-        coordinator = coordinator,
-        connectionManager = connectionManager,
         spClient = spClient,
+        didomiIntegration = DidomiIntegration(DidomiConfig(apiKey = "test-api-key"), spClient),
     )
 
-    private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-    @Before
-    fun cleanPreferences() {
-        preferences.edit().clear().commit()
-    }
-
     @Test
-    fun onUIReadyIsCalled() = runBlocking {
+    fun loadMessageCallsOnErrorIfThereIsNoActivity() = runBlocking {
         val client = spClient
         getConsentLib(spClient = client).loadMessage()
         wr {
-            verify(exactly = 1) { client.onUIReady(any()) }
-            verify(exactly = 0) { client.onError(any()) }
+            verify(exactly = 0) { client.onUIReady(any()) }
+            verify(exactly = 1) { client.onError(ofType<RenderingAppException>()) }
         }
     }
 
     @Test
-    fun whenTheresNoInternetCallsOnErrorWithNoInternetError() = runBlocking {
+    fun loadPrivacyManagerCallsOnErrorIfThereIsNoActivity() = runBlocking {
         val client = spClient
-        getConsentLib(
-            spClient = client,
-            connectionManager = object : ConnectionManager { override val isConnected = false }
-        ).loadMessage()
+        getConsentLib(spClient = client).loadPrivacyManager(pmId = "123")
         wr {
             verify(exactly = 0) { client.onUIReady(any()) }
-            verify(exactly = 1) { client.onError(ofType<NoInternetConnectionException>()) }
-        }
-    }
-
-    @Test
-    fun callsOnErrorIfLoadMessagesThrowsAnExceptionAndTheresNoConsentStored() = runBlocking {
-        val client = spClient
-        val coordinatorMock = mockk<ICoordinator>(relaxed = true)
-        every { coordinatorMock.userData } returns SPUserData()
-        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(cause = SPError())
-        getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
-        wr {
-            verify(exactly = 0) { client.onUIReady(any()) }
-            verify(exactly = 1) { client.onError(ofType<FailedToLoadMessages>()) }
-        }
-    }
-
-    @Test
-    fun callsOnSPFinishedIfThereIsConsentStored() = runBlocking {
-        val client = spClient
-        val userData = SPUserData(gdpr = SPUserData.SPConsent(consents = GDPRConsent()))
-        val coordinatorMock = mockk<ICoordinator>(relaxed = true)
-        every { coordinatorMock.userData } returns userData
-        coEvery { coordinatorMock.loadMessages(any(), any(), any()) } throws LoadMessagesException(cause = SPError())
-        getConsentLib(spClient = client, coordinator = coordinatorMock).loadMessage()
-        wr {
-            verify(exactly = 0) { client.onUIReady(any()) }
-            verify(exactly = 0) { client.onError(any()) }
-            verify(exactly = 1) { client.onSpFinished(any()) }
-        }
-    }
-
-    @Test
-    fun noMessageIsShownIfTheresDataFromSDKWithoutMobileCore() = runBlocking {
-        // NOTE: If this test fails, chances are the SDK (more specifically the mobile-core's Coordinator)
-        // is resetting its state because some meta-data changed, like `usnat.applicableSections` or `legislation.vendorListId`
-        // OR the consent expired in the server (i.e. longer than 1 year) and a new uuid needs to be saved (by accepting all with
-        // that auth id).
-        val client = spClient
-        loadLegacySharedPrefs(preferences)
-        getConsentLib(
-            spClient = client,
-            coordinator = Coordinator(
-                accountId = accountId,
-                propertyId = propertyId,
-                propertyName = propertyName,
-                // we leave usnat off, because its applicableSections might change depending on the physical location
-                // of the CI servers running the tests, causing State to reset and the test to fail
-                campaigns = SPCampaigns(gdpr = SPCampaign(), ccpa = SPCampaign()),
-                state = migrateLegacyToNewState(
-                    preferences = preferences,
-                    accountId = accountId,
-                    propertyId = propertyId
-                )
-            )
-        ).loadMessage()
-        wr {
-            verify(exactly = 0) { client.onUIReady(any()) }
-            verify(exactly = 0) { client.onError(any()) }
-            verify(exactly = 1) { client.onSpFinished(any()) }
+            verify(exactly = 1) { client.onError(ofType<RenderingAppException>()) }
         }
     }
 }

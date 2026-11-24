@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.sourcepoint.app.v6.core.DataProvider
 import com.sourcepoint.app.v6.databinding.ActivityMainConsentBinding
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
-import com.sourcepoint.cmplibrary.util.campaignApplies
 import com.sourcepoint.cmplibrary.util.userConsents
 import org.koin.android.ext.android.inject
 
@@ -24,8 +22,7 @@ class MainActivityViewConsent : AppCompatActivity() {
         setContentView(binding.root)
 
         val consent = userConsents(this.applicationContext)
-        val gdprApplies = campaignApplies(this, CampaignType.GDPR)
-        val ccpaApplies = campaignApplies(this, CampaignType.CCPA)
+        val gdprApplies = consent.gdpr?.consent?.applies == true
         val euconsent = consent.gdpr?.consent?.euconsent ?: "NO DATA"
         val uuid = consent.gdpr?.consent?.uuid ?: "NO DATA"
 

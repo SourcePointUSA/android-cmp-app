@@ -6,8 +6,7 @@ import com.sourcepoint.app.v6.core.create
 import com.sourcepoint.cmplibrary.SpClient
 import com.sourcepoint.cmplibrary.creation.config
 import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
-import com.sourcepoint.cmplibrary.model.CampaignsEnv
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.SpConfig
 import org.koin.android.ext.koin.androidApplication
@@ -63,16 +62,13 @@ val appModule = module {
 
     single<SpConfig> {
         config {
-            accountId = 22
-            propertyName = "mobile.multicampaign.demo"
-            propertyId = 16893
             messLanguage = MessageLanguage.ENGLISH
-            campaignsEnv = CampaignsEnv.PUBLIC
-            +(CampaignType.GDPR)
-            +(CampaignType.CCPA)
-            +(CampaignType.USNAT)
-            +(CampaignType.PREFERENCES)
-            +(CampaignType.GLOBALCMP)
+
+            // Didomi is required
+            addDidomiConfig(DidomiConfig(
+                apiKey = "eea5ad63-29d4-4552-9dac-2edebe1fe518",
+                noticeId = "BVP3EcHb"
+            ))
         }
     }
 

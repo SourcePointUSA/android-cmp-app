@@ -1,10 +1,7 @@
 package com.sourcepoint.cmplibrary.mobile_core
 
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.ConsentAction
 import com.sourcepoint.cmplibrary.model.exposed.ActionType
-import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
-import com.sourcepoint.mobile_core.models.SPAction
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -31,7 +28,6 @@ data class SPConsentAction(
     @Serializable(with = JSONObjectSerializer::class) override val pubData: JSONObject = JSONObject(),
     @Deprecated("use this.pubData instead", replaceWith = ReplaceWith("this.pubData"), level = DeprecationLevel.ERROR)
     override val pubData2: JsonObject = JsonObject(emptyMap()),
-    override val campaignType: CampaignType,
     override val customActionId: String? = null,
 
     @Deprecated("this field is no longer in use and should be removed")
@@ -46,12 +42,4 @@ data class SPConsentAction(
     override val consentLanguage: String? = null,
     override val messageId: String,
     override val pmUrl: String? = null
-) : ConsentAction {
-    fun toCore(): SPAction = SPAction(
-        type = actionType.toCore(),
-        campaignType = campaignType.toCore(),
-        messageId = messageId,
-        pmPayload = saveAndExitVariables.toJsonObject(),
-        encodablePubData = pubData.toJsonObject(),
-    )
-}
+) : ConsentAction

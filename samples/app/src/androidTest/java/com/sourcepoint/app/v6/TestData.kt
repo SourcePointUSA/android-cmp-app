@@ -1,6 +1,14 @@
 package com.sourcepoint.app.v6
 
+import com.sourcepoint.cmplibrary.integrations.didomi.DidomiConfig
+
 object TestData {
+
+    // Didomi is the engine behind the SDK, so every SpConfig needs it
+    val DIDOMI_CONFIG = DidomiConfig(
+        apiKey = "eea5ad63-29d4-4552-9dac-2edebe1fe518",
+        noticeId = "BVP3EcHb"
+    )
 
     val CONSENT_LIST_2 = listOf(
         "Store and/or access information on a device",
