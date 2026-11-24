@@ -48,14 +48,10 @@ import com.sourcepoint.app.v6.TestUseCase.Companion.tapToDisableSomeConsent
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapToEnableSomeOption
 import com.sourcepoint.app.v6.TestUseCase.Companion.tapZustimmenAllOnWebView
 import com.sourcepoint.cmplibrary.SpClient
-import com.sourcepoint.cmplibrary.creation.ConfigOption
 import com.sourcepoint.cmplibrary.creation.config
-import com.sourcepoint.cmplibrary.creation.to
 import com.sourcepoint.cmplibrary.data.network.model.optimized.GCMStatus.*
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.exposed.CcpaStatus
-import com.sourcepoint.cmplibrary.model.exposed.SpCampaign
 import io.mockk.clearMocks
 import io.mockk.mockk
 import io.mockk.verify
@@ -76,64 +72,42 @@ class MainActivityKotlinTest {
     }
 
     private val spConfCcpa = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.CCPA)
     }
 
     private val spConfGdpr = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.GDPR)
     }
 
     private val spConfUsnat = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
-        +(CampaignType.USNAT to setOf(ConfigOption.SUPPORT_LEGACY_USPSTRING))
     }
 
     private val spConfGdprNoMessage = config {
-        accountId = 22
-        propertyId = 29498
-        propertyName = "ott-ccpa-22"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +(CampaignType.GDPR)
     }
 
     private val spConfGdprGroupId = config {
-        accountId = 22
-        propertyId = 24188
-        propertyName = "mobile.prop-1"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +SpCampaign(campaignType = CampaignType.GDPR, groupPmId = "613056")
     }
 
     private val spConf = config {
-        accountId = 22
-        propertyId = 16893
-        propertyName = "mobile.multicampaign.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +(CampaignType.GDPR)
-        +(CampaignType.CCPA)
     }
 
     private val spConfNative = config {
-        accountId = 22
-        propertyId = 18958
-        propertyName = "mobile.multicampaign.native.demo"
+        addDidomiConfig(TestData.DIDOMI_CONFIG)
         messLanguage = MessageLanguage.ENGLISH
         messageTimeout = 5000
-        +(CampaignType.GDPR)
     }
 
     private fun getSharedPrefs(activity: Activity) = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -474,11 +448,8 @@ class MainActivityKotlinTest {
         loadKoinModules(
             mockModule(
                 spConfig = config {
-                    accountId = 22
-                    propertyId = 36345
-                    propertyName = "android.applies.false.in.pm"
+                    addDidomiConfig(TestData.DIDOMI_CONFIG)
                     messageTimeout = 5000
-                    +(CampaignType.GDPR)
                 },
                 gdprPmId = "1144201",
                 ccpaPmId = "",
