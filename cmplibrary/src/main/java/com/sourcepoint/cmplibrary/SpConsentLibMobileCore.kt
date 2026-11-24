@@ -12,41 +12,13 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
-import com.sourcepoint.cmplibrary.data.network.connection.ConnectionManager
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.exception.ConsentLibExceptionK
-import com.sourcepoint.cmplibrary.exception.FailedToDeleteCustomConsent
-import com.sourcepoint.cmplibrary.exception.FailedToLoadMessages
-import com.sourcepoint.cmplibrary.exception.FailedToPostCustomConsent
-import com.sourcepoint.cmplibrary.exception.NoIntentFoundForUrl
-import com.sourcepoint.cmplibrary.exception.NoInternetConnectionException
 import com.sourcepoint.cmplibrary.exception.RenderingAppException
-import com.sourcepoint.cmplibrary.exception.ReportActionException
-import com.sourcepoint.cmplibrary.exception.UnableToDownloadRenderingApp
-import com.sourcepoint.cmplibrary.exception.UnableToLoadRenderingApp
 import com.sourcepoint.cmplibrary.integrations.didomi.DidomiIntegration
-import com.sourcepoint.cmplibrary.mobile_core.SPConsentAction
-import com.sourcepoint.cmplibrary.mobile_core.SPConsentWebView
-import com.sourcepoint.cmplibrary.mobile_core.SPMessageUI
-import com.sourcepoint.cmplibrary.mobile_core.SPMessageUIClient
-import com.sourcepoint.cmplibrary.mobile_core.buildPMUrl
-import com.sourcepoint.cmplibrary.model.ConsentAction
-import com.sourcepoint.cmplibrary.model.MessageLanguage
 import com.sourcepoint.cmplibrary.model.PMTab
-import com.sourcepoint.cmplibrary.model.exposed.ActionType
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
-import com.sourcepoint.cmplibrary.model.exposed.MessageType.MOBILE
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
 import com.sourcepoint.cmplibrary.util.SpBackPressOttDelegate
-import com.sourcepoint.cmplibrary.util.extensions.toJsonObject
-import com.sourcepoint.mobile_core.ICoordinator
-import com.sourcepoint.mobile_core.models.LoadMessagesException
-import com.sourcepoint.mobile_core.models.MessageToDisplay
-import com.sourcepoint.mobile_core.models.SPAction
-import com.sourcepoint.mobile_core.models.SPActionType.RejectAll
-import com.sourcepoint.mobile_core.models.SPError
-import com.sourcepoint.mobile_core.models.SPMessageLanguage.ENGLISH
-import com.sourcepoint.mobile_core.models.consents.SPUserData
 import com.sourcepoint.mobile_core.network.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +26,6 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.util.WeakHashMap
-import kotlin.getValue
 
 fun launch(task: suspend () -> Unit) {
     CoroutineScope(Dispatchers.Default).launch { task() }
@@ -65,23 +36,15 @@ fun runOnMain(task: () -> Unit) {
 }
 
 class SpConsentLibMobileCore(
-    private val propertyId: Int,
-    private val language: MessageLanguage,
     private val activity: WeakReference<Activity>?,
     private val context: Context,
-    private val coordinator: ICoordinator,
-    private val connectionManager: ConnectionManager,
     private val spClient: SpClient,
     override val hideAppsViewsFromAccessibilityWhileMessageIsDisplayed: Boolean = false,
     override val dismissMessageOnBackPress: Boolean = true,
     override var cleanUserDataOnError: Boolean = false,
-    private val didomiIntegration: DidomiIntegration? = null,
-) : SpConsentLib, SPMessageUIClient {
-    private var pendingActions: Int = 0
-    private var messagesToDisplay: ArrayDeque<MessageToDisplay> = ArrayDeque(emptyList())
+    private val didomiIntegration: DidomiIntegration,
+) : SpConsentLib {
     private val mainView: ViewGroup? get() = activity?.get()?.findViewById(content)
-    private val userData: SPUserData get() = coordinator.userData
-    private val spConsents: SPConsents get() = SPConsents(userData)
 
     private val accessibilityManater by lazy {
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
@@ -90,17 +53,7 @@ class SpConsentLibMobileCore(
     // used to store accessibility state of main view's children
     private var a11ySnapshot: WeakHashMap<View?, Int> = WeakHashMap()
 
-    private var messageUI: SPMessageUI? = null
-    fun getOrCreateMessageUI(): SPMessageUI {
-        messageUI = messageUI ?: SPConsentWebView.create(
-            context = context,
-            messageUIClient = this@SpConsentLibMobileCore,
-            propertyId = propertyId,
-            onBackPressed = dismissMessageOnBackPress
-        )
-        return messageUI!!
-    }
-
+    // authId, pubData and cmpViewId are not handled by Didomi yet
     override fun loadMessage() = loadMessage(authId = null, pubData = null, cmpViewId = null)
 
     override fun loadMessage(cmpViewId: Int) =
@@ -110,65 +63,18 @@ class SpConsentLibMobileCore(
 
     override fun loadMessage(authId: String?) = loadMessage(authId = authId, pubData = null)
 
-    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) = launch {
-        if (!connectionManager.isConnected) {
-            onError(NoInternetConnectionException())
-            return@launch
-        }
-
-        try {
-            messagesToDisplay = ArrayDeque(
-                coordinator.loadMessages(
-                    authId = authId,
-                    pubData = pubData?.toJsonObject(),
-                    language = language.toCore() ?: ENGLISH
-                )
-            )
-            if (messagesToDisplay.isEmpty()) {
-                spClient.onConsentReady(spConsents)
-            }
-            pendingActions = messagesToDisplay.size
-            renderNextMessageIfAny()
-        } catch (error: LoadMessagesException) {
-            val consents = spConsents
-            if (consents.gdpr != null || consents.ccpa != null || consents.usNat != null) {
-                renderNextMessageIfAny()
-            } else {
-                onError(FailedToLoadMessages(error))
-            }
-        }
+    override fun loadMessage(authId: String?, pubData: JSONObject?, cmpViewId: Int?) {
+        activity?.get()?.let { act ->
+            didomiIntegration.loadMessage(act)
+        } ?: onError(RenderingAppException(description = "Activity not available for Didomi integration"))
     }
-
-    private fun renderNextMessageIfAny() =
-        if (pendingActions == 0 && messagesToDisplay.isEmpty()) {
-            disposeMessageUI()
-            spClient.onSpFinished(spConsents)
-        } else if (messagesToDisplay.isNotEmpty()) {
-            val messageToRender = messagesToDisplay.removeFirst()
-            getOrCreateMessageUI().load(
-                message = messageToRender.message,
-                messageType = MessageType.fromMessageSubCategory(messageToRender.metaData.subCategoryId),
-                url = messageToRender.url,
-                campaignType = CampaignType.fromCore(messageToRender.type),
-                userData = userData
-            )
-        } else { }
 
     override fun customConsentGDPR(
         vendors: List<String>,
         categories: List<String>,
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
-    ) = launch {
-        runCatching {
-            coordinator.customConsentGDPR(
-                vendors = vendors,
-                categories = categories,
-                legIntCategories = legIntCategories
-            )
-            success(spConsents)
-        }.onFailure { onError(FailedToPostCustomConsent(cause = it)) }
-    }
+    ) = didomiIntegration.customConsentGDPR(vendors, categories, legIntCategories, success)
 
     override fun customConsentGDPR(
         vendors: Array<String>,
@@ -188,16 +94,7 @@ class SpConsentLibMobileCore(
         categories: List<String>,
         legIntCategories: List<String>,
         success: (SPConsents?) -> Unit
-    ) = launch {
-        runCatching {
-            coordinator.deleteCustomConsentGDPR(
-                vendors = vendors,
-                categories = categories,
-                legIntCategories = legIntCategories
-            )
-            success(spConsents)
-        }.onFailure { onError(FailedToDeleteCustomConsent(cause = it)) }
-    }
+    ) = didomiIntegration.deleteCustomConsentTo(vendors, categories, legIntCategories, success)
 
     override fun deleteCustomConsentTo(
         vendors: Array<String>,
@@ -212,89 +109,41 @@ class SpConsentLibMobileCore(
         consents?.let { successCallback.transferCustomConsentToUnity(json.encodeToString(it)) }
     }
 
-    override fun rejectAll(campaignType: CampaignType) = launch {
-        val action = SPAction(type = RejectAll, campaignType = campaignType.toCore())
-        runCatching {
-            coordinator.reportAction(action)
-            val consents = SPConsents(userData)
-            spClient.onConsentReady(consents)
-            spClient.onSpFinished(consents)
-        }.onFailure { onError(ReportActionException(cause = it, action = action)) }
-    }
+    override fun rejectAll() = didomiIntegration.rejectAll()
 
-    override fun loadPrivacyManager(pmId: String, campaignType: CampaignType) =
-        internalLoadPM(pmId = pmId, campaignType = campaignType)
+    override fun loadPrivacyManager(pmId: String) = showPrivacyManager()
 
-    override fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType) =
-        internalLoadPM(pmId = pmId, campaignType = campaignType, pmTab = pmTab)
+    override fun loadPrivacyManager(pmId: String, pmTab: PMTab) = showPrivacyManager()
 
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
-        campaignType: CampaignType,
         useGroupPmIfAvailable: Boolean
-    ) = internalLoadPM(
-        pmId = pmId,
-        pmTab = pmTab,
-        campaignType = campaignType,
-        useGroupPmIfAvailable = useGroupPmIfAvailable
-    )
+    ) = showPrivacyManager()
 
     override fun loadPrivacyManager(
         pmId: String,
-        campaignType: CampaignType,
         messageType: MessageType
-    ) = internalLoadPM(pmId = pmId, campaignType = campaignType, messageType = messageType)
+    ) = showPrivacyManager()
 
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
-        campaignType: CampaignType,
         messageType: MessageType
-    ) = internalLoadPM(pmId = pmId, pmTab = pmTab, campaignType = campaignType, messageType = messageType)
+    ) = showPrivacyManager()
 
     override fun loadPrivacyManager(
         pmId: String,
         pmTab: PMTab,
-        campaignType: CampaignType,
         useGroupPmIfAvailable: Boolean,
         messageType: MessageType
-    ) = internalLoadPM(
-        pmId = pmId,
-        pmTab = pmTab,
-        campaignType = campaignType,
-        useGroupPmIfAvailable = useGroupPmIfAvailable,
-        messageType = messageType
-    )
+    ) = showPrivacyManager()
 
-    private fun internalLoadPM(
-        pmId: String,
-        campaignType: CampaignType,
-        pmTab: PMTab? = null,
-        useGroupPmIfAvailable: Boolean? = null,
-        messageType: MessageType = MOBILE
-    ) {
-        if (!connectionManager.isConnected) {
-            onError(NoInternetConnectionException())
-            return
-        }
-
-        pendingActions++
-        getOrCreateMessageUI().load(
-            messageType = messageType,
-            url = buildPMUrl(
-                campaignType = campaignType,
-                pmId = pmId,
-                propertyId = propertyId,
-                userData = userData,
-                language = language.value,
-                pmTab = pmTab,
-                pmType = messageType,
-                useChildPmIfAvailable = useGroupPmIfAvailable == true
-            ),
-            campaignType = campaignType,
-            userData = userData
-        )
+    // The privacy manager is Didomi's preferences: pmId, tab, campaign and message type don't apply to it
+    private fun showPrivacyManager() {
+        activity?.get()?.let { act ->
+            didomiIntegration.showPrivacyManager(act)
+        } ?: onError(RenderingAppException(description = "Activity not available for Didomi integration"))
     }
 
     // This is an aggressive way to "hide" ui elements from accessibility services in order to give
@@ -316,12 +165,6 @@ class SpConsentLibMobileCore(
             view?.importantForAccessibility = accessibilityState
         }
         a11ySnapshot.clear()
-    }
-
-    private fun disposeMessageUI() {
-        // Remove view from parent before nullifying to avoid NPE in ViewGroup
-        messageUI?.let { removeView(it as View) }
-        messageUI = null
     }
 
     override fun showView(view: View) {
@@ -347,12 +190,9 @@ class SpConsentLibMobileCore(
         }
     }
 
-    override fun dismissMessage() {
-        getOrCreateMessageUI().dismiss()
-    }
+    override fun dismissMessage() = didomiIntegration.dismissMessage()
 
-    @Deprecated(message = "This method is deprecated and has no effect.")
-    override fun dispose() {}
+    override fun dispose() = didomiIntegration.dispose()
 
     @Deprecated(
         message = "This method is deprecated and has no effect.",
@@ -376,79 +216,13 @@ class SpConsentLibMobileCore(
     )
     override fun handleOnBackPress(isMessageDismissible: Boolean, onHomePage: () -> Unit) {}
 
-    override fun clearLocalData() = coordinator.clearLocalData()
+    override fun clearLocalData() = didomiIntegration.clearLocalData()
 
-    override fun loaded(view: View) = spClient.onUIReady(view)
-
-    override fun onAction(view: View, action: ConsentAction) {
-        val userAction = spClient.onAction(view, action) as SPConsentAction
-        when (userAction.actionType) {
-            ActionType.ACCEPT_ALL, ActionType.REJECT_ALL, ActionType.SAVE_AND_EXIT -> {
-                launch {
-                    runCatching {
-                        coordinator.reportAction(userAction.toCore())
-                        spClient.onConsentReady(SPConsents(userData))
-                        pendingActions--
-                        if (pendingActions == 0) {
-                            disposeMessageUI()
-                            spClient.onSpFinished(spConsents)
-                        }
-                    }.onFailure {
-                        onError(ReportActionException(cause = it, action = userAction.toCore()))
-                    }
-                }
-                finished(view)
-            }
-            ActionType.CUSTOM, ActionType.UNKNOWN -> {
-                pendingActions--
-                finished(view)
-            }
-            ActionType.PM_DISMISS -> {
-                if (messageUI?.isFirstLayer == true) {
-                    pendingActions--
-                    finished(view)
-                }
-            }
-            ActionType.MSG_CANCEL -> {
-                pendingActions--
-                // TODO: not call `finished` if the message is not dismissible
-                finished(view)
-            }
-            else -> {}
-        }
-    }
-
-    override fun onError(error: ConsentLibExceptionK) {
-        pendingActions = 0
-        messagesToDisplay = ArrayDeque(emptyList())
+    private fun onError(error: ConsentLibExceptionK) {
         restoreChildrenA11y()
-
         if (cleanUserDataOnError) {
             clearLocalData()
         }
-
-        when (error) {
-            is NoIntentFoundForUrl -> {
-                spClient.onNoIntentActivitiesFound(error.url ?: "")
-                return
-            }
-            is UnableToDownloadRenderingApp, is UnableToLoadRenderingApp, is RenderingAppException -> {
-                launch { coordinator.logError(SPError(code = error.code)) }
-            }
-            else -> {
-                // NOTE: all other exceptions should have been logged by the `mobile-core` lib
-            }
-        }
         spClient.onError(error)
-    }
-
-    override fun finished(view: View) {
-        messageUI?.isPresenting = false
-        runOnMain { spClient.onUIFinished(view) }
-        renderNextMessageIfAny()
-    }
-
-    override fun onMessageInactivityTimeout() {
-        runOnMain { spClient.onMessageInactivityTimeout() }
     }
 }

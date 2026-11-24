@@ -2,7 +2,6 @@ package com.sourcepoint.cmplibrary
 
 import android.view.View
 import com.sourcepoint.cmplibrary.consent.CustomConsentClient
-import com.sourcepoint.cmplibrary.data.network.util.CampaignType
 import com.sourcepoint.cmplibrary.model.PMTab
 import com.sourcepoint.cmplibrary.model.exposed.MessageType
 import com.sourcepoint.cmplibrary.model.exposed.SPConsents
@@ -82,15 +81,15 @@ interface SpConsentLib {
         successCallback: CustomConsentClient
     )
 
-    fun rejectAll(campaignType: CampaignType)
+    fun rejectAll()
 
-    fun loadPrivacyManager(pmId: String, campaignType: CampaignType)
-    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType)
-    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean)
+    fun loadPrivacyManager(pmId: String)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, useGroupPmIfAvailable: Boolean)
 
-    fun loadPrivacyManager(pmId: String, campaignType: CampaignType, messageType: MessageType)
-    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, messageType: MessageType)
-    fun loadPrivacyManager(pmId: String, pmTab: PMTab, campaignType: CampaignType, useGroupPmIfAvailable: Boolean, messageType: MessageType)
+    fun loadPrivacyManager(pmId: String, messageType: MessageType)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, messageType: MessageType)
+    fun loadPrivacyManager(pmId: String, pmTab: PMTab, useGroupPmIfAvailable: Boolean, messageType: MessageType)
 
     fun showView(view: View)
     fun removeView(view: View)

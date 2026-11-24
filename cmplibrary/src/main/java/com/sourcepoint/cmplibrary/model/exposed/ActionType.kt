@@ -26,14 +26,3 @@ enum class ActionType(val code: Int) {
         UNKNOWN -> SPActionType.Unknown
     }
 }
-
-// TODO: remove this
-enum class NativeMessageActionType(val code: Int) {
-    REJECT_ALL(13),
-    SHOW_OPTIONS(12),
-    ACCEPT_ALL(11),
-    MSG_CANCEL(15),
-    GET_MSG_ERROR(-2),
-    GET_MSG_NOT_CALLED(-3),
-    UNKNOWN(-1),
-}
