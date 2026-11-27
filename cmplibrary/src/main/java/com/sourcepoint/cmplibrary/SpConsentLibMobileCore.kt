@@ -317,18 +317,25 @@ class SpConsentLibMobileCore(
     }
 
     private fun disposeMessageUI() {
-        // Remove view from parent before nullifying to avoid NPE in ViewGroup
-        messageUI?.let { removeView(it as View) }
+        // Remove view from parent before nullifying to avoid NPE in ViewGroup.
+        // This can be called from a background coroutine, so the view removal must happen on main.
+        val ui = messageUI as? View
         messageUI = null
+        ui?.let { runOnMain { removeView(it) } }
     }
 
     override fun showView(view: View) {
         mainView?.let { parentView ->
+            // the same message view may be "shown" more than once (e.g. onUIReady called again for a
+            // re-used web view), so make sure we never add a view that already has a parent
+            (view.parent as? ViewGroup)?.takeIf { it != parentView }?.removeView(view)
             view.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            if (hideAppsViewsFromAccessibilityWhileMessageIsDisplayed) {
-                hideMainViewChildrenFromAccessibility(parentView)
+            if (view.parent == null) {
+                if (hideAppsViewsFromAccessibilityWhileMessageIsDisplayed) {
+                    hideMainViewChildrenFromAccessibility(parentView)
+                }
+                parentView.addView(view)
             }
-            parentView.addView(view)
             view.bringToFront()
             view.requestLayout()
             view.requestFocus()
